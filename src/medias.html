@@ -540,6 +540,9 @@
 </head>
 <body>
 
+  <!-- FOND ÉTOILÉ -->
+  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></canvas>
+
   <!-- NAV -->
   <nav>
     <a href="index.html" class="nav-logo">
@@ -653,7 +656,7 @@
     var currentTab     = 'photo'
     var currentDataUrl = ''
     var currentVideoUrl = ''
-    var history        = JSON.parse(localStorage.getItem('nyxia_media_history') || '[]')
+    var mediaHistory   = JSON.parse(localStorage.getItem('nyxia_media_history') || '[]')
 
     /* ══════════════════════════════════════
        SUGGESTIONS PAR ONGLET
@@ -798,22 +801,26 @@
        HISTORIQUE
     ══════════════════════════════════════ */
     function addHistory(item) {
-      history.unshift(item)
-      if (history.length > 30) history = history.slice(0, 30)
+      mediaHistory.unshift(item)
+      if (mediaHistory.length > 30) mediaHistory = mediaHistory.slice(0, 30)
       try { localStorage.setItem('nyxia_media_history', JSON.stringify(history)) } catch(e){}
       renderHistory()
     }
 
     function renderHistory() {
       var grid = document.getElementById('history-grid')
-      document.getElementById('hist-count').textContent = history.length
+      document.getElementById('hist-count').textContent = mediaHistory.length
 
-      if (!history.length) {
-        grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🎨</div><p>Tes photos et vidéos apparaîtront ici</p></div>'
+      if (!mediaHistory.length) {
+        grid.innerHTML = '<div class="empty-state">'
+        + '<img src="/NyXia.png" alt="NyXia" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(123,92,255,0.4);box-shadow:0 0 30px rgba(123,92,255,0.3);margin:0 auto 16px;display:block;opacity:0.7">'
+        + '<p style="color:var(--t2);font-family:\'Space Grotesk\',sans-serif;font-size:15px;font-weight:600;margin-bottom:6px">Aucun média pour le moment</p>'
+        + '<p style="color:var(--t3);font-size:13px">Lance une recherche pour découvrir des photos et vidéos HD</p>'
+        + '</div>'
         return
       }
 
-      grid.innerHTML = history.map(function(item, i) {
+      grid.innerHTML = mediaHistory.map(function(item, i) {
         if (item.type === 'video') {
           return '<div class="media-item" onclick="loadHistoryItem(' + i + ')">'
             + '<video src="' + esc(item.videoUrl) + '" muted preload="none" style="pointer-events:none" poster="' + esc(item.thumbnail||'') + '"></video>'
@@ -838,7 +845,7 @@
     }
 
     function loadHistoryItem(i) {
-      var item = history[i]
+      var item = mediaHistory[i]
       if (!item) return
       document.getElementById('search-input').value = item.query
 
@@ -869,7 +876,7 @@
     }
 
     function dlFromHistory(i) {
-      var item = history[i]
+      var item = mediaHistory[i]
       if (!item || item.type !== 'photo' || !item.dataUrl) return
       var a = document.createElement('a')
       a.href = item.dataUrl
@@ -878,9 +885,9 @@
     }
 
     function clearHistory() {
-      if (!history.length) return
+      if (!mediaHistory.length) return
       if (confirm('Effacer tout l\'historique ?')) {
-        history = []
+        mediaHistory = []
         localStorage.removeItem('nyxia_media_history')
         renderHistory()
       }
@@ -903,6 +910,8 @@
       if (e.key === 'Enter') doSearch()
     })
   </script>
+
+  <script src="/js/starry-bg.js" defer></script>
 
 </body>
 </html>
