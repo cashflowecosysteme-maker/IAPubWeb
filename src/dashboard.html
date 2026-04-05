@@ -508,10 +508,34 @@
 
       <!-- ── PANEL MESSAGERIE ── -->
       <div class="panel" id="panel-messages">
-        <div class="coming-soon">
-          <div class="coming-soon-icon">✉️</div>
-          <h2>Messagerie</h2>
-          <p>La messagerie directe avec Diane arrive bientôt. Tu pourras lui envoyer tes questions, retours et demandes directement ici.</p>
+        <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+
+          <!-- Header -->
+          <div style="padding:20px 28px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.6);flex-shrink:0">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;background:linear-gradient(135deg,#a78bfa,#4FA3FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">✉️ Messagerie</div>
+            <div style="color:var(--t3);font-size:13px">Échange directement avec Diane Boyer</div>
+          </div>
+
+          <!-- Liste messages -->
+          <div id="msg-list" style="flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:12px">
+            <div style="text-align:center;color:var(--t3);padding:40px;font-size:14px" id="msg-empty">Chargement...</div>
+          </div>
+
+          <!-- Formulaire envoi -->
+          <div style="padding:16px 28px;border-top:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.8);flex-shrink:0">
+            <div style="margin-bottom:10px">
+              <textarea id="msg-input" placeholder="Écris ton message à Diane..." style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:14px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:12px 16px;outline:none;resize:none;height:80px;transition:border-color .2s"></textarea>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:50px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.07);color:var(--t3);font-size:13px;cursor:pointer;transition:all .2s">
+                📎 Joindre un fichier
+                <input type="file" id="msg-file" multiple accept="image/*,.pdf,.doc,.docx" style="display:none" onchange="previewAttachments()">
+              </label>
+              <div id="attach-preview" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
+              <button onclick="sendClientMessage()" style="padding:10px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Space Grotesk,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(123,92,255,0.4);transition:all .25s" id="btn-send-msg">Envoyer ➤</button>
+            </div>
+            <div id="msg-status" style="display:none;margin-top:10px;font-size:13px;padding:8px 14px;border-radius:10px"></div>
+          </div>
         </div>
       </div>
 
@@ -746,6 +770,124 @@
     // Charge les voix (asynchrone sur certains navigateurs)
     if (window.speechSynthesis) {
       window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices()
+    }
+
+
+    /* ══════════════════════════════════════
+       MESSAGERIE CLIENT
+    ══════════════════════════════════════ */
+    var msgAttachments = []
+
+    function loadMessages() {
+      fetch('/api/message/list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: sessionToken })
+      })
+      .then(r => r.json())
+      .then(data => {
+        var list = document.getElementById('msg-list')
+        if (!data.success || !data.messages.length) {
+          list.innerHTML = '<div style="text-align:center;color:var(--t3);padding:40px;font-size:14px">Aucun message pour le moment.<br><span style="opacity:.6">Envoie ton premier message à Diane !</span></div>'
+          return
+        }
+        list.innerHTML = data.messages.map(function(m) {
+          var replyHtml = m.reply
+            ? '<div style="margin-top:10px;padding:10px 14px;background:rgba(123,92,255,0.1);border-left:3px solid #7B5CFF;border-radius:8px"><div style="font-size:11px;color:#a78bfa;margin-bottom:4px">💜 Diane a répondu :</div><div style="font-size:13px;color:#D6D9F0;white-space:pre-wrap">' + escHtml(m.reply) + '</div></div>'
+            : '<div style="margin-top:8px;font-size:12px;color:var(--t4)">⏳ En attente de réponse</div>'
+          var attachHtml = m.attachments && m.attachments.length
+            ? '<div style="margin-top:6px;font-size:12px;color:var(--t3)">📎 ' + m.attachments.map(function(a){return a.name}).join(', ') + '</div>'
+            : ''
+          return '<div style="background:rgba(26,37,84,0.5);border:1px solid rgba(123,92,255,0.12);border-radius:14px;padding:16px;transition:all .2s">'
+            + '<div style="display:flex;justify-content:space-between;margin-bottom:8px">'
+            + '<span style="font-size:12px;color:var(--t3)">📧 Toi</span>'
+            + '<span style="font-size:11px;color:var(--t4)">' + new Date(m.date).toLocaleString('fr-CA') + '</span>'
+            + '</div>'
+            + '<div style="font-size:14px;color:var(--t2);white-space:pre-wrap">' + escHtml(m.message) + '</div>'
+            + attachHtml
+            + replyHtml
+            + '</div>'
+        }).join('')
+      })
+      .catch(function() {
+        document.getElementById('msg-list').innerHTML = '<div style="text-align:center;color:var(--t3);padding:40px">Erreur de chargement</div>'
+      })
+    }
+
+    function previewAttachments() {
+      var files   = document.getElementById('msg-file').files
+      var preview = document.getElementById('attach-preview')
+      msgAttachments = []
+      preview.innerHTML = ''
+
+      Array.from(files).forEach(function(file) {
+        var reader = new FileReader()
+        reader.onload = function(e) {
+          msgAttachments.push({ name: file.name, type: file.type, data: e.target.result.split(',')[1] })
+          var tag = document.createElement('span')
+          tag.style.cssText = 'padding:4px 10px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.25);border-radius:50px;font-size:12px;color:var(--t3)'
+          tag.textContent = '📎 ' + file.name
+          preview.appendChild(tag)
+        }
+        reader.readAsDataURL(file)
+      })
+    }
+
+    function sendClientMessage() {
+      var text    = document.getElementById('msg-input').value.trim()
+      var btn     = document.getElementById('btn-send-msg')
+      var status  = document.getElementById('msg-status')
+
+      if (!text && !msgAttachments.length) {
+        showMsgStatus('Écris un message avant d'envoyer.', 'error')
+        return
+      }
+
+      btn.disabled    = true
+      btn.textContent = 'Envoi...'
+
+      fetch('/api/message/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: sessionToken, message: text, attachments: msgAttachments })
+      })
+      .then(r => r.json())
+      .then(data => {
+        btn.disabled    = false
+        btn.textContent = 'Envoyer ➤'
+        if (data.success) {
+          document.getElementById('msg-input').value = ''
+          document.getElementById('attach-preview').innerHTML = ''
+          document.getElementById('msg-file').value = ''
+          msgAttachments = []
+          showMsgStatus('✓ Message envoyé ! Diane recevra une notification.', 'success')
+          loadMessages()
+        } else {
+          showMsgStatus('Erreur : ' + (data.error || 'Réessaie'), 'error')
+        }
+      })
+      .catch(function() {
+        btn.disabled    = false
+        btn.textContent = 'Envoyer ➤'
+        showMsgStatus('Erreur réseau.', 'error')
+      })
+    }
+
+    function showMsgStatus(text, type) {
+      var el = document.getElementById('msg-status')
+      el.textContent  = text
+      el.style.display = 'block'
+      el.style.background = type === 'success' ? 'rgba(0,230,118,0.1)' : 'rgba(255,75,110,0.1)'
+      el.style.border = '1px solid ' + (type === 'success' ? 'rgba(0,230,118,0.3)' : 'rgba(255,75,110,0.3)')
+      el.style.color  = type === 'success' ? '#00E676' : '#ff8fab'
+      setTimeout(function() { el.style.display = 'none' }, 5000)
+    }
+
+    // Charge les messages quand on clique sur Messagerie
+    var origShowPanel = showPanel
+    showPanel = function(name) {
+      origShowPanel(name)
+      if (name === 'messages') loadMessages()
     }
 
     /* ══════════════════════════════════════
