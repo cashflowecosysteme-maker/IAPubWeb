@@ -175,7 +175,8 @@
      (Claude Sonnet 4.6 — vision + génération HTML)
   ───────────────────────────── */
   function generateFromImage() {
-    var userPrompt = input.value.trim() || 'Mon Empire Rentable'
+    var userPrompt = input.value.trim()
+    if (!userPrompt) { input.focus(); return }
     setLoading('NyXia analyse l\'image...')
 
     var payloadSize = Math.round(imageBase64.length / 1024)
