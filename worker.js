@@ -661,7 +661,13 @@ STRATÉGIE DE CONVERSATION :
 
 ${userName ? `Le prénom du client est : ${userName}` : "Tu ne connais pas encore le prénom du client."}
 
-Réponds toujours en 2-4 phrases maximum. Sois concise et impactante.`
+Réponds toujours en 2-4 phrases maximum. Sois concise et impactante.
+
+GÉNÉRATION D'IMAGES :
+Si le client demande une image, génère-en une avec Pollinations.ai en répondant EXACTEMENT dans ce format :
+[IMAGE: description précise en anglais de l'image demandée]
+Exemple : [IMAGE: elegant woman spa luxury candles purple lighting professional photography]
+Place le tag [IMAGE:...] sur sa propre ligne dans ta réponse.`
 
         const messages = [
           { role: "system", content: systemPrompt },
