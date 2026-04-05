@@ -690,15 +690,36 @@
       var formatted = escHtml(text)
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>')
-      var sid = 'spk' + Date.now()
-      div.innerHTML = '<img src="/NyXia.png" class="msg-avatar" alt="NyXia">'
-        + '<div style="display:flex;flex-direction:column;gap:5px">'
-        + '<div class="msg-bubble">' + formatted + '</div>'
-        + '<button id="' + sid + '" onclick="speakMsg(\'' + sid + '\',' + JSON.stringify(text) + ')"'
-        + ' style="align-self:flex-start;padding:3px 12px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);'
-        + 'background:rgba(123,92,255,0.06);color:var(--t3);font-size:11px;cursor:pointer;transition:all .2s;font-family:Outfit,sans-serif">'
-        + '🔊 Écouter</button>'
-        + '</div>'
+
+      // Wrapper
+      var wrapper = document.createElement('div')
+      wrapper.style.cssText = 'display:flex;flex-direction:column;gap:5px'
+
+      // Bulle message
+      var bubble = document.createElement('div')
+      bubble.className = 'msg-bubble'
+      bubble.innerHTML = formatted
+
+      // Bouton speaker
+      var spkBtn = document.createElement('button')
+      spkBtn.textContent = '🔊 Écouter'
+      spkBtn.style.cssText = 'align-self:flex-start;padding:3px 12px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);font-size:11px;cursor:pointer;transition:all .2s;font-family:Outfit,sans-serif'
+
+      // Event listener direct — pas de onclick inline
+      spkBtn.addEventListener('click', function() {
+        speakMsg(spkBtn, text)
+      })
+
+      wrapper.appendChild(bubble)
+      wrapper.appendChild(spkBtn)
+
+      var avatar = document.createElement('img')
+      avatar.src = '/NyXia.png'
+      avatar.className = 'msg-avatar'
+      avatar.alt = 'NyXia'
+
+      div.appendChild(avatar)
+      div.appendChild(wrapper)
       msgs.appendChild(div)
       msgs.scrollTop = msgs.scrollHeight
     }
@@ -730,51 +751,72 @@
     /* ══════════════════════════════════════
        TEXT-TO-SPEECH (Google Web Speech)
     ══════════════════════════════════════ */
-    var _currentSpkId = null
+    var _currentSpkBtn = null
 
-    function speakMsg(sid, text) {
-      if (!window.speechSynthesis) return
-      // Si même bouton — stop
-      if (_currentSpkId === sid) {
-        window.speechSynthesis.cancel()
-        var b = document.getElementById(sid)
-        if (b) { b.textContent = '🔊 Écouter'; b.style.color = 'var(--t3)'; b.style.borderColor = 'rgba(123,92,255,0.2)' }
-        _currentSpkId = null
+    function speakMsg(btn, text) {
+      if (!window.speechSynthesis) {
+        alert("Ton navigateur ne supporte pas la synthèse vocale.")
         return
       }
+
+      // Si même bouton — stop
+      if (_currentSpkBtn === btn) {
+        window.speechSynthesis.cancel()
+        btn.textContent = '🔊 Écouter'
+        btn.style.color = 'var(--t3)'
+        _currentSpkBtn = null
+        return
+      }
+
       // Stop le précédent
       window.speechSynthesis.cancel()
-      if (_currentSpkId) {
-        var prev = document.getElementById(_currentSpkId)
-        if (prev) { prev.textContent = '🔊 Écouter'; prev.style.color = 'var(--t3)'; prev.style.borderColor = 'rgba(123,92,255,0.2)' }
+      if (_currentSpkBtn) {
+        _currentSpkBtn.textContent = '🔊 Écouter'
+        _currentSpkBtn.style.color = 'var(--t3)'
       }
-      _currentSpkId = sid
-      var btn = document.getElementById(sid)
-      if (btn) { btn.textContent = '🔊 En cours...'; btn.style.color = 'var(--green)'; btn.style.borderColor = 'rgba(0,230,118,0.3)' }
+      _currentSpkBtn = btn
+      btn.textContent = '🔊 En cours...'
+      btn.style.color = 'var(--green)'
 
-      var clean = text.replace(/\*\*(.*?)\*\*/g,'$1').replace(/[✦💜🚀💎🌐📱⭐✓►▶]/g,'').replace(/<br>/g,' ').trim()
+      var clean = text
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/[✦💜🚀💎🌐📱⭐✓►▶]/g, '')
+        .replace(/<br>/g, ' ')
+        .trim()
+
       var utt = new SpeechSynthesisUtterance(clean)
-      utt.lang = 'fr-FR'; utt.rate = 0.9; utt.pitch = 1.05; utt.volume = 1
+      utt.lang   = 'fr-FR'
+      utt.rate   = 0.9
+      utt.pitch  = 1.05
+      utt.volume = 1
 
       function doSpeak() {
         var voices = window.speechSynthesis.getVoices()
-        var v = voices.find(function(v){ return v.lang==='fr-FR' && /audrey|marie|claire|juliette|female/i.test(v.name) })
-             || voices.find(function(v){ return v.lang==='fr-FR' })
+        var v = voices.find(function(v){ return v.lang === 'fr-FR' })
              || voices.find(function(v){ return v.lang.startsWith('fr') })
         if (v) utt.voice = v
         window.speechSynthesis.speak(utt)
       }
 
-      utt.onend = utt.onerror = function() {
-        if (btn) { btn.textContent = '🔊 Écouter'; btn.style.color = 'var(--t3)'; btn.style.borderColor = 'rgba(123,92,255,0.2)' }
-        _currentSpkId = null
+      utt.onend = function() {
+        btn.textContent = '🔊 Écouter'
+        btn.style.color = 'var(--t3)'
+        _currentSpkBtn = null
+      }
+      utt.onerror = function(e) {
+        console.error('TTS erreur:', e)
+        btn.textContent = '🔊 Écouter'
+        btn.style.color = 'var(--t3)'
+        _currentSpkBtn = null
       }
 
-      window.speechSynthesis.getVoices().length === 0
-        ? (window.speechSynthesis.onvoiceschanged = doSpeak) : doSpeak()
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = doSpeak
+      } else {
+        doSpeak()
+      }
     }
 
-    // Compatibilité ancienne fonction
     function speakText(text) { }
     function toggleSpeak() { }
 
