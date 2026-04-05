@@ -706,7 +706,7 @@
             ? '<div style="margin-top:8px;padding:8px 12px;background:rgba(0,230,118,0.07);border-left:2px solid #00E676;border-radius:6px;font-size:12px;color:#00E676">✓ Répondu</div>'
             : '<div style="margin-top:10px;display:flex;gap:8px">'
               + '<textarea id="rep-' + m.id + '" placeholder="Ta réponse..." rows="2" style="flex:1;background:rgba(15,28,63,0.6);border:1px solid rgba(123,92,255,0.2);border-radius:8px;color:#D6D9F0;font-family:Outfit,sans-serif;font-size:13px;padding:8px;outline:none;resize:none"></textarea>'
-              + '<button onclick="replyToClient('' + esc(m.from) + '','' + m.id + '')" style="padding:8px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-size:12px;font-weight:600;cursor:pointer;align-self:flex-end;white-space:nowrap">Répondre →</button>'
+              + '<button onclick="doReply(this)" data-from="' + esc(m.from) + '" data-id="' + m.id + '" style="padding:8px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-size:12px;font-weight:600;cursor:pointer;align-self:flex-end;white-space:nowrap">Répondre →</button>'
               + '</div>'
 
           return '<div style="background:rgba(26,37,84,0.5);border:1px solid rgba(123,92,255,' + (m.read?'0.08':'0.3') + ');border-radius:12px;padding:14px">'
@@ -719,6 +719,12 @@
         }).join('')
       })
       .catch(function(){ toast('Erreur chargement messages') })
+    }
+
+    function doReply(btn) {
+      var email = btn.getAttribute('data-from')
+      var msgId = btn.getAttribute('data-id')
+      replyToClient(email, msgId)
     }
 
     function replyToClient(email, msgId) {
