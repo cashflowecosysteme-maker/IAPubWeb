@@ -1442,6 +1442,28 @@
 
   <!-- Scripts non-bloquants -->
 
+
+  <script>
+    // Proxy fonctions éditeur — délèguent à generator.js après chargement
+    function toggleEditor() {
+      if (window._toggleEditor) window._toggleEditor()
+    }
+    function applyTextEdit() {
+      if (window._applyTextEdit) window._applyTextEdit()
+    }
+    function applyColor(type, value) {
+      if (window._applyColor) window._applyColor(type, value)
+    }
+    function saveEdits() {
+      if (window._saveEdits) window._saveEdits()
+    }
+    function copyEditedCode() {
+      if (window._copyEditedCode) window._copyEditedCode()
+    }
+    function resetEdits() {
+      if (window._resetEdits) window._resetEdits()
+    }
+  </script>
   <script src="/js/generator.js" defer></script>
 
   <script src="/js/starry-bg.js" defer></script>
