@@ -503,6 +503,104 @@ export default {
       }
     }
 
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/send — Diane écrit à un/tous clients
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/send" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        if (!await checkAdmin(body.token)) {
+          return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const messageText = body.message  || ""
+        const targetEmail = body.to       || "all" // email précis ou "all"
+        const subject     = body.subject  || "Message de Diane Boyer — NyXia IA"
+
+        if (!messageText) {
+          return new Response(JSON.stringify({ success: false, error: "Message vide." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Récupère la liste des destinataires
+        let recipients = []
+        if (targetEmail === "all") {
+          const list = await env.USERS_KV.list()
+          for (const key of list.keys) {
+            if (!key.name.startsWith("session:") && !key.name.startsWith("admin_session:")
+                && !key.name.startsWith("disabled:") && !key.name.startsWith("msg:")
+                && !key.name.startsWith("admin_") && key.name.includes("@")) {
+              const disabled = await env.USERS_KV.get("disabled:" + key.name)
+              if (!disabled) recipients.push(key.name)
+            }
+          }
+        } else {
+          recipients = [targetEmail]
+        }
+
+        if (!recipients.length) {
+          return new Response(JSON.stringify({ success: false, error: "Aucun destinataire trouvé." }),
+            { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const resendKey = env.RESEND_KEY || "re_cKkFtPtR_1dXxefB6C9sM7sKzWBhKde9z"
+        let sent = 0
+
+        for (const email of recipients) {
+          // Sauvegarde dans KV pour que le client le voit dans sa messagerie
+          const msgId  = "admin_" + Date.now() + "_" + Math.random().toString(36).slice(2,6)
+          const msgObj = {
+            id       : msgId,
+            from     : "dianeboyer@publication-web.com",
+            fromName : "Diane Boyer",
+            message  : messageText,
+            subject  : subject,
+            date     : new Date().toISOString(),
+            read     : false,
+            isAdmin  : true
+          }
+          await env.USERS_KV.put("msg:" + email + ":" + msgId, JSON.stringify(msgObj))
+
+          // Email de notification
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer " + resendKey,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              from    : "Diane Boyer <onboarding@resend.dev>",
+              to      : [email],
+              subject : subject,
+              html    : `<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+                <div style="background:#0F1C3F;padding:24px;border-radius:12px;color:#D6D9F0">
+                  <h2 style="color:#a78bfa;margin:0 0 8px">💜 Message de Diane Boyer</h2>
+                  <p style="color:#8891B8;font-size:13px;margin-bottom:20px">NyXia IA — Publication Web™</p>
+                  <div style="background:rgba(123,92,255,0.1);padding:16px;border-radius:8px;border-left:3px solid #7B5CFF;margin-bottom:20px">
+                    <p style="margin:0;white-space:pre-wrap;font-size:15px">${messageText}</p>
+                  </div>
+                  <a href="https://webmasteria.nyxiapublicationweb.com/dashboard.html"
+                     style="display:inline-block;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;padding:12px 24px;border-radius:50px;text-decoration:none;font-weight:700">
+                    Ouvrir mon espace NyXia →
+                  </a>
+                  <p style="color:#4a5278;font-size:11px;margin-top:20px">© 2026 NyXia IA — Publication Web™ visionnaire depuis 1997</p>
+                </div>
+              </div>`
+            })
+          })
+          sent++
+        }
+
+        return new Response(JSON.stringify({ success: true, sent }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
     /* ════════════════════════════════════════════════════
        ROUTE /api/chat — NyXia Setter|Closer (GLM-5 gratuit)
        Cerveau conversationnel basé sur La Psychologie du Clic
