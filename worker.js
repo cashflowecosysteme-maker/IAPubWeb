@@ -1,5 +1,5 @@
 /**
- * Cloudflare Worker - NyXia Vision
+ * Cloudflare Worker — NyXia Vision
  * Route : POST /api/vision
  *
  * Flux :
@@ -21,6 +21,53 @@ export default {
     }
 
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders })
+
+    const url = new URL(request.url)
+
+    /* ── Route /api/image — Proxy Pollinations → base64 ── */
+    if (url.pathname === "/api/image" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        const prompt    = body.prompt    || "abstract art"
+        const width     = body.width     || 1024
+        const height    = body.height    || 1024
+        const steps     = body.steps     || 28
+        const seed      = body.seed      || Math.floor(Math.random() * 999999)
+
+        const fullPrompt = encodeURIComponent(prompt + ", ultra high quality, sharp focus")
+        const pollinationsUrl = `https://image.pollinations.ai/prompt/${fullPrompt}?width=${width}&height=${height}&seed=${seed}&steps=${steps}&nologo=true&enhance=true`
+
+        const imgRes = await fetch(pollinationsUrl, {
+          headers: { "User-Agent": "NyXia/1.0" }
+        })
+
+        if (!imgRes.ok) {
+          return new Response(
+            JSON.stringify({ error: "Pollinations indisponible : " + imgRes.status }),
+            { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          )
+        }
+
+        const buffer = await imgRes.arrayBuffer()
+        const bytes  = new Uint8Array(buffer)
+        let binary   = ""
+        bytes.forEach(b => binary += String.fromCharCode(b))
+        const b64          = btoa(binary)
+        const contentType  = imgRes.headers.get("content-type") || "image/jpeg"
+        const dataUrl      = `data:${contentType};base64,${b64}`
+
+        return new Response(
+          JSON.stringify({ success: true, dataUrl }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        )
+      } catch(e) {
+        return new Response(
+          JSON.stringify({ error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        )
+      }
+    }
+
     if (request.method !== "POST") return new Response("NyXia Vision Active", { status: 200 })
 
     try {
