@@ -127,7 +127,7 @@
       previewThumb.src      = ''
       uploadPreview.style.display = 'none'
       fileInput.value       = ''
-      btn.textContent       = 'Générer mon Empire'
+      btn.textContent       = '✨ Créer mon site avec NyXia'
     })
   }
 
@@ -401,17 +401,101 @@
     resetBtn(msg)
   }
 
+  /* ═══ OVERLAY PREMIUM ═══ */
+  var overlayMessages = [
+    'NyXia analyse ton image... ✦',
+    'NyXia extrait ta palette de couleurs... 🎨',
+    'NyXia crée ton design premium... ✨',
+    'NyXia rédige tes textes... ✍️',
+    'NyXia intègre tes images HD... 🖼',
+    'NyXia peaufine chaque détail... 💎',
+    'Ton site prend vie... 🚀'
+  ]
+  var overlayInterval  = null
+  var progressInterval = null
+
+  function showOverlay(initialText) {
+    var overlay  = document.getElementById('nyxia-loading-overlay')
+    var msgEl    = document.getElementById('overlay-message')
+    var progress = document.getElementById('overlay-progress')
+    var label    = document.getElementById('overlay-progress-label')
+    var stars    = document.getElementById('overlay-stars')
+    if (!overlay) return
+
+    // Génère les étoiles une seule fois
+    if (stars && stars.children.length === 0) {
+      for (var i = 0; i < 80; i++) {
+        var star = document.createElement('div')
+        star.className = 'overlay-star'
+        star.style.left = Math.random() * 100 + '%'
+        star.style.top  = Math.random() * 100 + '%'
+        star.style.setProperty('--d', (Math.random() * 3 + 2) + 's')
+        star.style.setProperty('--o', (Math.random() * 0.6 + 0.2).toString())
+        star.style.animationDelay = (Math.random() * 3) + 's'
+        stars.appendChild(star)
+      }
+    }
+
+    overlay.classList.add('visible')
+    btn.disabled = true
+    msgEl.textContent = initialText || overlayMessages[0]
+    progress.style.width = '5%'
+    label.textContent = 'Démarrage...'
+
+    var msgIdx = 0
+    var prog   = 5
+    var stepLabels = ['Analyse visuelle...', 'Palette de couleurs...', 'Architecture CSS...', 'Génération HTML...', 'Images en cours...', 'Finalisation...']
+
+    overlayInterval = setInterval(function() {
+      msgIdx = (msgIdx + 1) % overlayMessages.length
+      msgEl.style.opacity = '0'
+      setTimeout(function() {
+        msgEl.textContent   = overlayMessages[msgIdx]
+        msgEl.style.opacity = '1'
+      }, 300)
+    }, 3500)
+
+    progressInterval = setInterval(function() {
+      if (prog < 88) {
+        prog += Math.random() * 3 + 1
+        progress.style.width    = Math.min(prog, 88) + '%'
+        label.textContent = stepLabels[Math.min(Math.floor(prog / 15), stepLabels.length - 1)]
+      }
+    }, 800)
+  }
+
+  function hideOverlay(success) {
+    clearInterval(overlayInterval)
+    clearInterval(progressInterval)
+    var overlay  = document.getElementById('nyxia-loading-overlay')
+    var progress = document.getElementById('overlay-progress')
+    var msgEl    = document.getElementById('overlay-message')
+    var label    = document.getElementById('overlay-progress-label')
+    if (!overlay) return
+
+    if (success) {
+      progress.style.width = '100%'
+      msgEl.textContent    = '✦ Ton site est prêt ! ✦'
+      label.textContent    = 'Terminé !'
+      setTimeout(function() { overlay.classList.remove('visible') }, 1400)
+    } else {
+      overlay.classList.remove('visible')
+    }
+  }
+
   function setLoading(text) {
-    btn.disabled    = true
-    btn.textContent = text
+    btn.disabled = true
+    showOverlay(text)
   }
 
   function resetBtn(text) {
+    var isSuccess = text && (text.indexOf('✓') !== -1 || text === 'Site généré ✓')
+    hideOverlay(isSuccess)
     btn.textContent = text
-    setTimeout(function () {
+    setTimeout(function() {
       btn.disabled    = false
-      btn.textContent = imageBase64 ? 'Générer depuis l\'image' : 'Générer mon Empire'
-    }, 4000)
+      btn.textContent = imageBase64 ? '✨ Générer depuis l\'image' : '✨ Créer mon site avec NyXia'
+    }, isSuccess ? 5000 : 2000)
   }
 
 })()
