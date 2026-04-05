@@ -303,90 +303,6 @@
         <div class="msg" id="create-msg"></div>
       </div>
 
-
-      <!-- CHANGER MOT DE PASSE -->
-      <div class="section-title" style="margin-top:8px">🔐 Mon mot de passe admin</div>
-      <div class="create-card" style="margin-bottom:28px">
-        <div class="create-row">
-          <div class="form-group">
-            <label class="form-label">Nouveau mot de passe</label>
-            <input class="form-input" type="password" id="new-pw" placeholder="Nouveau mot de passe (6 car. min)">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Confirmer</label>
-            <input class="form-input" type="password" id="confirm-pw" placeholder="Confirme le mot de passe">
-          </div>
-          <button class="btn-primary" onclick="changePassword()" style="width:auto;padding:12px 24px;margin-bottom:0;flex-shrink:0;background:linear-gradient(135deg,#FF9F43,#ff6b35)">
-            <span>Changer</span>
-          </button>
-        </div>
-        <div class="msg" id="pw-msg"></div>
-      </div>
-
-      
-      <!-- COMPOSER UN MESSAGE -->
-      <div style="margin-bottom:28px">
-        <div class="section-title">✍️ Écrire à mes clients</div>
-        <div style="background:rgba(26,37,84,0.45);border:1px solid rgba(123,92,255,0.14);border-radius:18px;padding:24px;backdrop-filter:blur(10px)">
-
-          <!-- Destinataire -->
-          <div style="margin-bottom:14px">
-            <label class="form-label">Destinataire</label>
-            <div style="display:flex;gap:8px;flex-wrap:wrap" id="recipient-btns">
-              <button onclick="setRecipient('all')" id="btn-all"
-                style="padding:8px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.3);background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">
-                📢 Tous les clients
-              </button>
-              <button onclick="setRecipient('specific')" id="btn-specific"
-                style="padding:8px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.07);color:var(--t3);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">
-                👤 Un client précis
-              </button>
-            </div>
-            <div id="specific-email-wrap" style="display:none;margin-top:10px">
-              <select id="specific-email" style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none;cursor:pointer">
-                <option value="">-- Choisir un client --</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Sujet -->
-          <div style="margin-bottom:12px">
-            <label class="form-label">Sujet</label>
-            <input type="text" id="compose-subject" placeholder="Ex: Bonne nouvelle pour toi !" 
-              style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none">
-          </div>
-
-          <!-- Message -->
-          <div style="margin-bottom:16px">
-            <label class="form-label">Message</label>
-            <textarea id="compose-msg" placeholder="Écris ton message ici..." rows="4"
-              style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none;resize:none"></textarea>
-          </div>
-
-          <div style="display:flex;align-items:center;gap:12px">
-            <button onclick="sendAdminMessage()" id="btn-compose-send"
-              style="padding:11px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Space Grotesk,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(123,92,255,0.4);transition:all .25s">
-              Envoyer ✉️
-            </button>
-            <div id="compose-status" style="display:none;font-size:13px;padding:8px 14px;border-radius:10px"></div>
-          </div>
-        </div>
-      </div>
-
-<!-- MESSAGES TAB -->
-      <div style="margin-bottom:28px">
-        <div class="section-title">✉️ Messages clients <span id="unread-badge" style="background:rgba(255,75,110,0.2);border:1px solid rgba(255,75,110,0.3);color:#ff8fab;font-size:12px;padding:2px 10px;border-radius:50px;font-family:Outfit,sans-serif;font-weight:400;display:none"></span></div>
-        <div style="background:rgba(26,37,84,0.45);border:1px solid rgba(123,92,255,0.14);border-radius:18px;overflow:hidden;backdrop-filter:blur(10px)">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(15,28,63,0.3)">
-            <span style="font-family:Space Grotesk,sans-serif;font-size:14px;font-weight:600;color:var(--t2)">Tous les messages</span>
-            <button class="btn-refresh" onclick="loadAdminMessages()">↻ Actualiser</button>
-          </div>
-          <div id="admin-msg-list" style="max-height:500px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px">
-            <div style="text-align:center;color:var(--t3);padding:24px;font-size:14px">Chargement...</div>
-          </div>
-        </div>
-      </div>
-
       <!-- USER LIST -->
       <div class="users-card">
         <div class="users-header">
@@ -398,6 +314,57 @@
         </div>
         <div id="user-list">
           <div class="empty-users">Chargement...</div>
+        </div>
+      </div>
+
+
+      <!-- ════ MESSAGERIE ADMIN ════ -->
+      <div style="margin-top:32px">
+
+        <!-- ÉCRIRE AUX CLIENTS -->
+        <div class="section-title" style="margin-bottom:16px">✍️ Écrire à mes clients</div>
+        <div style="background:rgba(26,37,84,0.45);border:1px solid rgba(123,92,255,0.14);border-radius:18px;padding:24px;backdrop-filter:blur(10px);margin-bottom:28px">
+          <div style="display:flex;gap:8px;margin-bottom:16px">
+            <button id="btn-to-all" onclick="setTo('all')"
+              style="padding:8px 20px;border-radius:50px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">
+              📢 Tous les clients
+            </button>
+            <button id="btn-to-one" onclick="setTo('one')"
+              style="padding:8px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.07);color:var(--t3);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">
+              👤 Un client précis
+            </button>
+          </div>
+          <div id="select-client-wrap" style="display:none;margin-bottom:12px">
+            <select id="select-client" style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none">
+              <option value="">-- Choisir un client --</option>
+            </select>
+          </div>
+          <input type="text" id="msg-subject" placeholder="Sujet du message"
+            style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none;margin-bottom:10px">
+          <textarea id="msg-body" rows="4" placeholder="Ton message..."
+            style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none;resize:none;margin-bottom:14px"></textarea>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button onclick="sendToClients()" id="btn-send-admin"
+              style="padding:11px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Space Grotesk,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(123,92,255,0.35)">
+              Envoyer ✉️
+            </button>
+            <div id="send-status" style="display:none;font-size:13px;padding:8px 14px;border-radius:10px"></div>
+          </div>
+        </div>
+
+        <!-- MESSAGES REÇUS DES CLIENTS -->
+        <div class="section-title" style="margin-bottom:16px">
+          📨 Messages reçus
+          <span id="unread-count" style="display:none;background:rgba(255,75,110,0.2);border:1px solid rgba(255,75,110,0.3);color:#ff8fab;font-size:12px;padding:2px 10px;border-radius:50px;font-family:Outfit,sans-serif;font-weight:400;margin-left:8px"></span>
+        </div>
+        <div style="background:rgba(26,37,84,0.45);border:1px solid rgba(123,92,255,0.14);border-radius:18px;overflow:hidden;backdrop-filter:blur(10px)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(15,28,63,0.3)">
+            <span style="font-family:Space Grotesk,sans-serif;font-size:14px;font-weight:600;color:var(--t2)">Tous les messages</span>
+            <button class="btn-refresh" onclick="loadInbox()">↻ Actualiser</button>
+          </div>
+          <div id="inbox-list" style="max-height:480px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="text-align:center;color:var(--t3);padding:24px;font-size:14px">Chargement...</div>
+          </div>
         </div>
       </div>
 
@@ -441,7 +408,6 @@
           document.getElementById('login-page').style.display = 'none'
           document.getElementById('dashboard').style.display = 'block'
           loadUsers()
-          loadAdminMessages()
         } else {
           showMsg(msg, data.error || 'Accès refusé.', 'error')
           btn.disabled = false
@@ -639,7 +605,7 @@
           document.getElementById('login-page').style.display = 'none'
           document.getElementById('dashboard').style.display = 'block'
           loadUsers()
-          loadAdminMessages()
+          loadInbox()
         } else {
           sessionStorage.removeItem('nyxia_admin_token')
           adminToken = ''
@@ -650,33 +616,125 @@
 
 
     /* ══════════════════════════════════
-       CHANGER MOT DE PASSE ADMIN
+       MESSAGERIE ADMIN
     ══════════════════════════════════ */
-    function changePassword() {
-      var newPw     = document.getElementById('new-pw').value.trim()
-      var confirmPw = document.getElementById('confirm-pw').value.trim()
-      var msg       = document.getElementById('pw-msg')
+    var sendTo = 'all'
 
-      if (!newPw || !confirmPw) { showMsg(msg, 'Remplis les deux champs.', 'error'); return }
-      if (newPw.length < 6)     { showMsg(msg, 'Minimum 6 caractères.', 'error'); return }
-      if (newPw !== confirmPw)  { showMsg(msg, 'Les mots de passe ne correspondent pas.', 'error'); return }
+    function setTo(mode) {
+      sendTo = mode
+      var btnAll = document.getElementById('btn-to-all')
+      var btnOne = document.getElementById('btn-to-one')
+      var wrap   = document.getElementById('select-client-wrap')
+      if (mode === 'all') {
+        btnAll.style.cssText = 'padding:8px 20px;border-radius:50px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+        btnOne.style.cssText = 'padding:8px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.07);color:var(--t3);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+        wrap.style.display = 'none'
+      } else {
+        btnOne.style.cssText = 'padding:8px 20px;border-radius:50px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+        btnAll.style.cssText = 'padding:8px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.07);color:var(--t3);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+        wrap.style.display = 'block'
+        // Peuple le select
+        var sel = document.getElementById('select-client')
+        sel.innerHTML = '<option value="">-- Choisir --</option>'
+        allUsers.filter(function(u){ return !u.disabled }).forEach(function(u) {
+          var o = document.createElement('option')
+          o.value = u.email; o.textContent = u.email
+          sel.appendChild(o)
+        })
+      }
+    }
 
-      fetch('/api/admin/change-password', {
+    function sendToClients() {
+      var subject = document.getElementById('msg-subject').value.trim()
+      var body    = document.getElementById('msg-body').value.trim()
+      var to      = sendTo === 'all' ? 'all' : document.getElementById('select-client').value
+      var btn     = document.getElementById('btn-send-admin')
+      var status  = document.getElementById('send-status')
+
+      if (!body)  { showSendStatus('Écris un message.', 'error'); return }
+      if (!to)    { showSendStatus('Choisis un destinataire.', 'error'); return }
+
+      btn.disabled = true; btn.textContent = 'Envoi...'
+
+      fetch('/api/admin/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: adminToken, newPassword: newPw })
+        body: JSON.stringify({ token: adminToken, to, subject: subject || 'Message de Diane Boyer', message: body })
       })
       .then(r => r.json())
       .then(data => {
+        btn.disabled = false; btn.textContent = 'Envoyer ✉️'
         if (data.success) {
-          showMsg(msg, '✓ Mot de passe changé avec succès !', 'success')
-          document.getElementById('new-pw').value     = ''
-          document.getElementById('confirm-pw').value = ''
-        } else {
-          showMsg(msg, data.error || 'Erreur.', 'error')
-        }
+          showSendStatus('✓ Envoyé à ' + data.sent + ' client(s) !', 'success')
+          document.getElementById('msg-body').value    = ''
+          document.getElementById('msg-subject').value = ''
+        } else showSendStatus('Erreur : ' + (data.error||'Réessaie'), 'error')
       })
-      .catch(() => showMsg(msg, 'Erreur réseau.', 'error'))
+      .catch(function(){ btn.disabled = false; btn.textContent = 'Envoyer ✉️'; showSendStatus('Erreur réseau.', 'error') })
+    }
+
+    function showSendStatus(text, type) {
+      var el = document.getElementById('send-status')
+      el.textContent = text; el.style.display = 'block'
+      el.style.background = type==='success' ? 'rgba(0,230,118,0.1)' : 'rgba(255,75,110,0.1)'
+      el.style.border = '1px solid ' + (type==='success' ? 'rgba(0,230,118,0.3)' : 'rgba(255,75,110,0.3)')
+      el.style.color  = type==='success' ? '#00E676' : '#ff8fab'
+      setTimeout(function(){ el.style.display='none' }, 5000)
+    }
+
+    function loadInbox() {
+      fetch('/api/admin/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: adminToken })
+      })
+      .then(r => r.json())
+      .then(data => {
+        var list   = document.getElementById('inbox-list')
+        var unread = document.getElementById('unread-count')
+        if (!data.success || !data.messages || !data.messages.length) {
+          list.innerHTML = '<div style="text-align:center;color:var(--t3);padding:24px;font-size:14px">Aucun message reçu</div>'
+          unread.style.display = 'none'
+          return
+        }
+        var nb = data.messages.filter(function(m){ return !m.read }).length
+        if (nb > 0) { unread.textContent = nb + ' non lu(s)'; unread.style.display = 'inline' }
+        else unread.style.display = 'none'
+
+        list.innerHTML = data.messages.map(function(m) {
+          var replied = m.reply
+            ? '<div style="margin-top:8px;padding:8px 12px;background:rgba(0,230,118,0.07);border-left:2px solid #00E676;border-radius:6px;font-size:12px;color:#00E676">✓ Répondu</div>'
+            : '<div style="margin-top:10px;display:flex;gap:8px">'
+              + '<textarea id="rep-' + m.id + '" placeholder="Ta réponse..." rows="2" style="flex:1;background:rgba(15,28,63,0.6);border:1px solid rgba(123,92,255,0.2);border-radius:8px;color:#D6D9F0;font-family:Outfit,sans-serif;font-size:13px;padding:8px;outline:none;resize:none"></textarea>'
+              + '<button onclick="replyToClient('' + esc(m.from) + '','' + m.id + '')" style="padding:8px 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-size:12px;font-weight:600;cursor:pointer;align-self:flex-end;white-space:nowrap">Répondre →</button>'
+              + '</div>'
+
+          return '<div style="background:rgba(26,37,84,0.5);border:1px solid rgba(123,92,255,' + (m.read?'0.08':'0.3') + ');border-radius:12px;padding:14px">'
+            + '<div style="display:flex;justify-content:space-between;margin-bottom:6px">'
+            + '<span style="font-size:13px;font-weight:600;color:' + (m.read?'var(--t3)':'#a78bfa') + '">' + (m.read?'':'🔴 ') + esc(m.from) + '</span>'
+            + '<span style="font-size:11px;color:var(--t4)">' + new Date(m.date).toLocaleString('fr-CA') + '</span>'
+            + '</div>'
+            + '<div style="font-size:13px;color:var(--t2);white-space:pre-wrap">' + esc(m.message) + '</div>'
+            + replied + '</div>'
+        }).join('')
+      })
+      .catch(function(){ toast('Erreur chargement messages') })
+    }
+
+    function replyToClient(email, msgId) {
+      var txt = document.getElementById('rep-' + msgId).value.trim()
+      if (!txt) return
+      fetch('/api/admin/reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: adminToken, clientEmail: email, msgId, reply: txt })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) { toast('✓ Réponse envoyée !'); loadInbox() }
+        else toast('Erreur : ' + data.error)
+      })
+      .catch(function(){ toast('Erreur réseau') })
     }
 
     document.addEventListener('keydown', function(e) {
