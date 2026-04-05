@@ -23,6 +23,255 @@ export default {
 
     const url = new URL(request.url)
 
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/login — Authentification NyXia
+       Stockage : Cloudflare KV (clé = email, valeur = hash mdp)
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/login" && request.method === "POST") {
+      try {
+        const body     = await request.json()
+        const email    = (body.email    || "").toLowerCase().trim()
+        const password = (body.password || "").trim()
+
+        if (!email || !password) {
+          return new Response(JSON.stringify({ success: false, error: "Email et mot de passe requis." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Vérifie si le compte est désactivé
+        const isDisabled = await env.USERS_KV.get("disabled:" + email)
+        if (isDisabled) {
+          return new Response(JSON.stringify({ success: false, error: "Compte désactivé. Contacte le support." }),
+            { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Récupère le hash stocké pour cet email
+        const stored = await env.USERS_KV.get(email)
+        if (!stored) {
+          return new Response(JSON.stringify({ success: false, error: "Identifiants incorrects." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Compare le mot de passe (hash SHA-256)
+        const encoder    = new TextEncoder()
+        const data       = encoder.encode(password)
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data)
+        const hashArray  = Array.from(new Uint8Array(hashBuffer))
+        const hashHex    = hashArray.map(b => b.toString(16).padStart(2, "0")).join("")
+
+        if (hashHex !== stored) {
+          return new Response(JSON.stringify({ success: false, error: "Identifiants incorrects." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Génère un token de session
+        const tokenData  = encoder.encode(email + Date.now() + Math.random())
+        const tokenBuf   = await crypto.subtle.digest("SHA-256", tokenData)
+        const tokenArray = Array.from(new Uint8Array(tokenBuf))
+        const token      = tokenArray.map(b => b.toString(16).padStart(2, "0")).join("")
+
+        // Stocke le token avec expiration 8h
+        await env.USERS_KV.put("session:" + token, email, { expirationTtl: 28800 })
+
+        return new Response(JSON.stringify({ success: true, token }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: "Erreur serveur." }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/check-auth — Vérification token session
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/check-auth" && request.method === "POST") {
+      try {
+        const body  = await request.json()
+        const token = body.token || ""
+        if (!token) {
+          return new Response(JSON.stringify({ valid: false }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const email = await env.USERS_KV.get("session:" + token)
+        return new Response(JSON.stringify({ valid: !!email, email }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ valid: false }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/logout — Suppression session
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/logout" && request.method === "POST") {
+      try {
+        const body  = await request.json()
+        const token = body.token || ""
+        if (token) await env.USERS_KV.delete("session:" + token)
+        return new Response(JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/login — Connexion superadmin
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/login" && request.method === "POST") {
+      try {
+        const body     = await request.json()
+        const email    = (body.email    || "").toLowerCase().trim()
+        const password = (body.password || "").trim()
+
+        const adminEmail = env.ADMIN_EMAIL || "admin@nyxia.com"
+        const adminHash  = env.ADMIN_PASSWORD_HASH || ""
+
+        if (email !== adminEmail.toLowerCase()) {
+          return new Response(JSON.stringify({ success: false, error: "Accès refusé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const encoder    = new TextEncoder()
+        const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(password))
+        const hashHex    = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2,"0")).join("")
+
+        if (hashHex !== adminHash) {
+          return new Response(JSON.stringify({ success: false, error: "Accès refusé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const tokenBuf = await crypto.subtle.digest("SHA-256", encoder.encode("admin:" + email + Date.now()))
+        const token    = Array.from(new Uint8Array(tokenBuf)).map(b => b.toString(16).padStart(2,"0")).join("")
+        await env.USERS_KV.put("admin_session:" + token, email, { expirationTtl: 28800 })
+
+        return new Response(JSON.stringify({ success: true, token }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: "Erreur serveur." }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       MIDDLEWARE admin — vérifie le token admin
+    ════════════════════════════════════════════════════ */
+    async function checkAdmin(token) {
+      if (!token) return false
+      const val = await env.USERS_KV.get("admin_session:" + token)
+      return !!val
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/users — Liste tous les utilisateurs
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/users" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        if (!await checkAdmin(body.token)) {
+          return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const list = await env.USERS_KV.list()
+        const users = []
+        for (const key of list.keys) {
+          if (!key.name.startsWith("session:") && !key.name.startsWith("admin_session:") && !key.name.startsWith("disabled:")) {
+            const disabled = await env.USERS_KV.get("disabled:" + key.name)
+            users.push({ email: key.name, disabled: !!disabled })
+          }
+        }
+        return new Response(JSON.stringify({ success: true, users }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/create — Créer un utilisateur
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/create" && request.method === "POST") {
+      try {
+        const body     = await request.json()
+        if (!await checkAdmin(body.token)) {
+          return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const email    = (body.email    || "").toLowerCase().trim()
+        const password = (body.password || "").trim()
+        if (!email || !password) {
+          return new Response(JSON.stringify({ success: false, error: "Email et mot de passe requis." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const exists = await env.USERS_KV.get(email)
+        if (exists) {
+          return new Response(JSON.stringify({ success: false, error: "Ce compte existe déjà." }),
+            { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const encoder = new TextEncoder()
+        const hashBuf = await crypto.subtle.digest("SHA-256", encoder.encode(password))
+        const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,"0")).join("")
+        await env.USERS_KV.put(email, hashHex)
+        return new Response(JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/disable — Désactiver un utilisateur
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/disable" && request.method === "POST") {
+      try {
+        const body  = await request.json()
+        if (!await checkAdmin(body.token)) {
+          return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const email  = (body.email || "").toLowerCase().trim()
+        const action = body.action || "disable"
+        if (action === "disable") {
+          await env.USERS_KV.put("disabled:" + email, "1")
+        } else {
+          await env.USERS_KV.delete("disabled:" + email)
+        }
+        return new Response(JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/delete — Supprimer un utilisateur
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/delete" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        if (!await checkAdmin(body.token)) {
+          return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const email = (body.email || "").toLowerCase().trim()
+        await env.USERS_KV.delete(email)
+        await env.USERS_KV.delete("disabled:" + email)
+        return new Response(JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
     /* ════════════════════════════════════════════════════
        ROUTE /api/chat — NyXia Setter|Closer (GLM-5 gratuit)
        Cerveau conversationnel basé sur La Psychologie du Clic
