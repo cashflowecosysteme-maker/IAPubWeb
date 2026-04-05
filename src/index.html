@@ -170,6 +170,140 @@
 
 
 
+
+    /* ═══════════════════════════════════
+       OVERLAY NYXIA GÉNÉRATION PREMIUM
+    ═══════════════════════════════════ */
+    #nyxia-loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: radial-gradient(ellipse at center, #0d1535 0%, #060c1f 100%);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      animation: overlayIn .4s ease;
+    }
+    #nyxia-loading-overlay.visible { display: flex; }
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .overlay-nyxia-img {
+      width: 320px;
+      max-width: 70vw;
+      object-fit: contain;
+      filter: drop-shadow(0 0 40px rgba(123,92,255,0.6));
+      animation: nyxiaFloat 3s ease-in-out infinite;
+      margin-bottom: 32px;
+    }
+    @keyframes nyxiaFloat {
+      0%,100% { transform: translateY(0);   filter: drop-shadow(0 0 40px rgba(123,92,255,0.6)); }
+      50%      { transform: translateY(-12px); filter: drop-shadow(0 0 60px rgba(123,92,255,0.9)); }
+    }
+
+    .overlay-message {
+      font-family: 'Cormorant Garamond', 'Space Grotesk', serif;
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 600;
+      color: #a78bfa;
+      text-align: center;
+      margin-bottom: 24px;
+      letter-spacing: .5px;
+      filter: drop-shadow(0 0 16px rgba(123,92,255,0.5));
+      min-height: 36px;
+      transition: opacity .3s;
+    }
+
+    .overlay-progress-wrap {
+      width: 320px;
+      max-width: 70vw;
+    }
+    .overlay-progress-bar {
+      height: 3px;
+      background: rgba(123,92,255,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .overlay-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #7B5CFF, #4FA3FF, #7B5CFF);
+      background-size: 200% 100%;
+      border-radius: 2px;
+      width: 0%;
+      transition: width .4s ease;
+      animation: shimmerBar 2s linear infinite;
+    }
+    @keyframes shimmerBar {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .overlay-progress-label {
+      font-size: 12px;
+      color: rgba(136,145,184,0.6);
+      text-align: center;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    /* Particules étoiles en arrière-plan de l'overlay */
+    .overlay-stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .overlay-star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: #fff;
+      border-radius: 50%;
+      animation: starTwinkle var(--d, 3s) ease-in-out infinite;
+      opacity: var(--o, 0.5);
+    }
+    @keyframes starTwinkle {
+      0%,100% { opacity: var(--o, 0.5); transform: scale(1); }
+      50%      { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Bouton Générer premium */
+    #generate-btn {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #7B5CFF 0%, #5A6CFF 50%, #4FA3FF 100%) !important;
+      background-size: 200% 200% !important;
+      animation: btnGradient 3s ease infinite !important;
+      font-size: 18px !important;
+      padding: 20px 48px !important;
+      border-radius: 50px !important;
+      letter-spacing: .5px !important;
+      box-shadow: 0 0 40px rgba(123,92,255,0.5), 0 0 80px rgba(123,92,255,0.2) !important;
+    }
+    #generate-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%);
+      animation: btnShimmer 2.5s ease-in-out infinite;
+    }
+    @keyframes btnGradient {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes btnShimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    #generate-btn:not(:disabled):hover {
+      transform: translateY(-3px) scale(1.02) !important;
+      box-shadow: 0 0 60px rgba(123,92,255,0.7), 0 0 120px rgba(123,92,255,0.3) !important;
+    }
+
     /* Glow d'ambiance — exact réplica */
 
     .hero-glow {
@@ -1283,6 +1417,20 @@
   <!-- ===== WIDGET NYXIA CLOSER — Avatar réel, zéro texte pré-rempli ===== -->
 
 
+
+
+  <!-- ═══ OVERLAY NYXIA GÉNÉRATION PREMIUM ═══ -->
+  <div id="nyxia-loading-overlay">
+    <div class="overlay-stars" id="overlay-stars"></div>
+    <img src="/TravailDureNyxia.png" alt="NyXia travaille..." class="overlay-nyxia-img">
+    <div class="overlay-message" id="overlay-message">NyXia prépare ton univers...</div>
+    <div class="overlay-progress-wrap">
+      <div class="overlay-progress-bar">
+        <div class="overlay-progress-fill" id="overlay-progress"></div>
+      </div>
+      <div class="overlay-progress-label" id="overlay-progress-label">Initialisation</div>
+    </div>
+  </div>
 
   <!-- Pastille flottante avec avatar NyXia.png -->
 
