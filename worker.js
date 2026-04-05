@@ -21,9 +21,9 @@ export default {
           },
           body: JSON.stringify({
             // MODÈLE LE PLUS PUISSANT ET VALIDE IMMÉDIATEMENT
-            model: "google/gemini-pro-1.5", 
+            model: "openai/gpt-4o-mini", 
             messages: [
-              { "role": "system", "content": "Tu es NyXia IA. Génère un site d'affiliation complet, expert et visuellement parfait en HTML/CSS." },
+              { "role": "system", "content": "Tu es NyXia IA. Génère un site web complet, expert et visuellement parfait en HTML/CSS." },
               { "role": "user", "content": userInput }
             ]
           })
