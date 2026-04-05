@@ -563,12 +563,9 @@
       .then(data => {
         if (!data.valid) { window.location.href = '/login.html'; return }
         clientEmail = data.email || ''
-        // Extrait le prénom depuis l'email
-        var parts = clientEmail.split('@')[0].split(/[._-]/)
-        clientName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase()
-        // Récupère le prénom mémorisé par NyXia si disponible
+        // Utilise le prénom mémorisé par NyXia si disponible
         var stored = localStorage.getItem('nyxia_username')
-        if (stored) clientName = stored
+        clientName = stored || ''  // vide = NyXia va demander le prénom
 
         initUI()
       })
@@ -603,12 +600,16 @@
     /* ══════════════════════════════════════
        NAVIGATION PANELS
     ══════════════════════════════════════ */
-    function showPanel(name) {
+    function _showPanelBase(name) {
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
       document.getElementById('panel-' + name).classList.add('active')
       var navEl = document.getElementById('nav-' + name)
       if (navEl) navEl.classList.add('active')
+    }
+    function showPanel(name) {
+      _showPanelBase(name)
+      if (name === 'messages') loadMessages()
     }
 
     /* ══════════════════════════════════════
@@ -619,7 +620,9 @@
     var speechQueue  = []
 
     function sendWelcome() {
-      var welcome = 'Bienvenue dans mon univers ✦\n\nSalut **' + clientName + '** ! Je suis NyXia, ton agente IA spécialisée en marketing et conversion.\n\nDis-moi, quel est ton projet du moment ?'
+      var welcome = clientName
+        ? 'Bienvenue dans mon univers ✦\n\nSalut **' + clientName + '** ! Je suis NyXia, ton agente IA spécialisée en marketing et conversion. 💜\n\nDis-moi, quel est ton projet du moment ?'
+        : 'Bienvenue dans mon univers ✦\n\nJe suis **NyXia**, ton agente IA spécialisée en marketing et conversion. 💜\n\nAvant tout — comment tu t\'appelles ?'
       addBotMessage(welcome)
     }
 
@@ -639,6 +642,18 @@
     }
 
     function sendMessageText(text) {
+      // Si NyXia vient de demander le prénom et qu'on ne le connaît pas encore
+      if (!clientName) {
+        var lastMsg = document.querySelector('#chat-messages .msg.bot:last-child .msg-bubble')
+        if (lastMsg && (lastMsg.textContent.includes('appelles') || lastMsg.textContent.includes('prénom'))) {
+          var name = text.trim().split(' ')[0]
+          clientName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+          localStorage.setItem('nyxia_username', clientName)
+          document.getElementById('header-username').textContent = clientName
+          document.getElementById('sidebar-username').textContent = clientName
+          document.getElementById('sidebar-avatar').textContent = clientName.charAt(0).toUpperCase()
+        }
+      }
       addUserMessage(text)
       chatHistory.push({ role: 'user', content: text })
 
@@ -839,7 +854,7 @@
       var status  = document.getElementById('msg-status')
 
       if (!text && !msgAttachments.length) {
-        showMsgStatus('Écris un message avant d'envoyer.', 'error')
+        showMsgStatus('Écris un message avant d\'envoyer.', 'error')
         return
       }
 
@@ -883,12 +898,7 @@
       setTimeout(function() { el.style.display = 'none' }, 5000)
     }
 
-    // Charge les messages quand on clique sur Messagerie
-    var origShowPanel = showPanel
-    showPanel = function(name) {
-      origShowPanel(name)
-      if (name === 'messages') loadMessages()
-    }
+
 
     /* ══════════════════════════════════════
        INPUT AUTO-RESIZE + ENTER
