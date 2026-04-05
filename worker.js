@@ -1,5 +1,5 @@
 /**
- * Cloudflare Worker — NyXia Vision
+ * Cloudflare Worker - NyXia Vision
  * Route : POST /api/vision
  *
  * Flux :
