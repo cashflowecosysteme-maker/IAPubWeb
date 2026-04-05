@@ -135,8 +135,43 @@ Tu réponds UNIQUEMENT avec du code HTML complet, sans aucun texte avant ou apr�
       const data = await response.json()
 
       /*
-       * Retourner la réponse telle quelle au frontend.
-       * Le frontend sait lire le format OpenAI : data.choices[0].message.content
+       * ─── Extraction HTML côté Worker ───────────────────────────────
+       * On extrait le HTML brut depuis la réponse OpenRouter/Claude
+       * pour éviter que les backticks Markdown (```html ... ```) ne
+       * parviennent au frontend et déclenchent l'alerte "pas de HTML".
+       * ────────────────────────────────────────────────────────────────
+       */
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        let content = data.choices[0].message.content || ""
+
+        // 1. Bloc ```html ... ```
+        let m = content.match(/```html\s*([\s\S]*?)```/)
+        if (m) content = m[1].trim()
+        else {
+          // 2. Bloc ``` ... ``` contenant un DOCTYPE
+          m = content.match(/```\s*([\s\S]*?)```/)
+          if (m && m[1].trim().toLowerCase().indexOf("<!doctype") !== -1) {
+            content = m[1].trim()
+          } else {
+            // 3. HTML brut — on coupe proprement de <!DOCTYPE à </html>
+            const startDoctype = content.indexOf("<!DOCTYPE")
+            const startHtml    = content.indexOf("<html")
+            const start = startDoctype !== -1 ? startDoctype
+                        : startHtml    !== -1 ? startHtml
+                        : -1
+            const end = content.lastIndexOf("</html>")
+            if (start !== -1 && end !== -1) {
+              content = content.substring(start, end + 7).trim()
+            }
+          }
+        }
+
+        data.choices[0].message.content = content
+      }
+
+      /*
+       * Retourner la réponse (avec HTML propre) au frontend.
+       * Le frontend lit : data.choices[0].message.content
        */
       return new Response(JSON.stringify(data), {
         headers: { ...corsHeaders, "Content-Type": "application/json" }
