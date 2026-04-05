@@ -357,21 +357,21 @@ export default {
             from   : "NyXia IA <onboarding@resend.dev>",
             to     : ["dianeboyer@publication-web.com"],
             subject: "💬 Nouveau message de " + clientEmail,
-            html   : \`<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+            html   : `<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
               <div style="background:#0F1C3F;padding:24px;border-radius:12px;color:#D6D9F0">
                 <h2 style="color:#a78bfa;margin:0 0 16px">💬 Nouveau message NyXia</h2>
-                <p><strong>De :</strong> \${clientEmail}</p>
-                <p><strong>Date :</strong> \${new Date().toLocaleString("fr-CA")}</p>
+                <p><strong>De :</strong> ${clientEmail}</p>
+                <p><strong>Date :</strong> ${new Date().toLocaleString("fr-CA")}</p>
                 <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;margin:16px 0;border-left:3px solid #7B5CFF">
-                  <p style="margin:0;white-space:pre-wrap">\${messageText}</p>
+                  <p style="margin:0;white-space:pre-wrap">${messageText}</p>
                 </div>
-                \${attachHtml}
+                ${attachHtml}
                 <a href="https://webmasteria.nyxiapublicationweb.com/admin.html" 
                    style="display:inline-block;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;padding:12px 24px;border-radius:50px;text-decoration:none;font-weight:700;margin-top:8px">
                   Répondre dans le dashboard →
                 </a>
               </div>
-            </div>\`
+            </div>`
           })
         })
 
@@ -475,23 +475,23 @@ export default {
             from   : "NyXia IA <onboarding@resend.dev>",
             to     : [body.clientEmail],
             subject: "💜 Diane Boyer te répond — NyXia IA",
-            html   : \`<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+            html   : `<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
               <div style="background:#0F1C3F;padding:24px;border-radius:12px;color:#D6D9F0">
                 <h2 style="color:#a78bfa;margin:0 0 16px">💜 Réponse de Diane Boyer</h2>
                 <p style="color:#8891B8;margin-bottom:16px">Tu avais écrit :</p>
                 <div style="background:rgba(255,255,255,0.04);padding:12px;border-radius:8px;margin-bottom:16px;border-left:2px solid #4a5278">
-                  <p style="margin:0;color:#8891B8;font-style:italic;white-space:pre-wrap">\${msgObj.message}</p>
+                  <p style="margin:0;color:#8891B8;font-style:italic;white-space:pre-wrap">${msgObj.message}</p>
                 </div>
                 <p style="color:#8891B8;margin-bottom:8px">Réponse de Diane :</p>
                 <div style="background:rgba(123,92,255,0.1);padding:16px;border-radius:8px;border-left:3px solid #7B5CFF">
-                  <p style="margin:0;white-space:pre-wrap">\${body.reply}</p>
+                  <p style="margin:0;white-space:pre-wrap">${body.reply}</p>
                 </div>
                 <a href="https://webmasteria.nyxiapublicationweb.com/dashboard.html"
                    style="display:inline-block;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;padding:12px 24px;border-radius:50px;text-decoration:none;font-weight:700;margin-top:16px">
                   Ouvrir mon espace NyXia →
                 </a>
               </div>
-            </div>\`
+            </div>`
           })
         })
 
@@ -580,7 +580,7 @@ Réponds toujours en 2-4 phrases maximum. Sois concise et impactante.`
             "X-Title": "NyXia Chat"
           },
           body: JSON.stringify({
-            model: "meta-llama/llama-4-scout:free",
+            model: "google/gemini-2.0-flash-lite-001",
             messages,
             temperature: 0.75,
             max_tokens: 300
@@ -588,7 +588,17 @@ Réponds toujours en 2-4 phrases maximum. Sois concise et impactante.`
         })
 
         const data = await res.json()
-        const reply = data.choices?.[0]?.message?.content || "Je suis là pour toi ! Dis-moi comment je peux t'aider. 💜"
+        let reply = data.choices?.[0]?.message?.content || ""
+        if (!reply || reply.trim().length < 5) {
+          // Fallbacks variés pour éviter la répétition
+          const fallbacks = [
+            "Dis-moi en quoi je peux t\'aider aujourd\'hui ? 💜",
+            "Quel est ton projet du moment ?",
+            "Qu\'est-ce que tu voudrais accomplir avec NyXia ?",
+            "Je t\'écoute ! Parle-moi de ton business. 💜"
+          ]
+          reply = fallbacks[Math.floor(Math.random() * fallbacks.length)]
+        }
 
         return new Response(
           JSON.stringify({ success: true, content: reply }),
