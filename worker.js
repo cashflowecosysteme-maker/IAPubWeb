@@ -303,6 +303,206 @@ export default {
       }
     }
 
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/message/send — Client envoie un message
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/message/send" && request.method === "POST") {
+      try {
+        const body        = await request.json()
+        const token       = body.token || ""
+        const messageText = body.message || ""
+        const attachments = body.attachments || [] // [{name, data, type}] base64
+
+        // Vérifie session client
+        const clientEmail = await env.USERS_KV.get("session:" + token)
+        if (!clientEmail) {
+          return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        if (!messageText && !attachments.length) {
+          return new Response(JSON.stringify({ success: false, error: "Message vide." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Sauvegarde le message dans KV
+        const msgId  = "msg_" + Date.now() + "_" + Math.random().toString(36).slice(2,6)
+        const msgObj = {
+          id          : msgId,
+          from        : clientEmail,
+          message     : messageText,
+          attachments : attachments.map(a => ({ name: a.name, type: a.type })), // on stocke juste les méta
+          date        : new Date().toISOString(),
+          read        : false,
+          reply       : null
+        }
+
+        // Stocke dans KV avec clé messages:{email}:{id}
+        await env.USERS_KV.put("msg:" + clientEmail + ":" + msgId, JSON.stringify(msgObj))
+
+        // Notification email via Resend
+        const resendKey = env.RESEND_KEY || "re_cKkFtPtR_1dXxefB6C9sM7sKzWBhKde9z"
+        const attachHtml = attachments.length
+          ? "<p><strong>Pièces jointes :</strong> " + attachments.map(a => a.name).join(", ") + "</p>"
+          : ""
+
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + resendKey,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            from   : "NyXia IA <onboarding@resend.dev>",
+            to     : ["dianeboyer@publication-web.com"],
+            subject: "💬 Nouveau message de " + clientEmail,
+            html   : \`<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+              <div style="background:#0F1C3F;padding:24px;border-radius:12px;color:#D6D9F0">
+                <h2 style="color:#a78bfa;margin:0 0 16px">💬 Nouveau message NyXia</h2>
+                <p><strong>De :</strong> \${clientEmail}</p>
+                <p><strong>Date :</strong> \${new Date().toLocaleString("fr-CA")}</p>
+                <div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:8px;margin:16px 0;border-left:3px solid #7B5CFF">
+                  <p style="margin:0;white-space:pre-wrap">\${messageText}</p>
+                </div>
+                \${attachHtml}
+                <a href="https://webmasteria.nyxiapublicationweb.com/admin.html" 
+                   style="display:inline-block;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;padding:12px 24px;border-radius:50px;text-decoration:none;font-weight:700;margin-top:8px">
+                  Répondre dans le dashboard →
+                </a>
+              </div>
+            </div>\`
+          })
+        })
+
+        return new Response(JSON.stringify({ success: true, msgId }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/message/list — Liste messages d'un client
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/message/list" && request.method === "POST") {
+      try {
+        const body        = await request.json()
+        const token       = body.token || ""
+        const clientEmail = await env.USERS_KV.get("session:" + token)
+        if (!clientEmail) {
+          return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const list = await env.USERS_KV.list({ prefix: "msg:" + clientEmail + ":" })
+        const messages = []
+        for (const key of list.keys) {
+          const val = await env.USERS_KV.get(key.name)
+          if (val) messages.push(JSON.parse(val))
+        }
+        messages.sort((a,b) => new Date(b.date) - new Date(a.date))
+
+        return new Response(JSON.stringify({ success: true, messages }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/messages — Tous les messages (admin)
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/messages" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        if (!await checkAdmin(body.token)) {
+          return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const list = await env.USERS_KV.list({ prefix: "msg:" })
+        const messages = []
+        for (const key of list.keys) {
+          const val = await env.USERS_KV.get(key.name)
+          if (val) messages.push(JSON.parse(val))
+        }
+        messages.sort((a,b) => new Date(b.date) - new Date(a.date))
+
+        return new Response(JSON.stringify({ success: true, messages }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/reply — Répondre à un message (admin)
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/reply" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        if (!await checkAdmin(body.token)) {
+          return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const msgKey = "msg:" + body.clientEmail + ":" + body.msgId
+        const val    = await env.USERS_KV.get(msgKey)
+        if (!val) {
+          return new Response(JSON.stringify({ success: false, error: "Message introuvable." }),
+            { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const msgObj   = JSON.parse(val)
+        msgObj.reply   = body.reply
+        msgObj.read    = true
+        msgObj.replyDate = new Date().toISOString()
+        await env.USERS_KV.put(msgKey, JSON.stringify(msgObj))
+
+        // Notification email au client
+        const resendKey = env.RESEND_KEY || "re_cKkFtPtR_1dXxefB6C9sM7sKzWBhKde9z"
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + resendKey,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            from   : "NyXia IA <onboarding@resend.dev>",
+            to     : [body.clientEmail],
+            subject: "💜 Diane Boyer te répond — NyXia IA",
+            html   : \`<div style="font-family:sans-serif;max-width:600px;margin:0 auto">
+              <div style="background:#0F1C3F;padding:24px;border-radius:12px;color:#D6D9F0">
+                <h2 style="color:#a78bfa;margin:0 0 16px">💜 Réponse de Diane Boyer</h2>
+                <p style="color:#8891B8;margin-bottom:16px">Tu avais écrit :</p>
+                <div style="background:rgba(255,255,255,0.04);padding:12px;border-radius:8px;margin-bottom:16px;border-left:2px solid #4a5278">
+                  <p style="margin:0;color:#8891B8;font-style:italic;white-space:pre-wrap">\${msgObj.message}</p>
+                </div>
+                <p style="color:#8891B8;margin-bottom:8px">Réponse de Diane :</p>
+                <div style="background:rgba(123,92,255,0.1);padding:16px;border-radius:8px;border-left:3px solid #7B5CFF">
+                  <p style="margin:0;white-space:pre-wrap">\${body.reply}</p>
+                </div>
+                <a href="https://webmasteria.nyxiapublicationweb.com/dashboard.html"
+                   style="display:inline-block;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;padding:12px 24px;border-radius:50px;text-decoration:none;font-weight:700;margin-top:16px">
+                  Ouvrir mon espace NyXia →
+                </a>
+              </div>
+            </div>\`
+          })
+        })
+
+        return new Response(JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
     /* ════════════════════════════════════════════════════
        ROUTE /api/chat — NyXia Setter|Closer (GLM-5 gratuit)
        Cerveau conversationnel basé sur La Psychologie du Clic
@@ -380,7 +580,7 @@ Réponds toujours en 2-4 phrases maximum. Sois concise et impactante.`
             "X-Title": "NyXia Chat"
           },
           body: JSON.stringify({
-            model: "google/gemini-2.0-flash-exp:free",
+            model: "meta-llama/llama-4-scout:free",
             messages,
             temperature: 0.75,
             max_tokens: 300
