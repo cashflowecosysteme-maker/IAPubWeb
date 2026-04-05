@@ -234,6 +234,99 @@
 
 
 
+
+    /* ═══════════════════════════════════
+       ÉDITEUR INLINE
+    ═══════════════════════════════════ */
+    #editor-panel {
+      position: absolute;
+      right: 0; top: 0; bottom: 0;
+      width: 280px;
+      background: rgba(10,18,40,0.97);
+      border-left: 1px solid rgba(123,92,255,0.2);
+      display: none;
+      flex-direction: column;
+      z-index: 10;
+      backdrop-filter: blur(20px);
+      animation: slideInRight .2s ease;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
+    #editor-panel.open { display: flex; }
+
+    .editor-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(123,92,255,0.15);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px; font-weight: 700;
+      color: var(--p3);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .editor-section {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(123,92,255,0.08);
+    }
+    .editor-section-title {
+      font-size: 11px; font-weight: 700;
+      color: var(--t3); text-transform: uppercase;
+      letter-spacing: .8px; margin-bottom: 10px;
+    }
+    .editor-input {
+      width: 100%; background: rgba(15,28,63,0.7);
+      border: 1px solid rgba(123,92,255,0.2); border-radius: 8px;
+      color: var(--t); font-family: 'Outfit', sans-serif;
+      font-size: 13px; padding: 8px 10px; outline: none;
+      resize: vertical; min-height: 60px; transition: border-color .2s;
+    }
+    .editor-input:focus { border-color: rgba(123,92,255,0.5); }
+
+    .color-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .color-item label {
+      font-size: 11px; color: var(--t3); display: block; margin-bottom: 4px;
+    }
+    .color-item input[type="color"] {
+      width: 100%; height: 32px; border-radius: 6px;
+      border: 1px solid rgba(123,92,255,0.2); cursor: pointer;
+      background: none; padding: 2px;
+    }
+
+    .btn-editor {
+      margin: 4px 0; padding: 8px 14px; border-radius: 8px;
+      border: none; font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all .2s; width: 100%; text-align: left;
+    }
+    .btn-editor-primary {
+      background: linear-gradient(135deg, var(--p), var(--p2));
+      color: #fff; box-shadow: 0 0 16px rgba(123,92,255,0.3);
+    }
+    .btn-editor-primary:hover { box-shadow: 0 0 24px rgba(123,92,255,0.5); }
+    .btn-editor-secondary {
+      background: rgba(123,92,255,0.08);
+      border: 1px solid rgba(123,92,255,0.2); color: var(--t2);
+    }
+    .btn-editor-secondary:hover { border-color: var(--p); color: var(--t); }
+
+    .editor-hint {
+      font-size: 11px; color: var(--t4);
+      padding: 10px 16px; text-align: center; line-height: 1.6;
+    }
+
+    /* Mode édition — highlight au hover dans l'iframe */
+    .edit-mode-active #preview-frame {
+      cursor: crosshair;
+    }
+    .toolbar-btn.edit-active {
+      background: rgba(123,92,255,0.3) !important;
+      border-color: var(--p) !important;
+      color: var(--t) !important;
+    }
+
     /* ===== WIDGET NYXIA — EXACT REPLICA ===== */
 
 
@@ -1247,6 +1340,8 @@
 
         <h3>NyXia Preview</h3>
 
+        <button class="toolbar-btn" id="btn-edit" onclick="toggleEditor()">✏️ Éditer</button>
+
         <button class="toolbar-btn" id="btn-view-code">View Code</button>
 
         <button class="toolbar-btn" id="btn-copy-code">Copy Code</button>
@@ -1255,7 +1350,69 @@
 
       </div>
 
-      <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+      <div style="position:relative;flex:1;display:flex;overflow:hidden">
+
+        <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-popups" style="flex:1;border:none;height:100%"></iframe>
+
+        <!-- PANNEAU ÉDITEUR -->
+        <div id="editor-panel">
+          <div class="editor-header">
+            ✏️ Éditeur
+            <button onclick="toggleEditor()" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px">✕</button>
+          </div>
+
+          <!-- Texte sélectionné -->
+          <div class="editor-section" id="text-editor-section" style="display:none">
+            <div class="editor-section-title">✏️ Modifier le texte</div>
+            <textarea class="editor-input" id="selected-text-input" rows="4"></textarea>
+            <button class="btn-editor btn-editor-primary" onclick="applyTextEdit()" style="margin-top:8px">
+              ✓ Appliquer
+            </button>
+          </div>
+
+          <!-- Couleurs -->
+          <div class="editor-section">
+            <div class="editor-section-title">🎨 Couleurs</div>
+            <div class="color-grid">
+              <div class="color-item">
+                <label>Fond</label>
+                <input type="color" id="color-bg" value="#0F1C3F" oninput="applyColor('bg', this.value)">
+              </div>
+              <div class="color-item">
+                <label>Accent</label>
+                <input type="color" id="color-accent" value="#7B5CFF" oninput="applyColor('accent', this.value)">
+              </div>
+              <div class="color-item">
+                <label>Texte</label>
+                <input type="color" id="color-text" value="#FFFFFF" oninput="applyColor('text', this.value)">
+              </div>
+              <div class="color-item">
+                <label>Boutons</label>
+                <input type="color" id="color-btn" value="#5A6CFF" oninput="applyColor('btn', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="editor-section">
+            <div class="editor-section-title">⚡ Actions</div>
+            <button class="btn-editor btn-editor-primary" onclick="saveEdits()" style="margin-bottom:6px">
+              💾 Sauvegarder les modifications
+            </button>
+            <button class="btn-editor btn-editor-secondary" onclick="copyEditedCode()">
+              📋 Copier le code
+            </button>
+            <button class="btn-editor btn-editor-secondary" onclick="resetEdits()" style="margin-top:6px">
+              ↺ Réinitialiser
+            </button>
+          </div>
+
+          <div class="editor-hint">
+            💡 Clique sur n'importe quel texte dans le preview pour le modifier directement
+          </div>
+        </div>
+
+      </div>
 
     </div>
 
