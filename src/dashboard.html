@@ -387,6 +387,9 @@
 
   <canvas id="starry-canvas"></canvas>
 
+  <!-- Audio NyXia -->
+  <audio id="nyxia-audio" src="/NyXiaVoix-RobotParfait1.mp3" preload="auto"></audio>
+
   <!-- ══ HEADER ══ -->
   <header>
     <div class="header-brand">
@@ -549,6 +552,12 @@
     })()
 
     function initUI() {
+      // Joue la voix NyXia à l'accueil
+      var audio = document.getElementById('nyxia-audio')
+      if (audio) {
+        audio.volume = 0.7
+        audio.play().catch(function(){}) // catch si autoplay bloqué
+      }
       document.getElementById('header-username').textContent = clientName
       document.getElementById('sidebar-username').textContent = clientName
       document.getElementById('sidebar-avatar').textContent = clientName.charAt(0).toUpperCase()
@@ -694,27 +703,44 @@
     function speakText(text) {
       if (!window.speechSynthesis) return
       window.speechSynthesis.cancel()
-      var clean = text.replace(/\*\*(.*?)\*\*/g, '$1').replace(/[✦💜🚀💎🌐📱⭐]/g, '').trim()
+      var clean = text
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/[✦💜🚀💎🌐📱⭐✓►▶]/g, '')
+        .replace(/<br>/g, ' ')
+        .trim()
+      if (!clean) return
+
       var utt   = new SpeechSynthesisUtterance(clean)
       utt.lang  = 'fr-FR'
-      utt.rate  = 0.95
-      utt.pitch = 1.05
+      utt.rate  = 0.92
+      utt.pitch = 1.1
+      utt.volume = 1
 
-      // Essaie de trouver une voix française féminine
-      var voices = window.speechSynthesis.getVoices()
-      var frVoice = voices.find(v => v.lang === 'fr-FR' && v.name.toLowerCase().includes('female'))
-        || voices.find(v => v.lang === 'fr-FR')
-      if (frVoice) utt.voice = frVoice
+      // Cherche la meilleure voix française féminine
+      function trySpeak() {
+        var voices  = window.speechSynthesis.getVoices()
+        var frVoice = voices.find(v => v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie|thomas/i.test(v.name))
+                   || voices.find(v => v.lang.startsWith('fr'))
+        if (frVoice) utt.voice = frVoice
+        window.speechSynthesis.speak(utt)
+      }
 
-      utt.onend = () => {
+      // Certains navigateurs chargent les voix en async
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = trySpeak
+      } else {
+        trySpeak()
+      }
+
+      utt.onend = function() {
         var btn = document.getElementById('btn-speak')
-        if (isSpeaking) {
+        if (btn) {
           btn.textContent = '🔊 Écouter NyXia'
           btn.classList.remove('speaking')
-          isSpeaking = false
         }
+        isSpeaking = false
       }
-      window.speechSynthesis.speak(utt)
+      utt.onerror = function() { isSpeaking = false }
     }
 
     // Charge les voix (asynchrone sur certains navigateurs)
