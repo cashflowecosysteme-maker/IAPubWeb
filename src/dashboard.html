@@ -685,42 +685,113 @@
 
     function addBotMessage(text) {
       var msgs = document.getElementById('chat-messages')
-      var div  = document.createElement('div')
-      div.className = 'msg bot'
-      var formatted = escHtml(text)
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>')
 
-      // Wrapper
-      var wrapper = document.createElement('div')
-      wrapper.style.cssText = 'display:flex;flex-direction:column;gap:5px'
+      // Détecte les tags [IMAGE: ...] dans le texte
+      var imageRegex = /\[IMAGE:\s*([^\]]+)\]/g
+      var imageMatches = []
+      var match
+      while ((match = imageRegex.exec(text)) !== null) {
+        imageMatches.push(match[1].trim())
+      }
 
-      // Bulle message
-      var bubble = document.createElement('div')
-      bubble.className = 'msg-bubble'
-      bubble.innerHTML = formatted
+      // Texte sans les tags image
+      var cleanText = text.replace(/\[IMAGE:[^\]]+\]/g, '').trim()
 
-      // Bouton speaker
-      var spkBtn = document.createElement('button')
-      spkBtn.textContent = '🔊 Écouter'
-      spkBtn.style.cssText = 'align-self:flex-start;padding:3px 12px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);font-size:11px;cursor:pointer;transition:all .2s;font-family:Outfit,sans-serif'
+      // Affiche le texte si non vide
+      if (cleanText) {
+        var div = document.createElement('div')
+        div.className = 'msg bot'
 
-      // Event listener direct — pas de onclick inline
-      spkBtn.addEventListener('click', function() {
-        speakMsg(spkBtn, text)
+        var wrapper = document.createElement('div')
+        wrapper.style.cssText = 'display:flex;flex-direction:column;gap:5px'
+
+        var bubble = document.createElement('div')
+        bubble.className = 'msg-bubble'
+        bubble.innerHTML = escHtml(cleanText)
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\n/g, '<br>')
+
+        var spkBtn = document.createElement('button')
+        spkBtn.textContent = '🔊 Écouter'
+        spkBtn.style.cssText = 'align-self:flex-start;padding:3px 12px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);font-size:11px;cursor:pointer;transition:all .2s;font-family:Outfit,sans-serif'
+        spkBtn.addEventListener('click', function() { speakMsg(spkBtn, cleanText) })
+
+        wrapper.appendChild(bubble)
+        wrapper.appendChild(spkBtn)
+
+        var avatar = document.createElement('img')
+        avatar.src = '/NyXia.png'
+        avatar.className = 'msg-avatar'
+        avatar.alt = 'NyXia'
+
+        div.appendChild(avatar)
+        div.appendChild(wrapper)
+        msgs.appendChild(div)
+      }
+
+      // Affiche chaque image générée
+      imageMatches.forEach(function(prompt) {
+        var seed = Math.floor(Math.random() * 999999)
+        var imageUrl = 'https://image.pollinations.ai/prompt/'
+          + encodeURIComponent(prompt + ', ultra high quality, professional, sharp focus')
+          + '?width=800&height=600&nologo=true&seed=' + seed
+
+        var imgDiv = document.createElement('div')
+        imgDiv.className = 'msg bot'
+        imgDiv.style.maxWidth = '80%'
+
+        var imgWrapper = document.createElement('div')
+        imgWrapper.style.cssText = 'display:flex;flex-direction:column;gap:8px'
+
+        // Image avec loading state
+        var imgEl = document.createElement('img')
+        imgEl.src = imageUrl
+        imgEl.alt = prompt
+        imgEl.style.cssText = 'width:100%;max-width:400px;border-radius:12px;border:1px solid rgba(123,92,255,0.2);box-shadow:0 4px 20px rgba(0,0,0,0.3)'
+        imgEl.style.display = 'none'
+
+        var loadingEl = document.createElement('div')
+        loadingEl.style.cssText = 'width:400px;max-width:100%;height:200px;border-radius:12px;background:rgba(26,37,84,0.5);border:1px solid rgba(123,92,255,0.15);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px'
+        loadingEl.innerHTML = '<span style="animation:dotBounce .9s infinite">✨ Génération en cours...</span>'
+
+        imgEl.onload = function() {
+          loadingEl.style.display = 'none'
+          imgEl.style.display = 'block'
+        }
+        imgEl.onerror = function() {
+          loadingEl.innerHTML = '⚠️ Image non disponible'
+        }
+
+        // Bouton télécharger
+        var dlBtn = document.createElement('button')
+        dlBtn.textContent = '⬇️ Télécharger'
+        dlBtn.style.cssText = 'align-self:flex-start;padding:4px 14px;border-radius:50px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.08);color:var(--t3);font-size:11px;cursor:pointer;font-family:Outfit,sans-serif'
+        dlBtn.addEventListener('click', function() {
+          fetch(imageUrl)
+            .then(function(r){ return r.blob() })
+            .then(function(blob){
+              var a = document.createElement('a')
+              a.href = URL.createObjectURL(blob)
+              a.download = 'nyxia-image-' + Date.now() + '.jpg'
+              a.click()
+            })
+            .catch(function(){ window.open(imageUrl, '_blank') })
+        })
+
+        imgWrapper.appendChild(loadingEl)
+        imgWrapper.appendChild(imgEl)
+        imgWrapper.appendChild(dlBtn)
+
+        var avatarImg = document.createElement('img')
+        avatarImg.src = '/NyXia.png'
+        avatarImg.className = 'msg-avatar'
+        avatarImg.alt = 'NyXia'
+
+        imgDiv.appendChild(avatarImg)
+        imgDiv.appendChild(imgWrapper)
+        msgs.appendChild(imgDiv)
       })
 
-      wrapper.appendChild(bubble)
-      wrapper.appendChild(spkBtn)
-
-      var avatar = document.createElement('img')
-      avatar.src = '/NyXia.png'
-      avatar.className = 'msg-avatar'
-      avatar.alt = 'NyXia'
-
-      div.appendChild(avatar)
-      div.appendChild(wrapper)
-      msgs.appendChild(div)
       msgs.scrollTop = msgs.scrollHeight
     }
 
