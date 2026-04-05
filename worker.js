@@ -1,10 +1,15 @@
 /**
  * Cloudflare Worker — NyXia Vision
  * Route : POST /api/vision
- * Modèle : google/gemini-2.0-flash-001 (vision + génération HTML)
+ *
+ * Flux :
+ *   1. Gemini 2.0 Flash (OpenRouter) — analyse image + génère HTML avec placeholders
+ *   2. Cloudflare Workers AI (SDXL) — génère 3 images IA en base64
+ *   3. Remplacement des placeholders par les vraies images dans le HTML final
  *
  * Variables d'environnement requises :
  *   OPENROUTER_KEY  — clé API OpenRouter
+ *   AI              — binding Cloudflare Workers AI (wrangler.toml)
  */
 export default {
   async fetch(request, env) {
@@ -15,24 +20,11 @@ export default {
       "Access-Control-Allow-Headers": "Content-Type",
     }
 
-    if (request.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders })
-    }
-
-    if (request.method !== "POST") {
-      return new Response("NyXia Vision Active", { status: 200 })
-    }
+    if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders })
+    if (request.method !== "POST") return new Response("NyXia Vision Active", { status: 200 })
 
     try {
       const body = await request.json()
-
-      /*
-       * ─── Paramètres reçus du frontend ──────────────────────────────
-       * body.prompt    : texte de l'utilisateur (ex: "Mon Empire Rentable")
-       * body.image     : base64 PUR — SANS préfixe "data:..."
-       * body.imageType : mime type  — ex: "image/jpeg"
-       * ────────────────────────────────────────────────────────────────
-       */
       const userPrompt  = body.prompt    || "Mon Empire Rentable"
       const imageBase64 = body.image     || ""
       const imageType   = body.imageType || "image/jpeg"
@@ -44,71 +36,11 @@ export default {
         )
       }
 
-      /*
-       * ─── Construction du message multimodal ────────────────────────
-       * Format attendu par OpenRouter / Claude :
-       * content = [
-       *   { type: "image_url", image_url: { url: "data:image/jpeg;base64,AAAA..." } },
-       *   { type: "text",      text: "..." }
-       * ]
-       * ────────────────────────────────────────────────────────────────
-       */
-      const userMessage = {
-        role: "user",
-        content: [
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:${imageType};base64,${imageBase64}`
-            }
-          },
-          {
-            type: "text",
-            text: `Analyse cette image avec précision :
-
-ÉTAPE 1 — EXTRACTION VISUELLE :
-- Identifie la palette de couleurs exacte (dominante, secondaire, accent, fond) en valeurs HEX
-- Identifie le style visuel (luxe, tech, nature, minimaliste, futuriste, etc.)
-- Note l'ambiance, les textures, les contrastes
-
-ÉTAPE 2 — GÉNÉRATION DU SITE WEB :
-Génère un fichier HTML complet (HTML + CSS dans <style>) sur le thème : "${userPrompt}"
-
-RÈGLES CSS PREMIUM :
-- Variables :root avec les couleurs EXACTES extraites de l'image (--bg, --accent, --glow, --text)
-- Glassmorphism : backdrop-filter: blur(20px), background: rgba() semi-transparent
-- Gradients profonds basés sur la palette réelle de l'image
-- Animations CSS subtiles : fade-in au scroll, float, glow pulse
-- Google Fonts via CDN : Playfair Display (titres) + Inter (corps)
-- Ombres portées élégantes, micro-interactions au hover
-- Mobile-first avec media queries
-
-IMAGES :
-- Utilise des gradients CSS comme backgrounds (plus fiable que des URLs externes)
-- Pour les sections hero, crée un gradient CSS avec les couleurs extraites de l'image
-- Ajoute des formes décoratives CSS (cercles, blobs) avec les couleurs de l'image
-
-STRUCTURE DE LA PAGE :
-1. Hero pleine largeur — titre hypnotique, sous-titre, bouton CTA
-2. Section bénéfices — 3 cartes glassmorphism
-3. Section témoignages / preuves sociales
-4. Section fonctionnalités détaillées
-5. Appel à l'action final avec urgence
-6. Footer élégant
-
-RÈGLES ABSOLUES :
-- Réponds UNIQUEMENT avec le code HTML complet (<!DOCTYPE html> ... </html>)
-- Zéro texte avant ou après le code
-- Code autonome, fonctionnel, responsive
-- RESPECT STRICT des couleurs extraites de l'image`
-          }
-        ]
-      }
-
-      /*
-       * ─── Appel OpenRouter ──────────────────────────────────────────
-       */
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      /* ═══════════════════════════════════════
+         ÉTAPE 1 — GEMINI 2.0 FLASH
+         Génère HTML avec placeholders images
+      ═══════════════════════════════════════ */
+      const geminiRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${env.OPENROUTER_KEY}`,
@@ -117,65 +49,142 @@ RÈGLES ABSOLUES :
           "X-Title": "NyXia Empire Webmaster"
         },
         body: JSON.stringify({
-          model: "google/gemini-2.0-flash-001",  // Gemini 2.0 Flash — vision + code premium, 10x moins cher
+          model: "google/gemini-2.0-flash-001",
           messages: [
             {
               role: "system",
               content: `Tu es NyXia IA, experte en design web ultra-premium.
-Tu analyses les images avec précision et génères des sites web élégants qui respectent EXACTEMENT les couleurs et l'ambiance de l'image fournie.
+Tu analyses les images et génères des sites web élégants respectant EXACTEMENT les couleurs de l'image.
+Tu utilises OBLIGATOIREMENT les placeholders %%IMAGE_HERO%%, %%IMAGE_SECTION1%%, %%IMAGE_SECTION2%% dans des balises <img>.
 Tu réponds UNIQUEMENT avec du code HTML complet, sans aucun texte avant ou après.`
             },
-            userMessage
+            {
+              role: "user",
+              content: [
+                {
+                  type: "image_url",
+                  image_url: { url: `data:${imageType};base64,${imageBase64}` }
+                },
+                {
+                  type: "text",
+                  text: `Analyse cette image et génère un site web HTML complet sur le thème : "${userPrompt}"
+
+EXTRACTION VISUELLE :
+- Palette de couleurs exacte en HEX (dominante, secondaire, accent, fond)
+- Style visuel, ambiance, textures
+
+CSS PREMIUM :
+- Variables :root avec couleurs extraites (--bg, --accent, --glow, --text)
+- Glassmorphism : backdrop-filter blur(20px), rgba() semi-transparent
+- Gradients profonds, animations fade-in/float/glow
+- Google Fonts : Playfair Display + Inter via CDN
+- Micro-interactions hover, mobile-first
+
+IMAGES OBLIGATOIRES — utilise ces placeholders EXACTEMENT dans des <img> :
+- <img src="%%IMAGE_HERO%%" width="100%" style="border-radius:16px;object-fit:cover;max-height:500px">
+- <img src="%%IMAGE_SECTION1%%" width="100%" style="border-radius:12px;object-fit:cover">
+- <img src="%%IMAGE_SECTION2%%" width="100%" style="border-radius:12px;object-fit:cover">
+
+STRUCTURE :
+1. Hero pleine largeur — titre, sous-titre, CTA + %%IMAGE_HERO%%
+2. Bénéfices — 3 cartes glassmorphism
+3. Témoignages / preuves sociales
+4. Fonctionnalités + %%IMAGE_SECTION1%%
+5. CTA final avec urgence + %%IMAGE_SECTION2%%
+6. Footer
+
+RÈGLES : HTML complet uniquement (<!DOCTYPE html>...</html>), zéro texte avant/après, responsive.`
+                }
+              ]
+            }
           ],
           temperature: 0.6,
           max_tokens: 8192
         })
       })
 
-      const data = await response.json()
+      const geminiData = await geminiRes.json()
 
-      /*
-       * ─── Extraction HTML côté Worker ───────────────────────────────
-       * On extrait le HTML brut depuis la réponse OpenRouter/Claude
-       * pour éviter que les backticks Markdown (```html ... ```) ne
-       * parviennent au frontend et déclenchent l'alerte "pas de HTML".
-       * ────────────────────────────────────────────────────────────────
-       */
-      if (data.choices && data.choices[0] && data.choices[0].message) {
-        let content = data.choices[0].message.content || ""
-
-        // 1. Bloc ```html ... ```
-        let m = content.match(/```html\s*([\s\S]*?)```/)
-        if (m) content = m[1].trim()
+      /* Extraction HTML propre */
+      let html = ""
+      if (geminiData.choices?.[0]?.message) {
+        let c = geminiData.choices[0].message.content || ""
+        let m = c.match(/```html\s*([\s\S]*?)```/)
+        if (m) c = m[1].trim()
         else {
-          // 2. Bloc ``` ... ``` contenant un DOCTYPE
-          m = content.match(/```\s*([\s\S]*?)```/)
-          if (m && m[1].trim().toLowerCase().indexOf("<!doctype") !== -1) {
-            content = m[1].trim()
-          } else {
-            // 3. HTML brut — on coupe proprement de <!DOCTYPE à </html>
-            const startDoctype = content.indexOf("<!DOCTYPE")
-            const startHtml    = content.indexOf("<html")
-            const start = startDoctype !== -1 ? startDoctype
-                        : startHtml    !== -1 ? startHtml
-                        : -1
-            const end = content.lastIndexOf("</html>")
-            if (start !== -1 && end !== -1) {
-              content = content.substring(start, end + 7).trim()
-            }
+          m = c.match(/```\s*([\s\S]*?)```/)
+          if (m && m[1].trim().toLowerCase().includes("<!doctype")) c = m[1].trim()
+          else {
+            const s = c.indexOf("<!DOCTYPE") !== -1 ? c.indexOf("<!DOCTYPE") : c.indexOf("<html")
+            const e = c.lastIndexOf("</html>")
+            if (s !== -1 && e !== -1) c = c.substring(s, e + 7).trim()
           }
         }
-
-        data.choices[0].message.content = content
+        html = c
       }
 
-      /*
-       * Retourner la réponse (avec HTML propre) au frontend.
-       * Le frontend lit : data.choices[0].message.content
-       */
-      return new Response(JSON.stringify(data), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      if (!html) {
+        return new Response(
+          JSON.stringify({ error: "Gemini n'a pas généré de HTML." }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        )
+      }
+
+      /* ═══════════════════════════════════════
+         ÉTAPE 2 — CLOUDFLARE WORKERS AI (SDXL)
+         3 images générées en parallèle
+      ═══════════════════════════════════════ */
+      const sdPrompts = [
+        `ultra premium hero image, ${userPrompt}, cinematic lighting, luxury photography, 8k, sharp`,
+        `elegant lifestyle photography, ${userPrompt}, modern design, high contrast, studio lighting`,
+        `dramatic scene, ${userPrompt}, luxury brand aesthetic, bokeh background, professional shot`
+      ]
+
+      const placeholders = ["%%IMAGE_HERO%%", "%%IMAGE_SECTION1%%", "%%IMAGE_SECTION2%%"]
+      let imageDataUrls = ["", "", ""]
+
+      if (env.AI) {
+        const results = await Promise.all(
+          sdPrompts.map(prompt =>
+            env.AI.run("@cf/stabilityai/stable-diffusion-xl-base-1.0", {
+              prompt,
+              num_steps: 20,
+              width: 1024,
+              height: 576
+            }).catch(err => { console.error("[NyXia SD]", err.message); return null })
+          )
+        )
+
+        results.forEach((result, i) => {
+          if (!result) return
+          let bytes
+          if (result instanceof ArrayBuffer) bytes = new Uint8Array(result)
+          else if (result.image) bytes = result.image
+          else return
+          let binary = ""
+          bytes.forEach(b => binary += String.fromCharCode(b))
+          imageDataUrls[i] = `data:image/png;base64,${btoa(binary)}`
+        })
+      }
+
+      /* ═══════════════════════════════════════
+         ÉTAPE 3 — REMPLACEMENT PLACEHOLDERS
+      ═══════════════════════════════════════ */
+      const fallbackGradients = [
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1024' height='576'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23667eea'/%3E%3Cstop offset='1' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='576' fill='url(%23g)'/%3E%3C/svg%3E",
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1024' height='576'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f093fb'/%3E%3Cstop offset='1' stop-color='%23f5576c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='576' fill='url(%23g)'/%3E%3C/svg%3E",
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1024' height='576'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234facfe'/%3E%3Cstop offset='1' stop-color='%2300f2fe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='576' fill='url(%23g)'/%3E%3C/svg%3E"
+      ]
+
+      placeholders.forEach((placeholder, i) => {
+        const src = imageDataUrls[i] || fallbackGradients[i]
+        html = html.split(placeholder).join(src)
       })
+
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: html } }] }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      )
 
     } catch (e) {
       console.error("[NyXia Worker] Erreur :", e.message)
