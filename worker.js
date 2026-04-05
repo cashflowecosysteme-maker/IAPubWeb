@@ -1,10 +1,9 @@
 /**
- * worker.js — Cloudflare Worker SOUVERAIN
+ * worker.js — Cloudflare Worker SÉCURISÉ
  * Projet : Webmaster IA (Publication Web)
- * Clé Dédiée : Webmaster-IA (Nouvelle Génération)
+ * La clé est maintenant appelée via les Variables d'Environnement (env.OPENROUTER_KEY)
  */
 
-const OPENROUTER_KEY = "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";
 const APP_DOMAIN = "https://webmasteria.nyxiapublicationweb.com";
 
 export default {
@@ -33,6 +32,12 @@ export default {
 }
 
 async function handleApi(request, env, path) {
+  // Récupération de la clé sécurisée depuis Cloudflare
+  const apiKey = env.OPENROUTER_KEY;
+  
+  if (!apiKey) {
+    return errorResponse('Clé API manquante dans les variables Cloudflare', 500);
+  }
 
   /* ── /api/vision ── GLM 5V Turbo ── */
   if (path === '/api/vision' && request.method === 'POST') {
@@ -41,14 +46,14 @@ async function handleApi(request, env, path) {
       const image = body.image_base64 || body.image_url || '';
       if (!image) return errorResponse('Image manquante', 400);
 
-      const visionPrompt = "Tu es NyXia IA. Génère le code HTML/Tailwind. DESIGN : Noir, Or (#D4AF37). PRIX : Symbole $ obligatoire (ex: 39 $).";
+      const visionPrompt = "Tu es NyXia IA. Génère le code HTML/Tailwind complet. DESIGN : Noir, Or (#D4AF37). PRIX : Le symbole $ est OBLIGATOIRE (ex: 39 $). Retourne UNIQUEMENT le code HTML pur.";
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${OPENROUTER_KEY}`,
+          "Authorization": `Bearer ${apiKey}`,
           "HTTP-Referer": APP_DOMAIN,
-          "X-Title": "Webmaster IA",
+          "X-Title": "Webmaster IA Empire",
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -60,7 +65,10 @@ async function handleApi(request, env, path) {
 
       const data = await response.json();
       return new Response(JSON.stringify(data), {
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Access-Control-Allow-Origin': '*' 
+        }
       });
     } catch (err) { return errorResponse('Erreur vision', 500); }
   }
