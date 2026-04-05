@@ -1591,28 +1591,23 @@
   <!-- Scripts non-bloquants -->
 
 
-  <script>
-    // Proxy fonctions éditeur — délèguent à generator.js après chargement
-    function toggleEditor() {
-      if (window._toggleEditor) window._toggleEditor()
-    }
-    function applyTextEdit() {
-      if (window._applyTextEdit) window._applyTextEdit()
-    }
-    function applyColor(type, value) {
-      if (window._applyColor) window._applyColor(type, value)
-    }
-    function saveEdits() {
-      if (window._saveEdits) window._saveEdits()
-    }
-    function copyEditedCode() {
-      if (window._copyEditedCode) window._copyEditedCode()
-    }
-    function resetEdits() {
-      if (window._resetEdits) window._resetEdits()
-    }
-  </script>
   <script src="/js/generator.js" defer></script>
+  <script>
+    // Fonctions éditeur — attendent que generator.js soit chargé
+    function callWhenReady(fn, args) {
+      if (window._editorsReady) {
+        fn.apply(null, args || [])
+      } else {
+        window.addEventListener('nyxia-ready', function() { fn.apply(null, args || []) }, { once: true })
+      }
+    }
+    function toggleEditor()          { callWhenReady(function(){ window._toggleEditor() }) }
+    function applyTextEdit()         { callWhenReady(function(){ window._applyTextEdit() }) }
+    function applyColor(type, value) { callWhenReady(function(){ window._applyColor(type, value) }, [type, value]) }
+    function saveEdits()             { callWhenReady(function(){ window._saveEdits() }) }
+    function copyEditedCode()        { callWhenReady(function(){ window._copyEditedCode() }) }
+    function resetEdits()            { callWhenReady(function(){ window._resetEdits() }) }
+  </script>
 
   <script src="/js/starry-bg.js" defer></script>
 
