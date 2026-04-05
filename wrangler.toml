@@ -4,3 +4,7 @@ compatibility_date = "2024-01-01"
 
 [assets]
 directory = "./src"
+
+[[kv_namespaces]]
+binding = "USERS_KV"
+id = "9497356c6f5d44fe917809a5889e94cf"
