@@ -674,7 +674,6 @@
         addBotMessage(reply)
         chatHistory.push({ role: 'assistant', content: reply })
         if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20)
-        if (isSpeaking) speakText(reply)
         btn.disabled = false
       })
       .catch(() => {
@@ -691,14 +690,13 @@
       var formatted = escHtml(text)
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>')
-      var speakerId = 'spk-' + Date.now()
+      var sid = 'spk' + Date.now()
       div.innerHTML = '<img src="/NyXia.png" class="msg-avatar" alt="NyXia">'
-        + '<div style="display:flex;flex-direction:column;gap:6px;max-width:100%">'
+        + '<div style="display:flex;flex-direction:column;gap:5px">'
         + '<div class="msg-bubble">' + formatted + '</div>'
-        + '<button id="' + speakerId + '" onclick="speakMsg(this, ' + JSON.stringify(text) + ')" '
-        + 'style="align-self:flex-start;display:flex;align-items:center;gap:5px;padding:4px 12px;'
-        + 'border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);'
-        + 'color:var(--t3);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer;transition:all .2s">'
+        + '<button id="' + sid + '" onclick="speakMsg('' + sid + '',' + JSON.stringify(text) + ')"'
+        + ' style="align-self:flex-start;padding:3px 12px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);'
+        + 'background:rgba(123,92,255,0.06);color:var(--t3);font-size:11px;cursor:pointer;transition:all .2s;font-family:Outfit,sans-serif">'
         + '🔊 Écouter</button>'
         + '</div>'
       msgs.appendChild(div)
@@ -730,80 +728,58 @@
     }
 
     /* ══════════════════════════════════════
-       TEXT-TO-SPEECH — bouton sous chaque message
+       TEXT-TO-SPEECH (Google Web Speech)
     ══════════════════════════════════════ */
-    var currentSpeakBtn = null
+    var _currentSpkId = null
 
-    function speakMsg(btn, text) {
-      // Si déjà en train de lire ce message — stop
-      if (currentSpeakBtn === btn) {
-        window.speechSynthesis && window.speechSynthesis.cancel()
-        btn.textContent = '🔊 Écouter'
-        btn.style.color = 'var(--t3)'
-        btn.style.borderColor = 'rgba(123,92,255,0.2)'
-        currentSpeakBtn = null
+    function speakMsg(sid, text) {
+      if (!window.speechSynthesis) return
+      // Si même bouton — stop
+      if (_currentSpkId === sid) {
+        window.speechSynthesis.cancel()
+        var b = document.getElementById(sid)
+        if (b) { b.textContent = '🔊 Écouter'; b.style.color = 'var(--t3)'; b.style.borderColor = 'rgba(123,92,255,0.2)' }
+        _currentSpkId = null
         return
       }
       // Stop le précédent
-      window.speechSynthesis && window.speechSynthesis.cancel()
-      if (currentSpeakBtn) {
-        currentSpeakBtn.textContent = '🔊 Écouter'
-        currentSpeakBtn.style.color = 'var(--t3)'
-        currentSpeakBtn.style.borderColor = 'rgba(123,92,255,0.2)'
-      }
-      currentSpeakBtn = btn
-      btn.textContent = '🔊 En cours...'
-      btn.style.color = 'var(--green)'
-      btn.style.borderColor = 'rgba(0,230,118,0.4)'
-      speakText(text, function() {
-        btn.textContent = '🔊 Écouter'
-        btn.style.color = 'var(--t3)'
-        btn.style.borderColor = 'rgba(123,92,255,0.2)'
-        currentSpeakBtn = null
-      })
-    }
-
-    function toggleSpeak() {} // gardé pour compatibilité
-
-    function speakText(text, onEnd) {
-      if (!window.speechSynthesis) { if(onEnd) onEnd(); return }
       window.speechSynthesis.cancel()
-      var clean = text
-        .replace(/\*\*(.*?)\*\*/g, '$1')
-        .replace(/[✦💜🚀💎🌐📱⭐✓►▶]/g, '')
-        .replace(/<br>/g, ' ')
-        .trim()
-      if (!clean) return
+      if (_currentSpkId) {
+        var prev = document.getElementById(_currentSpkId)
+        if (prev) { prev.textContent = '🔊 Écouter'; prev.style.color = 'var(--t3)'; prev.style.borderColor = 'rgba(123,92,255,0.2)' }
+      }
+      _currentSpkId = sid
+      var btn = document.getElementById(sid)
+      if (btn) { btn.textContent = '🔊 En cours...'; btn.style.color = 'var(--green)'; btn.style.borderColor = 'rgba(0,230,118,0.3)' }
 
-      var utt   = new SpeechSynthesisUtterance(clean)
-      utt.lang  = 'fr-FR'
-      utt.rate  = 0.92
-      utt.pitch = 1.1
-      utt.volume = 1
+      var clean = text.replace(/\*\*(.*?)\*\*/g,'$1').replace(/[✦💜🚀💎🌐📱⭐✓►▶]/g,'').replace(/<br>/g,' ').trim()
+      var utt = new SpeechSynthesisUtterance(clean)
+      utt.lang = 'fr-FR'; utt.rate = 0.9; utt.pitch = 1.05; utt.volume = 1
 
-      // Cherche la meilleure voix française féminine
-      function trySpeak() {
-        var voices  = window.speechSynthesis.getVoices()
-        var frVoice = voices.find(v => v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie|thomas/i.test(v.name))
-                   || voices.find(v => v.lang.startsWith('fr'))
-        if (frVoice) utt.voice = frVoice
+      function doSpeak() {
+        var voices = window.speechSynthesis.getVoices()
+        var v = voices.find(function(v){ return v.lang==='fr-FR' && /audrey|marie|claire|juliette|female/i.test(v.name) })
+             || voices.find(function(v){ return v.lang==='fr-FR' })
+             || voices.find(function(v){ return v.lang.startsWith('fr') })
+        if (v) utt.voice = v
         window.speechSynthesis.speak(utt)
       }
 
-      // Certains navigateurs chargent les voix en async
-      if (window.speechSynthesis.getVoices().length === 0) {
-        window.speechSynthesis.onvoiceschanged = trySpeak
-      } else {
-        trySpeak()
+      utt.onend = utt.onerror = function() {
+        if (btn) { btn.textContent = '🔊 Écouter'; btn.style.color = 'var(--t3)'; btn.style.borderColor = 'rgba(123,92,255,0.2)' }
+        _currentSpkId = null
       }
 
-      utt.onend = function() { if (onEnd) onEnd() }
-      utt.onerror = function() { if (onEnd) onEnd() }
+      window.speechSynthesis.getVoices().length === 0
+        ? (window.speechSynthesis.onvoiceschanged = doSpeak) : doSpeak()
     }
 
-    // Charge les voix (asynchrone sur certains navigateurs)
+    // Compatibilité ancienne fonction
+    function speakText(text) { }
+    function toggleSpeak() { }
+
     if (window.speechSynthesis) {
-      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices()
+      window.speechSynthesis.onvoiceschanged = function(){ window.speechSynthesis.getVoices() }
     }
 
 
