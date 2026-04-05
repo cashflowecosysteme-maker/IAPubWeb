@@ -11,35 +11,39 @@ export default {
     if (request.method === "POST") {
       try {
         const body = await request.json();
-        
-        // On force le prompt pour ne plus jamais avoir d'erreur d'entrée
-        const messageInput = body.prompt || body.userInput || body.message || "Crée un empire d'affiliation de luxe";
+        const userInput = body.prompt || body.userInput || "Générer un empire d'affiliation de luxe";
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${env.OPENROUTER_KEY}`,
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://nyxia.pro",
+            "X-Title": "NyXia Empire Builder"
           },
           body: JSON.stringify({
-            model: "google/gemini-pro-1.1-exp-all-modality", // Modèle stable pour Diane
+            // IDENTIFIANT EXACT POUR LE MODÈLE GLM LE PLUS PUISSANT (V-PLUS)
+            model: "zhipu/glm-4v-plus", 
             messages: [
-              { role: "system", content: "Tu es NyXia. Génère un site d'affiliation complet en HTML/CSS." },
-              { role: "user", content: messageInput }
-            ]
+              { "role": "system", "content": "Tu es NyXia IA. Génère un site d'affiliation complet, expert et visuellement parfait en HTML/CSS." },
+              { "role": "user", "content": userInput }
+            ],
+            temperature: 0.1
           })
         });
 
         const result = await response.json();
+        
+        if (result.error) {
+            return new Response(JSON.stringify({ error: result.error.message }), { status: 200, headers: cors });
+        }
+
         return new Response(JSON.stringify(result), {
           headers: { ...cors, "Content-Type": "application/json" }
         });
 
       } catch (e) {
-        return new Response(JSON.stringify({ error: "Erreur", details: e.message }), { 
-          status: 200, // On force le succès pour ne pas bloquer l'interface
-          headers: cors 
-        });
+        return new Response(JSON.stringify({ error: "Erreur de connexion", details: e.message }), { status: 200, headers: cors });
       }
     }
     return new Response("NyXia Active", { status: 200 });
