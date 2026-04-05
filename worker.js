@@ -1,8 +1,7 @@
 /**
- * worker.js — Cloudflare Worker SOUVERAIN
- * Projet : Webmaster IA (Publication Web)
- * Clé : Sécurisée via Cloudflare (env.OPENROUTER_KEY)
- * Modèle : GLM 5V Turbo (z-ai/glm-5v-turbo)
+ * worker.js — Cloudflare Worker ADAPTATIF
+ * Projet : Webmaster IA (Liberté Créative)
+ * Instruction : Extraction de palette dynamique basée sur l'image source.
  */
 
 const APP_DOMAIN = "https://webmasteria.nyxiapublicationweb.com";
@@ -12,7 +11,6 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    /* CORS preflight */
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
@@ -33,43 +31,38 @@ export default {
 }
 
 async function handleApi(request, env, path) {
-  // Récupération de la clé sécurisée
   const apiKey = env.OPENROUTER_KEY;
   
   if (!apiKey) {
     return errorResponse('Clé API manquante dans les variables Cloudflare', 500);
   }
 
-  /* ── /api/vision ── GLM 5V Turbo (Standard ID) ── */
   if (path === '/api/vision' && request.method === 'POST') {
     try {
       const body = await request.json();
       const image = body.image_base64 || body.image_url || '';
       if (!image) return errorResponse('Image manquante', 400);
 
-      const visionPrompt = "Tu es NyXia IA. Génère le code HTML/Tailwind. DESIGN : Noir, Or (#D4AF37). PRIX : Symbole $ obligatoire (ex: 39 $). Retourne UNIQUEMENT le code HTML pur.";
+      // NOUVELLE INSTRUCTION : Respect total du branding de l'image
+      const visionPrompt = "Tu es NyXia IA. Analyse l'image et extrais-en la palette de couleurs dominante (branding). Génère le code HTML/Tailwind complet en respectant STRICTEMENT ces couleurs. Ton ton est professionnel. PRIX : Symbole $ obligatoire (ex: 39 $). Retourne UNIQUEMENT le code HTML pur.";
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${apiKey}`,
           "HTTP-Referer": APP_DOMAIN,
-          "X-Title": "Webmaster IA",
+          "X-Title": "Webmaster IA Caméléon",
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "z-ai/glm-5v-turbo", // Correction de l'identifiant ici
+          model: "z-ai/glm-5v-turbo",
           messages: [{ role: "user", content: [{ type: "text", text: visionPrompt }, { type: "image_url", image_url: { url: image } }] }],
           temperature: 0.1
         })
       });
 
       const data = await response.json();
-      
-      // Si OpenRouter renvoie une erreur interne
-      if (data.error) {
-        return errorResponse(`Erreur API — ${JSON.stringify(data.error)}`, 400);
-      }
+      if (data.error) return errorResponse(`Erreur API — ${JSON.stringify(data.error)}`, 400);
 
       return new Response(JSON.stringify(data), {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
