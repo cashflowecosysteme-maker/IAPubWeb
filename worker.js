@@ -4,12 +4,11 @@
  *
  * Flux :
  *   1. Gemini 2.0 Flash (OpenRouter) — analyse image + génère HTML avec placeholders
- *   2. Cloudflare Workers AI (SDXL) — génère 3 images IA en base64
- *   3. Remplacement des placeholders par les vraies images dans le HTML final
+ *   2. Unsplash Source — images HD gratuites, instantanées, sans clé API
+ *   3. Remplacement des placeholders par les vraies URLs dans le HTML final
  *
  * Variables d'environnement requises :
  *   OPENROUTER_KEY  — clé API OpenRouter
- *   AI              — binding Cloudflare Workers AI (wrangler.toml)
  */
 export default {
   async fetch(request, env) {
@@ -38,7 +37,8 @@ export default {
 
       /* ═══════════════════════════════════════
          ÉTAPE 1 — GEMINI 2.0 FLASH
-         Génère HTML avec placeholders images
+         Analyse l'image + génère HTML avec placeholders
+         ET extrait 3 mots-clés pour les images Unsplash
       ═══════════════════════════════════════ */
       const geminiRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
@@ -56,7 +56,9 @@ export default {
               content: `Tu es NyXia IA, experte en design web ultra-premium.
 Tu analyses les images et génères des sites web élégants respectant EXACTEMENT les couleurs de l'image.
 Tu utilises OBLIGATOIREMENT les placeholders %%IMAGE_HERO%%, %%IMAGE_SECTION1%%, %%IMAGE_SECTION2%% dans des balises <img>.
-Tu réponds UNIQUEMENT avec du code HTML complet, sans aucun texte avant ou après.`
+Tu réponds UNIQUEMENT avec du code HTML complet, sans aucun texte avant ou après.
+À la toute fin du HTML, ajoute ce commentaire avec 3 mots-clés anglais pour les images :
+<!-- KEYWORDS: mot1,mot2,mot3 -->`
             },
             {
               role: "user",
@@ -80,10 +82,10 @@ CSS PREMIUM :
 - Google Fonts : Playfair Display + Inter via CDN
 - Micro-interactions hover, mobile-first
 
-IMAGES OBLIGATOIRES — utilise ces placeholders EXACTEMENT dans des <img> :
-- <img src="%%IMAGE_HERO%%" width="100%" style="border-radius:16px;object-fit:cover;max-height:500px">
-- <img src="%%IMAGE_SECTION1%%" width="100%" style="border-radius:12px;object-fit:cover">
-- <img src="%%IMAGE_SECTION2%%" width="100%" style="border-radius:12px;object-fit:cover">
+IMAGES OBLIGATOIRES — placeholders EXACTS dans des <img> :
+<img src="%%IMAGE_HERO%%" alt="hero" width="100%" style="border-radius:16px;object-fit:cover;height:480px;display:block">
+<img src="%%IMAGE_SECTION1%%" alt="section" width="100%" style="border-radius:12px;object-fit:cover;height:360px;display:block">
+<img src="%%IMAGE_SECTION2%%" alt="cta" width="100%" style="border-radius:12px;object-fit:cover;height:360px;display:block">
 
 STRUCTURE :
 1. Hero pleine largeur — titre, sous-titre, CTA + %%IMAGE_HERO%%
@@ -93,7 +95,10 @@ STRUCTURE :
 5. CTA final avec urgence + %%IMAGE_SECTION2%%
 6. Footer
 
-RÈGLES : HTML complet uniquement (<!DOCTYPE html>...</html>), zéro texte avant/après, responsive.`
+À la fin du </html>, ajoute un commentaire avec 3 mots-clés anglais qui décrivent visuellement le thème pour trouver de belles photos (ex: luxury,wellness,nature) :
+<!-- KEYWORDS: mot1,mot2,mot3 -->
+
+RÈGLES : HTML complet uniquement (<!DOCTYPE html>...</html>), zéro texte avant, responsive.`
                 }
               ]
             }
@@ -131,54 +136,33 @@ RÈGLES : HTML complet uniquement (<!DOCTYPE html>...</html>), zéro texte avant
       }
 
       /* ═══════════════════════════════════════
-         ÉTAPE 2 — CLOUDFLARE WORKERS AI (SDXL)
-         3 images générées en parallèle
+         ÉTAPE 2 — EXTRACTION DES MOTS-CLÉS
+         On lit le commentaire <!-- KEYWORDS: ... -->
+         pour construire des URLs Unsplash pertinentes
       ═══════════════════════════════════════ */
-      const sdPrompts = [
-        `ultra premium hero image, ${userPrompt}, cinematic lighting, luxury photography, 8k, sharp`,
-        `elegant lifestyle photography, ${userPrompt}, modern design, high contrast, studio lighting`,
-        `dramatic scene, ${userPrompt}, luxury brand aesthetic, bokeh background, professional shot`
-      ]
-
-      const placeholders = ["%%IMAGE_HERO%%", "%%IMAGE_SECTION1%%", "%%IMAGE_SECTION2%%"]
-      let imageDataUrls = ["", "", ""]
-
-      if (env.AI) {
-        const results = await Promise.all(
-          sdPrompts.map(prompt =>
-            env.AI.run("@cf/stabilityai/stable-diffusion-xl-base-1.0", {
-              prompt,
-              num_steps: 20,
-              width: 1024,
-              height: 576
-            }).catch(err => { console.error("[NyXia SD]", err.message); return null })
-          )
-        )
-
-        results.forEach((result, i) => {
-          if (!result) return
-          let bytes
-          if (result instanceof ArrayBuffer) bytes = new Uint8Array(result)
-          else if (result.image) bytes = result.image
-          else return
-          let binary = ""
-          bytes.forEach(b => binary += String.fromCharCode(b))
-          imageDataUrls[i] = `data:image/png;base64,${btoa(binary)}`
-        })
+      let keywords = ["luxury", "elegance", "premium"]
+      const kwMatch = html.match(/<!--\s*KEYWORDS:\s*([^-]+)\s*-->/)
+      if (kwMatch) {
+        const parsed = kwMatch[1].trim().split(",").map(k => k.trim()).filter(Boolean)
+        if (parsed.length >= 3) keywords = parsed.slice(0, 3)
       }
 
       /* ═══════════════════════════════════════
-         ÉTAPE 3 — REMPLACEMENT PLACEHOLDERS
+         ÉTAPE 3 — URLS UNSPLASH HD GRATUITES
+         Format : https://source.unsplash.com/1200x675/?keyword&sig=N
+         sig= force une image différente pour chaque slot
       ═══════════════════════════════════════ */
-      const fallbackGradients = [
-        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1024' height='576'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23667eea'/%3E%3Cstop offset='1' stop-color='%23764ba2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='576' fill='url(%23g)'/%3E%3C/svg%3E",
-        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1024' height='576'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f093fb'/%3E%3Cstop offset='1' stop-color='%23f5576c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='576' fill='url(%23g)'/%3E%3C/svg%3E",
-        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1024' height='576'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234facfe'/%3E%3Cstop offset='1' stop-color='%2300f2fe'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1024' height='576' fill='url(%23g)'/%3E%3C/svg%3E"
-      ]
+      const seed = Date.now()
+      const unsplashUrls = keywords.map((kw, i) =>
+        `https://source.unsplash.com/1200x675/?${encodeURIComponent(kw)}&sig=${seed + i}`
+      )
 
+      /* ═══════════════════════════════════════
+         ÉTAPE 4 — REMPLACEMENT DES PLACEHOLDERS
+      ═══════════════════════════════════════ */
+      const placeholders = ["%%IMAGE_HERO%%", "%%IMAGE_SECTION1%%", "%%IMAGE_SECTION2%%"]
       placeholders.forEach((placeholder, i) => {
-        const src = imageDataUrls[i] || fallbackGradients[i]
-        html = html.split(placeholder).join(src)
+        html = html.split(placeholder).join(unsplashUrls[i])
       })
 
       return new Response(
