@@ -3,148 +3,157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NyXia IA — Votre Empire d'Affiliation</title>
+  <title>NyXia IA — Votre site d'affiliation prêt en 60 secondes</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg1: #0F1C3F; --bg2: #1A2554; --p: #7B5CFF; --gold: #D4AF37;
-      --t2: #D6D9F0; --t3: #8891B8; --r: 14px;
+      --bg1: #0F1C3F;
+      --bg2: #1A2554;
+      --bg3: #2A3A6E;
+      --p: #7B5CFF;
+      --p2: #5A6CFF;
+      --p3: #4FA3FF;
+      --glow: rgba(123,92,255,0.4);
+      --t: #FFFFFF;
+      --t2: #D6D9F0;
+      --t3: #8891B8;
+      --green: #00E676;
+      --gold: #D4AF37; /* Ton Or */
+      --r: 14px;
     }
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: var(--bg1); color: var(--t2); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
 
+    /* Titre glow — Ton original */
     .h1-glow {
-      background: linear-gradient(135deg, #a78bfa, #4FA3FF);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       filter: drop-shadow(0 0 20px rgba(123,92,255,0.5));
     }
 
-    .pillar-card {
-      background: rgba(26,37,84,0.5); border: 1px solid rgba(123,92,255,0.12);
-      border-radius: var(--r); padding: 24px; backdrop-filter: blur(10px);
-    }
-
-    /* LE BOUTON NUIT & OR */
+    /* LE BOUTON GÉNÉRER : TRANSMUTÉ EN NUIT VITREUSE & GOLD */
     #generate-btn {
-      width: 100%; padding: 20px; border-radius: 50px; cursor: pointer;
-      font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 2px;
-      background: rgba(10, 25, 60, 0.6) !important; color: var(--gold) !important;
+      width: 100%;
+      padding: 18px 40px;
+      border-radius: 50px;
       border: 1px solid rgba(212, 175, 55, 0.4) !important;
-      backdrop-filter: blur(12px); transition: all 0.3s;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      background: rgba(10, 25, 60, 0.5) !important; /* Bleu Nuit Vitreux */
+      backdrop-filter: blur(12px) !important;
+      color: var(--gold) !important; /* Texte Or */
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 0 32px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.3);
+      transition: all .25s;
     }
-    #generate-btn:hover { transform: translateY(-2px); border-color: var(--gold); color: #FFF !important; }
+    #generate-btn:hover {
+      transform: translateY(-3px);
+      border-color: var(--gold) !important;
+      color: #fff !important;
+      box-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+    }
 
-    .input-main {
-      width: 100%; padding: 16px 20px; border-radius: var(--r);
-      background: rgba(10,18,40,0.8); border: 1px solid rgba(123,92,255,0.15); color: #fff;
+    /* Bouton Secondary — Ton original */
+    .btn-secondary {
+      padding: 17px 36px;
+      border-radius: 50px;
+      border: 1px solid rgba(123,92,255,0.4);
+      background: rgba(123,92,255,0.08);
+      color: var(--t2);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all .2s;
+      text-decoration: none;
+      display: inline-block;
     }
+
+    /* Glow d'ambiance — Ton original */
+    .hero-glow {
+      position: absolute;
+      bottom: 10%;
+      right: 5%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(123,92,255,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Piliers — Ton original */
+    .pillar-card {
+      background: rgba(26,37,84,0.5);
+      border: 1px solid rgba(123,92,255,0.12);
+      border-radius: var(--r);
+      padding: 28px 24px;
+      backdrop-filter: blur(10px);
+      transition: all .3s;
+    }
+
+    /* WIDGET NYXIA — TON AVATAR RÉEL */
+    #nyxia-toggle {
+      position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%;
+      border: 2px solid rgba(123,92,255,0.5); background: rgba(15,28,63,0.9);
+      display: flex; align-items: center; justify-content: center; z-index: 999;
+      box-shadow: 0 0 30px rgba(123,92,255,0.3);
+    }
+    #nyxia-toggle img { width: 42px; height: 42px; border-radius: 50%; }
 
     /* ZONE DE RÉSULTAT (Pour voir ton Empire) */
     #result-container {
       display: none; margin-top: 30px; padding: 20px; border-radius: var(--r);
-      background: rgba(0,0,0,0.4); border: 1px solid var(--p); text-align: left;
+      background: rgba(0,0,0,0.4); border: 1px solid var(--gold); text-align: left;
     }
     #result-code {
       width: 100%; height: 200px; background: #000; color: #00FF00;
       font-family: monospace; padding: 10px; border: none; margin-top: 10px;
+      border-radius: var(--r);
     }
 
-    #nyxia-toggle {
-      position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px;
-      border-radius: 50%; border: 2px solid rgba(123,92,255,0.5);
-      background: rgba(15,28,63,0.9); display: flex; align-items: center; justify-content: center;
-    }
-    #nyxia-toggle img { width: 42px; height: 42px; border-radius: 50%; }
+    #upload-preview { display: none; margin-top: 15px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--gold); }
+    #upload-preview img { width: 100%; display: block; }
   </style>
 </head>
+
 <body>
 
-  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
+  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none"></canvas>
+
+  <div class="hero-glow"></div>
 
   <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px">
-    <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:30px">
-      <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:700;">NyXia IA</h1>
-      <h2 style="color:var(--t2);font-size:1.6rem">Votre Empire d'Affiliation en <span style="color:var(--p)">60s</span></h2>
+
+    <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:40px">
+
+      <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;">
+        NyXia IA
+      </h1>
+
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem,3.5vw,2rem);color:var(--t2);font-weight:600;">
+        Votre site d'affiliation prêt en <span style="color:var(--p)">60 secondes</span>
+      </h2>
+
+      <p style="color:var(--t3);max-width:560px;margin:0 auto;line-height:1.7">
+        NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>. Elle crée votre Empire d'Affiliation en temps réel pendant que vous dormez.
+      </p>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:left">
-        <div class="pillar-card"><p style="color:var(--p);font-weight:700">Visibilité</p></div>
-        <div class="pillar-card"><p style="color:var(--p);font-weight:700">Conversion</p></div>
-        <div class="pillar-card"><p style="color:var(--p);font-weight:700">CashFlow</p></div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:15px">
-        <input id="user-input" class="input-main" type="text" placeholder="Décrivez votre projet...">
-        <button onclick="document.getElementById('file-input').click()" style="padding:12px; cursor:pointer; background:none; border:1px solid var(--p); color:var(--t2); border-radius:var(--r)">📷 Image de Branding</button>
-        <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewImage(this)">
-        
-        <div id="upload-preview" style="display:none;"><img id="preview-thumb" src="" style="width:100%; border-radius:var(--r)"></div>
-
-        <button id="generate-btn">Générer mon Empire</button>
-      </div>
-
-      <div id="result-container">
-        <p style="color:var(--gold); font-weight:bold;">✨ Votre Empire est prêt :</p>
-        <textarea id="result-code" readonly></textarea>
-        <p style="font-size:0.8rem; margin-top:5px;">Copiez ce code et collez-le dans un fichier .html</p>
-      </div>
-
-    </div>
-  </main>
-
-  <div id="nyxia-toggle"><img src="/NyXia.png" alt="NyXia"></div>
-
-  <script src="/js/starry-bg.js" defer></script>
-  <script>
-    let base64Image = "";
-    function previewImage(input) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        base64Image = e.target.result;
-        document.getElementById('preview-thumb').src = e.target.result;
-        document.getElementById('upload-preview').style.display = "block";
-      };
-      reader.readAsDataURL(file);
-    }
-
-    document.getElementById('generate-btn').addEventListener('click', async () => {
-      const btn = document.getElementById('generate-btn');
-      const input = document.getElementById('user-input').value;
-      if (!base64Image) return alert("Oznya, il me faut une image !");
-
-      btn.innerText = "NyXia transmute...";
-
-      try {
-        const response = await fetch('/api/vision', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'X-Oznya-Secret': 'OznyaProtect72h' // LA CLÉ QUI DOIT ÊTRE DANS TON WORKER
-          },
-          body: JSON.stringify({ image_base64: base64Image, prompt_addition: input })
-        });
-
-        const data = await response.json();
-        
-        // Extraction du code de la réponse OpenRouter
-        const content = data.choices[0].message.content;
-        
-        document.getElementById('result-container').style.display = "block";
-        document.getElementById('result-code').value = content;
-        
-        btn.innerText = "Générer mon Empire";
-        alert("Succès ! Le code est affiché ci-dessous.");
-
-      } catch (err) {
-        alert("Erreur de connexion. Vérifie ta SECRET_KEY dans Cloudflare.");
-        btn.innerText = "Générer mon Empire";
-      }
-    });
-  </script>
-</body>
-</html>
+        <div class="pillar-card">
+          <p style="color:var(--p);font-weight:700;margin-bottom:8px">Visibilité Permanente</p>
+          <p style="color:var(--t3);font-size:0.85rem">Soyez trouvé par des milliers de personnes, sans effort constant.</p>
+        </div>
+        <div class="pillar-card">
+          <p style="color:var(--p);font-weight:700;margin-bottom:8px">Conversion Optimisée</p>
+          <p style="color:var(--t3);font-size:0.85rem">Une technologie conçue pour
