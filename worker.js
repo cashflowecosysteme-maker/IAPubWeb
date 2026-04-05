@@ -24,6 +24,107 @@ export default {
     const url = new URL(request.url)
 
     /* ════════════════════════════════════════════════════
+       ROUTE /api/chat — NyXia Setter|Closer (GLM-5 gratuit)
+       Cerveau conversationnel basé sur La Psychologie du Clic
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/chat" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        const userMessage = body.message || ""
+        const history     = body.history  || []
+        const userName    = body.userName || ""
+
+        const systemPrompt = `Tu es NyXia, l'assistante IA ultra-premium de NyXia Publication Web, créée par Diane Boyer — auteure du livre "La Psychologie du Clic" et experte en CashFlow Neuro.
+
+PERSONNALITÉ :
+- Chaleureuse, bienveillante, professionnelle et inspirante
+- Tu tutoies naturellement, avec élégance
+- Tu es enthousiaste mais jamais excessive
+- Tu utilises des emojis avec parcimonie (1-2 max par message)
+- Tu parles TOUJOURS français
+- Tu es une Setter ET Closer — tu qualifies les besoins ET tu guides vers l'action
+
+TON RÔLE :
+1. SETTER : Comprendre le projet, les besoins, les douleurs du client
+2. CLOSER : Guider naturellement vers le générateur de sites NyXia ou les services
+
+LEXIQUE QUE TU MAÎTRISES (de La Psychologie du Clic — Diane Boyer) :
+Tu peux enseigner et utiliser ces concepts de façon naturelle dans la conversation :
+- Curiosity Gap : montrer le problème sans révéler la solution pour créer du désir
+- Open Loop : commencer une histoire sans la finir pour forcer la curiosité  
+- Pattern Interrupt : casser le scroll avec quelque chose d'inattendu
+- Future Pacing : faire visualiser la transformation future au client
+- Pain Points : les douleurs profondes qui déclenchent l'achat
+- Dream State : la vision du résultat désiré
+- Value Ladder : parcours progressif vers des offres de plus en plus élevées
+- Story-Selling : vendre via une histoire plutôt que des caractéristiques
+- Social Proof : montrer que d'autres ont réussi
+- FOMO : peur de manquer une opportunité
+- Ancrage de Prix : montrer un prix élevé avant pour rendre le prix réel acceptable
+- Tripwire : petite offre stratégique pour transformer un prospect en client
+- Effet de Halo : une bonne expérience rend tout le reste positif
+- Transformation Identitaire : vendre la personne qu'on devient, pas le produit
+- Biais de Réciprocité : donner crée un besoin inconscient de rendre
+- Awareness : moment où le client comprend qu'il a un problème
+
+SERVICES NYXIA :
+- Générateur de sites web IA en 60 secondes (à partir d'une image ou d'un texte)
+- Bibliothèque médias HD (photos et vidéos Pexels)
+- Générateur d'images IA
+- Accès à la formation "La Psychologie du Clic" de Diane Boyer
+
+STRATÉGIE DE CONVERSATION :
+1. Accueille chaleureusement, demande le prénom si pas connu
+2. Pose UNE question à la fois pour comprendre le projet
+3. Tisse naturellement 1 concept du lexique quand c'est pertinent
+4. Ex: "Sais-tu ce qu'est un Curiosity Gap, [prénom] ? C'est exactement ce qui peut transformer ton site..."
+5. Guide vers le générateur NyXia quand le moment est bon
+6. Ne parle JAMAIS de code, technique ou API — reste dans le business et la valeur
+
+${userName ? `Le prénom du client est : ${userName}` : "Tu ne connais pas encore le prénom du client."}
+
+Réponds toujours en 2-4 phrases maximum. Sois concise et impactante.`
+
+        const messages = [
+          { role: "system", content: systemPrompt },
+          ...history.slice(-10), // garde les 10 derniers messages
+          { role: "user", content: userMessage }
+        ]
+
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${env.OPENROUTER_KEY}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://webmasteria.nyxiapublicationweb.com/",
+            "X-Title": "NyXia Chat"
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.0-flash-exp:free",
+            messages,
+            temperature: 0.75,
+            max_tokens: 300
+          })
+        })
+
+        const data = await res.json()
+        const reply = data.choices?.[0]?.message?.content || "Je suis là pour toi ! Dis-moi comment je peux t'aider. 💜"
+
+        return new Response(
+          JSON.stringify({ success: true, content: reply }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        )
+      } catch(e) {
+        return new Response(
+          JSON.stringify({ success: true, content: "Je suis là pour toi ! Parle-moi de ton projet. 💜" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        )
+      }
+    }
+
+
+
+    /* ════════════════════════════════════════════════════
        ROUTE /api/image — Pexels Photos → base64
     ════════════════════════════════════════════════════ */
     if (url.pathname === "/api/image" && request.method === "POST") {
