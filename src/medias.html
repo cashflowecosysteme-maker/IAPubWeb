@@ -536,6 +536,10 @@
       .search-input-wrap { width: 100%; }
       .tabs-wrap { width: 100%; justify-content: center; }
     }
+
+    /* ===== WIDGET NYXIA =====*/
+    /* ===== WIDGET NYXIA — EXACT REPLICA ===== */
+
   </style>
 </head>
 <body>
@@ -742,7 +746,7 @@
       })
       .catch(function(err) {
         setLoading(false)
-        alert('Erreur : ' + err.message)
+        showError('Aucun résultat trouvé — essaie un autre mot-clé')
       })
     }
 
@@ -793,8 +797,22 @@
       })
       .catch(function(err) {
         setLoading(false)
-        alert('Erreur : ' + err.message)
+        showError('Aucun résultat trouvé — essaie un autre mot-clé')
       })
+    }
+
+    /* ══════════════════════════════════════
+       ERREUR DISCRÈTE (toast)
+    ══════════════════════════════════════ */
+    function showError(msg) {
+      var existing = document.getElementById('nyxia-toast')
+      if (existing) existing.remove()
+      var toast = document.createElement('div')
+      toast.id = 'nyxia-toast'
+      toast.textContent = '⚠️ ' + msg
+      toast.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(26,37,84,0.95);border:1px solid rgba(123,92,255,0.3);color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;padding:12px 24px;border-radius:50px;z-index:9999;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:fadeUp .3s ease'
+      document.body.appendChild(toast)
+      setTimeout(function() { if (toast.parentNode) toast.remove() }, 4000)
     }
 
     /* ══════════════════════════════════════
@@ -803,7 +821,7 @@
     function addHistory(item) {
       mediaHistory.unshift(item)
       if (mediaHistory.length > 30) mediaHistory = mediaHistory.slice(0, 30)
-      try { localStorage.setItem('nyxia_media_history', JSON.stringify(history)) } catch(e){}
+      try { localStorage.setItem('nyxia_media_history', JSON.stringify(mediaHistory)) } catch(e){}
       renderHistory()
     }
 
@@ -911,7 +929,98 @@
     })
   </script>
 
+<!-- Pastille flottante avec avatar NyXia.png -->
+
+  <div id="nyxia-toggle">
+
+    <img src="/NyXia.png" alt="NyXia">
+
+    <span class="nyxia-online"></span>
+
+  </div>
+
+
+
+  <!-- Panel de chat -->
+
+  <div id="nyxia-chat">
+
+    <div id="nyxia-header">
+
+      <img src="/NyXia.png" alt="NyXia">
+
+      <div>
+
+        <div style="color:var(--p);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">NyXia IA</div>
+
+        <div style="color:var(--green);font-size:11px">En ligne</div>
+
+      </div>
+
+      <button id="nyxia-close">&times;</button>
+
+    </div>
+
+    <div id="nyxia-messages"></div>
+
+    <div id="nyxia-input-row">
+
+      <input id="nyxia-input" type="text" placeholder="Écris à NyXia...">
+
+      <button id="nyxia-send">&#10148;</button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ===== PREVIEW PANEL (overlay) ===== -->
+
+  <div id="preview-panel">
+
+    <div id="preview-container">
+
+      <div id="preview-toolbar">
+
+        <h3>NyXia Preview</h3>
+
+        <button class="toolbar-btn" id="btn-view-code">View Code</button>
+
+        <button class="toolbar-btn" id="btn-copy-code">Copy Code</button>
+
+        <button class="toolbar-btn close-preview" id="btn-close-preview">Fermer</button>
+
+      </div>
+
+      <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ===== CODE MODAL ===== -->
+
+  <div id="code-modal">
+
+    <div class="code-toolbar">
+
+      <h3>Code HTML généré</h3>
+
+      <button class="toolbar-btn" id="btn-copy-modal">Copier</button>
+
+      <button class="toolbar-btn close-preview" id="btn-close-code">Fermer</button>
+
+    </div>
+
+    <pre id="code-output"></pre>
+
+  </div>
+
   <script src="/js/starry-bg.js" defer></script>
+  <script src="/js/nyxia-closer.js" defer></script>
 
 </body>
 </html>
