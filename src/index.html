@@ -3,162 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NyXia IA — Votre site d'affiliation prêt en 60 secondes</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <title>NyXia IA — Votre Empire d'Affiliation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg1: #0F1C3F;
-            --bg2: #1A2554;
-            --bg3: #2A3A6E;
-            --p: #7B5CFF;
-            --p2: #5A6CFF;
-            --p3: #4FA3FF;
-            --glow: rgba(123, 92, 255, 0.4);
-            --t: #FFFFFF;
-            --t2: #D6D9F0;
-            --t3: #8891B8;
-            --green: #00E676;
-            --r: 14px;
-        }
-
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg1); color: var(--t); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
-
-        .h1-glow {
-            background: linear-gradient(135deg, #a78bfa, var(--p3));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 20px rgba(123, 92, 255, 0.5));
-        }
-
-        .pillar-card {
-            background: rgba(26, 37, 84, 0.5);
-            border: 1px solid rgba(123, 92, 255, 0.12);
-            border-radius: var(--r);
-            padding: 28px 24px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-
-        #generate-btn {
-            width: 100%;
-            padding: 18px 40px;
-            border-radius: 50px;
-            border: none;
-            background: linear-gradient(135deg, var(--p), var(--p2));
-            color: white;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            box-shadow: 0 10px 32px var(--glow);
-            transition: all 0.25s;
-        }
-
-        #generate-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px var(--glow); filter: brightness(1.1); }
-
-        .input-main {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: var(--r);
-            background: rgba(10, 18, 40, 0.8);
-            border: 1px solid rgba(123, 92, 255, 0.15);
-            color: #fff;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-
-        #nyxia-toggle {
-            position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%;
-            border: 2px solid rgba(123, 92, 255, 0.5); background: rgba(15, 28, 63, 0.9);
-            display: flex; align-items: center; justify-content: center; z-index: 999;
-            box-shadow: 0 0 30px rgba(123, 92, 255, 0.3);
-        }
-        #nyxia-toggle img { width: 42px; height: 42px; border-radius: 50%; }
-
-        #upload-preview { display: none; margin-top: 15px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--p); }
+        :root { --bg1: #0F1C3F; --p: #7B5CFF; --t2: #D6D9F0; --t3: #8891B8; --r: 14px; }
+        body { background: var(--bg1); color: var(--t2); font-family: 'Outfit', sans-serif; margin: 0; overflow-x: hidden; }
+        .h1-glow { background: linear-gradient(135deg, #a78bfa, #4FA3FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 20px rgba(123,92,255,0.5)); }
+        .pillar-card { background: rgba(26,37,84,0.5); border: 1px solid rgba(123,92,255,0.12); border-radius: var(--r); padding: 24px; backdrop-filter: blur(10px); }
+        #generate-btn { width: 100%; padding: 20px; border-radius: 50px; cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700; background: var(--p); color: #fff; border: none; box-shadow: 0 4px 20px rgba(123,92,255,0.4); text-transform: uppercase; }
+        .input-main { width: 100%; padding: 16px 20px; border-radius: var(--r); background: rgba(10,18,40,0.8); border: 1px solid rgba(123,92,255,0.15); color: #fff; margin-bottom: 10px; }
+        #upload-preview { display: none; margin: 15px 0; border-radius: var(--r); overflow: hidden; border: 1px solid var(--p); }
         #upload-preview img { width: 100%; display: block; }
     </style>
 </head>
 <body>
-
     <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
-
-    <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px">
-        <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:40px">
-            <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;">NyXia IA</h1>
-            <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem,3.5vw,2rem);color:var(--t2);font-weight:600;">Votre site d'affiliation prêt en <span style="color:var(--p)">60 secondes</span></h2>
-            
-            <p style="color:var(--t3);max-width:560px;margin:0 auto;line-height:1.7">
-                NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>. Elle crée, publie et optimise votre Empire pendant que vous dormez.
-            </p>
-
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:left">
-                <div class="pillar-card">
-                    <p style="color:var(--p);font-weight:700;margin-bottom:8px">Visibilité permanente</p>
-                    <p style="color:var(--t3);font-size:0.85rem">Votre site trouvé par des milliers de personnes chaque jour, sans effort.</p>
-                </div>
-                <div class="pillar-card">
-                    <p style="color:var(--p);font-weight:700;margin-bottom:8px">Mots qui vendent</p>
-                    <p style="color:var(--t3);font-size:0.85rem">Chaque phrase est conçue pour transformer un visiteur en acheteur.</p>
-                </div>
-                <div class="pillar-card">
-                    <p style="color:var(--p);font-weight:700;margin-bottom:8px">CashFlow Automatique</p>
-                    <p style="color:var(--t3);font-size:0.85rem">Gagnez des revenus sans intervenir, grâce à l'intelligence artificielle.</p>
-                </div>
+    <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px">
+        <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:30px">
+            <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:3.5rem;margin:0;">NyXia IA</h1>
+            <h2 style="font-size:1.8rem;">Votre Empire d'Affiliation prêt en <span style="color:var(--p)">60 secondes</span></h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;text-align:left">
+                <div class="pillar-card"><p style="color:var(--p);font-weight:700">Visibilité Permanente</p></div>
+                <div class="pillar-card"><p style="color:var(--p);font-weight:700">Conversion Optimisée</p></div>
+                <div class="pillar-card"><p style="color:var(--p);font-weight:700">CashFlow Automatique</p></div>
             </div>
-
-            <div style="display:flex;flex-direction:column;gap:15px">
-                <input id="user-input" class="input-main" type="text" placeholder="Décrivez votre projet d'affiliation...">
-                
-                <button onclick="document.getElementById('file-input').click()" style="padding:15px; border-radius:var(--r); border:1px solid rgba(123,92,255,0.3); background:rgba(123,92,255,0.05); color:var(--t2); cursor:pointer">📷 Ajouter une Image de Branding</button>
-                <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewImage(this)">
-
-                <div id="upload-preview"><img id="preview-thumb" src=""></div>
-
-                <button id="generate-btn">Générer mon Empire</button>
-            </div>
-            
-            <p style="color:var(--t3);font-size:0.75rem;opacity:0.5">Une technologie Publication-Web.com — Visionnaire depuis 1997</p>
+            <input id="user-input" class="input-main" type="text" placeholder="Décrivez votre projet d'affiliation...">
+            <button onclick="document.getElementById('file-input').click()" style="padding:15px;background:none;border:1px solid var(--p);color:var(--t2);border-radius:var(--r);cursor:pointer">📷 Ajouter une Image</button>
+            <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewImage(this)">
+            <div id="upload-preview"><img id="preview-thumb" src=""></div>
+            <button id="generate-btn">Générer mon Empire</button>
         </div>
     </main>
-
-    <div id="nyxia-toggle"><img src="/NyXia.png" alt="NyXia"></div>
-
     <script src="/js/starry-bg.js" defer></script>
     <script>
         let base64Image = "";
         function previewImage(input) {
-            const file = input.files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
                 base64Image = e.target.result;
-                document.getElementById('preview-thumb').src = base64Image;
+                document.getElementById('preview-thumb').src = e.target.result;
                 document.getElementById('upload-preview').style.display = "block";
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(input.files[0]);
         }
-
         document.getElementById('generate-btn').addEventListener('click', async () => {
             const btn = document.getElementById('generate-btn');
-            if (!base64Image) return alert("Oznya, il faut une image pour activer l'Alchimie !");
-            
+            if (!base64Image) return alert("Oznya, il faut une image !");
             btn.innerText = "NyXia Alchimise...";
             try {
                 const response = await fetch('/api/vision', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image_base64: base64Image, prompt_addition: document.getElementById('user-input').value })
+                    body: JSON.stringify({ image_base64: base64Image, prompt: document.getElementById('user-input').value })
                 });
-                alert("Empire généré !");
-            } catch (err) { alert("Erreur de connexion."); }
+                const data = await response.json();
+                alert("Empire généré ! (Voir la console)");
+            } catch (err) { alert("Erreur : Le cerveau ne répond pas."); }
             btn.innerText = "Générer mon Empire";
         });
     </script>
