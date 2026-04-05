@@ -21,7 +21,7 @@ export default {
           },
           body: JSON.stringify({
             // MODÈLE LE PLUS PUISSANT ET VALIDE IMMÉDIATEMENT
-            model: "openai/gpt-4o-mini", 
+            model: "claude-opus-4.6", 
             messages: [
               { "role": "system", "content": "Tu es NyXia IA. Génère un site web complet, expert et visuellement parfait en HTML/CSS." },
               { "role": "user", "content": userInput }
