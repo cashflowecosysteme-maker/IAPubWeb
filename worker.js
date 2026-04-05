@@ -741,10 +741,12 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
             "X-Title": "NyXia Chat"
           },
           body: JSON.stringify({
-            model: "google/gemini-2.0-flash-lite-001",
+            model: agent === "general" ? "google/gemini-2.0-flash-lite-001"
+                  : agent === "seo" ? "google/gemini-2.0-flash-001"
+                  : "deepseek/deepseek-chat-v3-5",
             messages,
-            temperature: 0.75,
-            max_tokens: agent === "general" ? 400 : 8000
+            temperature: agent === "general" ? 0.75 : 0.8,
+            max_tokens: agent === "general" ? 400 : 16000
           })
         })
 
@@ -890,7 +892,7 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
     try {
       const body = await request.json()
-      const userPrompt  = body.prompt    || "Mon Empire Rentable"
+      const userPrompt  = body.prompt    || ""
       const imageBase64 = body.image     || ""
       const imageType   = body.imageType || "image/jpeg"
 
