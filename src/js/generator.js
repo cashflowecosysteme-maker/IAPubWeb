@@ -232,13 +232,19 @@
      TRAITEMENT DE LA RÉPONSE HTML
   ═══════════════════════════════ */
   function handleGenerated(content) {
-    var html = extractHtml(content)
+    /* Nettoyage : supprime les backticks Markdown si présents */
+    var cleaned = content.replace(/^`{1,3}html\s*/i, '').replace(/`{1,3}\s*$/, '').trim()
+    var html = extractHtml(cleaned) || extractHtml(content)
     if (html) {
       generatedCode = html
       showPreview(html)
       resetBtn('Site généré ✓')
+    } else if (cleaned.indexOf('<!DOCTYPE') !== -1 || cleaned.indexOf('<html') !== -1) {
+      /* Fallback : le contenu EST du HTML, on l'utilise directement */
+      generatedCode = cleaned
+      showPreview(cleaned)
+      resetBtn('Site généré ✓')
     } else {
-      /* Pas de HTML détecté dans la réponse */
       console.warn('[NyXia] Pas de HTML trouvé dans la réponse. Contenu brut :')
       console.warn(content.substring(0, 500))
       generatedCode = content
