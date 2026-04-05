@@ -323,7 +323,57 @@
         <div class="msg" id="pw-msg"></div>
       </div>
 
-      <!-- MESSAGES TAB -->
+      
+      <!-- COMPOSER UN MESSAGE -->
+      <div style="margin-bottom:28px">
+        <div class="section-title">✍️ Écrire à mes clients</div>
+        <div style="background:rgba(26,37,84,0.45);border:1px solid rgba(123,92,255,0.14);border-radius:18px;padding:24px;backdrop-filter:blur(10px)">
+
+          <!-- Destinataire -->
+          <div style="margin-bottom:14px">
+            <label class="form-label">Destinataire</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap" id="recipient-btns">
+              <button onclick="setRecipient('all')" id="btn-all"
+                style="padding:8px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.3);background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">
+                📢 Tous les clients
+              </button>
+              <button onclick="setRecipient('specific')" id="btn-specific"
+                style="padding:8px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.07);color:var(--t3);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">
+                👤 Un client précis
+              </button>
+            </div>
+            <div id="specific-email-wrap" style="display:none;margin-top:10px">
+              <select id="specific-email" style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none;cursor:pointer">
+                <option value="">-- Choisir un client --</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Sujet -->
+          <div style="margin-bottom:12px">
+            <label class="form-label">Sujet</label>
+            <input type="text" id="compose-subject" placeholder="Ex: Bonne nouvelle pour toi !" 
+              style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none">
+          </div>
+
+          <!-- Message -->
+          <div style="margin-bottom:16px">
+            <label class="form-label">Message</label>
+            <textarea id="compose-msg" placeholder="Écris ton message ici..." rows="4"
+              style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:10px 14px;outline:none;resize:none"></textarea>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px">
+            <button onclick="sendAdminMessage()" id="btn-compose-send"
+              style="padding:11px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Space Grotesk,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(123,92,255,0.4);transition:all .25s">
+              Envoyer ✉️
+            </button>
+            <div id="compose-status" style="display:none;font-size:13px;padding:8px 14px;border-radius:10px"></div>
+          </div>
+        </div>
+      </div>
+
+<!-- MESSAGES TAB -->
       <div style="margin-bottom:28px">
         <div class="section-title">✉️ Messages clients <span id="unread-badge" style="background:rgba(255,75,110,0.2);border:1px solid rgba(255,75,110,0.3);color:#ff8fab;font-size:12px;padding:2px 10px;border-radius:50px;font-family:Outfit,sans-serif;font-weight:400;display:none"></span></div>
         <div style="background:rgba(26,37,84,0.45);border:1px solid rgba(123,92,255,0.14);border-radius:18px;overflow:hidden;backdrop-filter:blur(10px)">
