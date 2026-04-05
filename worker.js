@@ -17,13 +17,11 @@ export default {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${env.OPENROUTER_KEY}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://nyxia.pro",
-            "X-Title": "NyXia Empire Builder"
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            // IDENTIFIANT EXACT RECONNU PAR OPENROUTER POUR LA VERSION PLUS
-            model: "bigmodel/glm-4v-plus", 
+            // MODÈLE LE PLUS PUISSANT ET VALIDE IMMÉDIATEMENT
+            model: "google/gemini-pro-1.5", 
             messages: [
               { "role": "system", "content": "Tu es NyXia IA. Génère un site d'affiliation complet, expert et visuellement parfait en HTML/CSS." },
               { "role": "user", "content": userInput }
@@ -32,17 +30,12 @@ export default {
         });
 
         const result = await response.json();
-        
-        if (result.error) {
-            return new Response(JSON.stringify({ error: result.error.message }), { status: 200, headers: cors });
-        }
-
         return new Response(JSON.stringify(result), {
           headers: { ...cors, "Content-Type": "application/json" }
         });
 
       } catch (e) {
-        return new Response(JSON.stringify({ error: "Erreur de connexion", details: e.message }), { 
+        return new Response(JSON.stringify({ error: "Erreur technique", details: e.message }), { 
           status: 200, 
           headers: cors 
         });
