@@ -182,7 +182,7 @@ export default {
         const list = await env.USERS_KV.list()
         const users = []
         for (const key of list.keys) {
-          if (!key.name.startsWith("session:") && !key.name.startsWith("admin_session:") && !key.name.startsWith("disabled:")) {
+          if (!key.name.startsWith("session:") && !key.name.startsWith("admin_session:") && !key.name.startsWith("disabled:") && !key.name.startsWith("msg:") && !key.name.startsWith("admin_password") && key.name.includes("@")) {
             const disabled = await env.USERS_KV.get("disabled:" + key.name)
             users.push({ email: key.name, disabled: !!disabled })
           }
