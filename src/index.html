@@ -3,79 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NyXia IA — Votre Empire d'Affiliation</title>
+  <title>NyXia IA — Votre site d'affiliation prêt en 60 secondes</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg1: #0F1C3F; /* Ton bleu d'origine */
+      --bg1: #0F1C3F;
       --bg2: #1A2554;
+      --bg3: #2A3A6E;
       --p: #7B5CFF;
-      --gold: #D4AF37;
+      --p2: #5A6CFF;
+      --p3: #4FA3FF;
+      --glow: rgba(123,92,255,0.4);
+      --t: #FFFFFF;
       --t2: #D6D9F0;
       --t3: #8891B8;
+      --green: #00E676;
+      --gold: #D4AF37;
       --r: 14px;
     }
 
-    /* Reset & Base */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: var(--bg1); color: var(--t2); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
 
-    /* Titre Glow d'origine */
     .h1-glow {
-      background: linear-gradient(135deg, #a78bfa, #4FA3FF);
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
       filter: drop-shadow(0 0 20px rgba(123,92,255,0.5));
     }
 
-    /* Tes 3 Piliers intacts */
-    .pillar-card {
-      background: rgba(26,37,84,0.5);
-      border: 1px solid rgba(123,92,255,0.12);
-      border-radius: var(--r);
-      padding: 24px;
-      backdrop-filter: blur(10px);
-      transition: all .3s;
-    }
-
-    /* LE BOUTON : NUIT & OR (Enfin intégré sans rien casser) */
-    #generate-btn {
+    /* ===== TON BOUTON TRANSMUTÉ : VITREUX NUIT & GOLD ===== */
+    .btn-primary {
       display: block;
       width: 100%;
-      margin-top: 15px;
       padding: 20px;
-      border-radius: var(--r);
-      cursor: pointer;
-      text-align: center;
+      margin-top: 10px;
+      border-radius: 50px;
+      border: 1px solid rgba(212, 175, 55, 0.4) !important;
+      
+      /* Fond Bleu Marine Nuit Vitreux */
+      background: rgba(10, 25, 60, 0.5) !important;
+      backdrop-filter: blur(12px) !important;
+      
+      /* Texte Gold */
+      color: var(--gold) !important;
       font-family: 'Space Grotesk', sans-serif;
       font-size: 17px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 2px;
       
-      /* Style Vitreux Nuit */
-      background: rgba(5, 10, 31, 0.6);
-      color: var(--gold);
-      border: 1px solid rgba(212, 175, 55, 0.4);
-      backdrop-filter: blur(15px);
-      
-      transition: all 0.4s ease;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 25px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
     }
 
-    #generate-btn:hover {
-      border-color: var(--gold);
-      background: rgba(212, 175, 55, 0.1);
-      color: #FFF;
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-      transform: translateY(-2px);
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      border-color: var(--gold) !important;
+      color: #FFF !important;
+      box-shadow: 0 0 35px rgba(212, 175, 55, 0.25);
     }
 
-    /* Style Inputs */
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.6s ease;
+    }
+    .btn-primary:hover::after { left: 100%; }
+
+    .pillar-card {
+      background: rgba(26,37,84,0.5);
+      border: 1px solid rgba(123,92,255,0.12);
+      border-radius: var(--r);
+      padding: 28px 24px;
+      backdrop-filter: blur(10px);
+      transition: all .3s;
+    }
+
     .input-main {
       width: 100%;
       padding: 16px 20px;
@@ -87,14 +102,10 @@
       outline: none;
     }
 
-    /* Widget NyXia Toggle (Avatar) */
     #nyxia-toggle {
-      position: fixed; bottom: 24px; right: 24px;
-      width: 60px; height: 60px; border-radius: 50%;
-      border: 2px solid rgba(123,92,255,0.5);
-      background: rgba(15,28,63,0.9);
-      cursor: pointer; z-index: 999;
-      display: flex; align-items: center; justify-content: center;
+      position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%;
+      border: 2px solid rgba(123,92,255,0.5); background: rgba(15,28,63,0.9);
+      display: flex; align-items: center; justify-content: center; z-index: 999;
     }
     #nyxia-toggle img { width: 42px; height: 42px; border-radius: 50%; }
   </style>
@@ -111,21 +122,21 @@
       <h2 style="color:var(--t2);font-weight:600;font-size:1.8rem">Votre site d'affiliation prêt en <span style="color:var(--p)">60 secondes</span></h2>
 
       <p style="color:var(--t3);max-width:560px;margin:0 auto;line-height:1.7">
-        NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>.
+        NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>. Elle crée votre Empire pendant que vous dormez.
       </p>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:left">
         <div class="pillar-card">
-          <p style="color:var(--p);font-weight:700;margin-bottom:8px">Visibilité Google</p>
-          <p style="color:var(--t3);font-size:0.85rem">Trouvé par des milliers de personnes.</p>
+          <p style="color:var(--p);font-weight:700;margin-bottom:8px">Visibilité permanente</p>
+          <p style="color:var(--t3);font-size:0.85rem">Trouvé par des milliers de personnes, sans effort.</p>
         </div>
         <div class="pillar-card">
           <p style="color:var(--p);font-weight:700;margin-bottom:8px">Mots qui vendent</p>
-          <p style="color:var(--t3);font-size:0.85rem">Conçu pour transformer vos visiteurs.</p>
+          <p style="color:var(--t3);font-size:0.85rem">Transformez vos visiteurs en acheteurs.</p>
         </div>
         <div class="pillar-card">
           <p style="color:var(--p);font-weight:700;margin-bottom:8px">Commissions Auto</p>
-          <p style="color:var(--t3);font-size:0.85rem">Gagnez des revenus grâce à l'IA.</p>
+          <p style="color:var(--t3);font-size:0.85rem">Revenus automatiques grâce à l'IA.</p>
         </div>
       </div>
 
@@ -139,18 +150,19 @@
             <img id="preview-thumb" src="" style="width:100%; display:block">
         </div>
 
-        <button id="generate-btn">
+        <button id="generate-btn" class="btn-primary">
           Générer mon Empire
         </button>
       </div>
 
+      <p style="color:var(--t3);font-size:0.75rem;opacity:0.5">Technologie Publication-Web.com — Depuis 1997</p>
     </div>
   </main>
 
   <div id="nyxia-toggle"><img src="/NyXia.png" alt="NyXia"></div>
 
+  <script src="/js/starry-bg.js" defer></script>
   <script>
-    // Preview image
     function previewImage(input) {
       const file = input.files[0];
       const reader = new FileReader();
