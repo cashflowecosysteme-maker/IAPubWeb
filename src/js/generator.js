@@ -1,86 +1,75 @@
 /**
- * generator.js — NyXia IA Sandbox
- * Mode 1 : Texte → POST /api/generate (Groq)
- * Mode 2 : Image → POST /api/vision (OpenRouter GLM-4V) → Preview HTML
- * Aucune clé API côté client.
+ * generator.js — NyXia IA
+ * Mode 1 : Texte seul  → POST /api/generate  (Groq)
+ * Mode 2 : Image (+ texte optionnel) → POST /api/vision (Claude Sonnet 4.6 via OpenRouter)
  *
- * v2 — Compression client-side + Logs d'erreur détaillés
+ * CORRECTIONS v3 :
+ * - Image envoyée CORRECTEMENT à l'IA (base64 sans préfixe data:...)
+ * - Prompt texte inclus même en mode image
+ * - Réponse OpenRouter bien parsée (choices[0].message.content)
+ * - URL unifiée vers le Worker corrigé
  */
 ;(function () {
   'use strict'
 
-  /* ═══ DOM ═══ */
-  var btn = document.getElementById('generate-btn')
-  var input = document.getElementById('user-input')
-  var uploadBtn = document.getElementById('upload-btn')
-  var fileInput = document.getElementById('file-input')
-  var uploadPreview = document.getElementById('upload-preview')
-  var previewThumb = document.getElementById('preview-thumb')
-  var removeImgBtn = document.getElementById('remove-img')
-  var previewPanel = document.getElementById('preview-panel')
-  var previewFrame = document.getElementById('preview-frame')
-  var codeModal = document.getElementById('code-modal')
-  var codeOutput = document.getElementById('code-output')
-
-  /* Toolbar buttons */
-  var btnViewCode = document.getElementById('btn-view-code')
-  var btnCopyCode = document.getElementById('btn-copy-code')
-  var btnClosePreview = document.getElementById('btn-close-preview')
-  var btnCopyModal = document.getElementById('btn-copy-modal')
-  var btnCloseCode = document.getElementById('btn-close-code')
+  /* ═══════════════════════════════
+     DOM
+  ═══════════════════════════════ */
+  var btn            = document.getElementById('generate-btn')
+  var input          = document.getElementById('user-input')
+  var uploadBtn      = document.getElementById('upload-btn')
+  var fileInput      = document.getElementById('file-input')
+  var uploadPreview  = document.getElementById('upload-preview')
+  var previewThumb   = document.getElementById('preview-thumb')
+  var removeImgBtn   = document.getElementById('remove-img')
+  var previewPanel   = document.getElementById('preview-panel')
+  var previewFrame   = document.getElementById('preview-frame')
+  var codeModal      = document.getElementById('code-modal')
+  var codeOutput     = document.getElementById('code-output')
+  var btnViewCode    = document.getElementById('btn-view-code')
+  var btnCopyCode    = document.getElementById('btn-copy-code')
+  var btnClosePreview= document.getElementById('btn-close-preview')
+  var btnCopyModal   = document.getElementById('btn-copy-modal')
+  var btnCloseCode   = document.getElementById('btn-close-code')
 
   if (!btn || !input) return
 
-  /* ═══ ÉTAT ═══ */
-  var imageBase64 = ''
+  /* ═══════════════════════════════
+     ÉTAT
+  ═══════════════════════════════ */
+  var imageBase64   = ''   // base64 PUR (sans préfixe data:...)
+  var imageMimeType = ''   // ex : "image/jpeg"
   var generatedCode = ''
 
-  /* ═══════════════════════════════════════════════════════════
-     COMPRESSION IMAGE — Canvas API
-     - Redimensionne : max 1024px sur le plus grand côté
-     - Compresse : JPEG qualité 0.75 (~150-300 KB au lieu de 5 MB)
-     - Retourne : Promise<string> data:image/jpeg;base64,...
-     ═══════════════════════════════════════════════════════════ */
-  var MAX_DIM = 1024
+  /* ═══════════════════════════════
+     COMPRESSION IMAGE
+     Max 1024px, JPEG 0.75
+  ═══════════════════════════════ */
+  var MAX_DIM      = 1024
   var JPEG_QUALITY = 0.75
 
   function compressImage(file) {
     return new Promise(function (resolve, reject) {
       var reader = new FileReader()
-      reader.onerror = function () {
-        reject(new Error('Impossible de lire le fichier'))
-      }
+      reader.onerror = function () { reject(new Error('Impossible de lire le fichier')) }
       reader.onload = function (e) {
         var img = new Image()
-        img.onerror = function () {
-          reject(new Error('Format d\'image non supporté'))
-        }
+        img.onerror = function () { reject(new Error('Format d\'image non supporté')) }
         img.onload = function () {
           var w = img.width
           var h = img.height
-
-          /* Redimensionner si nécessaire */
           if (w > MAX_DIM || h > MAX_DIM) {
-            if (w >= h) {
-              h = Math.round(h * (MAX_DIM / w))
-              w = MAX_DIM
-            } else {
-              w = Math.round(w * (MAX_DIM / h))
-              h = MAX_DIM
-            }
+            if (w >= h) { h = Math.round(h * (MAX_DIM / w)); w = MAX_DIM }
+            else        { w = Math.round(w * (MAX_DIM / h)); h = MAX_DIM }
           }
-
           var canvas = document.createElement('canvas')
-          canvas.width = w
+          canvas.width  = w
           canvas.height = h
-          var ctx = canvas.getContext('2d')
-          ctx.drawImage(img, 0, 0, w, h)
-
-          var compressed = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
-          var sizeKB = Math.round((compressed.length * 3) / 4 / 1024)
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+          var dataUrl = canvas.toDataURL('image/jpeg', JPEG_QUALITY)
+          var sizeKB  = Math.round((dataUrl.length * 3) / 4 / 1024)
           console.log('[NyXia] Image compressée : ' + w + 'x' + h + ', ~' + sizeKB + ' KB')
-
-          resolve(compressed)
+          resolve(dataUrl)   // dataUrl complet pour l'aperçu
         }
         img.src = e.target.result
       }
@@ -88,54 +77,63 @@
     })
   }
 
-  /* ═══ UPLOAD IMAGE — avec compression ═══ */
+  /* ═══════════════════════════════
+     UPLOAD IMAGE
+  ═══════════════════════════════ */
   if (uploadBtn && fileInput) {
-    uploadBtn.addEventListener('click', function () {
-      fileInput.click()
-    })
+    uploadBtn.addEventListener('click', function () { fileInput.click() })
 
     fileInput.addEventListener('change', function () {
       var file = fileInput.files[0]
       if (!file) return
-
-      /* Vérifier que c'est une image */
       if (!file.type.startsWith('image/')) {
-        console.error('[NyXia] Fichier rejeté : type=' + file.type + ', ce n\'est pas une image')
+        console.error('[NyXia] Fichier rejeté — pas une image :', file.type)
         return
       }
-
-      /* Avertissement taille brute (avant compression) */
-      var sizeMB = (file.size / (1024 * 1024)).toFixed(2)
-      console.log('[NyXia] Image brute : ' + sizeMB + ' MB (' + file.type + ')')
-
+      console.log('[NyXia] Image brute : ' + (file.size / 1048576).toFixed(2) + ' MB (' + file.type + ')')
       setLoading('Compression en cours...')
 
-      compressImage(file).then(function (compressed) {
-        imageBase64 = compressed
-        previewThumb.src = compressed
+      compressImage(file).then(function (dataUrl) {
+        /*
+         * ╔══════════════════════════════════════════════════════════╗
+         * ║  CORRECTION PRINCIPALE                                   ║
+         * ║  On stocke le base64 PUR (sans "data:image/jpeg;base64,")║
+         * ║  et le mimeType séparément.                              ║
+         * ║  L'API OpenRouter attend exactement ce format.           ║
+         * ╚══════════════════════════════════════════════════════════╝
+         */
+        var parts     = dataUrl.split(',')          // ["data:image/jpeg;base64", "AAAA..."]
+        imageBase64   = parts[1]                    // base64 pur — SANS préfixe
+        imageMimeType = parts[0].replace('data:', '').replace(';base64', '')  // "image/jpeg"
+
+        /* Afficher l'aperçu dans l'interface */
+        previewThumb.src          = dataUrl
         uploadPreview.style.display = 'block'
-        btn.textContent = 'Générer depuis l\'image'
         resetBtn('Image prête — Générer')
       }).catch(function (err) {
         console.error('[NyXia] Erreur compression :', err.message)
-        btn.disabled = false
-        btn.textContent = 'Erreur image — Réessaie'
+        resetBtn('Erreur image — Réessaie')
       })
     })
   }
 
-  /* ═══ REMOVE IMAGE ═══ */
+  /* ═══════════════════════════════
+     REMOVE IMAGE
+  ═══════════════════════════════ */
   if (removeImgBtn) {
     removeImgBtn.addEventListener('click', function () {
-      imageBase64 = ''
-      previewThumb.src = ''
+      imageBase64           = ''
+      imageMimeType         = ''
+      previewThumb.src      = ''
       uploadPreview.style.display = 'none'
-      fileInput.value = ''
-      btn.textContent = 'Générer mon Empire'
+      fileInput.value       = ''
+      btn.textContent       = 'Générer mon Empire'
     })
   }
 
-  /* ═══ GENERATE ═══ */
+  /* ═══════════════════════════════
+     BOUTON GÉNÉRER
+  ═══════════════════════════════ */
   btn.addEventListener('click', function () {
     if (imageBase64) {
       generateFromImage()
@@ -144,11 +142,12 @@
     }
   })
 
-  /* ── Mode Texte → Groq /api/generate ── */
+  /* ─────────────────────────────
+     MODE TEXTE → /api/generate
+  ───────────────────────────── */
   function generateFromText() {
     var project = input.value.trim()
-    if (!project) return
-
+    if (!project) { input.focus(); return }
     setLoading('NyXia travaille...')
 
     fetch('/api/generate', {
@@ -156,149 +155,118 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ project: project })
     })
-    .then(function (r) {
-      if (!r.ok) {
-        console.error('[NyXia] /api/generate statut HTTP : ' + r.status + ' ' + r.statusText)
-        return r.text().then(function (txt) {
-          throw { status: r.status, message: txt.substring(0, 200) }
-        })
-      }
-      return r.json()
-    })
+    .then(checkResponse)
     .then(function (data) {
       if (data.success && data.content) {
-        var html = extractHtml(data.content)
-        if (html) {
-          generatedCode = html
-          showPreview(html)
-          resetBtn('Empire généré ✓')
-        } else {
-          resetBtn('Empire généré ✓')
-        }
+        handleGenerated(data.content)
       } else if (data.error) {
-        console.error('[NyXia] Erreur API /api/generate :', data.error)
-        resetBtn('Erreur — ' + data.error.substring(0, 40))
+        console.error('[NyXia] /api/generate error :', data.error)
+        resetBtn('Erreur — ' + String(data.error).substring(0, 40))
       } else {
-        console.error('[NyXia] Réponse inattendue /api/generate :', JSON.stringify(data).substring(0, 200))
+        console.error('[NyXia] /api/generate réponse inattendue :', JSON.stringify(data).substring(0, 200))
         resetBtn('Erreur — Réessaie')
       }
     })
-    .catch(function (err) {
-      console.error('[NyXia] Catch /api/generate :', err)
-      var msg = 'Erreur'
-      if (err && err.status) msg += ' ' + err.status
-      if (err && err.message) msg += ' — ' + (typeof err.message === 'string' ? err.message.substring(0, 50) : err.message)
-      resetBtn(msg)
-    })
+    .catch(handleError)
   }
 
-  /* ── Mode Image → OpenRouter /api/vision ── */
+  /* ─────────────────────────────
+     MODE IMAGE → /api/vision
+     (Claude Sonnet 4.6 — vision + génération HTML)
+  ───────────────────────────── */
   function generateFromImage() {
+    var userPrompt = input.value.trim() || 'Mon Empire Rentable'
     setLoading('NyXia analyse l\'image...')
 
-    /* Calculer la taille du payload pour le log */
-    var payloadKB = Math.round(JSON.stringify({ image_base64: imageBase64 }).length / 1024)
-    console.log('[NyXia] Envoi vers /api/vision — payload ~' + payloadKB + ' KB')
+    var payloadSize = Math.round(imageBase64.length / 1024)
+    console.log('[NyXia] Envoi /api/vision — base64 ~' + payloadSize + ' KB, prompt : "' + userPrompt + '"')
 
+    /*
+     * ╔══════════════════════════════════════════════════════════════╗
+     * ║  CORRECTION : on envoie image (base64 PUR) + mimeType       ║
+     * ║  + prompt texte de l'utilisateur.                           ║
+     * ║  Le Worker reconstruit l'URL data: de son côté.             ║
+     * ╚══════════════════════════════════════════════════════════════╝
+     */
     fetch('/api/vision', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        image_base64: imageBase64
+        prompt    : userPrompt,    // texte de l'utilisateur (toujours inclus)
+        image     : imageBase64,   // base64 PUR sans préfixe
+        imageType : imageMimeType  // "image/jpeg" ou "image/png"
       })
     })
-    .then(function (r) {
-      if (!r.ok) {
-        console.error('[NyXia] /api/vision statut HTTP : ' + r.status + ' ' + r.statusText)
-        return r.json().then(function (errData) {
-          var reason = errData.error || errData.message || r.statusText
-          throw { status: r.status, message: reason }
-        }).catch(function (parseErr) {
-          /* Si le json parse échoue, on renvoie l'erreur HTTP brute */
-          if (parseErr && parseErr.status) throw parseErr
-          throw { status: r.status, message: r.statusText }
-        })
-      }
-      return r.json()
-    })
+    .then(checkResponse)
     .then(function (data) {
+      /*
+       * OpenRouter renvoie le format standard OpenAI :
+       * { choices: [{ message: { content: "..." } }] }
+       */
       var content = ''
       if (data.choices && data.choices[0] && data.choices[0].message) {
-        content = data.choices[0].message.content
-      } else if (data.content) {
+        content = data.choices[0].message.content || ''
+      } else if (typeof data.content === 'string') {
         content = data.content
       } else if (data.error) {
-        /* Erreur OpenRouter formatée */
-        console.error('[NyXia] Erreur OpenRouter :', data.error)
-        var errMsg = typeof data.error === 'string' ? data.error : JSON.stringify(data.error)
+        var errMsg = typeof data.error === 'object'
+          ? (data.error.message || JSON.stringify(data.error))
+          : String(data.error)
+        console.error('[NyXia] Erreur OpenRouter :', errMsg)
         resetBtn('Erreur API — ' + errMsg.substring(0, 45))
         return
       }
 
       if (!content) {
-        console.error('[NyXia] Réponse vide de /api/vision :', JSON.stringify(data).substring(0, 300))
+        console.error('[NyXia] Réponse vide :', JSON.stringify(data).substring(0, 300))
         resetBtn('Erreur — Réponse vide')
         return
       }
 
-      /* Extraire le HTML de la réponse */
-      var html = extractHtml(content)
-      if (html) {
-        generatedCode = html
-        showPreview(html)
-        resetBtn('Landing page générée ✓')
-      } else {
-        /* Pas de HTML détecté → afficher le texte brut */
-        generatedCode = content
-        resetBtn('Analyse terminée ✓')
-        alert('NyXia a analysé l\'image mais n\'a pas généré de HTML. Réponse :\n\n' + content.substring(0, 500))
-      }
+      handleGenerated(content)
     })
-    .catch(function (err) {
-      console.error('[NyXia] Catch /api/vision :', err)
-      var msg = 'Erreur'
-      if (err && err.status) msg += ' ' + err.status
-      if (err && err.message) msg += ' — ' + (typeof err.message === 'string' ? err.message.substring(0, 50) : err.message)
-
-      /* Suggestions contextuelles */
-      if (err && err.status === 413) {
-        msg = 'Erreur 413 — Image trop lourde même compressée'
-      } else if (err && err.status === 504) {
-        msg = 'Erreur 504 — Timeout API, réessaie'
-      } else if (err && err.status === 502) {
-        msg = 'Erreur 502 — API indisponible'
-      } else if (err && err.status === 429) {
-        msg = 'Erreur 429 — Trop de requêtes, attends 30s'
-      } else if (msg === 'Erreur') {
-        msg = 'Erreur réseau — Vérifie ta connexion'
-      }
-
-      resetBtn(msg)
-    })
+    .catch(handleError)
   }
 
-  /* ═══ EXTRACT HTML ═══ */
-  function extractHtml(text) {
-    /* Chercher un bloc ```html ... ``` */
-    var match = text.match(/```html\s*([\s\S]*?)```/)
-    if (match) return match[1].trim()
-
-    /* Chercher un bloc ``` ... ``` avec du HTML */
-    match = text.match(/```\s*([\s\S]*?)```/)
-    if (match && match[1].trim().toLowerCase().indexOf('<!doctype') !== -1) {
-      return match[1].trim()
+  /* ═══════════════════════════════
+     TRAITEMENT DE LA RÉPONSE HTML
+  ═══════════════════════════════ */
+  function handleGenerated(content) {
+    var html = extractHtml(content)
+    if (html) {
+      generatedCode = html
+      showPreview(html)
+      resetBtn('Site généré ✓')
+    } else {
+      /* Pas de HTML détecté dans la réponse */
+      console.warn('[NyXia] Pas de HTML trouvé dans la réponse. Contenu brut :')
+      console.warn(content.substring(0, 500))
+      generatedCode = content
+      resetBtn('Analyse terminée ✓')
+      alert('NyXia a analysé l\'image mais n\'a pas généré de HTML.\n\nRéponse :\n\n' + content.substring(0, 500))
     }
+  }
 
-    /* Chercher du HTML brut dans le texte */
+  /* ═══════════════════════════════
+     EXTRACTION HTML
+  ═══════════════════════════════ */
+  function extractHtml(text) {
+    /* 1. Bloc ```html ... ``` */
+    var m = text.match(/```html\s*([\s\S]*?)```/)
+    if (m) return m[1].trim()
+
+    /* 2. Bloc ``` ... ``` contenant un DOCTYPE */
+    m = text.match(/```\s*([\s\S]*?)```/)
+    if (m && m[1].trim().toLowerCase().indexOf('<!doctype') !== -1) return m[1].trim()
+
+    /* 3. HTML brut avec DOCTYPE */
     if (text.indexOf('<!DOCTYPE') !== -1 || text.indexOf('<html') !== -1) {
       var start = text.indexOf('<!DOCTYPE') !== -1 ? text.indexOf('<!DOCTYPE') : text.indexOf('<html')
-      var end = text.lastIndexOf('</html>')
-      if (end !== -1) {
-        return text.substring(start, end + 7).trim()
-      }
+      var end   = text.lastIndexOf('</html>')
+      if (end !== -1) return text.substring(start, end + 7).trim()
     }
 
-    /* Chercher un bloc <div> ou <section> complet */
+    /* 4. Fragment HTML (div/section) — on l'enveloppe */
     if (text.indexOf('<div') !== -1 || text.indexOf('<section') !== -1) {
       return wrapInHtml(text)
     }
@@ -307,16 +275,34 @@
   }
 
   function wrapInHtml(fragment) {
-    return '<!DOCTYPE html>\n<html lang="fr">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>NyXia IA — Landing Page</title>\n  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">\n  <script src="https://cdn.tailwindcss.com"><\/script>\n</head>\n<body>\n' + fragment + '\n</body>\n</html>'
+    return [
+      '<!DOCTYPE html>',
+      '<html lang="fr">',
+      '<head>',
+      '  <meta charset="UTF-8">',
+      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">',
+      '  <title>NyXia IA — Landing Page</title>',
+      '  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">',
+      '  <script src="https://cdn.tailwindcss.com"><\/script>',
+      '</head>',
+      '<body>',
+      fragment,
+      '</body>',
+      '</html>'
+    ].join('\n')
   }
 
-  /* ═══ PREVIEW ═══ */
+  /* ═══════════════════════════════
+     PREVIEW
+  ═══════════════════════════════ */
   function showPreview(html) {
-    previewFrame.srcdoc = html
+    previewFrame.srcdoc  = html
     previewPanel.style.display = 'block'
   }
 
-  /* ═══ TOOLBAR ═══ */
+  /* ═══════════════════════════════
+     TOOLBAR PREVIEW
+  ═══════════════════════════════ */
   if (btnClosePreview) {
     btnClosePreview.addEventListener('click', function () {
       previewPanel.style.display = 'none'
@@ -341,33 +327,61 @@
   function copyCode() {
     if (!generatedCode) return
     navigator.clipboard.writeText(generatedCode).then(function () {
-      var target = btnCopyCode || btnCopyModal
+      var target = document.activeElement
+      if (!target || (target !== btnCopyCode && target !== btnCopyModal)) {
+        target = btnCopyCode || btnCopyModal
+      }
       if (target) {
-        var original = target.textContent
+        var orig = target.textContent
         target.textContent = 'Copié ✓'
-        setTimeout(function () { target.textContent = original }, 2000)
+        setTimeout(function () { target.textContent = orig }, 2000)
       }
     })
   }
 
-  if (btnCopyCode) btnCopyCode.addEventListener('click', copyCode)
+  if (btnCopyCode)  btnCopyCode.addEventListener('click',  copyCode)
   if (btnCopyModal) btnCopyModal.addEventListener('click', copyCode)
 
-  /* ═══ HELPERS ═══ */
+  /* ═══════════════════════════════
+     HELPERS
+  ═══════════════════════════════ */
+  function checkResponse(r) {
+    if (!r.ok) {
+      console.error('[NyXia] Statut HTTP :', r.status, r.statusText)
+      return r.json().catch(function () {
+        throw { status: r.status, message: r.statusText }
+      }).then(function (errData) {
+        throw { status: r.status, message: errData.error || errData.message || r.statusText }
+      })
+    }
+    return r.json()
+  }
+
+  function handleError(err) {
+    console.error('[NyXia] Erreur réseau :', err)
+    var msg = 'Erreur'
+    if (err && err.status) {
+      if      (err.status === 413) msg = 'Erreur 413 — Image trop lourde'
+      else if (err.status === 429) msg = 'Erreur 429 — Trop de requêtes, attends 30s'
+      else if (err.status === 502) msg = 'Erreur 502 — API indisponible'
+      else if (err.status === 504) msg = 'Erreur 504 — Timeout, réessaie'
+      else msg = 'Erreur ' + err.status + (err.message ? ' — ' + String(err.message).substring(0, 40) : '')
+    } else {
+      msg = 'Erreur réseau — Vérifie ta connexion'
+    }
+    resetBtn(msg)
+  }
+
   function setLoading(text) {
-    btn.disabled = true
+    btn.disabled    = true
     btn.textContent = text
   }
 
   function resetBtn(text) {
     btn.textContent = text
     setTimeout(function () {
-      btn.disabled = false
-      if (imageBase64) {
-        btn.textContent = 'Générer depuis l\'image'
-      } else {
-        btn.textContent = 'Générer mon Empire'
-      }
+      btn.disabled    = false
+      btn.textContent = imageBase64 ? 'Générer depuis l\'image' : 'Générer mon Empire'
     }, 4000)
   }
 
