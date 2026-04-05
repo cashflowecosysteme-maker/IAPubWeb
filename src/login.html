@@ -306,7 +306,7 @@
         })
         .then(function(r) { return r.json() })
         .then(function(data) {
-          if (data.valid) window.location.href = '/index.html'
+          if (data.valid) window.location.href = '/dashboard.html'
         })
         .catch(function(){})
       }
@@ -344,7 +344,7 @@
           sessionStorage.setItem('nyxia_token', data.token)
           showMsg('✓ Connexion réussie ! Redirection...', 'success')
           setTimeout(function() {
-            window.location.href = '/index.html'
+            window.location.href = '/dashboard.html'
           }, 1000)
         } else {
           showMsg(data.error || 'Identifiants incorrects.', 'error')
