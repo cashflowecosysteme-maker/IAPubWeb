@@ -369,6 +369,126 @@
 
 
 
+
+    /* ═══ ÉDITEUR PLEINE PAGE ═══ */
+    #fullpage-editor {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9500;
+      background: var(--bg1, #0F1C3F);
+      flex-direction: row;
+    }
+    #fullpage-editor.open { display: flex; }
+
+    #editor-sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: rgba(8,15,34,0.98);
+      border-right: 1px solid rgba(123,92,255,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    #editor-sidebar h2 {
+      padding: 16px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #a78bfa;
+      border-bottom: 1px solid rgba(123,92,255,0.1);
+    }
+    .edit-section {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(123,92,255,0.07);
+    }
+    .edit-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #8891B8;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 10px;
+    }
+    .edit-textarea {
+      width: 100%;
+      min-height: 80px;
+      background: rgba(15,28,63,0.7);
+      border: 1px solid rgba(123,92,255,0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      padding: 8px 10px;
+      outline: none;
+      resize: vertical;
+      transition: border-color .2s;
+    }
+    .edit-textarea:focus { border-color: rgba(123,92,255,0.5); }
+    .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .color-lbl { font-size: 11px; color: #8891B8; display: block; margin-bottom: 4px; }
+    .color-pick {
+      width: 100%; height: 30px;
+      border-radius: 6px;
+      border: 1px solid rgba(123,92,255,0.2);
+      cursor: pointer; background: none; padding: 2px;
+    }
+    .btn-edit-action {
+      width: 100%; padding: 9px 14px;
+      border-radius: 8px; border: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+      margin-bottom: 6px;
+    }
+    .btn-save-edit {
+      background: linear-gradient(135deg, #7B5CFF, #5A6CFF);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(123,92,255,0.35);
+    }
+    .btn-copy-edit {
+      background: rgba(123,92,255,0.08);
+      border: 1px solid rgba(123,92,255,0.2);
+      color: #D6D9F0;
+    }
+    .btn-close-edit {
+      background: rgba(255,75,110,0.1);
+      border: 1px solid rgba(255,75,110,0.25);
+      color: #ff8fab;
+    }
+    .edit-hint {
+      font-size: 11px;
+      color: #4a5278;
+      padding: 10px 16px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    #editor-preview-wrap {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    #editor-preview-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    #editor-selected-info {
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(123,92,255,0.9);
+      color: #fff;
+      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: 50px;
+      display: none;
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+
     /* ═══════════════════════════════════
        ÉDITEUR INLINE
     ═══════════════════════════════════ */
@@ -1419,6 +1539,56 @@
 
 
 
+
+  <!-- ═══ ÉDITEUR PLEINE PAGE ═══ -->
+  <div id="fullpage-editor">
+    <div id="editor-sidebar">
+      <h2>✏️ Éditeur NyXia</h2>
+
+      <div class="edit-section" id="text-edit-section" style="display:none">
+        <div class="edit-section-title">✏️ Texte sélectionné</div>
+        <textarea class="edit-textarea" id="edit-text-input"></textarea>
+        <button class="btn-edit-action btn-save-edit" id="btn-apply-text" style="margin-top:8px">✓ Appliquer</button>
+      </div>
+
+      <div class="edit-section">
+        <div class="edit-section-title">🎨 Couleurs</div>
+        <div class="color-row">
+          <div>
+            <label class="color-lbl">Fond</label>
+            <input type="color" class="color-pick" id="ec-bg" value="#ffffff">
+          </div>
+          <div>
+            <label class="color-lbl">Accent</label>
+            <input type="color" class="color-pick" id="ec-accent" value="#7B5CFF">
+          </div>
+          <div>
+            <label class="color-lbl">Texte</label>
+            <input type="color" class="color-pick" id="ec-text" value="#000000">
+          </div>
+          <div>
+            <label class="color-lbl">Boutons</label>
+            <input type="color" class="color-pick" id="ec-btn" value="#5A6CFF">
+          </div>
+        </div>
+      </div>
+
+      <div class="edit-section">
+        <div class="edit-section-title">⚡ Actions</div>
+        <button class="btn-edit-action btn-save-edit" id="btn-save-edits">💾 Sauvegarder</button>
+        <button class="btn-edit-action btn-copy-edit" id="btn-copy-edits">📋 Copier le code</button>
+        <button class="btn-edit-action btn-close-edit" id="btn-close-editor">✕ Fermer l'éditeur</button>
+      </div>
+
+      <div class="edit-hint">💡 Clique sur un texte dans le preview pour le modifier</div>
+    </div>
+
+    <div id="editor-preview-wrap">
+      <div id="editor-selected-info">✏️ Élément sélectionné — modifie le texte à gauche</div>
+      <iframe id="editor-preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+  </div>
+
   <!-- ═══ OVERLAY NYXIA GÉNÉRATION PREMIUM ═══ -->
   <div id="nyxia-loading-overlay">
     <div class="overlay-stars" id="overlay-stars"></div>
@@ -1488,7 +1658,6 @@
 
         <h3>NyXia Preview</h3>
 
-        <button class="toolbar-btn" id="btn-edit" onclick="toggleEditor()">✏️ Éditer</button>
 
         <button class="toolbar-btn" id="btn-view-code">View Code</button>
 
