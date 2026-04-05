@@ -22,13 +22,12 @@ export default {
             "X-Title": "NyXia Empire Builder"
           },
           body: JSON.stringify({
-            // IDENTIFIANT EXACT POUR LE MODÈLE GLM LE PLUS PUISSANT (V-PLUS)
-            model: "zhipu/glm-4v-plus", 
+            // IDENTIFIANT EXACT RECONNU PAR OPENROUTER POUR LA VERSION PLUS
+            model: "bigmodel/glm-4v-plus", 
             messages: [
               { "role": "system", "content": "Tu es NyXia IA. Génère un site d'affiliation complet, expert et visuellement parfait en HTML/CSS." },
               { "role": "user", "content": userInput }
-            ],
-            temperature: 0.1
+            ]
           })
         });
 
@@ -43,7 +42,10 @@ export default {
         });
 
       } catch (e) {
-        return new Response(JSON.stringify({ error: "Erreur de connexion", details: e.message }), { status: 200, headers: cors });
+        return new Response(JSON.stringify({ error: "Erreur de connexion", details: e.message }), { 
+          status: 200, 
+          headers: cors 
+        });
       }
     }
     return new Response("NyXia Active", { status: 200 });
