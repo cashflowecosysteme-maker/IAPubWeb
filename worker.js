@@ -129,8 +129,10 @@ export default {
         const email    = (body.email    || "").toLowerCase().trim()
         const password = (body.password || "").trim()
 
-        const adminEmail = env.ADMIN_EMAIL || "admin@nyxia.com"
-        const adminHash  = env.ADMIN_PASSWORD_HASH || ""
+        const adminEmail = "dianeboyer@publication-web.com"
+        // Vérifie si le mot de passe a été changé via le dashboard (stocké en KV)
+        const storedAdminHash = await env.USERS_KV.get("admin_password_hash")
+        const adminHash = storedAdminHash || env.ADMIN_PASSWORD_HASH || "c735d2fa9d5e48c502c081126f978da584875957ee9853b3300ab0e4d44569af"
 
         if (email !== adminEmail.toLowerCase()) {
           return new Response(JSON.stringify({ success: false, error: "Accès refusé." }),
@@ -264,6 +266,35 @@ export default {
         const email = (body.email || "").toLowerCase().trim()
         await env.USERS_KV.delete(email)
         await env.USERS_KV.delete("disabled:" + email)
+        return new Response(JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/admin/change-password — Changer mot de passe admin
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/admin/change-password" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        if (!await checkAdmin(body.token)) {
+          return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
+            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const newPassword = (body.newPassword || "").trim()
+        if (!newPassword || newPassword.length < 6) {
+          return new Response(JSON.stringify({ success: false, error: "Mot de passe trop court (6 caractères min)." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+        const encoder = new TextEncoder()
+        const hashBuf = await crypto.subtle.digest("SHA-256", encoder.encode(newPassword))
+        const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,"0")).join("")
+        // Stocke le nouveau hash dans KV (priorité sur le hash codé)
+        await env.USERS_KV.put("admin_password_hash", hashHex)
         return new Response(JSON.stringify({ success: true }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } })
       } catch(e) {
