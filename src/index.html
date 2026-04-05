@@ -998,6 +998,21 @@
 
   </style>
 
+  <script>
+    /* Protection NyXia — vérifie la session */
+    ;(function() {
+      var token = sessionStorage.getItem('nyxia_token')
+      if (!token) { window.location.href = '/login.html'; return }
+      fetch('/api/check-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) { if (!data.valid) window.location.href = '/login.html' })
+      .catch(function() { window.location.href = '/login.html' })
+    })()
+  </script>
 </head>
 
 
