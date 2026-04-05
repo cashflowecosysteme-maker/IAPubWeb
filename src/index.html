@@ -2,45 +2,112 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NyXia IA — Votre Empire</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { background: #0B1F3A; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        :root { --bg: #0B1F3A; --p: #7B5CFF; --t: #D6D9F0; --gold: #D8B15A; }
+        body { background: var(--bg); color: var(--t); font-family: 'Outfit', sans-serif; margin: 0; overflow: hidden; height: 100vh; }
         canvas { position: fixed; inset: 0; z-index: -1; }
-        .box { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; backdrop-filter: blur(10px); text-align: center; border: 1px solid rgba(123,92,255,0.3); }
-        h1 { font-size: 3rem; margin: 0; color: #a78bfa; }
-        button { background: #7B5CFF; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        .nyxia { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; border-radius: 50%; border: 2px solid #7B5CFF; cursor: pointer; }
+        .container { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 20px; text-align: center; }
+        .h1-glow { background: linear-gradient(135deg, #a78bfa, #4FA3FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Space Grotesk', sans-serif; font-size: clamp(3rem, 8vw, 5rem); filter: drop-shadow(0 0 20px rgba(123,92,255,0.5)); margin: 0; }
+        .input-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(123,92,255,0.2); padding: 30px; border-radius: 24px; backdrop-filter: blur(15px); max-width: 550px; width: 100%; margin-top: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        input { width: 100%; padding: 18px; border-radius: 14px; border: 1px solid rgba(123,92,255,0.3); background: rgba(0,0,0,0.4); color: white; margin-bottom: 20px; outline: none; box-sizing: border-box; }
+        button { width: 100%; padding: 18px; border-radius: 50px; border: none; background: var(--p); color: white; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 10px 30px rgba(123,92,255,0.4); transition: 0.3s; }
+        button:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(123,92,255,0.6); }
+        .nyxia-toggle { position: fixed; bottom: 30px; right: 30px; cursor: pointer; transition: 0.4s; z-index: 100; }
+        .nyxia-toggle:hover { transform: scale(1.1) rotate(5deg); }
+        .nyxia-toggle img { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--p); box-shadow: 0 0 25px rgba(123,92,255,0.6); }
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <div class="box">
-        <h1>NyXia IA</h1>
-        <p>Votre Empire manifesté en quelques minutes</p>
-        <input type="text" placeholder="Votre vision..." style="width:100%; padding:10px; border-radius:5px; border:none; margin-top:10px;">
-        <br>
-        <button onclick="alert('Alchimie en cours...')">Activer l'Alchimie</button>
+
+    <canvas id="starry-canvas"></canvas>
+
+    <div class="container">
+        <h1 class="h1-glow">NyXia IA</h1>
+        <h2 style="font-weight: 400; opacity: 0.9; margin-top: 10px;">L'Alchimie de votre Empire en quelques minutes</h2>
+        
+        <div class="input-box">
+            <input id="user-prompt" type="text" placeholder="Décrivez votre vision pour cet Empire...">
+            <button id="gen-btn">Activer l'Alchimie</button>
+        </div>
     </div>
-    <img src="/NyXia.png" class="nyxia" onclick="alert('NyXia est prête.')" onerror="this.style.display='none'">
+
+    <div class="nyxia-toggle" onclick="alert('NyXia : Je suis prête, Diane. Quelle est notre prochaine conquête ?')">
+        <img src="/NyXia.png" alt="NyXia" onerror="this.src='https://via.placeholder.com/70?text=NyXia'">
+    </div>
 
     <script>
-        const c = document.getElementById('canvas');
-        const x = c.getContext('2d');
-        let w, h, s = [];
-        function init() { 
-            w = c.width = window.innerWidth; h = c.height = window.innerHeight; 
-            s = Array.from({length:200}, () => ({x:Math.random()*w, y:Math.random()*h, r:Math.random()*2, a:Math.random()}));
+        const canvas = document.getElementById('starry-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, stars = [], shootingStars = [];
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            stars = [];
+            for(let i=0; i<400; i++) {
+                stars.push({
+                    x: Math.random()*width, y: Math.random()*height,
+                    radius: Math.random()*0.6+0.3, alpha: Math.random()*0.7+0.3,
+                    twinkle: Math.random()*0.015+0.003, alphaChange: 0.01
+                });
+            }
         }
+
         function draw() {
-            x.fillStyle = '#0B1F3A'; x.fillRect(0,0,w,h);
-            s.forEach(p => {
-                p.a += 0.01; if(p.a > 1) p.a = 0;
-                x.fillStyle = `rgba(255,255,255,${p.a})`;
-                x.beginPath(); x.arc(p.x, p.y, p.r, 0, Math.PI*2); x.fill();
+            ctx.fillStyle = '#0B1F3A'; ctx.fillRect(0,0,width,height);
+            const g = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width,height)/1.5);
+            g.addColorStop(0, 'rgba(43, 15, 58, 0.5)'); g.addColorStop(1, 'rgba(11, 31, 58, 0)');
+            ctx.fillStyle = g; ctx.fillRect(0,0,width,height);
+
+            stars.forEach(s => {
+                s.alpha += s.alphaChange;
+                if(s.alpha >= 1 || s.alpha <= 0.2) s.alphaChange *= -1;
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.radius, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(255, 250, 235, ${s.alpha})`; ctx.fill();
+            });
+
+            if(Math.random() < 0.015) {
+                shootingStars.push({ 
+                    x: Math.random()*width, y: 0, 
+                    len: Math.random()*150+80, speed: Math.random()*15+10, 
+                    alpha: 1, angle: Math.PI / 4 
+                });
+            }
+
+            shootingStars.forEach((s, i) => {
+                ctx.beginPath();
+                ctx.moveTo(s.x, s.y);
+                ctx.lineTo(s.x - s.len, s.y + s.len);
+                ctx.strokeStyle = `rgba(216, 177, 90, ${s.alpha})`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                s.x += s.speed; s.y += s.speed; s.alpha -= 0.01;
+                if(s.alpha <= 0) shootingStars.splice(i, 1);
             });
             requestAnimationFrame(draw);
         }
-        window.onresize = init; init(); draw();
+
+        window.addEventListener('resize', init);
+        init(); draw();
+
+        document.getElementById('gen-btn').onclick = async () => {
+            const btn = document.getElementById('gen-btn');
+            btn.innerText = "Alchimie en cours...";
+            try {
+                const res = await fetch('/api/vision', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: document.getElementById('user-prompt').value })
+                });
+                alert("L'Alchimie a opéré !");
+            } catch (e) {
+                alert("L'IA prépare votre Empire...");
+            }
+            btn.innerText = "Activer l'Alchimie";
+        };
     </script>
 </body>
 </html>
