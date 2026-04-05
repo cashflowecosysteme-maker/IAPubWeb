@@ -498,4 +498,21 @@
     }, isSuccess ? 5000 : 2000)
   }
 
+  // Expose editor functions globally après chargement complet
+  window._toggleEditor   = toggleEditor
+  window._applyTextEdit  = applyTextEdit
+  window._applyColor     = applyColor
+  window._saveEdits      = saveEdits
+  window._copyEditedCode = copyEditedCode
+  window._resetEdits     = resetEdits
+  window.nyxiaUnlock     = unlockGeneration
+  window._editorsReady   = true
+  window.dispatchEvent(new Event('nyxia-ready'))
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init)
+  } else {
+    init()
+  }
+
 })()
