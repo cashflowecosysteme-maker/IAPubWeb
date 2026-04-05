@@ -1,23 +1,16 @@
 /**
  * nyxia-closer.js — Widget NyXia Closer
  * AVATAR RÉEL : /NyXia.png
- * BULLES VIDES : Diane contrôle le texte
  * PAIEMENT : paymentUrl et paymentPrice vides — en attente de Diane
  */
 ;(function () {
   'use strict'
 
-  /* ═══════════════════════════════════════════
-     CONFIGURATION — Variables vides, Diane fournira
-     ═══════════════════════════════════════════ */
   var CONFIG = {
     paymentUrl: '',
     paymentPrice: ''
   }
 
-  /* ═══════════════════════════════════════════
-     ÉTAT
-     ═══════════════════════════════════════════ */
   var state = {
     open: false,
     step: 'idle',
@@ -25,9 +18,6 @@
     paid: false
   }
 
-  /* ═══════════════════════════════════════════
-     ÉLÉMENTS DOM
-     ═══════════════════════════════════════════ */
   var chatPanel, messagesEl, inputEl, sendBtn, toggleBtn, closeBtn
 
   function init() {
@@ -48,9 +38,6 @@
     })
   }
 
-  /* ═══════════════════════════════════════════
-     TOGGLE — Chat s'ouvre VIDE, aucun message
-     ═══════════════════════════════════════════ */
   function toggleChat() {
     state.open = !state.open
     if (state.open) {
@@ -66,9 +53,6 @@
     chatPanel.classList.remove('open')
   }
 
-  /* ═══════════════════════════════════════════
-     MESSAGES — Outils, mais RIEN n'est affiché automatiquement
-     ═══════════════════════════════════════════ */
   function addBotMessage(text) {
     var msg = document.createElement('div')
     msg.className = 'nx-msg bot'
@@ -105,10 +89,6 @@
     return div.innerHTML
   }
 
-  /* ═══════════════════════════════════════════
-     HANDLE SEND — Bulle utilisateur, rien d'autre
-     Diane contrôlera le comportement plus tard
-     ═══════════════════════════════════════════ */
   function handleSend() {
     var value = inputEl.value.trim()
     if (!value) return
@@ -116,16 +96,39 @@
     addUserMessage(value)
     inputEl.value = ''
     state.projectName = value
+    sendBtn.disabled = true
+
+    showTyping()
+
+    fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project: value })
+    })
+    .then(function (r) { return r.json() })
+    .then(function (data) {
+      hideTyping()
+      if (data.success && data.content) {
+        addBotMessage(data.content)
+      } else if (data.error) {
+        addBotMessage('Erreur : ' + data.error)
+      } else {
+        addBotMessage('Je n\'ai pas pu générer de réponse. Réessaie.')
+      }
+    })
+    .catch(function (err) {
+      hideTyping()
+      console.error('[NyXia Chat]', err)
+      addBotMessage('Erreur de connexion. Vérifie ton réseau.')
+    })
+    .finally(function () {
+      sendBtn.disabled = false
+    })
   }
 
-  /* ═══════════════════════════════════════════
-     DÉBLOCAGE après paiement
-     Appelé par window.nyxiaUnlock()
-     ═══════════════════════════════════════════ */
   function unlockGeneration() {
     state.paid = true
     state.step = 'generating'
-
     if (window.generateSite) {
       window.generateSite(state.projectName)
     }
@@ -133,9 +136,6 @@
 
   window.nyxiaUnlock = unlockGeneration
 
-  /* ═══════════════════════════════════════════
-     INIT
-     ═══════════════════════════════════════════ */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init)
   } else {
