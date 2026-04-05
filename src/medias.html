@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyXia IA — Bibliothèque Médias</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg1: #0F1C3F;
+      --bg2: #1A2554;
+      --bg3: #2A3A6E;
+      --p:   #7B5CFF;
+      --p2:  #5A6CFF;
+      --p3:  #4FA3FF;
+      --g1:  #3E2D7A;
+      --g2:  #2B245C;
+      --glow: rgba(123,92,255,0.4);
+      --t:   #FFFFFF;
+      --t2:  #D6D9F0;
+      --t3:  #8891B8;
+      --green: #00E676;
+      --r: 14px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg1);
+      color: var(--t2);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── AMBIENT GLOW ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 45% at 15% 5%,  rgba(123,92,255,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 35% at 85% 85%, rgba(79,163,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(62,45,122,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(15,28,63,0.92);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(123,92,255,0.1);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid rgba(123,92,255,0.5);
+    }
+    .nav-logo span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-link {
+      color: var(--t3);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 50px;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--t); background: rgba(123,92,255,0.1); }
+    .nav-link.active {
+      color: var(--t);
+      background: rgba(123,92,255,0.15);
+      border: 1px solid rgba(123,92,255,0.3);
+    }
+
+    /* ── MAIN ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 24px 100px;
+    }
+
+    /* ── HERO HEADER ── */
+    .page-hero {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 52px;
+    }
+    .nyxia-avatar {
+      flex-shrink: 0;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(123,92,255,0.5);
+      box-shadow: 0 0 40px rgba(123,92,255,0.35), 0 0 80px rgba(123,92,255,0.12);
+      animation: avatarFloat 4s ease-in-out infinite;
+    }
+    @keyframes avatarFloat {
+      0%, 100% { transform: translateY(0);   box-shadow: 0 0 40px rgba(123,92,255,0.35), 0 0 80px rgba(123,92,255,0.12); }
+      50%       { transform: translateY(-8px); box-shadow: 0 0 60px rgba(123,92,255,0.55), 0 0 100px rgba(123,92,255,0.2); }
+    }
+    .page-hero-text h1 {
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 800;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 18px rgba(123,92,255,0.4));
+      margin-bottom: 10px;
+      line-height: 1.15;
+    }
+    .page-hero-text p {
+      color: var(--t3);
+      font-size: 16px;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+    .page-hero-text p strong { color: var(--p3); font-weight: 600; }
+
+    /* ── TABS ── */
+    .tabs-wrap {
+      display: flex;
+      gap: 4px;
+      background: rgba(26,37,84,0.4);
+      border: 1px solid rgba(123,92,255,0.12);
+      border-radius: 50px;
+      padding: 4px;
+      width: fit-content;
+      margin-bottom: 36px;
+    }
+    .tab-btn {
+      padding: 10px 28px;
+      border-radius: 50px;
+      border: none;
+      background: transparent;
+      color: var(--t3);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .tab-btn:hover { color: var(--t2); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--p), var(--p2));
+      color: #fff;
+      box-shadow: 0 0 20px rgba(123,92,255,0.4);
+    }
+
+    /* ── SEARCH CARD ── */
+    .search-card {
+      background: rgba(26,37,84,0.45);
+      border: 1px solid rgba(123,92,255,0.14);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 28px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .search-input-wrap {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--t3);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    #search-input {
+      width: 100%;
+      background: rgba(15,28,63,0.65);
+      border: 1px solid rgba(123,92,255,0.2);
+      border-radius: 50px;
+      color: var(--t);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      padding: 13px 20px 13px 44px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    #search-input:focus {
+      border-color: rgba(123,92,255,0.5);
+      box-shadow: 0 0 0 3px rgba(123,92,255,0.1);
+    }
+    #search-input::placeholder { color: var(--t3); }
+
+    .btn-search {
+      padding: 13px 32px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, var(--p), var(--p2));
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 24px rgba(123,92,255,0.4);
+      transition: all .25s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-search:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(123,92,255,0.65);
+    }
+    .btn-search:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* Suggestions rapides */
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 14px;
+    }
+    .sugg-btn {
+      padding: 5px 14px;
+      border-radius: 50px;
+      border: 1px solid rgba(123,92,255,0.18);
+      background: rgba(123,92,255,0.06);
+      color: var(--t3);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .sugg-btn:hover { border-color: var(--p); color: var(--t2); background: rgba(123,92,255,0.12); }
+
+    /* ── LOADING ── */
+    .loading-state {
+      display: none;
+      text-align: center;
+      padding: 60px 0;
+    }
+    .loading-state.visible { display: block; }
+    .loader-ring {
+      width: 52px;
+      height: 52px;
+      border: 3px solid rgba(123,92,255,0.15);
+      border-top-color: var(--p);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state p { color: var(--t3); font-size: 14px; }
+
+    /* ── RÉSULTAT UNIQUE ── */
+    .result-section { display: none; margin-bottom: 36px; animation: fadeUp .4s ease; }
+    .result-section.visible { display: block; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+
+    .result-card {
+      background: rgba(26,37,84,0.45);
+      border: 1px solid rgba(123,92,255,0.18);
+      border-radius: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+    .result-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(123,92,255,0.1);
+      background: rgba(15,28,63,0.4);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .result-meta { font-size: 13px; color: var(--t3); }
+    .result-meta a { color: var(--p3); text-decoration: none; }
+    .result-meta a:hover { text-decoration: underline; }
+    .toolbar-actions { display: flex; gap: 8px; }
+
+    .btn-sm {
+      padding: 7px 16px;
+      border-radius: 50px;
+      border: 1px solid rgba(123,92,255,0.28);
+      background: rgba(123,92,255,0.08);
+      color: var(--t2);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+    .btn-sm:hover { border-color: var(--p); color: var(--t); background: rgba(123,92,255,0.18); }
+    .btn-sm.accent {
+      background: linear-gradient(135deg, var(--p), var(--p2));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 0 16px rgba(123,92,255,0.35);
+    }
+    .btn-sm.accent:hover { box-shadow: 0 0 28px rgba(123,92,255,0.6); transform: translateY(-1px); }
+
+    #result-img {
+      width: 100%;
+      max-height: 600px;
+      object-fit: contain;
+      display: block;
+      background: rgba(10,16,36,0.5);
+    }
+
+    /* Vidéo player */
+    .video-player-wrap {
+      position: relative;
+      background: #000;
+    }
+    #result-video {
+      width: 100%;
+      max-height: 560px;
+      display: block;
+      background: #000;
+    }
+    .video-info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(10,14,30,0.8);
+      font-size: 12px;
+      color: var(--t3);
+    }
+
+    /* ── GRILLE HISTORIQUE ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--t2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      background: rgba(123,92,255,0.2);
+      border: 1px solid rgba(123,92,255,0.3);
+      border-radius: 50px;
+      font-size: 12px;
+      padding: 2px 10px;
+      color: var(--p3);
+      font-family: 'Outfit', sans-serif;
+    }
+    #btn-clear {
+      font-size: 12px;
+      color: var(--t3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: color .2s;
+    }
+    #btn-clear:hover { color: #ff6b6b; }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .media-item {
+      background: rgba(26,37,84,0.4);
+      border: 1px solid rgba(123,92,255,0.1);
+      border-radius: var(--r);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .25s;
+      position: relative;
+    }
+    .media-item:hover {
+      border-color: rgba(123,92,255,0.38);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 36px rgba(0,0,0,0.35);
+    }
+    .media-item img,
+    .media-item video {
+      width: 100%;
+      height: 148px;
+      object-fit: cover;
+      display: block;
+    }
+    .media-item-info {
+      padding: 10px 12px;
+    }
+    .media-item-query {
+      font-size: 12px;
+      color: var(--t3);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .media-item-type {
+      font-size: 11px;
+      color: var(--p3);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .media-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15,28,63,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .2s;
+      gap: 10px;
+    }
+    .media-item:hover .media-item-overlay { opacity: 1; }
+    .overlay-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(123,92,255,0.85);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      transition: transform .15s;
+      text-decoration: none;
+      color: #fff;
+    }
+    .overlay-btn:hover { transform: scale(1.15); }
+
+    /* Pastille vidéo */
+    .video-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      color: var(--t2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 56px 0;
+      color: var(--t3);
+    }
+    .empty-state .empty-icon { font-size: 44px; margin-bottom: 14px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ── SPINNER BTN ── */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      main { padding: 28px 14px 80px; }
+      .page-hero { flex-direction: column; gap: 20px; text-align: center; }
+      .nyxia-avatar { width: 80px; height: 80px; }
+      .search-row { flex-direction: column; }
+      .btn-search { width: 100%; justify-content: center; }
+      .search-input-wrap { width: 100%; }
+      .tabs-wrap { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="/NyXia.png" alt="NyXia">
+      <span>NyXia IA</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html"   class="nav-link">🏗 Générateur de sites</a>
+      <a href="medias.html"  class="nav-link active">🎬 Médias</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <div class="page-hero">
+      <img src="/NyXia.png" alt="NyXia IA" class="nyxia-avatar">
+      <div class="page-hero-text">
+        <h1>Bibliothèque Médias IA</h1>
+        <p>
+          Trouve instantanément de <strong>superbes photos et vidéos HD</strong> pour tes projets.
+          Recherche par mots-clés, télécharge en un clic — propulsé par <strong>Pexels</strong>.
+        </p>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-wrap">
+      <button class="tab-btn active" id="tab-photo" onclick="switchTab('photo')">
+        📸 Photos HD
+      </button>
+      <button class="tab-btn" id="tab-video" onclick="switchTab('video')">
+        🎬 Vidéos HD
+      </button>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-card">
+      <div class="search-row">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" placeholder="Ex : femme luxe, coucher de soleil, bureau moderne...">
+        </div>
+        <button class="btn-search" id="btn-search" onclick="doSearch()">
+          <div class="spinner" id="search-spinner"></div>
+          <span id="search-label">Rechercher</span>
+        </button>
+      </div>
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading-state" id="loading">
+      <div class="loader-ring"></div>
+      <p id="loading-text">Recherche en cours...</p>
+    </div>
+
+    <!-- RÉSULTAT -->
+    <div class="result-section" id="result-section">
+
+      <!-- IMAGE -->
+      <div class="result-card" id="photo-result" style="display:none">
+        <div class="result-toolbar">
+          <div class="result-meta" id="photo-meta">Photo HD</div>
+          <div class="toolbar-actions">
+            <button class="btn-sm" onclick="doSearch()">🔄 Autre photo</button>
+            <button class="btn-sm accent" id="btn-dl-photo" onclick="downloadPhoto()">⬇️ Télécharger</button>
+          </div>
+        </div>
+        <img id="result-img" src="" alt="Photo">
+      </div>
+
+      <!-- VIDÉO -->
+      <div class="result-card" id="video-result" style="display:none">
+        <div class="result-toolbar">
+          <div class="result-meta" id="video-meta">Vidéo HD</div>
+          <div class="toolbar-actions">
+            <button class="btn-sm" onclick="doSearch()">🔄 Autre vidéo</button>
+            <a class="btn-sm accent" id="btn-dl-video" href="#" target="_blank">⬇️ Télécharger</a>
+          </div>
+        </div>
+        <div class="video-player-wrap">
+          <video id="result-video" controls autoplay muted loop playsinline></video>
+          <div class="video-info-bar">
+            <span id="video-dims">—</span>
+            <span id="video-duration">—</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div>
+      <div class="section-header">
+        <div class="section-title">
+          Historique
+          <span class="badge" id="hist-count">0</span>
+        </div>
+        <button id="btn-clear" onclick="clearHistory()">🗑 Effacer</button>
+      </div>
+      <div class="media-grid" id="history-grid"></div>
+    </div>
+
+  </main>
+
+  <script>
+    /* ══════════════════════════════════════
+       ÉTAT
+    ══════════════════════════════════════ */
+    var currentTab     = 'photo'
+    var currentDataUrl = ''
+    var currentVideoUrl = ''
+    var history        = JSON.parse(localStorage.getItem('nyxia_media_history') || '[]')
+
+    /* ══════════════════════════════════════
+       SUGGESTIONS PAR ONGLET
+    ══════════════════════════════════════ */
+    var SUGGESTIONS = {
+      photo: ['femme luxe', 'coucher de soleil', 'bureau moderne', 'nature zen', 'ville nocturne', 'spa wellness', 'couple élégant', 'montagne'],
+      video: ['eau cascade', 'city timelapse', 'forêt brume', 'mer vagues', 'feu cheminée', 'fumée encens', 'route nuit', 'nuages ciel']
+    }
+
+    function renderSuggestions() {
+      var wrap = document.getElementById('suggestions')
+      wrap.innerHTML = SUGGESTIONS[currentTab].map(function(s) {
+        return '<button class="sugg-btn" onclick="useSuggestion(\'' + s + '\')">' + s + '</button>'
+      }).join('')
+    }
+
+    function useSuggestion(s) {
+      document.getElementById('search-input').value = s
+      doSearch()
+    }
+
+    /* ══════════════════════════════════════
+       TABS
+    ══════════════════════════════════════ */
+    function switchTab(tab) {
+      currentTab = tab
+      document.getElementById('tab-photo').classList.toggle('active', tab === 'photo')
+      document.getElementById('tab-video').classList.toggle('active', tab === 'video')
+      document.getElementById('search-input').placeholder =
+        tab === 'photo' ? 'Ex : femme luxe, coucher de soleil, bureau moderne...'
+                        : 'Ex : cascade eau, city timelapse, forêt brume...'
+      document.getElementById('search-label').textContent = tab === 'photo' ? 'Chercher une photo' : 'Chercher une vidéo'
+      document.getElementById('result-section').classList.remove('visible')
+      renderSuggestions()
+    }
+
+    /* ══════════════════════════════════════
+       RECHERCHE
+    ══════════════════════════════════════ */
+    function doSearch() {
+      var query = document.getElementById('search-input').value.trim()
+      if (!query) { document.getElementById('search-input').focus(); return }
+      currentTab === 'photo' ? searchPhoto(query) : searchVideo(query)
+    }
+
+    function setLoading(on, text) {
+      document.getElementById('loading').classList.toggle('visible', on)
+      document.getElementById('loading-text').textContent = text || 'Recherche en cours...'
+      document.getElementById('btn-search').disabled = on
+      document.getElementById('search-spinner').style.display = on ? 'block' : 'none'
+      document.getElementById('search-label').textContent = on ? '' : (currentTab === 'photo' ? 'Chercher une photo' : 'Chercher une vidéo')
+    }
+
+    /* ── PHOTO ── */
+    function searchPhoto(query) {
+      setLoading(true, 'Recherche de photos HD...')
+
+      fetch('/api/image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: query, width: 1200, height: 800 })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        setLoading(false)
+        if (!data.success || !data.dataUrl) throw new Error(data.error || 'Erreur')
+
+        currentDataUrl = data.dataUrl
+
+        document.getElementById('result-img').src           = data.dataUrl
+        document.getElementById('photo-result').style.display = 'block'
+        document.getElementById('video-result').style.display = 'none'
+        document.getElementById('result-section').classList.add('visible')
+        document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+        var meta = 'Photo HD'
+        if (data.photographer) {
+          meta = '📷 <a href="' + (data.pexelsUrl||'#') + '" target="_blank">' + esc(data.photographer) + ' / Pexels</a>'
+        }
+        document.getElementById('photo-meta').innerHTML = meta
+
+        addHistory({ type:'photo', dataUrl: data.dataUrl, query: query, photographer: data.photographer, pexelsUrl: data.pexelsUrl })
+      })
+      .catch(function(err) {
+        setLoading(false)
+        alert('Erreur : ' + err.message)
+      })
+    }
+
+    function downloadPhoto() {
+      if (!currentDataUrl) return
+      var a = document.createElement('a')
+      a.href = currentDataUrl
+      a.download = 'nyxia-photo-' + Date.now() + '.jpg'
+      a.click()
+    }
+
+    /* ── VIDEO ── */
+    function searchVideo(query) {
+      setLoading(true, 'Recherche de vidéos HD...')
+
+      fetch('/api/video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: query })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        setLoading(false)
+        if (!data.success || !data.videoUrl) throw new Error(data.error || 'Erreur')
+
+        currentVideoUrl = data.videoUrl
+
+        var video = document.getElementById('result-video')
+        video.src = data.previewUrl || data.videoUrl
+        video.load()
+        video.play().catch(function(){})
+
+        document.getElementById('photo-result').style.display = 'none'
+        document.getElementById('video-result').style.display = 'block'
+        document.getElementById('result-section').classList.add('visible')
+        document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+        var meta = '🎬 Vidéo HD'
+        if (data.photographer) {
+          meta = '🎬 <a href="' + (data.pexelsUrl||'#') + '" target="_blank">' + esc(data.photographer) + ' / Pexels</a>'
+        }
+        document.getElementById('video-meta').innerHTML    = meta
+        document.getElementById('video-dims').textContent  = data.width + '×' + data.height + 'px'
+        document.getElementById('video-duration').textContent = data.duration ? data.duration + 's' : ''
+        document.getElementById('btn-dl-video').href       = data.videoUrl
+
+        addHistory({ type:'video', thumbnail: data.thumbnail, videoUrl: data.videoUrl, query: query, duration: data.duration, photographer: data.photographer, pexelsUrl: data.pexelsUrl })
+      })
+      .catch(function(err) {
+        setLoading(false)
+        alert('Erreur : ' + err.message)
+      })
+    }
+
+    /* ══════════════════════════════════════
+       HISTORIQUE
+    ══════════════════════════════════════ */
+    function addHistory(item) {
+      history.unshift(item)
+      if (history.length > 30) history = history.slice(0, 30)
+      try { localStorage.setItem('nyxia_media_history', JSON.stringify(history)) } catch(e){}
+      renderHistory()
+    }
+
+    function renderHistory() {
+      var grid = document.getElementById('history-grid')
+      document.getElementById('hist-count').textContent = history.length
+
+      if (!history.length) {
+        grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🎨</div><p>Tes photos et vidéos apparaîtront ici</p></div>'
+        return
+      }
+
+      grid.innerHTML = history.map(function(item, i) {
+        if (item.type === 'video') {
+          return '<div class="media-item" onclick="loadHistoryItem(' + i + ')">'
+            + '<video src="' + esc(item.videoUrl) + '" muted preload="none" style="pointer-events:none" poster="' + esc(item.thumbnail||'') + '"></video>'
+            + '<span class="video-badge">▶ ' + (item.duration ? item.duration+'s' : 'Vidéo') + '</span>'
+            + '<div class="media-item-overlay">'
+            + '<button class="overlay-btn" title="Charger">▶</button>'
+            + '<a class="overlay-btn" href="' + esc(item.videoUrl) + '" download target="_blank" onclick="event.stopPropagation()" title="Télécharger">⬇</a>'
+            + '</div>'
+            + '<div class="media-item-info"><div class="media-item-query">' + esc(item.query) + '</div><div class="media-item-type">🎬 Vidéo HD</div></div>'
+            + '</div>'
+        } else {
+          return '<div class="media-item" onclick="loadHistoryItem(' + i + ')">'
+            + '<img src="' + esc(item.dataUrl||'') + '" alt="' + esc(item.query) + '" loading="lazy">'
+            + '<div class="media-item-overlay">'
+            + '<button class="overlay-btn" title="Afficher">🔍</button>'
+            + '<button class="overlay-btn" onclick="event.stopPropagation();dlFromHistory(' + i + ')" title="Télécharger">⬇</button>'
+            + '</div>'
+            + '<div class="media-item-info"><div class="media-item-query">' + esc(item.query) + '</div><div class="media-item-type">📸 Photo HD</div></div>'
+            + '</div>'
+        }
+      }).join('')
+    }
+
+    function loadHistoryItem(i) {
+      var item = history[i]
+      if (!item) return
+      document.getElementById('search-input').value = item.query
+
+      if (item.type === 'video') {
+        switchTab('video')
+        currentVideoUrl = item.videoUrl
+        var video = document.getElementById('result-video')
+        video.src = item.videoUrl
+        video.load()
+        video.play().catch(function(){})
+        document.getElementById('photo-result').style.display = 'none'
+        document.getElementById('video-result').style.display = 'block'
+        document.getElementById('btn-dl-video').href = item.videoUrl
+        document.getElementById('video-meta').textContent = item.photographer ? item.photographer + ' / Pexels' : 'Vidéo HD'
+        document.getElementById('video-dims').textContent = ''
+        document.getElementById('video-duration').textContent = item.duration ? item.duration + 's' : ''
+      } else {
+        switchTab('photo')
+        currentDataUrl = item.dataUrl
+        document.getElementById('result-img').src = item.dataUrl
+        document.getElementById('photo-result').style.display = 'block'
+        document.getElementById('video-result').style.display = 'none'
+        document.getElementById('photo-meta').textContent = item.photographer ? item.photographer + ' / Pexels' : 'Photo HD'
+      }
+
+      document.getElementById('result-section').classList.add('visible')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    function dlFromHistory(i) {
+      var item = history[i]
+      if (!item || item.type !== 'photo' || !item.dataUrl) return
+      var a = document.createElement('a')
+      a.href = item.dataUrl
+      a.download = 'nyxia-photo-' + Date.now() + '.jpg'
+      a.click()
+    }
+
+    function clearHistory() {
+      if (!history.length) return
+      if (confirm('Effacer tout l\'historique ?')) {
+        history = []
+        localStorage.removeItem('nyxia_media_history')
+        renderHistory()
+      }
+    }
+
+    /* ══════════════════════════════════════
+       UTILS
+    ══════════════════════════════════════ */
+    function esc(str) {
+      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    }
+
+    /* ══════════════════════════════════════
+       INIT
+    ══════════════════════════════════════ */
+    renderSuggestions()
+    renderHistory()
+
+    document.getElementById('search-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doSearch()
+    })
+  </script>
+
+</body>
+</html>
