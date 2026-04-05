@@ -1,166 +1,165 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NyXia IA — Votre site d'affiliation prêt en 60 secondes</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg1: #0F1C3F;
-            --bg2: #1A2554;
-            --bg3: #2A3A6E;
-            --p: #7B5CFF;
-            --p2: #5A6CFF;
-            --p3: #4FA3FF;
-            --glow: rgba(123, 92, 255, 0.4);
-            --t: #FFFFFF;
-            --t2: #D6D9F0;
-            --t3: #8891B8;
-            --green: #00E676;
-            --r: 14px;
-        }
+'use client'
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg1); color: var(--t); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+import { useEffect, useRef, useState } from 'react'
 
-        .h1-glow {
-            background: linear-gradient(135deg, #a78bfa, var(--p3));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 0 20px rgba(123, 92, 255, 0.5));
-        }
+export default function NyXiaEmpire() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [prompt, setPrompt] = useState("")
+  const [isGenerating, setIsGenerating] = useState(false)
 
-        .pillar-card {
-            background: rgba(26, 37, 84, 0.5);
-            border: 1px solid rgba(123, 92, 255, 0.12);
-            border-radius: var(--r);
-            padding: 28px 24px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-        #generate-btn {
-            width: 100%;
-            padding: 18px 40px;
-            border-radius: 50px;
-            border: none;
-            background: linear-gradient(135deg, var(--p), var(--p2));
-            color: white;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            box-shadow: 0 10px 32px var(--glow);
-            transition: all 0.25s;
-        }
+    let width = window.innerWidth
+    let height = window.innerHeight
 
-        #generate-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px var(--glow); filter: brightness(1.1); }
+    function resizeCanvas() {
+      if (!canvas) return
+      width = window.innerWidth
+      height = window.innerHeight
+      canvas.width = width
+      canvas.height = height
+      createStars()
+    }
 
-        .input-main {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: var(--r);
-            background: rgba(10, 18, 40, 0.8);
-            border: 1px solid rgba(123, 92, 255, 0.15);
-            color: #fff;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
+    interface Star {
+      x: number; y: number; radius: number; alpha: number; alphaChange: number; twinkleSpeed: number;
+    }
 
-        #nyxia-toggle {
-            position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; border-radius: 50%;
-            border: 2px solid rgba(123, 92, 255, 0.5); background: rgba(15, 28, 63, 0.9);
-            display: flex; align-items: center; justify-content: center; z-index: 999;
-            box-shadow: 0 0 30px rgba(123, 92, 255, 0.3);
-        }
-        #nyxia-toggle img { width: 42px; height: 42px; border-radius: 50%; }
+    let stars: Star[] = []
+    const numStars = 400
 
-        #upload-preview { display: none; margin-top: 15px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--p); }
-        #upload-preview img { width: 100%; display: block; }
-    </style>
-</head>
-<body>
+    function createStars() {
+      stars = []
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 0.6 + 0.3,
+          alpha: Math.random() * 0.7 + 0.3,
+          alphaChange: Math.random() * 0.015 + 0.005,
+          twinkleSpeed: Math.random() * 0.015 + 0.003
+        })
+      }
+    }
 
-    <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
+    interface ShootingStar {
+      x: number; y: number; length: number; speed: number; angle: number; alpha: number; thickness: number;
+    }
 
-    <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px">
-        <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:40px">
-            <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;">NyXia IA</h1>
-            <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem,3.5vw,2rem);color:var(--t2);font-weight:600;">Votre site d'affiliation prêt en <span style="color:var(--p)">60 secondes</span></h2>
-            
-            <p style="color:var(--t3);max-width:560px;margin:0 auto;line-height:1.7">
-                NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>. Elle crée, publie et optimise votre Empire pendant que vous dormez.
-            </p>
+    let shootingStars: ShootingStar[] = []
 
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:left">
-                <div class="pillar-card">
-                    <p style="color:var(--p);font-weight:700;margin-bottom:8px">Visibilité permanente</p>
-                    <p style="color:var(--t3);font-size:0.85rem">Votre site trouvé par des milliers de personnes chaque jour, sans effort.</p>
-                </div>
-                <div class="pillar-card">
-                    <p style="color:var(--p);font-weight:700;margin-bottom:8px">Mots qui vendent</p>
-                    <p style="color:var(--t3);font-size:0.85rem">Chaque phrase est conçue pour transformer un visiteur en acheteur.</p>
-                </div>
-                <div class="pillar-card">
-                    <p style="color:var(--p);font-weight:700;margin-bottom:8px">CashFlow Automatique</p>
-                    <p style="color:var(--t3);font-size:0.85rem">Gagnez des revenus sans intervenir, grâce à l'intelligence artificielle.</p>
-                </div>
-            </div>
+    resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
 
-            <div style="display:flex;flex-direction:column;gap:15px">
-                <input id="user-input" class="input-main" type="text" placeholder="Décrivez votre projet d'affiliation...">
-                
-                <button onclick="document.getElementById('file-input').click()" style="padding:15px; border-radius:var(--r); border:1px solid rgba(123,92,255,0.3); background:rgba(123,92,255,0.05); color:var(--t2); cursor:pointer">📷 Ajouter une Image de Branding</button>
-                <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewImage(this)">
+    function animate() {
+      if (!ctx) return
+      ctx.fillStyle = '#0B1F3A'
+      ctx.fillRect(0, 0, width, height)
 
-                <div id="upload-preview"><img id="preview-thumb" src=""></div>
+      const gradient = ctx.createRadialGradient(width / 2, height / 2, 0, width / 2, height / 2, Math.max(width, height) / 1.5)
+      gradient.addColorStop(0, 'rgba(43, 15, 58, 0.5)')
+      gradient.addColorStop(0.6, 'rgba(43, 15, 58, 0.2)')
+      gradient.addColorStop(1, 'rgba(11, 31, 58, 0)')
+      ctx.fillStyle = gradient
+      ctx.fillRect(0, 0, width, height)
 
-                <button id="generate-btn">Générer mon Empire</button>
-            </div>
-            
-            <p style="color:var(--t3);font-size:0.75rem;opacity:0.5">Une technologie Publication-Web.com — Visionnaire depuis 1997</p>
+      stars.forEach(star => {
+        star.alpha += star.alphaChange
+        if (star.alpha >= 1 || star.alpha <= 0.2) star.alphaChange *= -1
+        ctx.beginPath()
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255, 250, 235, ${star.alpha})`
+        ctx.fill()
+      })
+
+      if (Math.random() < 0.012) {
+        shootingStars.push({
+          x: Math.random() * width * 0.8, y: Math.random() * 100,
+          length: Math.random() * 150 + 80, speed: Math.random() * 18 + 10,
+          angle: Math.PI / 4, alpha: 1, thickness: 2
+        })
+      }
+
+      shootingStars.forEach((star, i) => {
+        ctx.beginPath()
+        ctx.moveTo(star.x, star.y)
+        ctx.lineTo(star.x - star.length, star.y + star.length)
+        ctx.strokeStyle = `rgba(216, 177, 90, ${star.alpha})`
+        ctx.lineWidth = star.thickness
+        ctx.stroke()
+        star.x += star.speed; star.y += star.speed; star.alpha -= 0.01
+        if (star.alpha <= 0) shootingStars.splice(i, 1)
+      })
+
+      requestAnimationFrame(animate)
+    }
+
+    animate()
+    return () => window.removeEventListener('resize', resizeCanvas)
+  }, [])
+
+  const handleGenerate = async () => {
+    setIsGenerating(true)
+    try {
+      const res = await fetch('/api/vision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      })
+      alert("L'Alchimie a opéré ! Ton Empire est généré.")
+    } catch (e) {
+      alert("Erreur de connexion avec NyXia.")
+    }
+    setIsGenerating(false)
+  }
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center text-white overflow-hidden">
+      <canvas ref={canvasRef} className="fixed inset-0 z-[-1]" />
+
+      <div className="z-10 text-center px-4 max-w-2xl">
+        <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent filter drop-shadow-lg">
+          NyXia IA
+        </h1>
+        <p className="text-xl text-blue-200 mb-8">Votre Empire d'Affiliation prêt en 60 secondes</p>
+        
+        <div className="bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-purple-500/20 shadow-2xl">
+          <input 
+            type="text" 
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Décrivez votre vision..." 
+            className="w-full p-4 rounded-xl bg-black/30 border border-purple-500/30 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 mb-4"
+          />
+          <button 
+            onClick={handleGenerate}
+            disabled={isGenerating}
+            className="w-full py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 font-bold uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-purple-500/40"
+          >
+            {isGenerating ? "Alchimie en cours..." : "Générer mon Empire"}
+          </button>
         </div>
-    </main>
+      </div>
 
-    <div id="nyxia-toggle"><img src="/NyXia.png" alt="NyXia"></div>
-
-    <script src="/js/starry-bg.js" defer></script>
-    <script>
-        let base64Image = "";
-        function previewImage(input) {
-            const file = input.files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                base64Image = e.target.result;
-                document.getElementById('preview-thumb').src = base64Image;
-                document.getElementById('upload-preview').style.display = "block";
-            };
-            reader.readAsDataURL(file);
-        }
-
-        document.getElementById('generate-btn').addEventListener('click', async () => {
-            const btn = document.getElementById('generate-btn');
-            if (!base64Image) return alert("Oznya, il faut une image pour activer l'Alchimie !");
-            
-            btn.innerText = "NyXia Alchimise...";
-            try {
-                const response = await fetch('/api/vision', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image_base64: base64Image, prompt_addition: document.getElementById('user-input').value })
-                });
-                alert("Empire généré !");
-            } catch (err) { alert("Erreur de connexion."); }
-            btn.innerText = "Générer mon Empire";
-        });
-    </script>
-</body>
-</html>
+      {/* LA PASTILLE NYXIA RÉACTIVE */}
+      <div 
+        onClick={() => alert("NyXia : 'Je suis prête, Diane. Quelle est notre prochaine conquête ?'")}
+        className="fixed bottom-8 right-8 cursor-pointer hover:scale-110 transition-transform z-50"
+      >
+        <div className="relative">
+          <div className="absolute inset-0 bg-purple-500 rounded-full blur-md opacity-50 animate-pulse"></div>
+          <img 
+            src="/NyXia.png" 
+            alt="NyXia" 
+            className="relative w-16 h-16 rounded-full border-2 border-purple-400 shadow-xl"
+            onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/64?text=NyXia")} 
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
