@@ -176,7 +176,29 @@
   ───────────────────────────── */
   function generateFromImage() {
     var userPrompt = input.value.trim()
-    if (!userPrompt) { input.focus(); return }
+    if (!userPrompt) {
+      input.focus()
+      input.style.border = '2px solid #FF4B6E'
+      input.placeholder = '👆 Décris ton projet ici — ex: Spa bien-être, Coach de vie, Naturopathe...'
+      // Message d'erreur visible
+      var errMsg = document.getElementById('input-error-msg')
+      if (!errMsg) {
+        errMsg = document.createElement('div')
+        errMsg.id = 'input-error-msg'
+        errMsg.style.cssText = 'color:#ff8fab;font-size:13px;margin-top:6px;text-align:center;animation:nxMsgIn .3s ease'
+        input.parentNode.insertAdjacentElement('afterend', errMsg)
+      }
+      errMsg.textContent = '✍️ Décris ton projet pour que NyXia crée ton site !'
+      setTimeout(function() {
+        input.style.border = ''
+        if (errMsg) errMsg.textContent = ''
+      }, 4000)
+      return
+    }
+    // Retire le message d'erreur si présent
+    var errMsg = document.getElementById('input-error-msg')
+    if (errMsg) errMsg.textContent = ''
+    input.style.border = 
     setLoading('NyXia analyse l\'image...')
 
     var payloadSize = Math.round(imageBase64.length / 1024)
