@@ -1,1283 +1,174 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>NyXia IA — Votre site d'affiliation prêt en 60 secondes</title>
 
-
-
-  <!-- Polices EXACTES de nyxiapublicationweb.com -->
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
-
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-
-
-  <!-- Styles NyXia — Exact réplica de nyxiapublicationweb.com -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=Space+Grotesk:wght@400;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
 
   <style>
-
     :root {
-
       --bg1: #0F1C3F;
-
       --bg2: #1A2554;
-
-      --bg3: #2A3A6E;
-
       --p: #7B5CFF;
-
-      --p2: #5A6CFF;
-
-      --p3: #4FA3FF;
-
-      --g1: #3E2D7A;
-
-      --g2: #2B245C;
-
-      --glow: rgba(123,92,255,0.4);
-
-      --t: #FFFFFF;
-
+      --gold: #D4AF37;
       --t2: #D6D9F0;
-
       --t3: #8891B8;
-
-      --green: #00E676;
-
       --r: 14px;
-
     }
-
-
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body { background: var(--bg1); color: var(--t2); font-family: 'Outfit', sans-serif; }
-
-
-
-    /* Titre glow — exact réplica */
+    body { background: var(--bg1); color: var(--t2); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
 
     .h1-glow {
-
-      background: linear-gradient(135deg, #a78bfa, var(--p3));
-
+      background: linear-gradient(135deg, #a78bfa, #4FA3FF);
       -webkit-background-clip: text;
-
       -webkit-text-fill-color: transparent;
-
-      background-clip: text;
-
       filter: drop-shadow(0 0 20px rgba(123,92,255,0.5));
-
     }
-
-
-
-    /* Bouton Primary — EXACT réplica nyxiapublicationweb.com */
-
-    .btn-primary {
-
-      padding: 18px 40px;
-
-      border-radius: 50px;
-
-      border: none;
-
-      background: linear-gradient(135deg, var(--p), var(--p2));
-
-      color: #fff;
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-size: 16px;
-
-      font-weight: 700;
-
-      cursor: pointer;
-
-      box-shadow: 0 0 32px rgba(123,92,255,0.45), 0 4px 20px rgba(0,0,0,0.3);
-
-      transition: all .25s;
-
-    }
-
-    .btn-primary:hover {
-
-      transform: translateY(-3px);
-
-      box-shadow: 0 0 52px rgba(123,92,255,0.7), 0 8px 32px rgba(0,0,0,0.4);
-
-    }
-
-    .btn-primary:active {
-
-      transform: translateY(-1px);
-
-    }
-
-
-
-    /* Bouton Secondary — EXACT réplica */
-
-    .btn-secondary {
-
-      padding: 17px 36px;
-
-      border-radius: 50px;
-
-      border: 1px solid rgba(123,92,255,0.4);
-
-      background: rgba(123,92,255,0.08);
-
-      color: var(--t2);
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-size: 16px;
-
-      font-weight: 600;
-
-      cursor: pointer;
-
-      backdrop-filter: blur(10px);
-
-      transition: all .2s;
-
-      text-decoration: none;
-
-      display: inline-block;
-
-    }
-
-    .btn-secondary:hover {
-
-      border-color: var(--p);
-
-      color: var(--t);
-
-    }
-
-
-
-    /* Glow d'ambiance — exact réplica */
-
-    .hero-glow {
-
-      position: absolute;
-
-      bottom: 10%;
-
-      right: 5%;
-
-      width: 500px;
-
-      height: 500px;
-
-      border-radius: 50%;
-
-      background: radial-gradient(circle, rgba(123,92,255,0.15) 0%, transparent 70%);
-
-      animation: glowPulse 4s ease-in-out infinite;
-
-      pointer-events: none;
-
-    }
-
-    @keyframes glowPulse {
-
-      0%, 100% { opacity: 1; transform: scale(1); }
-
-      50% { opacity: 0.6; transform: scale(1.1); }
-
-    }
-
-
-
-    /* Pilier cards — style site ref */
 
     .pillar-card {
-
       background: rgba(26,37,84,0.5);
-
       border: 1px solid rgba(123,92,255,0.12);
-
       border-radius: var(--r);
-
-      padding: 28px 24px;
-
-      backdrop-filter: blur(10px);
-
-      transition: all .3s;
-
-    }
-
-    .pillar-card:hover {
-
-      border-color: rgba(123,92,255,0.3);
-
-      transform: translateY(-4px);
-
-      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-
-    }
-
-
-
-    /* ===== WIDGET NYXIA — EXACT REPLICA ===== */
-
-
-
-    /* Toggle (pastille) */
-
-    #nyxia-toggle {
-
-      position: fixed;
-
-      bottom: 24px;
-
-      right: 24px;
-
-      width: 60px;
-
-      height: 60px;
-
-      border-radius: 50%;
-
-      border: 2px solid rgba(123,92,255,0.5);
-
-      background: rgba(15,28,63,0.9);
-
-      backdrop-filter: blur(12px);
-
-      cursor: pointer;
-
-      z-index: 9999;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      box-shadow: 0 0 30px rgba(123,92,255,0.3);
-
-      transition: all .25s;
-
-      padding: 0;
-
-      animation: nyxiaBreath 3s ease-in-out infinite;
-
-    }
-
-    #nyxia-toggle:hover {
-
-      transform: scale(1.1);
-
-      box-shadow: 0 0 50px rgba(123,92,255,0.5);
-
-    }
-
-    #nyxia-toggle img {
-
-      width: 42px;
-
-      height: 42px;
-
-      border-radius: 50%;
-
-      object-fit: cover;
-
-    }
-
-    @keyframes nyxiaBreath {
-
-      0%, 100% { box-shadow: 0 0 30px rgba(123,92,255,0.3); }
-
-      50% { box-shadow: 0 0 45px rgba(123,92,255,0.55), 0 0 60px rgba(123,92,255,0.2); }
-
-    }
-
-
-
-    /* Pastille verte "En ligne" */
-
-    .nyxia-online {
-
-      position: absolute;
-
-      bottom: 2px;
-
-      right: 2px;
-
-      width: 14px;
-
-      height: 14px;
-
-      border-radius: 50%;
-
-      background: var(--green);
-
-      border: 2px solid var(--bg1);
-
-    }
-
-
-
-    /* Chat Panel */
-
-    #nyxia-chat {
-
-      position: fixed;
-
-      bottom: 96px;
-
-      right: 24px;
-
-      width: 380px;
-
-      max-width: calc(100vw - 48px);
-
-      height: 520px;
-
-      max-height: calc(100vh - 140px);
-
-      background: rgba(15,28,63,0.97);
-
-      border: 1px solid rgba(123,92,255,0.3);
-
-      border-radius: 20px;
-
-      z-index: 9999;
-
-      display: none;
-
-      flex-direction: column;
-
-      backdrop-filter: blur(20px);
-
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(123,92,255,0.15);
-
-      overflow: hidden;
-
-    }
-
-    @keyframes nxSlideIn {
-
-      from { opacity: 0; transform: translateY(20px) scale(.95); }
-
-      to { opacity: 1; transform: translateY(0) scale(1); }
-
-    }
-
-    #nyxia-chat.open {
-
-      display: flex;
-
-      animation: nxSlideIn .3s ease;
-
-    }
-
-
-
-    /* Header */
-
-    #nyxia-header {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      padding: 14px 16px;
-
-      border-bottom: 1px solid rgba(123,92,255,0.15);
-
-      background: rgba(10,18,40,0.6);
-
-    }
-
-    #nyxia-header img {
-
-      width: 36px;
-
-      height: 36px;
-
-      border-radius: 50%;
-
-      object-fit: cover;
-
-      border: 1.5px solid rgba(123,92,255,0.4);
-
-    }
-
-
-
-    /* Messages */
-
-    #nyxia-messages {
-
-      flex: 1;
-
-      overflow-y: auto;
-
-      padding: 16px;
-
-      display: flex;
-
-      flex-direction: column;
-
-      gap: 12px;
-
-    }
-
-    @keyframes nxMsgIn {
-
-      from { opacity: 0; transform: translateY(8px); }
-
-      to { opacity: 1; transform: translateY(0); }
-
-    }
-
-    .nx-msg { max-width: 85%; animation: nxMsgIn .2s ease; }
-
-    .nx-msg.bot { align-self: flex-start; }
-
-    .nx-msg.user { align-self: flex-end; }
-
-    .nx-msg.bot .nx-bubble {
-
-      background: rgba(26,37,84,0.7);
-
-      color: #d6d9f0;
-
-      padding: 12px 16px;
-
-      border-radius: var(--r);
-
-      border-top-left-radius: 4px;
-
-      border: 1px solid rgba(123,92,255,0.1);
-
-      font-size: 13px;
-
-      line-height: 1.6;
-
-    }
-
-    .nx-msg.user .nx-bubble {
-
-      background: linear-gradient(135deg, var(--p), var(--p2));
-
-      color: #fff;
-
-      padding: 12px 16px;
-
-      border-radius: var(--r);
-
-      border-top-right-radius: 4px;
-
-      font-size: 13px;
-
-      line-height: 1.6;
-
-    }
-
-
-
-    /* Typing dots */
-
-    .nx-dots { display: inline-flex; gap: 3px; }
-
-    .nx-dots i {
-
-      width: 4px; height: 4px; border-radius: 50%;
-
-      background: var(--t3);
-
-      animation: nxPulse 1.4s infinite;
-
-    }
-
-    .nx-dots i:nth-child(2) { animation-delay: .2s; }
-
-    .nx-dots i:nth-child(3) { animation-delay: .4s; }
-
-    @keyframes nxPulse {
-
-      0%, 80%, 100% { opacity: .3; transform: scale(.8); }
-
-      40% { opacity: 1; transform: scale(1); }
-
-    }
-
-
-
-    /* Input row */
-
-    #nyxia-input-row {
-
-      display: flex;
-
-      gap: 8px;
-
-      padding: 10px 14px 14px;
-
-      border-top: 1px solid rgba(123,92,255,0.1);
-
-    }
-
-    #nyxia-input {
-
-      flex: 1;
-
-      padding: 10px 14px;
-
-      border-radius: 12px;
-
-      background: rgba(10,18,40,0.8);
-
-      border: 1px solid rgba(123,92,255,0.15);
-
-      color: #fff;
-
-      font-family: 'Outfit', sans-serif;
-
-      font-size: 13px;
-
-      outline: none;
-
-      transition: border-color .2s;
-
-    }
-
-    #nyxia-input:focus { border-color: rgba(123,92,255,0.4); }
-
-    #nyxia-input::placeholder { color: rgba(136,145,184,0.4); }
-
-
-
-    #nyxia-send {
-
-      width: 38px;
-
-      height: 38px;
-
-      border-radius: 10px;
-
-      background: linear-gradient(135deg, var(--p), var(--p2));
-
-      border: none;
-
-      color: #fff;
-
-      font-size: 15px;
-
-      cursor: pointer;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      transition: all .15s;
-
-    }
-
-    #nyxia-send:hover { transform: scale(1.05); }
-
-
-
-    /* Close button */
-
-    #nyxia-close {
-
-      margin-left: auto;
-
-      color: var(--t3);
-
-      font-size: 20px;
-
-      cursor: pointer;
-
-      opacity: 0.6;
-
-      transition: opacity .2s;
-
-      background: none;
-
-      border: none;
-
-      line-height: 1;
-
-    }
-
-    #nyxia-close:hover { opacity: 1; }
-
-
-
-    /* ===== UPLOAD IMAGE ===== */
-
-    .input-row {
-
-      display: flex;
-
-      gap: 10px;
-
-      align-items: center;
-
-    }
-
-    .input-row input {
-
-      flex: 1;
-
-    }
-
-    .upload-btn {
-
-      width: 52px;
-
-      height: 52px;
-
-      border-radius: var(--r);
-
-      border: 1px solid rgba(123,92,255,0.25);
-
-      background: rgba(123,92,255,0.08);
-
-      color: var(--p);
-
-      font-size: 22px;
-
-      cursor: pointer;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      transition: all .2s;
-
-      flex-shrink: 0;
-
-    }
-
-    .upload-btn:hover {
-
-      border-color: var(--p);
-
-      background: rgba(123,92,255,0.18);
-
-      transform: translateY(-2px);
-
-      box-shadow: 0 4px 20px rgba(123,92,255,0.3);
-
-    }
-
-    .upload-btn svg {
-
-      width: 22px;
-
-      height: 22px;
-
-      fill: currentColor;
-
-    }
-
-
-
-    /* Thumbnail preview */
-
-    #upload-preview {
-
-      display: none;
-
-      position: relative;
-
-      border-radius: var(--r);
-
-      overflow: hidden;
-
-      border: 1px solid rgba(123,92,255,0.2);
-
-      max-height: 180px;
-
-    }
-
-    #upload-preview img {
-
-      width: 100%;
-
-      height: 180px;
-
-      object-fit: cover;
-
-    }
-
-    #upload-preview .remove-img {
-
-      position: absolute;
-
-      top: 8px;
-
-      right: 8px;
-
-      width: 28px;
-
-      height: 28px;
-
-      border-radius: 50%;
-
-      border: none;
-
-      background: rgba(0,0,0,0.7);
-
-      color: #fff;
-
-      font-size: 16px;
-
-      cursor: pointer;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      transition: all .15s;
-
-    }
-
-    #upload-preview .remove-img:hover {
-
-      background: rgba(255,60,60,0.8);
-
-    }
-
-
-
-    /* ===== PREVIEW PANEL ===== */
-
-    #preview-panel {
-
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 8000;
-
-      background: rgba(0,0,0,0.85);
-
-      backdrop-filter: blur(8px);
-
-      animation: nxFadeIn .3s ease;
-
-    }
-
-    @keyframes nxFadeIn {
-
-      from { opacity: 0; }
-
-      to { opacity: 1; }
-
-    }
-
-    #preview-container {
-
-      width: 100%;
-
-      height: 100%;
-
-      display: flex;
-
-      flex-direction: column;
-
-    }
-
-    #preview-toolbar {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      padding: 12px 20px;
-
-      background: rgba(15,28,63,0.95);
-
-      border-bottom: 1px solid rgba(123,92,255,0.2);
-
-      flex-shrink: 0;
-
-    }
-
-    #preview-toolbar h3 {
-
-      color: var(--p);
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-weight: 600;
-
-      font-size: 15px;
-
-      flex: 1;
-
-    }
-
-    .toolbar-btn {
-
-      padding: 8px 18px;
-
-      border-radius: 10px;
-
-      border: 1px solid rgba(123,92,255,0.3);
-
-      background: rgba(123,92,255,0.1);
-
-      color: var(--t2);
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-size: 13px;
-
-      font-weight: 600;
-
-      cursor: pointer;
-
-      transition: all .15s;
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 6px;
-
-    }
-
-    .toolbar-btn:hover {
-
-      border-color: var(--p);
-
-      color: var(--t);
-
-    }
-
-    .toolbar-btn.close-preview {
-
-      background: rgba(255,60,60,0.15);
-
-      border-color: rgba(255,60,60,0.3);
-
-      color: #ff6b6b;
-
-    }
-
-    .toolbar-btn.close-preview:hover {
-
-      background: rgba(255,60,60,0.3);
-
-    }
-
-    #preview-frame {
-
-      flex: 1;
-
-      border: none;
-
-      background: #fff;
-
-    }
-
-    #code-modal {
-
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 8500;
-
-      background: rgba(0,0,0,0.9);
-
-      animation: nxFadeIn .2s ease;
-
-    }
-
-    #code-modal pre {
-
-      width: 100%;
-
-      height: 100%;
-
-      overflow: auto;
-
       padding: 24px;
-
-      color: #a78bfa;
-
-      font-family: 'Courier New', monospace;
-
-      font-size: 13px;
-
-      line-height: 1.6;
-
-      white-space: pre-wrap;
-
-      word-break: break-word;
-
+      backdrop-filter: blur(10px);
+      transition: all .3s;
     }
 
-    #code-modal .code-toolbar {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      padding: 12px 20px;
-
-      background: rgba(15,28,63,0.95);
-
-      border-bottom: 1px solid rgba(123,92,255,0.2);
-
-    }
-
-    #code-modal .code-toolbar h3 {
-
-      color: var(--green);
-
+    /* ===== LE BOUTON TRANSMUTÉ : NUIT & OR ===== */
+    .btn-oznya-vitreux {
+      position: relative;
+      width: 100%;
+      padding: 20px;
+      margin-top: 10px;
       font-family: 'Space Grotesk', sans-serif;
-
-      font-weight: 600;
-
-      font-size: 15px;
-
-      flex: 1;
-
+      font-size: 17px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      /* Couleur Or sur fond Nuit Vitreux */
+      color: var(--gold);
+      background: rgba(10, 25, 60, 0.4); 
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: var(--r);
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
 
-
-
-    /* Responsive widget */
-
-    @media (max-width: 480px) {
-
-      #nyxia-chat {
-
-        width: calc(100vw - 16px);
-
-        right: 8px;
-
-        bottom: 88px;
-
-        height: calc(100vh - 110px);
-
-      }
-
+    .btn-oznya-vitreux:hover {
+      border-color: var(--gold);
+      color: #FFF;
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
     }
 
+    .btn-oznya-vitreux::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.7s ease;
+    }
+
+    .btn-oznya-vitreux:hover::after { left: 100%; }
+
+    /* Inputs */
+    .input-main {
+      width: 100%;
+      padding: 16px 20px;
+      border-radius: var(--r);
+      background: rgba(10,18,40,0.8);
+      border: 1px solid rgba(123,92,255,0.15);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .input-main:focus { border-color: var(--gold); }
+
+    /* Widget NyXia Toggle */
+    #nyxia-toggle {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 60px; height: 60px; border-radius: 50%;
+      border: 2px solid rgba(123,92,255,0.5);
+      background: rgba(15,28,63,0.9);
+      cursor: pointer; z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #nyxia-toggle img { width: 42px; height: 42px; border-radius: 50%; }
   </style>
-
 </head>
-
-
-
 <body>
 
+  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none"></canvas>
 
+  <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px">
+    <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:35px">
+      
+      <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:3.5rem;font-weight:700;">NyXia IA</h1>
+      
+      <h2 style="color:var(--t2);font-weight:600;font-size:1.8rem">Votre site d'affiliation prêt en <span style="color:var(--p)">60 secondes</span></h2>
 
-  <!-- Canvas étoilé -->
-
-  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none"></canvas>
-
-
-
-  <!-- Glow d'ambiance -->
-
-  <div class="hero-glow"></div>
-
-
-
-  <!-- Hero Section -->
-
-  <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px 16px">
-
-
-
-    <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:40px">
-
-
-
-      <!-- Marque -->
-
-      <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;line-height:1.2">
-
-        NyXia <span style="background:linear-gradient(135deg,var(--p),var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span>
-
-      </h1>
-
-
-
-      <!-- Promesse -->
-
-      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem,3.5vw,2rem);color:var(--t2);font-weight:600;line-height:1.4">
-
-        Votre site d'affiliation prêt en <span style="color:var(--p)">60 secondes</span>
-
-      </h2>
-
-
-
-      <!-- Description -->
-
-      <p style="color:var(--t3);font-size:clamp(0.95rem,2vw,1.1rem);max-width:560px;margin:0 auto;line-height:1.7">
-
-        NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>. Elle crée, publie et optimise votre Empire pendant que vous dormez.
-
+      <p style="color:var(--t3);max-width:560px;margin:0 auto;line-height:1.7">
+        NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>.
       </p>
-
-
-
-      <!-- 3 Piliers -->
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:left">
-
-
-
         <div class="pillar-card">
-
-          <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Visibilité permanente sur Google</p>
-
-          <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Votre site trouvé par des milliers de personnes chaque jour, sans effort</p>
-
+          <p style="color:var(--p);font-weight:700;margin-bottom:8px">Visibilité Google</p>
+          <p style="color:var(--t3);font-size:0.85rem">Trouvé par des milliers de personnes.</p>
         </div>
-
-
-
         <div class="pillar-card">
-
-          <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Mots qui vendent pour vous</p>
-
-          <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Chaque phrase est conçue pour transformer un visiteur en acheteur</p>
-
+          <p style="color:var(--p);font-weight:700;margin-bottom:8px">Mots qui vendent</p>
+          <p style="color:var(--t3);font-size:0.85rem">Conçu pour transformer vos visiteurs.</p>
         </div>
-
-
-
         <div class="pillar-card">
-
-          <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Commissions en automatique</p>
-
-          <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Gagnez des revenus sans intervenir, grâce à l'intelligence artificielle</p>
-
+          <p style="color:var(--p);font-weight:700;margin-bottom:8px">Commissions Auto</p>
+          <p style="color:var(--t3);font-size:0.85rem">Gagnez des revenus grâce à l'IA.</p>
         </div>
-
-
-
       </div>
 
-
-
-      <!-- Zone de saisie avec upload -->
-
-      <div style="display:flex;flex-direction:column;gap:14px">
-
-        <div class="input-row">
-
-          <input
-
-            id="user-input"
-
-            type="text"
-
-            placeholder="Décrivez votre projet en quelques mots..."
-
-            style="width:100%;padding:16px 20px;border-radius:var(--r);background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.15);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s"
-
-          >
-
-          <button class="upload-btn" id="upload-btn" title="Uploader une image">
-
-            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-
-          </button>
-
-          <input type="file" id="file-input" accept="image/*" style="display:none">
-
+      <div style="display:flex;flex-direction:column;gap:15px">
+        <input id="user-input" class="input-main" type="text" placeholder="Décrivez votre projet...">
+        
+        <div style="display:flex; gap:10px">
+            <button onclick="document.getElementById('file-input').click()" style="flex:1; padding:15px; border-radius:var(--r); border:1px solid rgba(123,92,255,0.3); background:rgba(123,92,255,0.05); color:var(--t2); cursor:pointer">📷 Image</button>
+            <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewImage(this)">
         </div>
 
-        <!-- Thumbnail de l'image uploadée -->
-
-        <div id="upload-preview">
-
-          <img id="preview-thumb" src="" alt="Aperçu">
-
-          <button class="remove-img" id="remove-img">&times;</button>
-
+        <div id="upload-preview" style="display:none; border-radius:var(--r); overflow:hidden; border:1px solid var(--gold)">
+            <img id="preview-thumb" src="" style="width:100%; display:block">
         </div>
 
-        <button
-
-          id="generate-btn"
-
-          class="btn-primary"
-
-          style="width:100%;font-size:17px;padding:20px"
-
-        >
-
+        <button id="generate-btn" class="btn-oznya-vitreux">
           Générer mon Empire
-
         </button>
-
       </div>
 
-
-
-      <!-- Pedigree -->
-
-      <p style="color:var(--t3);font-size:0.75rem;opacity:0.5">
-
-        Une technologie <a href="https://www.publication-web.com" target="_blank" rel="noopener" style="color:var(--p);opacity:0.7;text-decoration:none">Publication-Web.com</a> — Visionnaire depuis 1997
-
-      </p>
-
-
-
+      <p style="color:var(--t3);font-size:0.75rem;opacity:0.5">Une technologie Publication-Web.com — Depuis 1997</p>
     </div>
-
-
-
   </main>
 
+  <div id="nyxia-toggle"><img src="/NyXia.png" alt="NyXia"></div>
 
-
-  <!-- ===== WIDGET NYXIA CLOSER — Avatar réel, zéro texte pré-rempli ===== -->
-
-
-
-  <!-- Pastille flottante avec avatar NyXia.png -->
-
-  <div id="nyxia-toggle">
-
-    <img src="/NyXia.png" alt="NyXia">
-
-    <span class="nyxia-online"></span>
-
-  </div>
-
-
-
-  <!-- Panel de chat -->
-
-  <div id="nyxia-chat">
-
-    <div id="nyxia-header">
-
-      <img src="/NyXia.png" alt="NyXia">
-
-      <div>
-
-        <div style="color:var(--p);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">NyXia IA</div>
-
-        <div style="color:var(--green);font-size:11px">En ligne</div>
-
-      </div>
-
-      <button id="nyxia-close">&times;</button>
-
-    </div>
-
-    <div id="nyxia-messages"></div>
-
-    <div id="nyxia-input-row">
-
-      <input id="nyxia-input" type="text" placeholder="Écris à NyXia...">
-
-      <button id="nyxia-send">&#10148;</button>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- ===== PREVIEW PANEL (overlay) ===== -->
-
-  <div id="preview-panel">
-
-    <div id="preview-container">
-
-      <div id="preview-toolbar">
-
-        <h3>NyXia Preview</h3>
-
-        <button class="toolbar-btn" id="btn-view-code">View Code</button>
-
-        <button class="toolbar-btn" id="btn-copy-code">Copy Code</button>
-
-        <button class="toolbar-btn close-preview" id="btn-close-preview">Fermer</button>
-
-      </div>
-
-      <iframe id="preview-frame" sandbox="allow-scripts"></iframe>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- ===== CODE MODAL ===== -->
-
-  <div id="code-modal">
-
-    <div class="code-toolbar">
-
-      <h3>Code HTML généré</h3>
-
-      <button class="toolbar-btn" id="btn-copy-modal">Copier</button>
-
-      <button class="toolbar-btn close-preview" id="btn-close-code">Fermer</button>
-
-    </div>
-
-    <pre id="code-output"></pre>
-
-  </div>
-
-
-
-  <!-- Scripts non-bloquants -->
-
-  <script src="/js/generator.js" defer></script>
-
-  <script src="/js/starry-bg.js" defer></script>
-
-  <script src="/js/nyxia-closer.js" defer></script>
-
-
-
+  <script>
+    function previewImage(input) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('preview-thumb').src = e.target.result;
+        document.getElementById('upload-preview').style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  </script>
 </body>
-
 </html>
