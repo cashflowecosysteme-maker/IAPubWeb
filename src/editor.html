@@ -307,7 +307,7 @@
       <button class="btn-back" onclick="window.close()">✕ Fermer</button>
     </div>
     <div class="hint-bar" id="hint-bar">👆 Clique sur un texte pour le modifier · Clique sur une image pour la remplacer</div>
-    <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+    <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
   </div>
 
 </div>
@@ -557,19 +557,29 @@
     var grid = document.getElementById('pexels-grid')
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:12px;padding:16px">Recherche en cours...</div>'
 
-    fetch('/api/image', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: query, count: 8 })
-    })
-    .then(function(r) { return r.json() })
-    .then(function(data) {
-      if (!data.photos || !data.photos.length) {
+    // Le worker /api/image retourne UNE image aléatoire à la fois (dataUrl)
+    // On fait 6 requêtes en parallèle pour remplir la grille
+    var promises = []
+    for (var i = 0; i < 6; i++) {
+      promises.push(
+        fetch('/api/image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: query })
+        }).then(function(r) { return r.json() })
+      )
+    }
+
+    Promise.all(promises)
+    .then(function(results) {
+      var imgs = results.filter(function(d) { return d.success && d.dataUrl })
+      if (!imgs.length) {
         grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:12px;padding:16px">Aucun résultat</div>'
         return
       }
-      grid.innerHTML = data.photos.map(function(p) {
-        return '<img class="pexels-thumb" src="' + p.src.medium + '" alt="' + p.alt + '" onclick="replaceSelectedImage(\'' + p.src.large + '\')" title="Cliquer pour utiliser cette image">'
+      grid.innerHTML = imgs.map(function(d) {
+        var escaped = d.dataUrl.replace(/'/g, "\\'")
+        return '<img class="pexels-thumb" src="' + d.dataUrl + '" alt="' + (d.alt || query) + '" onclick="replaceSelectedImage(\'' + escaped + '\')" title="' + (d.photographer || '') + '">'
       }).join('')
     })
     .catch(function() {
