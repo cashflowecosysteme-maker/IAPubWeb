@@ -327,11 +327,6 @@
   function showPreview(html) {
     previewFrame.srcdoc  = html
     previewPanel.style.display = 'block'
-    // Stocke le code pour l'éditeur standalone
-    try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
-    // Affiche le bouton Éditer
-    var btnEdit = document.getElementById('btn-edit')
-    if (btnEdit) { btnEdit.style.display = 'inline-flex' }
   }
 
   /* ═══════════════════════════════
@@ -638,7 +633,14 @@
   window._saveEdits      = saveEdits
   window._copyEditedCode = copyEditedCode
   window._resetEdits     = resetEdits
+  window.nyxiaUnlock     = unlockGeneration
   window._editorsReady   = true
   window.dispatchEvent(new Event('nyxia-ready'))
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init)
+  } else {
+    init()
+  }
 
 })()
