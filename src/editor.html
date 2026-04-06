@@ -16,78 +16,30 @@
     }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html, body { height:100%; overflow:hidden; font-family:'Outfit',sans-serif; background:var(--bg); color:var(--t2); }
-
-    /* ── LAYOUT ── */
     .app { display:flex; height:100vh; }
 
     /* ── SIDEBAR ── */
-    .sidebar {
-      width: 280px; flex-shrink:0;
-      background: rgba(8,15,34,0.98);
-      border-right: 1px solid rgba(123,92,255,0.12);
-      display: flex; flex-direction:column;
-      overflow: hidden;
-    }
-
-    .sidebar-header {
-      padding: 16px 18px;
-      border-bottom: 1px solid rgba(123,92,255,0.1);
-      display: flex; align-items:center; gap:10px;
-      flex-shrink:0;
-    }
+    .sidebar { width:280px; flex-shrink:0; background:rgba(8,15,34,0.98); border-right:1px solid rgba(123,92,255,0.12); display:flex; flex-direction:column; overflow:hidden; }
+    .sidebar-header { padding:16px 18px; border-bottom:1px solid rgba(123,92,255,0.1); display:flex; align-items:center; gap:10px; flex-shrink:0; }
     .sidebar-header img { width:30px; height:30px; border-radius:50%; object-fit:cover; border:1.5px solid rgba(123,92,255,0.4); }
     .sidebar-title { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; background:linear-gradient(135deg,#a78bfa,var(--p3)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
     .sidebar-sub { font-size:11px; color:var(--t4); }
-
-    .sidebar-tabs {
-      display:flex; border-bottom:1px solid rgba(123,92,255,0.1);
-      flex-shrink:0;
-    }
-    .tab-btn {
-      flex:1; padding:10px 8px; border:none; background:none;
-      color:var(--t3); font-family:'Outfit',sans-serif; font-size:12px; font-weight:600;
-      cursor:pointer; transition:all .2s; border-bottom:2px solid transparent;
-    }
+    .sidebar-tabs { display:flex; border-bottom:1px solid rgba(123,92,255,0.1); flex-shrink:0; }
+    .tab-btn { flex:1; padding:10px 8px; border:none; background:none; color:var(--t3); font-family:'Outfit',sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; border-bottom:2px solid transparent; }
     .tab-btn.active { color:var(--t); border-bottom-color:var(--p); background:rgba(123,92,255,0.05); }
     .tab-btn:hover:not(.active) { color:var(--t2); }
-
     .sidebar-scroll { flex:1; overflow-y:auto; padding:16px; }
     .sidebar-scroll::-webkit-scrollbar { width:4px; }
     .sidebar-scroll::-webkit-scrollbar-thumb { background:rgba(123,92,255,0.2); border-radius:2px; }
 
     /* ── SECTIONS ── */
     .section { margin-bottom:20px; }
-    .section-label {
-      font-size:10px; font-weight:700; letter-spacing:1px;
-      color:var(--t4); text-transform:uppercase; margin-bottom:8px;
-    }
-    .input-field {
-      width:100%; background:rgba(15,28,63,0.7);
-      border:1px solid rgba(123,92,255,0.2); border-radius:8px;
-      color:var(--t); font-family:'Outfit',sans-serif; font-size:13px;
-      padding:9px 12px; outline:none; resize:vertical;
-      transition:border-color .2s;
-    }
+    .section-label { font-size:10px; font-weight:700; letter-spacing:1px; color:var(--t4); text-transform:uppercase; margin-bottom:8px; }
+    .input-field { width:100%; background:rgba(15,28,63,0.7); border:1px solid rgba(123,92,255,0.2); border-radius:8px; color:var(--t); font-family:'Outfit',sans-serif; font-size:13px; padding:9px 12px; outline:none; resize:vertical; transition:border-color .2s; }
     .input-field:focus { border-color:rgba(123,92,255,0.5); }
-
     .color-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
     .color-item label { font-size:11px; color:var(--t3); display:block; margin-bottom:4px; }
-    .color-item input[type="color"] {
-      width:100%; height:32px; border-radius:6px;
-      border:1px solid rgba(123,92,255,0.2);
-      cursor:pointer; background:none; padding:2px;
-    }
-
-    /* Image picker */
-    .img-option {
-      display:flex; align-items:center; gap:8px;
-      padding:8px 10px; border-radius:8px;
-      border:1px solid rgba(123,92,255,0.15);
-      background:rgba(123,92,255,0.05);
-      cursor:pointer; transition:all .2s; margin-bottom:6px;
-      font-size:13px; color:var(--t2);
-    }
-    .img-option:hover { border-color:var(--p); background:rgba(123,92,255,0.1); }
+    .color-item input[type="color"] { width:100%; height:32px; border-radius:6px; border:1px solid rgba(123,92,255,0.2); cursor:pointer; background:none; padding:2px; }
 
     /* ── BUTTONS ── */
     .btn { width:100%; padding:10px 14px; border-radius:8px; border:none; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; margin-bottom:6px; }
@@ -96,80 +48,76 @@
     .btn-secondary { background:rgba(123,92,255,0.08); border:1px solid rgba(123,92,255,0.2); color:var(--t2); }
     .btn-secondary:hover { border-color:var(--p); color:var(--t); }
     .btn-danger { background:rgba(255,75,110,0.1); border:1px solid rgba(255,75,110,0.25); color:#ff8fab; }
-    .btn-success { background:rgba(0,230,118,0.1); border:1px solid rgba(0,230,118,0.25); color:var(--green); }
+    .btn-back { display:flex; align-items:center; gap:6px; padding:6px 14px; border-radius:50px; border:1px solid rgba(123,92,255,0.2); background:rgba(123,92,255,0.07); color:var(--t3); font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; text-decoration:none; }
+    .btn-back:hover { border-color:var(--p); color:var(--t2); }
 
-    /* ── SELECTED ELEMENT ── */
-    .selected-info {
-      background:rgba(123,92,255,0.1); border:1px solid rgba(123,92,255,0.25);
-      border-radius:8px; padding:10px 12px; margin-bottom:12px;
-      font-size:12px; color:var(--t3); display:none;
-    }
+    /* ── SELECTED TEXT INFO ── */
+    .selected-info { background:rgba(123,92,255,0.1); border:1px solid rgba(123,92,255,0.25); border-radius:8px; padding:10px 12px; margin-bottom:12px; font-size:12px; color:var(--t3); display:none; }
     .selected-info.visible { display:block; }
     .selected-tag { display:inline-block; background:rgba(123,92,255,0.2); color:#a78bfa; font-size:10px; padding:2px 8px; border-radius:50px; font-family:'Space Grotesk',sans-serif; font-weight:600; margin-bottom:4px; }
 
     /* ── PEXELS GRID ── */
     .pexels-search { display:flex; gap:6px; margin-bottom:10px; }
     .pexels-search input { flex:1; }
-    .pexels-search button { padding:9px 14px; border-radius:8px; border:none; background:var(--p); color:#fff; font-size:13px; cursor:pointer; }
+    .pexels-search button { padding:9px 14px; border-radius:8px; border:none; background:var(--p); color:#fff; font-size:13px; cursor:pointer; transition: opacity .2s; }
+    .pexels-search button:hover { opacity: .85; }
     .pexels-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-    .pexels-thumb {
-      aspect-ratio:16/9; border-radius:6px; object-fit:cover;
-      cursor:pointer; border:2px solid transparent; transition:all .2s;
-    }
+    .pexels-thumb { aspect-ratio:16/9; border-radius:6px; object-fit:cover; cursor:pointer; border:2px solid transparent; transition:all .2s; }
     .pexels-thumb:hover { border-color:var(--p); transform:scale(1.02); }
 
     /* ── PREVIEW ── */
     .preview-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-
-    .preview-toolbar {
-      padding:10px 16px;
-      background:rgba(8,15,34,0.95);
-      border-bottom:1px solid rgba(123,92,255,0.1);
-      display:flex; align-items:center; gap:10px; flex-shrink:0;
-    }
+    .preview-toolbar { padding:10px 16px; background:rgba(8,15,34,0.95); border-bottom:1px solid rgba(123,92,255,0.1); display:flex; align-items:center; gap:10px; flex-shrink:0; }
     .preview-toolbar-title { font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:var(--t3); flex:1; }
-
-    .edit-mode-badge {
-      padding:4px 12px; border-radius:50px;
-      background:rgba(0,230,118,0.12); border:1px solid rgba(0,230,118,0.3);
-      color:var(--green); font-size:11px; font-weight:600;
-      display:none;
-    }
+    .edit-mode-badge { padding:4px 12px; border-radius:50px; background:rgba(0,230,118,0.12); border:1px solid rgba(0,230,118,0.3); color:var(--green); font-size:11px; font-weight:600; display:none; }
     .edit-mode-badge.visible { display:block; animation:pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
-
-    .hint-bar {
-      padding:6px 16px;
-      background:rgba(123,92,255,0.08);
-      border-bottom:1px solid rgba(123,92,255,0.1);
-      font-size:11px; color:var(--t4); text-align:center;
-      display:none; flex-shrink:0;
-    }
+    .hint-bar { padding:6px 16px; background:rgba(123,92,255,0.08); border-bottom:1px solid rgba(123,92,255,0.1); font-size:11px; color:var(--t4); text-align:center; display:none; flex-shrink:0; }
     .hint-bar.visible { display:block; }
+    #preview-frame { flex:1; border:none; width:100%; }
 
-    #preview-frame {
-      flex:1; border:none; width:100%;
+    /* ── POPUP IMAGE ── */
+    #img-popup {
+      display: none;
+      position: fixed;
+      z-index: 9998;
+      background: rgba(10,22,40,0.97);
+      border: 1px solid rgba(123,92,255,0.4);
+      border-radius: 16px;
+      padding: 16px;
+      width: 260px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(123,92,255,0.1);
+      backdrop-filter: blur(20px);
+      animation: popIn .2s ease;
     }
+    @keyframes popIn { from{opacity:0;transform:scale(.95) translateY(6px)} to{opacity:1;transform:none} }
+    #img-popup.visible { display: block; }
+    .popup-title { font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+    .popup-preview { width:100%; height:80px; object-fit:cover; border-radius:8px; margin-bottom:12px; border:1px solid rgba(123,92,255,0.2); }
+    .popup-btn {
+      width:100%; padding:10px 14px; border-radius:10px; border:none;
+      font-family:'Outfit',sans-serif; font-size:13px; font-weight:600;
+      cursor:pointer; transition:all .2s; margin-bottom:8px;
+      display:flex; align-items:center; gap:10px; text-align:left;
+    }
+    .popup-btn-upload { background:linear-gradient(135deg,var(--p),var(--p2)); color:#fff; box-shadow:0 0 16px rgba(123,92,255,0.3); }
+    .popup-btn-upload:hover { box-shadow:0 0 28px rgba(123,92,255,0.5); transform:translateY(-1px); }
+    .popup-btn-pexels { background:rgba(123,92,255,0.1); border:1px solid rgba(123,92,255,0.25); color:var(--t2); }
+    .popup-btn-pexels:hover { border-color:var(--p); background:rgba(123,92,255,0.18); }
+    .popup-btn-close { background:rgba(255,75,110,0.08); border:1px solid rgba(255,75,110,0.2); color:#ff8fab; font-size:12px; justify-content:center; margin-bottom:0; }
+    .popup-btn-close:hover { background:rgba(255,75,110,0.15); }
+    .popup-divider { height:1px; background:rgba(123,92,255,0.12); margin:8px 0; }
 
-    /* ── STATUS TOAST ── */
-    #toast {
-      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-      background:rgba(26,37,84,0.95); border:1px solid rgba(123,92,255,0.3);
-      color:var(--t2); font-size:13px; padding:10px 20px; border-radius:50px;
-      z-index:9999; display:none; backdrop-filter:blur(12px);
-      box-shadow:0 8px 32px rgba(0,0,0,0.4);
-    }
+    /* ── PEXELS PANEL dans popup ── */
+    #pexels-panel { display:none; margin-top:8px; }
+    #pexels-panel .pexels-search { margin-bottom:8px; }
+    #pexels-panel .pexels-search input { background:rgba(15,28,63,0.9); border:1px solid rgba(123,92,255,0.2); border-radius:8px; color:var(--t); font-family:'Outfit',sans-serif; font-size:12px; padding:8px 10px; outline:none; }
+    #pexels-panel .pexels-search input:focus { border-color:rgba(123,92,255,0.5); }
+    #pexels-panel .pexels-grid { grid-template-columns:1fr 1fr; gap:5px; }
+    #pexels-panel .pexels-thumb { height:60px; aspect-ratio:unset; }
 
-    /* ── BACK BUTTON ── */
-    .btn-back {
-      display:flex; align-items:center; gap:6px;
-      padding:6px 14px; border-radius:50px;
-      border:1px solid rgba(123,92,255,0.2);
-      background:rgba(123,92,255,0.07);
-      color:var(--t3); font-size:12px; font-weight:600;
-      cursor:pointer; transition:all .2s; text-decoration:none;
-    }
-    .btn-back:hover { border-color:var(--p); color:var(--t2); }
+    /* ── TOAST ── */
+    #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:rgba(26,37,84,0.95); border:1px solid rgba(123,92,255,0.3); color:var(--t2); font-size:13px; padding:10px 20px; border-radius:50px; z-index:99999; display:none; backdrop-filter:blur(12px); box-shadow:0 8px 32px rgba(0,0,0,0.4); }
   </style>
 </head>
 <body>
@@ -186,9 +134,8 @@
     </div>
 
     <div class="sidebar-tabs">
-      <button class="tab-btn active" onclick="switchTab('texte')">✏️ Texte</button>
-      <button class="tab-btn" onclick="switchTab('couleurs')">🎨 Couleurs</button>
-      <button class="tab-btn" onclick="switchTab('images')">🖼 Images</button>
+      <button class="tab-btn active" onclick="switchTab('texte', this)">✏️ Texte</button>
+      <button class="tab-btn" onclick="switchTab('couleurs', this)">🎨 Couleurs</button>
     </div>
 
     <div class="sidebar-scroll">
@@ -199,13 +146,11 @@
           <div class="selected-tag" id="selected-tag">—</div>
           <div id="selected-preview" style="color:var(--t2);font-size:12px;margin-top:4px;word-break:break-word"></div>
         </div>
-
         <div class="section">
           <div class="section-label">Texte à modifier</div>
           <textarea class="input-field" id="text-input" rows="4" placeholder="Clique sur un texte dans le preview pour le modifier..."></textarea>
-          <button class="btn btn-primary" id="btn-apply" onclick="applyText()" style="margin-top:8px">✓ Appliquer</button>
+          <button class="btn btn-primary" onclick="applyText()" style="margin-top:8px">✓ Appliquer</button>
         </div>
-
         <div class="section">
           <div class="section-label">Mode édition</div>
           <button class="btn btn-secondary" id="btn-toggle-edit" onclick="toggleEditMode()">👆 Activer — cliquer pour éditer</button>
@@ -217,72 +162,17 @@
         <div class="section">
           <div class="section-label">Couleurs du site</div>
           <div class="color-grid">
-            <div class="color-item">
-              <label>Fond principal</label>
-              <input type="color" id="c-bg" value="#ffffff" oninput="applyStyleRule('body', 'background-color', this.value)">
-            </div>
-            <div class="color-item">
-              <label>Couleur texte</label>
-              <input type="color" id="c-text" value="#000000" oninput="applyStyleRule('body', 'color', this.value)">
-            </div>
-            <div class="color-item">
-              <label>Titres (H1/H2)</label>
-              <input type="color" id="c-titles" value="#000000" oninput="applyToElements(['h1','h2','h3'], 'color', this.value)">
-            </div>
-            <div class="color-item">
-              <label>Liens & accents</label>
-              <input type="color" id="c-links" value="#7B5CFF" oninput="applyToElements(['a'], 'color', this.value)">
-            </div>
-            <div class="color-item">
-              <label>Boutons fond</label>
-              <input type="color" id="c-btn-bg" value="#7B5CFF" oninput="applyToElements(['button','.btn'], 'background-color', this.value)">
-            </div>
-            <div class="color-item">
-              <label>Boutons texte</label>
-              <input type="color" id="c-btn-text" value="#ffffff" oninput="applyToElements(['button','.btn'], 'color', this.value)">
-            </div>
+            <div class="color-item"><label>Fond</label><input type="color" value="#ffffff" oninput="applyStyleRule('body','background-color',this.value)"></div>
+            <div class="color-item"><label>Accent</label><input type="color" value="#7B5CFF" oninput="applyToElements(['a','.btn','button'],'color',this.value)"></div>
+            <div class="color-item"><label>Texte</label><input type="color" value="#000000" oninput="applyStyleRule('body','color',this.value)"></div>
+            <div class="color-item"><label>Boutons</label><input type="color" value="#7B5CFF" oninput="applyToElements(['button','.btn'],'background-color',this.value)"></div>
           </div>
         </div>
-
         <div class="section">
           <div class="section-label">Fond dégradé</div>
           <div class="color-grid">
-            <div class="color-item">
-              <label>Couleur 1</label>
-              <input type="color" id="c-grad1" value="#0F1C3F" oninput="applyGradient()">
-            </div>
-            <div class="color-item">
-              <label>Couleur 2</label>
-              <input type="color" id="c-grad2" value="#1A2554" oninput="applyGradient()">
-            </div>
-          </div>
-          <button class="btn btn-secondary" onclick="applyGradient()" style="margin-top:8px">Appliquer le dégradé</button>
-        </div>
-      </div>
-
-      <!-- TAB IMAGES -->
-      <div id="tab-images" style="display:none">
-        <div class="section">
-          <div class="section-label">Image sélectionnée</div>
-          <div class="selected-info" id="img-selected-info" style="display:none">
-            <img id="img-selected-preview" style="width:100%;border-radius:6px;object-fit:cover;max-height:80px">
-          </div>
-          <p style="font-size:12px;color:var(--t4);margin-bottom:10px">Clique sur une image dans le preview pour la remplacer</p>
-
-          <div class="img-option" onclick="document.getElementById('img-upload').click()">
-            📁 Uploader une image locale
-            <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="uploadLocalImage(this)">
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-label">Chercher sur Pexels</div>
-          <div class="pexels-search">
-            <input class="input-field" type="text" id="pexels-query" placeholder="Ex: spa, nature, business..." style="margin:0">
-            <button onclick="searchPexels()">🔍</button>
-          </div>
-          <div class="pexels-grid" id="pexels-grid">
-            <div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:12px;padding:16px">Cherche des images ci-dessus</div>
+            <div class="color-item"><label>Couleur 1</label><input type="color" id="c-grad1" value="#0F1C3F" oninput="applyGradient()"></div>
+            <div class="color-item"><label>Couleur 2</label><input type="color" id="c-grad2" value="#1A2554" oninput="applyGradient()"></div>
           </div>
         </div>
       </div>
@@ -290,11 +180,15 @@
       <!-- ACTIONS (toujours visibles) -->
       <div class="section" style="border-top:1px solid rgba(123,92,255,0.1);padding-top:16px;margin-top:8px">
         <div class="section-label">Actions</div>
-        <button class="btn btn-primary" onclick="saveAndDownload()">💾 Télécharger le site</button>
+        <button class="btn btn-primary" onclick="saveAndDownload()">💾 Sauvegarder les modifications</button>
         <button class="btn btn-secondary" onclick="copyCode()">📋 Copier le code</button>
-        <button class="btn btn-secondary" onclick="resetSite()">↺ Annuler les modifications</button>
+        <button class="btn btn-secondary" onclick="resetSite()">↺ Réinitialiser</button>
         <a href="javascript:history.back()" class="btn-back" style="display:flex;margin-top:8px">← Retour au générateur</a>
       </div>
+
+      <p style="font-size:11px;color:var(--t4);text-align:center;padding-top:12px">
+        💡 Clique sur n'importe quel texte dans le preview<br>pour le modifier directement
+      </p>
 
     </div>
   </div>
@@ -306,34 +200,69 @@
       <div class="edit-mode-badge" id="edit-badge">✏️ Mode édition actif</div>
       <button class="btn-back" onclick="window.close()">✕ Fermer</button>
     </div>
-    <div class="hint-bar" id="hint-bar">👆 Clique sur un texte pour le modifier · Clique sur une image pour la remplacer</div>
-    <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation"></iframe>
+    <div class="hint-bar" id="hint-bar">👆 Clique sur un texte pour modifier · Clique sur une image pour la remplacer</div>
+    <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
   </div>
 
+</div>
+
+<!-- ══ POPUP IMAGE ══ -->
+<div id="img-popup">
+  <div class="popup-title">🖼 Remplacer l'image</div>
+  <img id="popup-preview" class="popup-preview" src="" alt="Image sélectionnée">
+
+  <!-- Bouton upload -->
+  <button class="popup-btn popup-btn-upload" onclick="document.getElementById('img-upload-popup').click()">
+    📁 <span>Télécharger depuis mon ordi</span>
+  </button>
+  <input type="file" id="img-upload-popup" accept="image/*" style="display:none" onchange="uploadPopupImage(this)">
+
+  <!-- Bouton Pexels -->
+  <button class="popup-btn popup-btn-pexels" onclick="togglePexelsPanel()">
+    🔍 <span>Chercher sur Pexels</span>
+  </button>
+
+  <!-- Panel Pexels inline -->
+  <div id="pexels-panel">
+    <div class="pexels-search">
+      <input type="text" id="pexels-query-popup" placeholder="Ex: nature, spa, business..." onkeydown="if(event.key==='Enter') searchPexelsPopup()">
+      <button onclick="searchPexelsPopup()">🔍</button>
+    </div>
+    <div class="pexels-grid" id="pexels-grid-popup">
+      <div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:10px">Tape un mot et cherche</div>
+    </div>
+  </div>
+
+  <div class="popup-divider"></div>
+  <button class="popup-btn popup-btn-close" onclick="closeImgPopup()">✕ Annuler</button>
 </div>
 
 <div id="toast"></div>
 
 <script>
-  /* ═══════════════════════════════════════════
-     INIT — Récupère le HTML depuis localStorage
-  ═══════════════════════════════════════════ */
-  var originalCode = ''
-  var currentCode  = ''
-  var editMode     = false
-  var selectedEl   = null  // référence dans l'iframe
-  var selectedIsImg = false
+  /* ══════════════════════════════════════
+     ÉTAT GLOBAL
+  ══════════════════════════════════════ */
+  var originalCode   = ''
+  var currentCode    = ''
+  var editMode       = false
+  var selectedImgIdx = -1  // index de l'image ciblée dans l'iframe
 
+  /* ══════════════════════════════════════
+     INIT
+  ══════════════════════════════════════ */
   window.addEventListener('load', function() {
-    // Récupère le code depuis localStorage (passé par generator.js)
     var code = localStorage.getItem('nyxia_edit_code')
     if (!code) {
-      document.getElementById('preview-frame').srcdoc = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#666">Aucun site à éditer. Génère d\'abord un site.</div>'
+      document.getElementById('preview-frame').srcdoc =
+        '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#888;text-align:center;padding:40px">Aucun site à éditer.<br>Génère d\'abord un site dans le générateur.</div>'
       return
     }
     originalCode = code
     currentCode  = code
     loadPreview(code)
+    // Active le mode édition automatiquement
+    setTimeout(function() { if (!editMode) toggleEditMode() }, 800)
   })
 
   function loadPreview(html) {
@@ -344,31 +273,24 @@
     }
   }
 
-  /* ═══════════════════════════════════════════
+  /* ══════════════════════════════════════
      TABS
-  ═══════════════════════════════════════════ */
-  function switchTab(name) {
+  ══════════════════════════════════════ */
+  function switchTab(name, btn) {
     document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active') })
-    event.target.classList.add('active')
+    if (btn) btn.classList.add('active')
     document.getElementById('tab-texte').style.display    = name === 'texte'    ? 'block' : 'none'
     document.getElementById('tab-couleurs').style.display = name === 'couleurs' ? 'block' : 'none'
-    document.getElementById('tab-images').style.display   = name === 'images'   ? 'block' : 'none'
-
-    if (name === 'images') {
-      // Active automatiquement le mode édition pour images
-      if (!editMode) toggleEditMode()
-    }
   }
 
-  /* ═══════════════════════════════════════════
-     MODE ÉDITION — inject listeners dans iframe
-  ═══════════════════════════════════════════ */
+  /* ══════════════════════════════════════
+     MODE ÉDITION
+  ══════════════════════════════════════ */
   function toggleEditMode() {
     editMode = !editMode
     var btn   = document.getElementById('btn-toggle-edit')
     var badge = document.getElementById('edit-badge')
     var hint  = document.getElementById('hint-bar')
-
     if (editMode) {
       btn.textContent = '⏹ Désactiver le mode édition'
       btn.className   = 'btn btn-danger'
@@ -388,104 +310,206 @@
     try {
       var doc = frame.contentDocument || frame.contentWindow.document
       if (!doc || !doc.body) return
-
-      // Retire l'ancien script si déjà injecté
-      var old = doc.getElementById('nyxia-editor-script')
+      var old = doc.getElementById('_nyxia_ed')
       if (old) old.remove()
-
       var s = doc.createElement('script')
-      s.id = 'nyxia-editor-script'
+      s.id = '_nyxia_ed'
       s.textContent = [
-        'var _hover = null, _sel = null;',
-        'document.body.style.cursor = "crosshair";',
-        'document.body.addEventListener("mouseover", function(e) {',
-        '  if (_sel === e.target) return;',
-        '  if (_hover) _hover.style.outline = (_hover===_sel) ? "2px solid #7B5CFF" : "";',
-        '  _hover = e.target;',
-        '  _hover.style.outline = "1px dashed rgba(123,92,255,0.5)";',
-        '}, true);',
-        'document.body.addEventListener("click", function(e) {',
-        '  e.preventDefault(); e.stopPropagation();',
-        '  if (_sel) _sel.style.outline = "";',
-        '  _sel = e.target;',
-        '  _sel.style.outline = "2px solid #7B5CFF";',
-        '  var isImg = _sel.tagName === "IMG";',
-        '  var txt = isImg ? "" : (_sel.innerText || _sel.textContent || "").trim();',
-        '  var src = isImg ? _sel.src : "";',
-        '  var tag = _sel.tagName.toLowerCase();',
-        '  window.parent.postMessage({ type:"nyxia-select", isImg:isImg, text:txt, src:src, tag:tag }, "*");',
-        '}, true);'
+        'var _hov=null,_sel=null;',
+        'document.body.style.cursor="crosshair";',
+        'document.body.addEventListener("mouseover",function(e){',
+        '  if(_sel===e.target)return;',
+        '  if(_hov&&_hov!==_sel)_hov.style.outline="";',
+        '  _hov=e.target;',
+        '  if(_hov!==_sel)_hov.style.outline="1px dashed rgba(123,92,255,0.5)";',
+        '},true);',
+        'document.body.addEventListener("mouseout",function(e){',
+        '  if(e.target!==_sel&&e.target.style)e.target.style.outline="";',
+        '},true);',
+        'document.body.addEventListener("click",function(e){',
+        '  e.preventDefault();e.stopPropagation();',
+        '  if(_sel&&_sel!==e.target)_sel.style.outline="";',
+        '  _sel=e.target;',
+        '  _sel.style.outline="2px solid #7B5CFF";',
+        '  var isImg=_sel.tagName==="IMG";',
+        '  var txt=isImg?"":((_sel.innerText||_sel.textContent||"").trim());',
+        '  var src=isImg?_sel.src:"";',
+        '  var tag=_sel.tagName.toLowerCase();',
+        '  var imgIdx=-1;',
+        '  if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===_sel){imgIdx=i;break;}}}',
+        '  window.parent.postMessage({type:"nyxia-sel",isImg:isImg,txt:txt,src:src,tag:tag,imgIdx:imgIdx,x:e.clientX,y:e.clientY},"*");',
+        '},true);'
       ].join('\n')
       doc.body.appendChild(s)
-    } catch(e) {
-      console.log('Editor inject:', e)
-    }
+    } catch(e) { console.log('inject err:', e) }
   }
 
-  // Reçoit la sélection
+  /* ══════════════════════════════════════
+     RÉCEPTION SÉLECTION DEPUIS IFRAME
+  ══════════════════════════════════════ */
   window.addEventListener('message', function(e) {
-    if (!e.data || e.data.type !== 'nyxia-select') return
-    selectedIsImg = e.data.isImg
+    if (!e.data || e.data.type !== 'nyxia-sel') return
 
     if (!e.data.isImg) {
-      // Texte
-      var info    = document.getElementById('selected-info')
-      var tagEl   = document.getElementById('selected-tag')
-      var prevEl  = document.getElementById('selected-preview')
-      var input   = document.getElementById('text-input')
-      info.classList.add('visible')
-      tagEl.textContent   = '<' + e.data.tag + '>'
-      prevEl.textContent  = e.data.text.substring(0, 80) + (e.data.text.length > 80 ? '...' : '')
-      input.value         = e.data.text
+      // ── TEXTE sélectionné ──
+      closeImgPopup()
+      document.getElementById('selected-info').classList.add('visible')
+      document.getElementById('selected-tag').textContent = '<' + e.data.tag + '>'
+      document.getElementById('selected-preview').textContent = e.data.txt.substring(0, 80) + (e.data.txt.length > 80 ? '...' : '')
+      document.getElementById('text-input').value = e.data.txt
+      // Switche vers onglet texte
+      switchTab('texte', document.querySelector('.tab-btn'))
 
-      // Switch vers tab texte si on est ailleurs
-      if (document.getElementById('tab-texte').style.display === 'none') {
-        document.querySelectorAll('.tab-btn')[0].click()
-      }
     } else {
-      // Image
-      var imgInfo = document.getElementById('img-selected-info')
-      var imgPrev = document.getElementById('img-selected-preview')
-      imgInfo.style.display = 'block'
-      imgPrev.src = e.data.src
-
-      // Switch vers tab images
-      document.querySelectorAll('.tab-btn')[2].click()
+      // ── IMAGE sélectionnée — ouvre popup ──
+      selectedImgIdx = e.data.imgIdx
+      showImgPopup(e.data.src, e.data.x, e.data.y)
     }
   })
 
-  /* ═══════════════════════════════════════════
-     APPLIQUER TEXTE
-  ═══════════════════════════════════════════ */
+  /* ══════════════════════════════════════
+     POPUP IMAGE
+  ══════════════════════════════════════ */
+  function showImgPopup(src, clickX, clickY) {
+    var popup = document.getElementById('img-popup')
+    document.getElementById('popup-preview').src = src
+
+    // Positionne la popup près du clic (décalée de la sidebar)
+    var sidebarW = 280
+    var absX = sidebarW + clickX
+    var absY = clickY
+
+    // Évite que la popup sorte de l'écran
+    var popW = 260, popH = 300
+    var left = Math.min(absX + 10, window.innerWidth - popW - 10)
+    var top  = Math.min(absY - 40, window.innerHeight - popH - 10)
+    top = Math.max(top, 10)
+
+    popup.style.left = left + 'px'
+    popup.style.top  = top + 'px'
+    popup.classList.add('visible')
+
+    // Reset panel Pexels
+    document.getElementById('pexels-panel').style.display = 'none'
+  }
+
+  function closeImgPopup() {
+    document.getElementById('img-popup').classList.remove('visible')
+    document.getElementById('pexels-panel').style.display = 'none'
+  }
+
+  function togglePexelsPanel() {
+    var panel = document.getElementById('pexels-panel')
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none'
+    if (panel.style.display === 'block') {
+      document.getElementById('pexels-query-popup').focus()
+    }
+  }
+
+  // Ferme popup si on clique ailleurs
+  document.addEventListener('click', function(e) {
+    var popup = document.getElementById('img-popup')
+    if (popup.classList.contains('visible') && !popup.contains(e.target)) {
+      closeImgPopup()
+    }
+  })
+
+  /* ══════════════════════════════════════
+     REMPLACEMENT IMAGE — par index (fiable)
+  ══════════════════════════════════════ */
+  function replaceImageByIndex(newSrc) {
+    if (selectedImgIdx < 0) { toast('⚠️ Aucune image sélectionnée'); return }
+    var frame = document.getElementById('preview-frame')
+    try {
+      var doc  = frame.contentDocument || frame.contentWindow.document
+      var imgs = doc.querySelectorAll('img')
+      if (!imgs[selectedImgIdx]) { toast('⚠️ Image introuvable'); return }
+      imgs[selectedImgIdx].src = newSrc
+      imgs[selectedImgIdx].style.outline = ''
+      syncCode()
+      closeImgPopup()
+      toast('✓ Image remplacée !')
+    } catch(e) { toast('Erreur: ' + e.message) }
+  }
+
+  function uploadPopupImage(input) {
+    var file = input.files[0]
+    if (!file) return
+    var reader = new FileReader()
+    reader.onload = function(ev) { replaceImageByIndex(ev.target.result) }
+    reader.readAsDataURL(file)
+    // Reset input pour permettre re-upload du même fichier
+    input.value = ''
+  }
+
+  function searchPexelsPopup() {
+    var query = document.getElementById('pexels-query-popup').value.trim()
+    if (!query) return
+    var grid = document.getElementById('pexels-grid-popup')
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:10px">Recherche...</div>'
+
+    // 4 requêtes parallèles
+    var promises = []
+    for (var i = 0; i < 4; i++) {
+      promises.push(
+        fetch('/api/image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: query })
+        }).then(function(r) { return r.json() })
+        .catch(function() { return null })
+      )
+    }
+
+    Promise.all(promises).then(function(results) {
+      var imgs = results.filter(function(d) { return d && d.success && d.dataUrl })
+      if (!imgs.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:10px">Aucun résultat</div>'
+        return
+      }
+      grid.innerHTML = imgs.map(function(d, i) {
+        return '<img class="pexels-thumb" src="' + d.dataUrl + '" title="' + (d.photographer || '') + '" onclick="selectPexelsImage(' + i + ')" data-idx="' + i + '">'
+      }).join('')
+      // Stocke les dataUrls pour y accéder au clic
+      window._pexelsResults = imgs
+    }).catch(function() {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ff8fab;font-size:11px;padding:10px">Erreur — réessaie</div>'
+    })
+  }
+
+  function selectPexelsImage(i) {
+    if (window._pexelsResults && window._pexelsResults[i]) {
+      replaceImageByIndex(window._pexelsResults[i].dataUrl)
+    }
+  }
+
+  /* ══════════════════════════════════════
+     MODIFIER TEXTE
+  ══════════════════════════════════════ */
   function applyText() {
     var newText = document.getElementById('text-input').value
     var frame   = document.getElementById('preview-frame')
     try {
       var doc = frame.contentDocument || frame.contentWindow.document
       var sel = doc.querySelector('[style*="2px solid #7B5CFF"]')
-      if (!sel) { toast('⚠️ Sélectionne d\'abord un texte'); return }
-      // Conserve les enfants HTML si l'élément en a
-      if (sel.children.length === 0) {
-        sel.textContent = newText
-      } else {
-        sel.innerText = newText
-      }
+      if (!sel) { toast('⚠️ Clique d\'abord sur un texte dans le preview'); return }
+      if (sel.children.length === 0) sel.textContent = newText
+      else sel.innerText = newText
       sel.style.outline = ''
       syncCode()
       toast('✓ Texte modifié !')
     } catch(e) { toast('Erreur: ' + e.message) }
   }
 
-  /* ═══════════════════════════════════════════
+  /* ══════════════════════════════════════
      COULEURS
-  ═══════════════════════════════════════════ */
+  ══════════════════════════════════════ */
   function applyStyleRule(selector, prop, value) {
     var frame = document.getElementById('preview-frame')
     try {
       var doc = frame.contentDocument || frame.contentWindow.document
-      doc.querySelectorAll(selector).forEach(function(el) {
-        el.style[prop.replace(/-([a-z])/g, function(m, c){ return c.toUpperCase() })] = value
-      })
+      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
+      doc.querySelectorAll(selector).forEach(function(el) { el.style[camel] = value })
       syncCode()
     } catch(e) {}
   }
@@ -494,10 +518,9 @@
     var frame = document.getElementById('preview-frame')
     try {
       var doc = frame.contentDocument || frame.contentWindow.document
+      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
       selectors.forEach(function(sel) {
-        doc.querySelectorAll(sel).forEach(function(el) {
-          el.style[prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })] = value
-        })
+        doc.querySelectorAll(sel).forEach(function(el) { el.style[camel] = value })
       })
       syncCode()
     } catch(e) {}
@@ -506,90 +529,12 @@
   function applyGradient() {
     var c1 = document.getElementById('c-grad1').value
     var c2 = document.getElementById('c-grad2').value
-    var frame = document.getElementById('preview-frame')
-    try {
-      var doc = frame.contentDocument || frame.contentWindow.document
-      doc.body.style.background = 'linear-gradient(135deg, ' + c1 + ' 0%, ' + c2 + ' 100%)'
-      syncCode()
-    } catch(e) {}
+    applyStyleRule('body', 'background', 'linear-gradient(135deg,' + c1 + ',' + c2 + ')')
   }
 
-  /* ═══════════════════════════════════════════
-     IMAGES
-  ═══════════════════════════════════════════ */
-  function replaceSelectedImage(newSrc) {
-    var frame = document.getElementById('preview-frame')
-    try {
-      var doc = frame.contentDocument || frame.contentWindow.document
-      var sel = doc.querySelector('[style*="2px solid #7B5CFF"]')
-      if (sel && sel.tagName === 'IMG') {
-        sel.src = newSrc
-        sel.style.outline = ''
-        syncCode()
-        toast('✓ Image remplacée !')
-      } else {
-        // Cherche la dernière image sélectionnée
-        var imgs = doc.querySelectorAll('img[style*="outline"]')
-        if (imgs.length > 0) {
-          imgs[imgs.length-1].src = newSrc
-          syncCode()
-          toast('✓ Image remplacée !')
-        } else {
-          toast('⚠️ Clique d\'abord sur une image dans le preview')
-        }
-      }
-    } catch(e) { toast('Erreur: ' + e.message) }
-  }
-
-  function uploadLocalImage(input) {
-    var file = input.files[0]
-    if (!file) return
-    var reader = new FileReader()
-    reader.onload = function(e) {
-      replaceSelectedImage(e.target.result)
-    }
-    reader.readAsDataURL(file)
-  }
-
-  function searchPexels() {
-    var query = document.getElementById('pexels-query').value.trim()
-    if (!query) return
-    var grid = document.getElementById('pexels-grid')
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:12px;padding:16px">Recherche en cours...</div>'
-
-    // Le worker /api/image retourne UNE image aléatoire à la fois (dataUrl)
-    // On fait 6 requêtes en parallèle pour remplir la grille
-    var promises = []
-    for (var i = 0; i < 6; i++) {
-      promises.push(
-        fetch('/api/image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: query })
-        }).then(function(r) { return r.json() })
-      )
-    }
-
-    Promise.all(promises)
-    .then(function(results) {
-      var imgs = results.filter(function(d) { return d.success && d.dataUrl })
-      if (!imgs.length) {
-        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:12px;padding:16px">Aucun résultat</div>'
-        return
-      }
-      grid.innerHTML = imgs.map(function(d) {
-        var escaped = d.dataUrl.replace(/'/g, "\\'")
-        return '<img class="pexels-thumb" src="' + d.dataUrl + '" alt="' + (d.alt || query) + '" onclick="replaceSelectedImage(\'' + escaped + '\')" title="' + (d.photographer || '') + '">'
-      }).join('')
-    })
-    .catch(function() {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ff8fab;font-size:12px;padding:16px">Erreur de recherche</div>'
-    })
-  }
-
-  /* ═══════════════════════════════════════════
+  /* ══════════════════════════════════════
      SYNC + SAVE
-  ═══════════════════════════════════════════ */
+  ══════════════════════════════════════ */
   function syncCode() {
     var frame = document.getElementById('preview-frame')
     try {
@@ -602,8 +547,8 @@
   function saveAndDownload() {
     syncCode()
     var blob = new Blob([currentCode], { type: 'text/html' })
-    var a    = document.createElement('a')
-    a.href   = URL.createObjectURL(blob)
+    var a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
     a.download = 'mon-site-nyxia.html'
     a.click()
     toast('✓ Site téléchargé !')
@@ -611,33 +556,32 @@
 
   function copyCode() {
     syncCode()
-    navigator.clipboard.writeText(currentCode).then(function() {
-      toast('✓ Code copié !')
-    })
+    navigator.clipboard.writeText(currentCode).then(function() { toast('✓ Code copié !') })
   }
 
   function resetSite() {
     if (!confirm('Annuler toutes les modifications ?')) return
     currentCode = originalCode
     loadPreview(originalCode)
-    toast('↺ Modifications annulées')
+    selectedImgIdx = -1
+    toast('↺ Réinitialisé')
   }
 
-  /* ═══════════════════════════════════════════
+  /* ══════════════════════════════════════
      TOAST
-  ═══════════════════════════════════════════ */
-  var toastTimer = null
+  ══════════════════════════════════════ */
+  var _toastTimer = null
   function toast(msg) {
     var el = document.getElementById('toast')
-    el.textContent   = msg
+    el.textContent = msg
     el.style.display = 'block'
-    if (toastTimer) clearTimeout(toastTimer)
-    toastTimer = setTimeout(function() { el.style.display = 'none' }, 3000)
+    if (_toastTimer) clearTimeout(_toastTimer)
+    _toastTimer = setTimeout(function() { el.style.display = 'none' }, 3000)
   }
 
-  // Enter dans le champ texte = appliquer
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && e.ctrlKey) applyText()
+    if (e.key === 'Escape') closeImgPopup()
   })
 </script>
 </body>
