@@ -1737,6 +1737,21 @@
             </button>
           </div>
 
+          <!-- Images -->
+          <div class="editor-section" id="img-editor-section" style="display:none">
+            <div class="editor-section-title">🖼 Remplacer l'image</div>
+            <img id="img-editor-preview" style="width:100%;height:70px;object-fit:cover;border-radius:6px;margin-bottom:8px;border:1px solid rgba(123,92,255,0.2)">
+            <button class="btn-editor btn-editor-primary" onclick="document.getElementById('img-editor-upload').click()" style="margin-bottom:6px">
+              📁 Télécharger depuis mon ordi
+            </button>
+            <input type="file" id="img-editor-upload" accept="image/*" style="display:none" onchange="uploadEditorImage(this)">
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <input class="editor-input" type="text" id="img-pexels-query" placeholder="Chercher sur Pexels..." style="min-height:unset;height:36px;padding:6px 10px;font-size:12px" onkeydown="if(event.key==='Enter')searchEditorPexels()">
+              <button class="btn-editor btn-editor-secondary" onclick="searchEditorPexels()" style="width:auto;padding:6px 10px;font-size:13px">🔍</button>
+            </div>
+            <div id="img-pexels-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:5px"></div>
+          </div>
+
           <!-- Couleurs -->
           <div class="editor-section">
             <div class="editor-section-title">🎨 Couleurs</div>
@@ -1861,20 +1876,39 @@
           '  _sel.style.outline="2px solid #7B5CFF";' +
           '  var isImg=(_sel.tagName==="IMG");' +
           '  var txt=isImg?"":((_sel.innerText||_sel.textContent||"").trim());' +
-          '  window.parent.postMessage({type:"nyxia_click",isImg:isImg,text:txt,tag:_sel.tagName.toLowerCase()},"*");' +
+          '  var imgIdx=-1;if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===_sel){imgIdx=i;break;}}}' +
+          '  window.parent.postMessage({type:"nyxia_click",isImg:isImg,text:txt,tag:_sel.tagName.toLowerCase(),src:isImg?_sel.src:"",imgIdx:imgIdx},"*");' +
           '},true);'
         doc.body.appendChild(s)
       } catch(e) { console.log('editor inject:', e) }
     }
 
+    var _selectedImgIdx = -1
+
     // Reçoit clics depuis l'iframe
     window.addEventListener('message', function(e) {
       if (!e.data || e.data.type !== 'nyxia_click') return
-      var sec   = document.getElementById('text-editor-section')
-      var input = document.querySelector('#text-editor-section textarea') ||
-                  document.querySelector('.editor-section textarea')
-      if (sec)   sec.style.display = 'block'
-      if (input) { input.value = e.data.text; input.focus() }
+      if (!e.data.isImg) {
+        // TEXTE
+        var sec   = document.getElementById('text-editor-section')
+        var imgSec = document.getElementById('img-editor-section')
+        var input = document.getElementById('selected-text-input')
+        if (imgSec) imgSec.style.display = 'none'
+        if (sec)   sec.style.display = 'block'
+        if (input) { input.value = e.data.text; input.focus() }
+      } else {
+        // IMAGE
+        _selectedImgIdx = e.data.imgIdx
+        var sec   = document.getElementById('text-editor-section')
+        var imgSec = document.getElementById('img-editor-section')
+        if (sec)    sec.style.display = 'none'
+        if (imgSec) imgSec.style.display = 'block'
+        var prev = document.getElementById('img-editor-preview')
+        if (prev) prev.src = e.data.src
+        // Reset grille Pexels
+        var grid = document.getElementById('img-pexels-grid')
+        if (grid) grid.innerHTML = ''
+      }
     })
 
     function applyTextEdit() {
@@ -1928,6 +1962,55 @@
     function resetEdits() {
       var frame = document.getElementById('preview-frame')
       if (frame && window.generatedCode) frame.srcdoc = window.generatedCode
+    }
+
+    function uploadEditorImage(input) {
+      var file = input.files[0]
+      if (!file) return
+      var reader = new FileReader()
+      reader.onload = function(ev) { replaceEditorImage(ev.target.result) }
+      reader.readAsDataURL(file)
+      input.value = ''
+    }
+
+    function replaceEditorImage(newSrc) {
+      if (_selectedImgIdx < 0) { alert('Clique d\'abord sur une image dans le preview'); return }
+      var frame = document.getElementById('preview-frame')
+      if (!frame || !frame.contentDocument) return
+      try {
+        var imgs = frame.contentDocument.querySelectorAll('img')
+        if (imgs[_selectedImgIdx]) {
+          imgs[_selectedImgIdx].src = newSrc
+          imgs[_selectedImgIdx].style.outline = ''
+          document.getElementById('img-editor-preview').src = newSrc
+          saveEdits()
+        }
+      } catch(e) {}
+    }
+
+    function searchEditorPexels() {
+      var query = document.getElementById('img-pexels-query').value.trim()
+      if (!query) return
+      var grid = document.getElementById('img-pexels-grid')
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Recherche...</div>'
+      var promises = []
+      for (var i = 0; i < 4; i++) {
+        promises.push(fetch('/api/image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: query })
+        }).then(function(r) { return r.json() }).catch(function(){ return null }))
+      }
+      Promise.all(promises).then(function(results) {
+        window._pexelsEditorImgs = results.filter(function(d){ return d && d.success && d.dataUrl })
+        if (!window._pexelsEditorImgs.length) {
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Aucun résultat</div>'
+          return
+        }
+        grid.innerHTML = window._pexelsEditorImgs.map(function(d, i) {
+          return '<img src="' + d.dataUrl + '" onclick="replaceEditorImage(window._pexelsEditorImgs[' + i + '].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .2s" onmouseover="this.style.borderColor=\'#7B5CFF\'" onmouseout="this.style.borderColor=\'transparent\'">'
+        }).join('')
+      })
     }
 
     function switchMode(mode) {
