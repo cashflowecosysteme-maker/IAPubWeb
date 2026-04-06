@@ -480,41 +480,84 @@
 
       <!-- ── PANEL CHAT ── -->
       <div class="panel active" id="panel-chat">
-        <div class="chat-area">
+        <div style="display:flex;height:100%;overflow:hidden">
 
-          <div class="chat-header">
-            <img src="/NyXia.png" alt="NyXia">
-            <div class="chat-header-info">
-              <div class="chat-header-name">NyXia IA</div>
-              <div class="chat-header-sub">Ton agente IA · Marketing &amp; Conversion</div>
+          <!-- SIDEBAR CHAT GAUCHE -->
+          <div id="chat-sidebar" style="width:220px;flex-shrink:0;background:rgba(6,12,28,0.98);border-right:1px solid rgba(123,92,255,0.1);display:flex;flex-direction:column;overflow:hidden">
+
+            <div style="padding:14px 12px;border-bottom:1px solid rgba(123,92,255,0.1)">
+              <button onclick="newConversation()" style="width:100%;padding:10px 14px;border-radius:10px;border:1px dashed rgba(123,92,255,0.35);background:rgba(123,92,255,0.06);color:#a78bfa;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;justify-content:center">
+                ✦ Nouvelle conversation
+              </button>
+            </div>
+
+            <!-- AGENTS -->
+            <div style="padding:12px">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:8px">Mode</div>
+              <button class="agent-btn active" id="agent-general" onclick="setAgent('general')" style="width:100%;margin-bottom:4px;text-align:left;padding:8px 12px;border-radius:8px">💬 NyXia</button>
+              <button class="agent-btn" id="agent-copywriter" onclick="setAgent('copywriter')" style="width:100%;margin-bottom:4px;text-align:left;padding:8px 12px;border-radius:8px">✍️ Copywriter</button>
+              <button class="agent-btn" id="agent-formation" onclick="setAgent('formation')" style="width:100%;margin-bottom:4px;text-align:left;padding:8px 12px;border-radius:8px">🎓 Formation</button>
+              <button class="agent-btn" id="agent-seo" onclick="setAgent('seo')" style="width:100%;margin-bottom:4px;text-align:left;padding:8px 12px;border-radius:8px">🔍 SEO</button>
+            </div>
+
+            <div style="height:1px;background:rgba(123,92,255,0.08);margin:0 12px"></div>
+
+            <!-- HISTORIQUE PROJETS -->
+            <div style="padding:12px;flex:1;overflow-y:auto">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:8px">📁 Projets</div>
+              <div id="projects-list" style="display:flex;flex-direction:column;gap:4px">
+                <div style="font-size:12px;color:var(--t4);text-align:center;padding:16px 8px">Aucun projet sauvegardé</div>
+              </div>
+            </div>
+
+            <!-- INTÉGRATIONS -->
+            <div style="padding:12px;border-top:1px solid rgba(123,92,255,0.08)">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:8px">🔗 Intégrations</div>
+              <div style="font-size:12px;color:var(--t4);padding:6px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.1);background:rgba(123,92,255,0.04)">
+                Webhooks & Zapier<br><span style="font-size:10px;color:var(--t4);opacity:.6">Bientôt disponible</span>
+              </div>
             </div>
 
           </div>
 
-          <div class="chat-messages" id="chat-messages"></div>
+          <!-- ZONE CHAT PRINCIPALE -->
+          <div class="chat-area" style="flex:1;overflow:hidden">
 
-          <!-- SÉLECTEUR D'AGENTS -->
-          <div id="agent-selector" style="padding:16px 24px 8px;display:flex;flex-wrap:wrap;gap:8px">
-            <div style="width:100%;font-size:12px;color:var(--t3);font-family:Space Grotesk,sans-serif;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Choisir un mode :</div>
-            <button class="agent-btn active" id="agent-general" onclick="setAgent('general')">💬 NyXia</button>
-            <button class="agent-btn" id="agent-copywriter" onclick="setAgent('copywriter')">✍️ Copywriter</button>
-            <button class="agent-btn" id="agent-formation" onclick="setAgent('formation')">🎓 Formation</button>
-            <button class="agent-btn" id="agent-seo" onclick="setAgent('seo')">🔍 SEO</button>
+            <div class="chat-header">
+              <img src="/NyXia.png" alt="NyXia">
+              <div class="chat-header-info">
+                <div class="chat-header-name">NyXia IA</div>
+                <div class="chat-header-sub" id="agent-label">Ton agente IA · Marketing &amp; Conversion</div>
+              </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages"></div>
+
+            <div class="suggestions" id="suggestions">
+              <button class="sugg-btn" onclick="sendSuggestion('Je veux créer un site web')">🌐 Créer mon site</button>
+              <button class="sugg-btn" onclick="sendSuggestion('Aide-moi avec mes publications')">📱 Mes publications</button>
+              <button class="sugg-btn" onclick="sendSuggestion('Je veux plus de clients')">🚀 Plus de clients</button>
+              <button class="sugg-btn" onclick="sendSuggestion('Comment structurer mon offre ?')">💎 Structurer mon offre</button>
+            </div>
+
+            <!-- Aperçu pièce jointe -->
+            <div id="attach-preview-bar" style="display:none;padding:8px 24px;background:rgba(123,92,255,0.08);border-top:1px solid rgba(123,92,255,0.1);display:none;align-items:center;gap:10px;flex-shrink:0">
+              <span id="attach-name" style="font-size:13px;color:var(--t3)">📎 Fichier joint</span>
+              <button onclick="clearAttachment()" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">✕</button>
+            </div>
+
+            <div class="chat-input-wrap">
+              <!-- Bouton pièce jointe -->
+              <label for="chat-file-input" style="flex-shrink:0;width:38px;height:38px;border-radius:10px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;font-size:16px" title="Joindre un fichier (PDF, image, ZIP)">
+                📎
+                <input type="file" id="chat-file-input" accept=".pdf,.zip,image/*" style="display:none" onchange="handleAttachment(this)">
+              </label>
+              <textarea class="chat-input" id="chat-input" placeholder="Écris ton message..." rows="1"></textarea>
+              <button class="btn-send" id="btn-send" onclick="sendMessage()">➤</button>
+            </div>
+            <div class="chat-hint">Entrée pour envoyer · Shift+Entrée pour retour à la ligne</div>
+
           </div>
-
-          <div class="suggestions" id="suggestions">
-            <button class="sugg-btn" onclick="sendSuggestion('Je veux créer un site web')">🌐 Créer mon site</button>
-            <button class="sugg-btn" onclick="sendSuggestion('Aide-moi avec mes publications')">📱 Mes publications</button>
-            <button class="sugg-btn" onclick="sendSuggestion('Je veux plus de clients')">🚀 Plus de clients</button>
-            <button class="sugg-btn" onclick="sendSuggestion('Comment structurer mon offre ?')">💎 Structurer mon offre</button>
-          </div>
-
-          <div class="chat-input-wrap">
-            <textarea class="chat-input" id="chat-input" placeholder="Écris ton message..." rows="1"></textarea>
-            <button class="btn-send" id="btn-send" onclick="sendMessage()">➤</button>
-          </div>
-          <div class="chat-hint">Entrée pour envoyer · Shift+Entrée pour un retour à la ligne</div>
-
         </div>
       </div>
 
@@ -639,6 +682,111 @@
     ══════════════════════════════════════ */
     var chatHistory  = []
     var currentAgent = 'general'
+    var currentAttachment = null  // { name, type, data (base64) }
+    var currentProjectId  = null
+    var projects = []
+
+    /* ══ LOAD PROJECTS FROM LOCALSTORAGE ══ */
+    function loadProjects() {
+      try {
+        projects = JSON.parse(localStorage.getItem('nyxia_projects_' + clientEmail) || '[]')
+        renderProjects()
+      } catch(e) { projects = [] }
+    }
+
+    function saveProject(name) {
+      var project = {
+        id      : 'proj_' + Date.now(),
+        name    : name || ('Conversation ' + new Date().toLocaleDateString('fr-CA')),
+        agent   : currentAgent,
+        history : chatHistory,
+        date    : new Date().toISOString()
+      }
+      projects.unshift(project)
+      if (projects.length > 20) projects = projects.slice(0, 20)
+      try { localStorage.setItem('nyxia_projects_' + clientEmail, JSON.stringify(projects)) } catch(e) {}
+      currentProjectId = project.id
+      renderProjects()
+      return project.id
+    }
+
+    function loadProject(id) {
+      var p = projects.find(function(p){ return p.id === id })
+      if (!p) return
+      currentProjectId = id
+      currentAgent     = p.agent || 'general'
+      chatHistory      = p.history || []
+      // Met à jour l'agent actif
+      document.querySelectorAll('.agent-btn').forEach(function(b){ b.classList.remove('active') })
+      var agentBtn = document.getElementById('agent-' + currentAgent)
+      if (agentBtn) agentBtn.classList.add('active')
+      // Recharge les messages
+      var msgs = document.getElementById('chat-messages')
+      msgs.innerHTML = ''
+      chatHistory.forEach(function(m) {
+        if (m.role === 'user')      addUserMessage(m.content, true)
+        else if (m.role === 'assistant') addBotMessage(m.content, true)
+      })
+      msgs.scrollTop = msgs.scrollHeight
+      renderProjects()
+    }
+
+    function renderProjects() {
+      var list = document.getElementById('projects-list')
+      if (!list) return
+      if (!projects.length) {
+        list.innerHTML = '<div style="font-size:12px;color:var(--t4);text-align:center;padding:16px 8px">Aucun projet sauvegardé</div>'
+        return
+      }
+      list.innerHTML = projects.map(function(p) {
+        var active = p.id === currentProjectId
+        return '<div onclick="loadProject('' + p.id + '')" style="padding:8px 10px;border-radius:8px;cursor:pointer;border:1px solid ' + (active?'rgba(123,92,255,0.3)':'transparent') + ';background:' + (active?'rgba(123,92,255,0.1)':'transparent') + ';transition:all .2s;margin-bottom:2px">'
+          + '<div style="font-size:12px;color:' + (active?'#a78bfa':'var(--t3)') + ';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + p.name + '</div>'
+          + '<div style="font-size:10px;color:var(--t4)">' + new Date(p.date).toLocaleDateString('fr-CA') + '</div>'
+          + '</div>'
+      }).join('')
+    }
+
+    function newConversation() {
+      // Sauvegarde la conversation actuelle si elle a du contenu
+      if (chatHistory.length > 2) {
+        var firstName = chatHistory.find(function(m){ return m.role==='assistant' }) ? clientName || 'Conv' : 'Conv'
+        saveProject(currentAgent !== 'general' ? currentAgent.charAt(0).toUpperCase()+currentAgent.slice(1)+' — '+new Date().toLocaleDateString('fr-CA') : clientName + ' — ' + new Date().toLocaleDateString('fr-CA'))
+      }
+      currentProjectId = null
+      chatHistory = []
+      document.getElementById('chat-messages').innerHTML = ''
+      document.getElementById('suggestions').style.display = 'flex'
+      sendWelcome()
+    }
+
+    /* ══ ATTACHMENT ══ */
+    function handleAttachment(input) {
+      var file = input.files[0]
+      if (!file) return
+      var bar  = document.getElementById('attach-preview-bar')
+      var name = document.getElementById('attach-name')
+      if (bar)  bar.style.display = 'flex'
+      if (name) name.textContent  = '📎 ' + file.name
+
+      var reader = new FileReader()
+      reader.onload = function(e) {
+        currentAttachment = {
+          name : file.name,
+          type : file.type,
+          data : e.target.result.split(',')[1] // base64
+        }
+      }
+      reader.readAsDataURL(file)
+    }
+
+    function clearAttachment() {
+      currentAttachment = null
+      var bar  = document.getElementById('attach-preview-bar')
+      var inp  = document.getElementById('chat-file-input')
+      if (bar) bar.style.display = 'none'
+      if (inp) inp.value = ''
+    }
 
     var agentWelcome = {
       general    : null, // utilise sendWelcome()
@@ -670,7 +818,7 @@
     function sendWelcome() {
       var welcome = clientName
         ? 'Bienvenue dans mon univers ✦\n\nSalut **' + clientName + '** ! Je suis NyXia, ton agente IA spécialisée en marketing et conversion. 💜\n\nDis-moi, quel est ton projet du moment ?'
-        : 'Bienvenue dans mon univers ✦\n\nJe suis **NyXia**, ton agente IA spécialisée en marketing et conversion. 💜\n\nAvant tout — comment tu t\'appelles ?'
+        : 'Bienvenue dans mon univers ✦\n\nJe suis **NyXia**, ton agente IA spécialisée en marketing et conversion. 💜\n\nComment tu t\'appelles ? (prénom seulement)'
       addBotMessage(welcome)
     }
 
@@ -690,16 +838,20 @@
     }
 
     function sendMessageText(text) {
-      // Si NyXia vient de demander le prénom et qu'on ne le connaît pas encore
+      // Capture prénom si NyXia vient de le demander
       if (!clientName) {
-        var lastMsg = document.querySelector('#chat-messages .msg.bot:last-child .msg-bubble')
-        if (lastMsg && (lastMsg.textContent.includes('appelles') || lastMsg.textContent.includes('prénom'))) {
-          var name = text.trim().split(' ')[0]
-          clientName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
-          localStorage.setItem('nyxia_username', clientName)
-          document.getElementById('header-username').textContent = clientName
-          document.getElementById('sidebar-username').textContent = clientName
-          document.getElementById('sidebar-avatar').textContent = clientName.charAt(0).toUpperCase()
+        var msgs = document.querySelectorAll('#chat-messages .msg.bot .msg-bubble')
+        var lastBotMsg = msgs.length ? msgs[msgs.length-1] : null
+        if (lastBotMsg && (lastBotMsg.textContent.includes('appelles') || lastBotMsg.textContent.includes('prénom seulement'))) {
+          // Prend seulement le premier mot, proprement
+          var name = text.trim().split(/\s+/)[0].replace(/[^a-zA-ZÀ-ÿ'-]/g,'')
+          if (name.length >= 2) {
+            clientName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+            localStorage.setItem('nyxia_username', clientName)
+            document.getElementById('header-username').textContent = clientName
+            document.getElementById('sidebar-username').textContent = clientName
+            document.getElementById('sidebar-avatar').textContent = clientName.charAt(0)
+          }
         }
       }
       addUserMessage(text)
@@ -709,15 +861,19 @@
       btn.disabled = true
       addTyping()
 
+      var payload = {
+        message     : text,
+        history     : chatHistory.slice(-10),
+        userName    : clientName,
+        agent       : currentAgent,
+        attachment  : currentAttachment || null
+      }
+      clearAttachment()
+
       fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message  : text,
-          history  : chatHistory.slice(-10),
-          userName : clientName,
-          agent    : currentAgent
-        })
+        body: JSON.stringify(payload)
       })
       .then(r => r.json())
       .then(data => {
@@ -735,7 +891,7 @@
       })
     }
 
-    function addBotMessage(text) {
+    function addBotMessage(text, noSave) {
       var msgs = document.getElementById('chat-messages')
 
       // Détecte les tags [IMAGE: ...] dans le texte
@@ -763,13 +919,49 @@
           .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
           .replace(/\n/g, '<br>')
 
+        // Boutons d'action sous le message
+        var actionsDiv = document.createElement('div')
+        actionsDiv.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin-top:2px'
+
         var spkBtn = document.createElement('button')
         spkBtn.textContent = '🔊 Écouter'
-        spkBtn.style.cssText = 'align-self:flex-start;padding:3px 12px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);font-size:11px;cursor:pointer;transition:all .2s;font-family:Outfit,sans-serif'
+        spkBtn.style.cssText = 'padding:3px 10px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);font-size:11px;cursor:pointer;transition:all .2s;font-family:Outfit,sans-serif'
         spkBtn.addEventListener('click', function() { speakMsg(spkBtn, cleanText) })
 
+        var copyBtn = document.createElement('button')
+        copyBtn.textContent = '📋 Copier'
+        copyBtn.style.cssText = spkBtn.style.cssText
+        copyBtn.addEventListener('click', function() {
+          navigator.clipboard.writeText(cleanText).then(function() {
+            copyBtn.textContent = '✓ Copié'
+            setTimeout(function(){ copyBtn.textContent = '📋 Copier' }, 2000)
+          })
+        })
+
+        var retryBtn = document.createElement('button')
+        retryBtn.textContent = '↺ Réessayer'
+        retryBtn.style.cssText = spkBtn.style.cssText
+        retryBtn.addEventListener('click', function() {
+          var lastUser = chatHistory.filter(function(m){ return m.role==='user' }).pop()
+          if (lastUser) {
+            chatHistory = chatHistory.slice(0, -1) // retire le dernier assistant
+            div.remove()
+            sendMessageText(lastUser.content)
+          }
+        })
+
+        var pdfBtn = document.createElement('button')
+        pdfBtn.textContent = '⬇ PDF'
+        pdfBtn.style.cssText = spkBtn.style.cssText
+        pdfBtn.addEventListener('click', function() { downloadAsPDF(cleanText) })
+
+        actionsDiv.appendChild(spkBtn)
+        actionsDiv.appendChild(copyBtn)
+        actionsDiv.appendChild(retryBtn)
+        actionsDiv.appendChild(pdfBtn)
+
         wrapper.appendChild(bubble)
-        wrapper.appendChild(spkBtn)
+        wrapper.appendChild(actionsDiv)
 
         var avatar = document.createElement('img')
         avatar.src = '/NyXia.png'
@@ -853,9 +1045,17 @@
       })
 
       msgs.scrollTop = msgs.scrollHeight
+
+      // Sauvegarde auto dans le projet courant après chaque réponse
+      if (!noSave && chatHistory.length > 0 && chatHistory.length % 6 === 0) {
+        if (currentProjectId) {
+          var p = projects.find(function(p){ return p.id === currentProjectId })
+          if (p) { p.history = chatHistory; try { localStorage.setItem('nyxia_projects_' + clientEmail, JSON.stringify(projects)) } catch(e){} }
+        }
+      }
     }
 
-    function addUserMessage(text) {
+    function addUserMessage(text, noSave) {
       var msgs = document.getElementById('chat-messages')
       var div  = document.createElement('div')
       div.className = 'msg user'
