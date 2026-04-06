@@ -327,6 +327,11 @@
   function showPreview(html) {
     previewFrame.srcdoc  = html
     previewPanel.style.display = 'block'
+    // Stocke le code pour l'éditeur standalone
+    try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
+    // Affiche le bouton Éditer
+    var btnEdit = document.getElementById('btn-edit')
+    if (btnEdit) { btnEdit.style.display = 'inline-flex' }
   }
 
   /* ═══════════════════════════════
