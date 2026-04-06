@@ -430,8 +430,7 @@
           <button id="agent-seo" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🔍 SEO</button>
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">📁 Projets</div>
           <div id="projects-list" style="margin-bottom:8px"><div style="font-size:11px;color:var(--t4)">Aucun projet</div></div>
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">🔗 Intégrations</div>
-          <div style="font-size:11px;color:var(--t4);padding:6px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.1);background:rgba(123,92,255,0.04)">Webhooks &amp; Zapier<br><span style="font-size:10px;opacity:.5">Bientôt disponible</span></div>
+
         </div>
 
         <div class="nav-item" id="nav-generator" onclick="showPanel('generator')">
@@ -686,7 +685,8 @@
         body: JSON.stringify({
           message  : text,
           history  : chatHistory.slice(-10),
-          userName : clientName
+          userName : clientName,
+          agent    : _currentAgent
         })
       })
       .then(r => r.json())
@@ -1035,6 +1035,24 @@
         var bar=document.getElementById('attach-bar'),fi2=document.getElementById('chat-file')
         if(bar) bar.style.display='none'; if(fi2) fi2.value=''
       })
+      // Fonction setAgent — change le mode et envoie un message contextuel
+      function setAgent(agent) {
+        _currentAgent = agent
+        var msgs = document.getElementById('chat-messages')
+        if (msgs) msgs.innerHTML = ''
+        chatHistory = []
+        var sugg = document.getElementById('suggestions')
+        if (sugg) sugg.style.display = 'none'
+        var name = clientName || ''
+        var welcomes = {
+          general:    (name ? 'Salut ' + name + ' ! 💜' : 'Bonjour ! 💜') + ' Je suis NyXia, ton agente IA. Sur quoi travailles-tu ?',
+          copywriter: '✍️ Mode **Copywriter** activé !\n\nJe rédige : annonces pub, posts réseaux, emails de vente, chapitres de livre, VSL...\n\nQuel type de contenu et pour quelle plateforme ?',
+          formation:  '🎓 Mode **Créateur de Formation** activé !\n\nJe structure ta formation : modules, scripts vidéo, workbooks et page de vente.\n\nQuel est le sujet et qui est ton audience cible ?',
+          seo:        '🔍 Mode **Expert SEO** activé !\n\nJe combine référencement et Psychologie du Clic pour rankler ET convertir.\n\nTon site/business, ta niche et tes mots-clés actuels ?'
+        }
+        addBotMessage(welcomes[agent] || welcomes.general)
+      }
+
       // Agent buttons
       ['general','copywriter','formation','seo'].forEach(function(a){
         var b=document.getElementById('agent-'+a)
