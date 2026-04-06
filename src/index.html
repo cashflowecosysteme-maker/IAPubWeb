@@ -1895,6 +1895,34 @@
       var frame = document.getElementById('preview-frame')
       if (frame && window.generatedCode) frame.srcdoc = window.generatedCode
     }
+
+    function switchMode(mode) {
+      var tabImg  = document.getElementById('tab-image')
+      var tabUrl  = document.getElementById('tab-url')
+      var imgMode = document.getElementById('image-mode')
+      var urlMode = document.getElementById('url-mode')
+      if (!tabImg) return
+      if (mode === 'url') {
+        tabUrl.style.background = 'linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))'
+        tabUrl.style.borderColor = 'rgba(123,92,255,0.4)'
+        tabUrl.style.color = '#fff'
+        tabImg.style.background = 'rgba(123,92,255,0.05)'
+        tabImg.style.borderColor = 'rgba(123,92,255,0.15)'
+        tabImg.style.color = '#8891B8'
+        imgMode.style.display = 'none'
+        urlMode.style.display = 'flex'
+      } else {
+        tabImg.style.background = 'linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))'
+        tabImg.style.borderColor = 'rgba(123,92,255,0.4)'
+        tabImg.style.color = '#fff'
+        tabUrl.style.background = 'rgba(123,92,255,0.05)'
+        tabUrl.style.borderColor = 'rgba(123,92,255,0.15)'
+        tabUrl.style.color = '#8891B8'
+        imgMode.style.display = 'flex'
+        urlMode.style.display = 'none'
+      }
+      window._currentMode = mode
+    }
   </script>
 
   <script src="/js/starry-bg.js" defer></script>
