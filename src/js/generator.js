@@ -327,11 +327,11 @@
   function showPreview(html) {
     previewFrame.srcdoc  = html
     previewPanel.style.display = 'block'
-    // Stocke le code pour l'éditeur standalone
+    // Stocke via postMessage au parent (dashboard) ET en local
     try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
-    // Affiche le bouton Éditer
-    var btnEdit = document.getElementById('btn-edit')
-    if (btnEdit) { btnEdit.style.display = 'inline-flex' }
+    try { sessionStorage.setItem('nyxia_edit_code', html) } catch(e) {}
+    // Envoie au parent dashboard pour qu'il le stocke
+    try { window.parent.postMessage({ type: 'nyxia_store_code', html: html }, '*') } catch(e) {}
   }
 
   /* ═══════════════════════════════
