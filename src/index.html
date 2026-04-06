@@ -273,35 +273,77 @@
     #generate-btn {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, #7B5CFF 0%, #5A6CFF 50%, #4FA3FF 100%) !important;
-      background-size: 200% 200% !important;
-      animation: btnGradient 3s ease infinite !important;
-      font-size: 18px !important;
-      padding: 20px 48px !important;
+      background: linear-gradient(135deg,
+        rgba(8,15,40,0.95) 0%,
+        rgba(15,25,60,0.95) 50%,
+        rgba(8,15,40,0.95) 100%) !important;
+      border: 1px solid rgba(212,175,80,0.45) !important;
       border-radius: 50px !important;
-      letter-spacing: .5px !important;
-      box-shadow: 0 0 40px rgba(123,92,255,0.5), 0 0 80px rgba(123,92,255,0.2) !important;
+      color: #fff !important;
+      font-family: 'Space Grotesk', sans-serif !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      letter-spacing: 1px !important;
+      padding: 16px 48px !important;
+      backdrop-filter: blur(12px) !important;
+      box-shadow:
+        0 0 0 1px rgba(212,175,80,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 4px 24px rgba(0,0,0,0.4) !important;
+      transition: all .3s ease !important;
+      cursor: pointer !important;
     }
     #generate-btn::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      background: linear-gradient(105deg,
+        transparent 30%,
+        rgba(212,175,80,0.06) 50%,
+        transparent 70%);
       transform: translateX(-100%);
-      animation: btnShimmer 2.5s ease-in-out infinite;
+      animation: btnShimmer 3s ease-in-out infinite;
     }
-    @keyframes btnGradient {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    #generate-btn::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 50px;
+      background: linear-gradient(135deg,
+        rgba(212,175,80,0.3),
+        transparent 40%,
+        transparent 60%,
+        rgba(212,175,80,0.15));
+      z-index: -1;
+      opacity: 0;
+      transition: opacity .3s;
     }
     @keyframes btnShimmer {
       0%   { transform: translateX(-100%); }
+      60%  { transform: translateX(100%); }
       100% { transform: translateX(100%); }
     }
     #generate-btn:not(:disabled):hover {
-      transform: translateY(-3px) scale(1.02) !important;
-      box-shadow: 0 0 60px rgba(123,92,255,0.7), 0 0 120px rgba(123,92,255,0.3) !important;
+      background: linear-gradient(135deg,
+        rgba(12,22,55,0.98) 0%,
+        rgba(20,35,80,0.98) 50%,
+        rgba(12,22,55,0.98) 100%) !important;
+      border-color: rgba(212,175,80,0.75) !important;
+      box-shadow:
+        0 0 0 1px rgba(212,175,80,0.3),
+        0 0 30px rgba(212,175,80,0.12),
+        0 0 60px rgba(212,175,80,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 6px 32px rgba(0,0,0,0.5) !important;
+      transform: translateY(-2px) !important;
+      letter-spacing: 1.5px !important;
+    }
+    #generate-btn:not(:disabled):hover::after {
+      opacity: 1;
+    }
+    #generate-btn:disabled {
+      opacity: 0.5 !important;
+      cursor: not-allowed !important;
     }
 
     /* Glow d'ambiance — exact réplica */
@@ -1518,18 +1560,8 @@
       </div><!-- /image-mode -->
 
       <!-- Bouton générer — toujours visible -->
-      <button
-
-        id="generate-btn"
-
-        class="btn-primary"
-
-        style="width:100%;font-size:17px;padding:20px;margin-top:14px"
-
-      >
-
+      <button id="generate-btn" class="btn-primary" style="width:100%;margin-top:14px">
         ✨ Créer mon site avec NyXia
-
       </button>
 
       <!-- Pedigree -->
