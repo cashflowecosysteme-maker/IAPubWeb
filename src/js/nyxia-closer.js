@@ -67,26 +67,31 @@
   }
 
   function sendWelcome() {
-    // Ajoute bouton TTS dans le header si pas encore fait
     addTtsButton()
-    var welcome = state.userName
-      ? 'Bonjour ' + state.userName + ' ! 💜 Ravie de te retrouver. Sur quoi travailles-tu aujourd\'hui ?'
-      : 'Bonjour ! Je suis NyXia, ton assistante IA. ✨ Pour commencer, comment tu t\'appelles ?'
-    addBotMessage(welcome)
+    // Prénom fiable depuis localStorage (saisi au login)
+    if (state.userName) {
+      addBotMessage('Bonjour ' + state.userName + ' ! 💜 Ravie de te retrouver. Sur quoi travailles-tu aujourd\'hui ?')
+    } else {
+      addBotMessage('Bonjour ! Je suis NyXia, ton assistante IA. ✨ Comment tu t\'appelles ?')
+    }
   }
 
   function handleSend() {
     var value = inputEl.value.trim()
     if (!value || sendBtn.disabled) return
 
-    // Capture prénom si NyXia venait de le demander
+    // Capture prénom si NyXia venait de le demander et qu'on ne l'a pas encore
     if (!state.userName) {
       var lastBubble = messagesEl.querySelector('.nx-msg.bot:last-child .nx-bubble')
-      if (lastBubble && (lastBubble.textContent.indexOf('appelles') !== -1 || lastBubble.textContent.indexOf('prénom') !== -1)) {
-        var name = value.trim().split(' ')[0]
-        name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
-        state.userName = name
-        localStorage.setItem('nyxia_username', name)
+      if (lastBubble && lastBubble.textContent.indexOf('appelles') !== -1) {
+        // Prend le premier mot, ignore "je m'appelle", "c'est", "mon nom est"
+        var cleaned = value.replace(/^(je m'appelle|mon prénom est|mon nom est|c'est)\s+/i, '').trim()
+        var name = cleaned.split(/[\s,]+/)[0]
+        if (name && name.length > 1) {
+          name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+          state.userName = name
+          localStorage.setItem('nyxia_username', name)
+        }
       }
     }
 
