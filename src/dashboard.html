@@ -324,72 +324,6 @@
       padding: 6px 0 0;
     }
 
-
-    /* ── CHAT SIDEBAR ── */
-    .chat-sidebar {
-      width: 200px; flex-shrink: 0;
-      background: rgba(6,12,28,0.98);
-      border-right: 1px solid rgba(123,92,255,0.08);
-      display: flex; flex-direction: column;
-      overflow: hidden;
-    }
-    .chat-sidebar-section { padding: 12px 10px; }
-    .chat-sidebar-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 1px;
-      color: var(--t4); text-transform: uppercase; margin-bottom: 6px;
-    }
-    .btn-new-conv {
-      width: 100%; padding: 9px 12px; border-radius: 10px;
-      border: 1px dashed rgba(123,92,255,0.35);
-      background: rgba(123,92,255,0.05);
-      color: #a78bfa; font-family: 'Outfit', sans-serif;
-      font-size: 12px; font-weight: 600; cursor: pointer;
-      transition: all .2s; text-align: center;
-    }
-    .btn-new-conv:hover { background: rgba(123,92,255,0.12); border-color: rgba(123,92,255,0.5); }
-
-    .project-item {
-      padding: 7px 10px; border-radius: 8px; cursor: pointer;
-      border: 1px solid transparent; transition: all .2s; margin-bottom: 2px;
-    }
-    .project-item:hover { background: rgba(123,92,255,0.08); border-color: rgba(123,92,255,0.15); }
-    .project-item.active { background: rgba(123,92,255,0.12); border-color: rgba(123,92,255,0.3); }
-    .project-name { font-size: 12px; color: var(--t2); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .project-date { font-size: 10px; color: var(--t4); }
-
-    /* ── MSG ACTIONS ── */
-    .msg-actions {
-      display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px;
-    }
-    .msg-action-btn {
-      padding: 2px 10px; border-radius: 50px;
-      border: 1px solid rgba(123,92,255,0.15);
-      background: rgba(123,92,255,0.04);
-      color: var(--t4); font-family: 'Outfit', sans-serif;
-      font-size: 11px; cursor: pointer; transition: all .2s;
-    }
-    .msg-action-btn:hover { border-color: rgba(123,92,255,0.35); color: var(--t3); }
-
-    /* ── ATTACH BTN ── */
-    .btn-attach {
-      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
-      border: 1px solid rgba(123,92,255,0.2);
-      background: rgba(123,92,255,0.06);
-      color: var(--t3); font-size: 16px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all .2s;
-    }
-    .btn-attach:hover { border-color: var(--p); color: var(--t2); }
-
-    .attach-bar {
-      padding: 6px 20px; background: rgba(123,92,255,0.08);
-      border-top: 1px solid rgba(123,92,255,0.1);
-      display: none; align-items: center; gap: 8px; flex-shrink: 0;
-      font-size: 12px; color: var(--t3);
-    }
-    .attach-bar.visible { display: flex; }
-    .attach-bar button { background: none; border: none; color: var(--t4); cursor: pointer; font-size: 14px; }
-
     /* ── PANEL GÉNÉRATEUR ── */
     #panel-generator {
       flex-direction: column; overflow-y: auto;
@@ -488,6 +422,25 @@
           <span class="nav-arrow">›</span>
         </div>
 
+        <!-- SOUS-MENU CHAT — visible quand chat actif -->
+        <div id="chat-submenu" style="margin-top:4px;padding-left:8px">
+          <button onclick="newConversation()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px dashed rgba(123,92,255,0.3);background:rgba(123,92,255,0.04);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left">✦ Nouvelle conversation</button>
+
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">Mode</div>
+          <button class="agent-btn active" id="agent-general" onclick="setAgent('general')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px">💬 NyXia</button>
+          <button class="agent-btn" id="agent-copywriter" onclick="setAgent('copywriter')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px">✍️ Copywriter</button>
+          <button class="agent-btn" id="agent-formation" onclick="setAgent('formation')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px">🎓 Formation</button>
+          <button class="agent-btn" id="agent-seo" onclick="setAgent('seo')" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px">🔍 SEO</button>
+
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">📁 Projets</div>
+          <div id="projects-list" style="margin-bottom:8px">
+            <div style="font-size:11px;color:var(--t4)">Aucun projet</div>
+          </div>
+
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">🔗 Intégrations</div>
+          <div style="font-size:11px;color:var(--t4);padding:6px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.1);background:rgba(123,92,255,0.04)">Webhooks & Zapier<br><span style="font-size:10px;opacity:.5">Bientôt disponible</span></div>
+        </div>
+
         <div class="nav-item" id="nav-generator" onclick="showPanel('generator')">
           <span class="nav-icon">🏗</span>
           Créer mon site
@@ -520,7 +473,7 @@
           <div class="user-avatar" id="sidebar-avatar">D</div>
           <div class="user-info">
             <div class="user-name" id="sidebar-username">Chargement...</div>
-            <div class="user-plan">✦ Plan Pro</div>
+            <div class="user-plan">✦ Plan Visionnaire</div>
           </div>
         </div>
       </div>
@@ -530,73 +483,38 @@
     <div class="main-content">
 
       <!-- ── PANEL CHAT ── -->
-      <div class="panel active" id="panel-chat" style="flex-direction:row">
-
-        <!-- SIDEBAR GAUCHE -->
-        <div class="chat-sidebar">
-          <div class="chat-sidebar-section">
-            <button class="btn-new-conv" onclick="newConversation()">✦ Nouvelle conversation</button>
-          </div>
-
-          <div style="height:1px;background:rgba(123,92,255,0.08);margin:0 10px"></div>
-
-          <div class="chat-sidebar-section">
-            <div class="chat-sidebar-label">Mode</div>
-            <button class="agent-btn active" id="agent-general" onclick="setAgent('general')" style="width:100%;text-align:left;margin-bottom:3px">💬 NyXia</button>
-            <button class="agent-btn" id="agent-copywriter" onclick="setAgent('copywriter')" style="width:100%;text-align:left;margin-bottom:3px">✍️ Copywriter</button>
-            <button class="agent-btn" id="agent-formation" onclick="setAgent('formation')" style="width:100%;text-align:left;margin-bottom:3px">🎓 Formation</button>
-            <button class="agent-btn" id="agent-seo" onclick="setAgent('seo')" style="width:100%;text-align:left">🔍 SEO</button>
-          </div>
-
-          <div style="height:1px;background:rgba(123,92,255,0.08);margin:0 10px"></div>
-
-          <div class="chat-sidebar-section" style="flex:1;overflow-y:auto">
-            <div class="chat-sidebar-label">📁 Projets</div>
-            <div id="projects-list">
-              <div style="font-size:11px;color:var(--t4);padding:8px 0">Aucun projet</div>
-            </div>
-          </div>
-
-          <div style="height:1px;background:rgba(123,92,255,0.08);margin:0 10px"></div>
-
-          <div class="chat-sidebar-section">
-            <div class="chat-sidebar-label">🔗 Intégrations</div>
-            <div style="font-size:11px;color:var(--t4);padding:6px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.1);background:rgba(123,92,255,0.04);line-height:1.5">
-              Webhooks & Zapier<br><span style="opacity:.5;font-size:10px">Bientôt disponible</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ZONE CHAT -->
+      <div class="panel active" id="panel-chat">
         <div class="chat-area">
 
           <div class="chat-header">
             <img src="/NyXia.png" alt="NyXia">
             <div class="chat-header-info">
               <div class="chat-header-name">NyXia IA</div>
-              <div class="chat-header-sub" id="agent-label">Ton agente IA · Marketing &amp; Conversion</div>
+              <div class="chat-header-sub">Ton agente IA · Marketing &amp; Conversion</div>
             </div>
+            <button class="btn-speak" id="btn-speak" onclick="toggleSpeak()">
+              🔊 Écouter NyXia
+            </button>
           </div>
 
           <div class="chat-messages" id="chat-messages"></div>
 
           <div class="suggestions" id="suggestions">
-            <button class="sugg-btn" onclick="sendSuggestion('Je veux créer un site web')">🌐 Créer mon site</button>
-            <button class="sugg-btn" onclick="sendSuggestion('Aide-moi avec mes publications')">📱 Mes publications</button>
-            <button class="sugg-btn" onclick="sendSuggestion('Je veux plus de clients')">🚀 Plus de clients</button>
-            <button class="sugg-btn" onclick="sendSuggestion('Comment structurer mon offre ?')">💎 Mon offre</button>
+            <button class="sugg-btn" onclick="sendSuggestion('Je veux créer un site web')">🌐 Je veux créer un site web</button>
+            <button class="sugg-btn" onclick="sendSuggestion('Aide-moi avec mes publications')">📱 Aide-moi avec mes publications</button>
+            <button class="sugg-btn" onclick="sendSuggestion('Je veux plus de clients')">🚀 Je veux plus de clients</button>
+            <button class="sugg-btn" onclick="sendSuggestion('Comment structurer mon offre ?')">💎 Comment structurer mon offre ?</button>
           </div>
 
           <!-- Barre pièce jointe -->
-          <div class="attach-bar" id="attach-bar">
-            <span id="attach-name">📎 Fichier joint</span>
-            <button onclick="clearAttachment()">✕</button>
+          <div id="attach-bar" style="display:none;padding:6px 20px;background:rgba(123,92,255,0.08);border-top:1px solid rgba(123,92,255,0.1);align-items:center;gap:8px;flex-shrink:0;font-size:12px;color:var(--t3)">
+            <span id="attach-name">📎</span>
+            <button onclick="clearAttachment()" style="background:none;border:none;color:var(--t4);cursor:pointer">✕</button>
           </div>
 
           <div class="chat-input-wrap">
-            <label class="btn-attach" title="Joindre PDF, image ou ZIP">
-              📎
-              <input type="file" id="chat-file" accept=".pdf,.zip,image/*" style="display:none" onchange="handleAttachment(this)">
+            <label title="Joindre PDF, image ou ZIP" style="flex-shrink:0;width:36px;height:36px;border-radius:9px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px">
+              📎<input type="file" id="chat-file" accept=".pdf,.zip,image/*" style="display:none" onchange="handleAttachment(this)">
             </label>
             <textarea class="chat-input" id="chat-input" placeholder="Écris ton message..." rows="1"></textarea>
             <button class="btn-send" id="btn-send" onclick="sendMessage()">➤</button>
@@ -801,60 +719,46 @@
       var msgs = document.getElementById('chat-messages')
       var div  = document.createElement('div')
       div.className = 'msg bot'
-      var formatted = escHtml(text)
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>')
+      var formatted = escHtml(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
+
+      var avatar = document.createElement('img')
+      avatar.src = '/NyXia.png'; avatar.className = 'msg-avatar'; avatar.alt = 'NyXia'
 
       var wrapper = document.createElement('div')
       wrapper.style.cssText = 'display:flex;flex-direction:column;gap:4px;max-width:100%'
 
       var bubble = document.createElement('div')
-      bubble.className = 'msg-bubble'
-      bubble.innerHTML = formatted
+      bubble.className = 'msg-bubble'; bubble.innerHTML = formatted
 
-      // Speaker
-      var spkBtn = document.createElement('button')
-      spkBtn.className = 'msg-action-btn'
-      spkBtn.textContent = '🔊 Écouter'
-      spkBtn.addEventListener('click', function() { speakMsg(spkBtn, text) })
+      var acts = document.createElement('div')
+      acts.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap'
+      var btnStyle = 'padding:2px 9px;border-radius:50px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.04);color:var(--t4);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer;transition:all .2s'
 
-      // Copier
-      var copyBtn = document.createElement('button')
-      copyBtn.className = 'msg-action-btn'
-      copyBtn.textContent = '📋 Copier'
-      copyBtn.addEventListener('click', function() { copyMsgText(text) })
+      var spk = document.createElement('button'); spk.style.cssText = btnStyle; spk.textContent = '🔊 Écouter'
+      spk.addEventListener('click', function(){ speakMsg(spk, text) })
 
-      // Réessayer
-      var retryBtn = document.createElement('button')
-      retryBtn.className = 'msg-action-btn'
-      retryBtn.textContent = '↺ Réessayer'
-      retryBtn.addEventListener('click', function() { retryMsg() })
+      var cpy = document.createElement('button'); cpy.style.cssText = btnStyle; cpy.textContent = '📋 Copier'
+      cpy.addEventListener('click', function(){
+        navigator.clipboard.writeText(text).then(function(){ cpy.textContent='✓'; setTimeout(function(){cpy.textContent='📋 Copier'},2000) })
+      })
 
-      // PDF
-      var pdfBtn = document.createElement('button')
-      pdfBtn.className = 'msg-action-btn'
-      pdfBtn.textContent = '⬇ PDF'
-      pdfBtn.addEventListener('click', function() { downloadMsgPDF(text) })
+      var retry = document.createElement('button'); retry.style.cssText = btnStyle; retry.textContent = '↺ Réessayer'
+      retry.addEventListener('click', function(){
+        var last = chatHistory.filter(function(m){return m.role==='user'}).pop()
+        if(last){ if(chatHistory[chatHistory.length-1].role==='assistant') chatHistory.pop(); div.remove(); sendMessageText(last.content) }
+      })
 
-      var actions = document.createElement('div')
-      actions.className = 'msg-actions'
-      actions.appendChild(spkBtn)
-      actions.appendChild(copyBtn)
-      actions.appendChild(retryBtn)
-      actions.appendChild(pdfBtn)
+      var pdf = document.createElement('button'); pdf.style.cssText = btnStyle; pdf.textContent = '⬇ PDF'
+      pdf.addEventListener('click', function(){
+        var w = window.open('','_blank')
+        w.document.write('<html><head><title>NyXia</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85;font-size:16px}</style></head><body><h2 style="color:#7B5CFF">NyXia IA</h2><div>'+formatted+'</div></body></html>')
+        w.document.close(); setTimeout(function(){w.print()},300)
+      })
 
-      wrapper.appendChild(bubble)
-      wrapper.appendChild(actions)
-
-      var avatar = document.createElement('img')
-      avatar.src = '/NyXia.png'
-      avatar.className = 'msg-avatar'
-      avatar.alt = 'NyXia'
-
-      div.appendChild(avatar)
-      div.appendChild(wrapper)
-      msgs.appendChild(div)
-      msgs.scrollTop = msgs.scrollHeight
+      acts.appendChild(spk); acts.appendChild(cpy); acts.appendChild(retry); acts.appendChild(pdf)
+      wrapper.appendChild(bubble); wrapper.appendChild(acts)
+      div.appendChild(avatar); div.appendChild(wrapper)
+      msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight
     }
 
     function addUserMessage(text) {
@@ -1058,6 +962,82 @@
 
 
 
+
+    /* ══ PROJETS ══ */
+    var projects = [], currentProjectId = null, currentAttachment = null
+
+    function loadProjects() {
+      try { projects = JSON.parse(localStorage.getItem('nyxia_proj_'+clientEmail)||'[]') } catch(e){ projects=[] }
+      renderProjects()
+    }
+
+    function renderProjects() {
+      var list = document.getElementById('projects-list')
+      if (!list) return
+      if (!projects.length) { list.innerHTML='<div style="font-size:11px;color:var(--t4)">Aucun projet</div>'; return }
+      list.innerHTML = projects.map(function(p){
+        var a = p.id===currentProjectId
+        return '<div onclick="loadProject(''+p.id+'')" style="padding:5px 8px;border-radius:6px;cursor:pointer;border:1px solid '+(a?'rgba(123,92,255,0.3)':'transparent')+';background:'+(a?'rgba(123,92,255,0.1)':'transparent')+';margin-bottom:2px"><div style="font-size:11px;color:'+(a?'#a78bfa':'var(--t3)')+';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div><div style="font-size:10px;color:var(--t4)">'+new Date(p.date).toLocaleDateString('fr-CA')+'</div></div>'
+      }).join('')
+    }
+
+    function saveProject() {
+      if (!chatHistory.length) return
+      if (currentProjectId) {
+        var p = projects.find(function(x){return x.id===currentProjectId})
+        if (p) { p.history=chatHistory.slice(); p.date=new Date().toISOString() }
+      } else {
+        var proj = {id:'p'+Date.now(),name:(clientName||'Conv')+' — '+new Date().toLocaleDateString('fr-CA'),agent:currentAgent,history:chatHistory.slice(),date:new Date().toISOString()}
+        projects.unshift(proj); if(projects.length>20) projects=projects.slice(0,20)
+        currentProjectId = proj.id
+      }
+      try { localStorage.setItem('nyxia_proj_'+clientEmail, JSON.stringify(projects)) } catch(e){}
+      renderProjects()
+    }
+
+    function loadProject(id) {
+      if (chatHistory.length > 1) saveProject()
+      var p = projects.find(function(x){return x.id===id})
+      if (!p) return
+      currentProjectId=id; chatHistory=p.history.slice(); currentAgent=p.agent||'general'
+      document.querySelectorAll('.agent-btn').forEach(function(b){b.classList.remove('active')})
+      var ab=document.getElementById('agent-'+currentAgent); if(ab) ab.classList.add('active')
+      var msgs=document.getElementById('chat-messages'); msgs.innerHTML=''
+      chatHistory.forEach(function(m){ if(m.role==='user') addUserMessage(m.content); else addBotMessage(m.content) })
+      msgs.scrollTop=msgs.scrollHeight; renderProjects()
+    }
+
+    function newConversation() {
+      if (chatHistory.length>1) saveProject()
+      currentProjectId=null; chatHistory=[]
+      document.getElementById('chat-messages').innerHTML=''
+      document.getElementById('suggestions').style.display='flex'
+      sendWelcome()
+    }
+
+    /* ══ PIÈCES JOINTES ══ */
+    function handleAttachment(input) {
+      var file = input.files[0]; if(!file) return
+      var reader = new FileReader()
+      reader.onload = function(e) {
+        currentAttachment = {name:file.name,type:file.type,data:e.target.result.split(',')[1]}
+        var bar=document.getElementById('attach-bar'), nm=document.getElementById('attach-name')
+        if(bar) bar.style.display='flex'
+        if(nm)  nm.textContent='📎 '+file.name+' — prêt à envoyer ✓'
+      }
+      reader.readAsDataURL(file)
+    }
+
+    function clearAttachment() {
+      currentAttachment=null
+      var bar=document.getElementById('attach-bar'), inp=document.getElementById('chat-file')
+      if(bar) bar.style.display='none'; if(inp) inp.value=''
+    }
+
+    /* ══ INIT ══ */
+    var _origInit = initUI
+    function initUI() { _origInit(); loadProjects() }
+
     /* ══════════════════════════════════════
        INPUT AUTO-RESIZE + ENTER
     ══════════════════════════════════════ */
@@ -1081,164 +1061,6 @@
       d.textContent = str
       return d.innerHTML
     }
-
-    /* ══════════════════════════════════════
-       PROJETS & HISTORIQUE
-    ══════════════════════════════════════ */
-    var projects = []
-    var currentProjectId = null
-    var currentAttachment = null
-
-    function loadProjects() {
-      try { projects = JSON.parse(localStorage.getItem('nyxia_projects_' + clientEmail) || '[]') } catch(e) { projects = [] }
-      renderProjects()
-    }
-
-    function saveCurrentProject() {
-      if (!chatHistory.length) return
-      var id = currentProjectId
-      if (id) {
-        var p = projects.find(function(x){ return x.id===id })
-        if (p) { p.history = chatHistory.slice(); p.date = new Date().toISOString() }
-      } else {
-        var label = currentAgent !== 'general'
-          ? currentAgent.charAt(0).toUpperCase()+currentAgent.slice(1)
-          : (clientName || 'Conv')
-        var proj = { id:'p'+Date.now(), name:label+' — '+new Date().toLocaleDateString('fr-CA'), agent:currentAgent, history:chatHistory.slice(), date:new Date().toISOString() }
-        projects.unshift(proj)
-        if (projects.length > 20) projects = projects.slice(0,20)
-        currentProjectId = proj.id
-      }
-      try { localStorage.setItem('nyxia_projects_' + clientEmail, JSON.stringify(projects)) } catch(e) {}
-      renderProjects()
-    }
-
-    function loadProject(id) {
-      saveCurrentProject()
-      var p = projects.find(function(x){ return x.id===id })
-      if (!p) return
-      currentProjectId = id
-      chatHistory = p.history.slice()
-      currentAgent = p.agent || 'general'
-      document.querySelectorAll('.agent-btn').forEach(function(b){ b.classList.remove('active') })
-      var ab = document.getElementById('agent-'+currentAgent)
-      if (ab) ab.classList.add('active')
-      var msgs = document.getElementById('chat-messages')
-      msgs.innerHTML = ''
-      chatHistory.forEach(function(m) {
-        if (m.role==='user') addUserMessage(m.content)
-        else addBotMessage(m.content)
-      })
-      msgs.scrollTop = msgs.scrollHeight
-      renderProjects()
-    }
-
-    function renderProjects() {
-      var list = document.getElementById('projects-list')
-      if (!list) return
-      if (!projects.length) {
-        list.innerHTML = '<div style="font-size:11px;color:var(--t4);padding:8px 0">Aucun projet</div>'
-        return
-      }
-      list.innerHTML = projects.map(function(p) {
-        var active = p.id === currentProjectId
-        return '<div class="project-item'+(active?' active':'')+'" onclick="loadProject(''+p.id+'')">'
-          +'<div class="project-name">'+p.name+'</div>'
-          +'<div class="project-date">'+new Date(p.date).toLocaleDateString('fr-CA')+'</div>'
-          +'</div>'
-      }).join('')
-    }
-
-    function newConversation() {
-      if (chatHistory.length > 1) saveCurrentProject()
-      currentProjectId = null
-      chatHistory = []
-      document.getElementById('chat-messages').innerHTML = ''
-      document.getElementById('suggestions').style.display = 'flex'
-      sendWelcome()
-    }
-
-    /* ══════════════════════════════════════
-       PIÈCES JOINTES
-    ══════════════════════════════════════ */
-    function handleAttachment(input) {
-      var file = input.files[0]
-      if (!file) return
-      var reader = new FileReader()
-      reader.onload = function(e) {
-        currentAttachment = { name:file.name, type:file.type, data:e.target.result.split(',')[1] }
-        var bar = document.getElementById('attach-bar')
-        var nm  = document.getElementById('attach-name')
-        if (bar) bar.classList.add('visible')
-        if (nm)  nm.textContent = '📎 '+file.name
-      }
-      reader.readAsDataURL(file)
-    }
-
-    function clearAttachment() {
-      currentAttachment = null
-      var bar = document.getElementById('attach-bar')
-      var inp = document.getElementById('chat-file')
-      if (bar) bar.classList.remove('visible')
-      if (inp) inp.value = ''
-    }
-
-    /* ══════════════════════════════════════
-       ACTIONS MESSAGES
-    ══════════════════════════════════════ */
-    function copyMsgText(text) {
-      navigator.clipboard.writeText(text).then(function() { toastMsg('✓ Copié !') })
-    }
-
-    function retryMsg() {
-      var lastUser = null
-      for (var i = chatHistory.length-1; i >= 0; i--) {
-        if (chatHistory[i].role === 'user') { lastUser = chatHistory[i].content; break }
-      }
-      if (!lastUser) return
-      // Retire la dernière réponse
-      if (chatHistory.length && chatHistory[chatHistory.length-1].role === 'assistant') chatHistory.pop()
-      var msgs = document.getElementById('chat-messages')
-      var botMsgs = msgs.querySelectorAll('.msg.bot')
-      if (botMsgs.length) botMsgs[botMsgs.length-1].remove()
-      sendMessageText(lastUser)
-    }
-
-    function downloadMsgPDF(text) {
-      var win = window.open('', '_blank')
-      if (!win) return
-      win.document.write('<html><head><title>NyXia Export</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85;font-size:16px;color:#1a1a2e}h1{color:#7B5CFF;font-size:22px;margin-bottom:32px}p{margin:12px 0}</style></head><body>')
-      win.document.write('<h1>NyXia IA — Export</h1>')
-      var paras = text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').split('\n').filter(Boolean)
-      win.document.write(paras.map(function(p){ return '<p>'+p+'</p>' }).join(''))
-      win.document.write('</body></html>')
-      win.document.close()
-      setTimeout(function(){ win.print() }, 300)
-    }
-
-    function toastMsg(msg) {
-      var t = document.getElementById('toast')
-      if (!t) { t = document.createElement('div'); t.id='toast'; t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(26,37,84,0.95);border:1px solid rgba(123,92,255,0.3);color:#D6D9F0;font-size:13px;padding:10px 20px;border-radius:50px;z-index:9999;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.4)'; document.body.appendChild(t) }
-      t.textContent = msg; t.style.display = 'block'
-      setTimeout(function(){ t.style.display='none' }, 2500)
-    }
-
-    /* ══ LOAD PROJECTS ON INIT ══ */
-    var _origInitUI = initUI
-    function initUI() {
-      _origInitUI()
-      loadProjects()
-    }
-
-    /* ══ PASS ATTACHMENT TO API ══ */
-    var _origSendMsgText = sendMessageText
-    function sendMessageText(text) {
-      // Injecte la pièce jointe dans le prochain appel API via override temporaire
-      window._pendingAttachment = currentAttachment
-      clearAttachment()
-      _origSendMsgText(text)
-    }
-
   </script>
 
 </body>
