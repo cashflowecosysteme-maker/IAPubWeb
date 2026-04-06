@@ -135,7 +135,9 @@
      BOUTON GÉNÉRER
   ═══════════════════════════════ */
   btn.addEventListener('click', function () {
-    if (imageBase64) {
+    if (currentMode === 'url') {
+      generateFromUrl()
+    } else if (imageBase64) {
       generateFromImage()
     } else {
       generateFromText()
@@ -630,6 +632,62 @@
       if (el) el.addEventListener('input', function(){ applyColor(colorMap[id], el.value) })
     })
   })
+
+
+  /* ═══ MODE URL ═══ */
+  var currentMode = 'image'
+
+  function switchMode(mode) {
+    currentMode = mode
+    var tabImg  = document.getElementById('tab-image')
+    var tabUrl  = document.getElementById('tab-url')
+    var imgMode = document.getElementById('image-mode')
+    var urlMode = document.getElementById('url-mode')
+    if (!tabImg) return
+
+    if (mode === 'url') {
+      tabUrl.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+      tabImg.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+      imgMode.style.display = 'none'
+      urlMode.style.display = 'flex'
+    } else {
+      tabImg.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+      tabUrl.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+      imgMode.style.display = 'flex'
+      urlMode.style.display = 'none'
+    }
+  }
+
+  function generateFromUrl() {
+    var urlInput = document.getElementById('url-input')
+    var prompt   = document.getElementById('user-input')
+    var urlVal   = urlInput ? urlInput.value.trim() : ''
+
+    if (!urlVal) {
+      urlInput.style.border = '2px solid #FF4B6E'
+      setTimeout(function(){ urlInput.style.border = '' }, 3000)
+      return
+    }
+    if (!urlVal.startsWith('http')) urlVal = 'https://' + urlVal
+
+    setLoading('NyXia analyse ton site...')
+
+    fetch('/api/from-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: urlVal, prompt: prompt ? prompt.value.trim() : '' })
+    })
+    .then(function(r) { return r.json() })
+    .then(function(data) {
+      if (data.success && data.html) {
+        showPreview(data.html)
+        resetBtn('Site généré ✓')
+      } else {
+        resetBtn('Erreur — ' + (data.error || 'Réessaie'))
+      }
+    })
+    .catch(function() { resetBtn('Erreur réseau') })
+  }
 
   // Expose editor functions globally après chargement complet
   window._toggleEditor   = toggleEditor
