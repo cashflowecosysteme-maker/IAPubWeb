@@ -260,6 +260,11 @@
       <form id="login-form" onsubmit="return false">
 
         <div class="form-group">
+          <label class="form-label" for="firstname">Ton prénom</label>
+          <input class="form-input" type="text" id="firstname" placeholder="Ex : Sophie, Marc, Julie..." autocomplete="given-name">
+        </div>
+
+        <div class="form-group">
           <label class="form-label" for="email">Adresse email</label>
           <input class="form-input" type="email" id="email" placeholder="ton@email.com" autocomplete="email" required>
         </div>
@@ -316,6 +321,7 @@
        LOGIN
     ══════════════════════════════════ */
     function doLogin() {
+      var firstname = document.getElementById('firstname').value.trim()
       var email    = document.getElementById('email').value.trim()
       var password = document.getElementById('password').value.trim()
       var btn      = document.getElementById('btn-login')
@@ -342,6 +348,13 @@
       .then(function(data) {
         if (data.success && data.token) {
           sessionStorage.setItem('nyxia_token', data.token)
+          // Sauvegarde le prénom — priorité : champ login, sinon retour API (firstname stocké dans KV)
+          var name = firstname || data.firstname || ''
+          if (name) {
+            // Capitalise proprement
+            name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+            localStorage.setItem('nyxia_username', name)
+          }
           showMsg('✓ Connexion réussie ! Redirection...', 'success')
           setTimeout(function() {
             window.location.href = '/dashboard.html'
