@@ -135,7 +135,7 @@
      BOUTON GÉNÉRER
   ═══════════════════════════════ */
   btn.addEventListener('click', function () {
-    if (currentMode === 'url') {
+    if (window._currentMode === 'url' || currentMode === 'url') {
       generateFromUrl()
     } else if (imageBase64) {
       generateFromImage()
