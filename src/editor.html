@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyXia — Éditeur de site</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0A1628; --bg2: #0F1C3F; --bg3: #1A2554;
+      --p: #7B5CFF; --p2: #5A6CFF; --p3: #4FA3FF;
+      --t: #fff; --t2: #D6D9F0; --t3: #8891B8; --t4: #4a5278;
+      --green: #00E676; --red: #FF4B6E; --gold: #F4C842;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; overflow:hidden; font-family:'Outfit',sans-serif; background:var(--bg); color:var(--t2); }
+
+    /* ── LAYOUT ── */
+    .app { display:flex; height:100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 280px; flex-shrink:0;
+      background: rgba(8,15,34,0.98);
+      border-right: 1px solid rgba(123,92,255,0.12);
+      display: flex; flex-direction:column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(123,92,255,0.1);
+      display: flex; align-items:center; gap:10px;
+      flex-shrink:0;
+    }
+    .sidebar-header img { width:30px; height:30px; border-radius:50%; object-fit:cover; border:1.5px solid rgba(123,92,255,0.4); }
+    .sidebar-title { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; background:linear-gradient(135deg,#a78bfa,var(--p3)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .sidebar-sub { font-size:11px; color:var(--t4); }
+
+    .sidebar-tabs {
+      display:flex; border-bottom:1px solid rgba(123,92,255,0.1);
+      flex-shrink:0;
+    }
+    .tab-btn {
+      flex:1; padding:10px 8px; border:none; background:none;
+      color:var(--t3); font-family:'Outfit',sans-serif; font-size:12px; font-weight:600;
+      cursor:pointer; transition:all .2s; border-bottom:2px solid transparent;
+    }
+    .tab-btn.active { color:var(--t); border-bottom-color:var(--p); background:rgba(123,92,255,0.05); }
+    .tab-btn:hover:not(.active) { color:var(--t2); }
+
+    .sidebar-scroll { flex:1; overflow-y:auto; padding:16px; }
+    .sidebar-scroll::-webkit-scrollbar { width:4px; }
+    .sidebar-scroll::-webkit-scrollbar-thumb { background:rgba(123,92,255,0.2); border-radius:2px; }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom:20px; }
+    .section-label {
+      font-size:10px; font-weight:700; letter-spacing:1px;
+      color:var(--t4); text-transform:uppercase; margin-bottom:8px;
+    }
+    .input-field {
+      width:100%; background:rgba(15,28,63,0.7);
+      border:1px solid rgba(123,92,255,0.2); border-radius:8px;
+      color:var(--t); font-family:'Outfit',sans-serif; font-size:13px;
+      padding:9px 12px; outline:none; resize:vertical;
+      transition:border-color .2s;
+    }
+    .input-field:focus { border-color:rgba(123,92,255,0.5); }
+
+    .color-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .color-item label { font-size:11px; color:var(--t3); display:block; margin-bottom:4px; }
+    .color-item input[type="color"] {
+      width:100%; height:32px; border-radius:6px;
+      border:1px solid rgba(123,92,255,0.2);
+      cursor:pointer; background:none; padding:2px;
+    }
+
+    /* Image picker */
+    .img-option {
+      display:flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:8px;
+      border:1px solid rgba(123,92,255,0.15);
+      background:rgba(123,92,255,0.05);
+      cursor:pointer; transition:all .2s; margin-bottom:6px;
+      font-size:13px; color:var(--t2);
+    }
+    .img-option:hover { border-color:var(--p); background:rgba(123,92,255,0.1); }
+
+    /* ── BUTTONS ── */
+    .btn { width:100%; padding:10px 14px; border-radius:8px; border:none; font-family:'Outfit',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; margin-bottom:6px; }
+    .btn-primary { background:linear-gradient(135deg,var(--p),var(--p2)); color:#fff; box-shadow:0 0 16px rgba(123,92,255,0.3); }
+    .btn-primary:hover { box-shadow:0 0 24px rgba(123,92,255,0.5); }
+    .btn-secondary { background:rgba(123,92,255,0.08); border:1px solid rgba(123,92,255,0.2); color:var(--t2); }
+    .btn-secondary:hover { border-color:var(--p); color:var(--t); }
+    .btn-danger { background:rgba(255,75,110,0.1); border:1px solid rgba(255,75,110,0.25); color:#ff8fab; }
+    .btn-success { background:rgba(0,230,118,0.1); border:1px solid rgba(0,230,118,0.25); color:var(--green); }
+
+    /* ── SELECTED ELEMENT ── */
+    .selected-info {
+      background:rgba(123,92,255,0.1); border:1px solid rgba(123,92,255,0.25);
+      border-radius:8px; padding:10px 12px; margin-bottom:12px;
+      font-size:12px; color:var(--t3); display:none;
+    }
+    .selected-info.visible { display:block; }
+    .selected-tag { display:inline-block; background:rgba(123,92,255,0.2); color:#a78bfa; font-size:10px; padding:2px 8px; border-radius:50px; font-family:'Space Grotesk',sans-serif; font-weight:600; margin-bottom:4px; }
+
+    /* ── PEXELS GRID ── */
+    .pexels-search { display:flex; gap:6px; margin-bottom:10px; }
+    .pexels-search input { flex:1; }
+    .pexels-search button { padding:9px 14px; border-radius:8px; border:none; background:var(--p); color:#fff; font-size:13px; cursor:pointer; }
+    .pexels-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+    .pexels-thumb {
+      aspect-ratio:16/9; border-radius:6px; object-fit:cover;
+      cursor:pointer; border:2px solid transparent; transition:all .2s;
+    }
+    .pexels-thumb:hover { border-color:var(--p); transform:scale(1.02); }
+
+    /* ── PREVIEW ── */
+    .preview-area { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+    .preview-toolbar {
+      padding:10px 16px;
+      background:rgba(8,15,34,0.95);
+      border-bottom:1px solid rgba(123,92,255,0.1);
+      display:flex; align-items:center; gap:10px; flex-shrink:0;
+    }
+    .preview-toolbar-title { font-family:'Space Grotesk',sans-serif; font-size:13px; font-weight:600; color:var(--t3); flex:1; }
+
+    .edit-mode-badge {
+      padding:4px 12px; border-radius:50px;
+      background:rgba(0,230,118,0.12); border:1px solid rgba(0,230,118,0.3);
+      color:var(--green); font-size:11px; font-weight:600;
+      display:none;
+    }
+    .edit-mode-badge.visible { display:block; animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+    .hint-bar {
+      padding:6px 16px;
+      background:rgba(123,92,255,0.08);
+      border-bottom:1px solid rgba(123,92,255,0.1);
+      font-size:11px; color:var(--t4); text-align:center;
+      display:none; flex-shrink:0;
+    }
+    .hint-bar.visible { display:block; }
+
+    #preview-frame {
+      flex:1; border:none; width:100%;
+    }
+
+    /* ── STATUS TOAST ── */
+    #toast {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+      background:rgba(26,37,84,0.95); border:1px solid rgba(123,92,255,0.3);
+      color:var(--t2); font-size:13px; padding:10px 20px; border-radius:50px;
+      z-index:9999; display:none; backdrop-filter:blur(12px);
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* ── BACK BUTTON ── */
+    .btn-back {
+      display:flex; align-items:center; gap:6px;
+      padding:6px 14px; border-radius:50px;
+      border:1px solid rgba(123,92,255,0.2);
+      background:rgba(123,92,255,0.07);
+      color:var(--t3); font-size:12px; font-weight:600;
+      cursor:pointer; transition:all .2s; text-decoration:none;
+    }
+    .btn-back:hover { border-color:var(--p); color:var(--t2); }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══ SIDEBAR ══ -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="/NyXia.png" alt="NyXia">
+      <div>
+        <div class="sidebar-title">NyXia Éditeur</div>
+        <div class="sidebar-sub">Modifie ton site en temps réel</div>
+      </div>
+    </div>
+
+    <div class="sidebar-tabs">
+      <button class="tab-btn active" onclick="switchTab('texte')">✏️ Texte</button>
+      <button class="tab-btn" onclick="switchTab('couleurs')">🎨 Couleurs</button>
+      <button class="tab-btn" onclick="switchTab('images')">🖼 Images</button>
+    </div>
+
+    <div class="sidebar-scroll">
+
+      <!-- TAB TEXTE -->
+      <div id="tab-texte">
+        <div class="selected-info" id="selected-info">
+          <div class="selected-tag" id="selected-tag">—</div>
+          <div id="selected-preview" style="color:var(--t2);font-size:12px;margin-top:4px;word-break:break-word"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Texte à modifier</div>
+          <textarea class="input-field" id="text-input" rows="4" placeholder="Clique sur un texte dans le preview pour le modifier..."></textarea>
+          <button class="btn btn-primary" id="btn-apply" onclick="applyText()" style="margin-top:8px">✓ Appliquer</button>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Mode édition</div>
+          <button class="btn btn-secondary" id="btn-toggle-edit" onclick="toggleEditMode()">👆 Activer — cliquer pour éditer</button>
+        </div>
+      </div>
+
+      <!-- TAB COULEURS -->
+      <div id="tab-couleurs" style="display:none">
+        <div class="section">
+          <div class="section-label">Couleurs du site</div>
+          <div class="color-grid">
+            <div class="color-item">
+              <label>Fond principal</label>
+              <input type="color" id="c-bg" value="#ffffff" oninput="applyStyleRule('body', 'background-color', this.value)">
+            </div>
+            <div class="color-item">
+              <label>Couleur texte</label>
+              <input type="color" id="c-text" value="#000000" oninput="applyStyleRule('body', 'color', this.value)">
+            </div>
+            <div class="color-item">
+              <label>Titres (H1/H2)</label>
+              <input type="color" id="c-titles" value="#000000" oninput="applyToElements(['h1','h2','h3'], 'color', this.value)">
+            </div>
+            <div class="color-item">
+              <label>Liens & accents</label>
+              <input type="color" id="c-links" value="#7B5CFF" oninput="applyToElements(['a'], 'color', this.value)">
+            </div>
+            <div class="color-item">
+              <label>Boutons fond</label>
+              <input type="color" id="c-btn-bg" value="#7B5CFF" oninput="applyToElements(['button','.btn'], 'background-color', this.value)">
+            </div>
+            <div class="color-item">
+              <label>Boutons texte</label>
+              <input type="color" id="c-btn-text" value="#ffffff" oninput="applyToElements(['button','.btn'], 'color', this.value)">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Fond dégradé</div>
+          <div class="color-grid">
+            <div class="color-item">
+              <label>Couleur 1</label>
+              <input type="color" id="c-grad1" value="#0F1C3F" oninput="applyGradient()">
+            </div>
+            <div class="color-item">
+              <label>Couleur 2</label>
+              <input type="color" id="c-grad2" value="#1A2554" oninput="applyGradient()">
+            </div>
+          </div>
+          <button class="btn btn-secondary" onclick="applyGradient()" style="margin-top:8px">Appliquer le dégradé</button>
+        </div>
+      </div>
+
+      <!-- TAB IMAGES -->
+      <div id="tab-images" style="display:none">
+        <div class="section">
+          <div class="section-label">Image sélectionnée</div>
+          <div class="selected-info" id="img-selected-info" style="display:none">
+            <img id="img-selected-preview" style="width:100%;border-radius:6px;object-fit:cover;max-height:80px">
+          </div>
+          <p style="font-size:12px;color:var(--t4);margin-bottom:10px">Clique sur une image dans le preview pour la remplacer</p>
+
+          <div class="img-option" onclick="document.getElementById('img-upload').click()">
+            📁 Uploader une image locale
+            <input type="file" id="img-upload" accept="image/*" style="display:none" onchange="uploadLocalImage(this)">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-label">Chercher sur Pexels</div>
+          <div class="pexels-search">
+            <input class="input-field" type="text" id="pexels-query" placeholder="Ex: spa, nature, business..." style="margin:0">
+            <button onclick="searchPexels()">🔍</button>
+          </div>
+          <div class="pexels-grid" id="pexels-grid">
+            <div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:12px;padding:16px">Cherche des images ci-dessus</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS (toujours visibles) -->
+      <div class="section" style="border-top:1px solid rgba(123,92,255,0.1);padding-top:16px;margin-top:8px">
+        <div class="section-label">Actions</div>
+        <button class="btn btn-primary" onclick="saveAndDownload()">💾 Télécharger le site</button>
+        <button class="btn btn-secondary" onclick="copyCode()">📋 Copier le code</button>
+        <button class="btn btn-secondary" onclick="resetSite()">↺ Annuler les modifications</button>
+        <a href="javascript:history.back()" class="btn-back" style="display:flex;margin-top:8px">← Retour au générateur</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ PREVIEW ══ -->
+  <div class="preview-area">
+    <div class="preview-toolbar">
+      <span class="preview-toolbar-title">Aperçu en temps réel</span>
+      <div class="edit-mode-badge" id="edit-badge">✏️ Mode édition actif</div>
+      <button class="btn-back" onclick="window.close()">✕ Fermer</button>
+    </div>
+    <div class="hint-bar" id="hint-bar">👆 Clique sur un texte pour le modifier · Clique sur une image pour la remplacer</div>
+    <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+  </div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+  /* ═══════════════════════════════════════════
+     INIT — Récupère le HTML depuis localStorage
+  ═══════════════════════════════════════════ */
+  var originalCode = ''
+  var currentCode  = ''
+  var editMode     = false
+  var selectedEl   = null  // référence dans l'iframe
+  var selectedIsImg = false
+
+  window.addEventListener('load', function() {
+    // Récupère le code depuis localStorage (passé par generator.js)
+    var code = localStorage.getItem('nyxia_edit_code')
+    if (!code) {
+      document.getElementById('preview-frame').srcdoc = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#666">Aucun site à éditer. Génère d\'abord un site.</div>'
+      return
+    }
+    originalCode = code
+    currentCode  = code
+    loadPreview(code)
+  })
+
+  function loadPreview(html) {
+    var frame = document.getElementById('preview-frame')
+    frame.srcdoc = html
+    frame.onload = function() {
+      if (editMode) injectEditListeners()
+    }
+  }
+
+  /* ═══════════════════════════════════════════
+     TABS
+  ═══════════════════════════════════════════ */
+  function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active') })
+    event.target.classList.add('active')
+    document.getElementById('tab-texte').style.display    = name === 'texte'    ? 'block' : 'none'
+    document.getElementById('tab-couleurs').style.display = name === 'couleurs' ? 'block' : 'none'
+    document.getElementById('tab-images').style.display   = name === 'images'   ? 'block' : 'none'
+
+    if (name === 'images') {
+      // Active automatiquement le mode édition pour images
+      if (!editMode) toggleEditMode()
+    }
+  }
+
+  /* ═══════════════════════════════════════════
+     MODE ÉDITION — inject listeners dans iframe
+  ═══════════════════════════════════════════ */
+  function toggleEditMode() {
+    editMode = !editMode
+    var btn   = document.getElementById('btn-toggle-edit')
+    var badge = document.getElementById('edit-badge')
+    var hint  = document.getElementById('hint-bar')
+
+    if (editMode) {
+      btn.textContent = '⏹ Désactiver le mode édition'
+      btn.className   = 'btn btn-danger'
+      badge.classList.add('visible')
+      hint.classList.add('visible')
+      injectEditListeners()
+    } else {
+      btn.textContent = '👆 Activer — cliquer pour éditer'
+      btn.className   = 'btn btn-secondary'
+      badge.classList.remove('visible')
+      hint.classList.remove('visible')
+    }
+  }
+
+  function injectEditListeners() {
+    var frame = document.getElementById('preview-frame')
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      if (!doc || !doc.body) return
+
+      // Retire l'ancien script si déjà injecté
+      var old = doc.getElementById('nyxia-editor-script')
+      if (old) old.remove()
+
+      var s = doc.createElement('script')
+      s.id = 'nyxia-editor-script'
+      s.textContent = [
+        'var _hover = null, _sel = null;',
+        'document.body.style.cursor = "crosshair";',
+        'document.body.addEventListener("mouseover", function(e) {',
+        '  if (_sel === e.target) return;',
+        '  if (_hover) _hover.style.outline = (_hover===_sel) ? "2px solid #7B5CFF" : "";',
+        '  _hover = e.target;',
+        '  _hover.style.outline = "1px dashed rgba(123,92,255,0.5)";',
+        '}, true);',
+        'document.body.addEventListener("click", function(e) {',
+        '  e.preventDefault(); e.stopPropagation();',
+        '  if (_sel) _sel.style.outline = "";',
+        '  _sel = e.target;',
+        '  _sel.style.outline = "2px solid #7B5CFF";',
+        '  var isImg = _sel.tagName === "IMG";',
+        '  var txt = isImg ? "" : (_sel.innerText || _sel.textContent || "").trim();',
+        '  var src = isImg ? _sel.src : "";',
+        '  var tag = _sel.tagName.toLowerCase();',
+        '  window.parent.postMessage({ type:"nyxia-select", isImg:isImg, text:txt, src:src, tag:tag }, "*");',
+        '}, true);'
+      ].join('\n')
+      doc.body.appendChild(s)
+    } catch(e) {
+      console.log('Editor inject:', e)
+    }
+  }
+
+  // Reçoit la sélection
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'nyxia-select') return
+    selectedIsImg = e.data.isImg
+
+    if (!e.data.isImg) {
+      // Texte
+      var info    = document.getElementById('selected-info')
+      var tagEl   = document.getElementById('selected-tag')
+      var prevEl  = document.getElementById('selected-preview')
+      var input   = document.getElementById('text-input')
+      info.classList.add('visible')
+      tagEl.textContent   = '<' + e.data.tag + '>'
+      prevEl.textContent  = e.data.text.substring(0, 80) + (e.data.text.length > 80 ? '...' : '')
+      input.value         = e.data.text
+
+      // Switch vers tab texte si on est ailleurs
+      if (document.getElementById('tab-texte').style.display === 'none') {
+        document.querySelectorAll('.tab-btn')[0].click()
+      }
+    } else {
+      // Image
+      var imgInfo = document.getElementById('img-selected-info')
+      var imgPrev = document.getElementById('img-selected-preview')
+      imgInfo.style.display = 'block'
+      imgPrev.src = e.data.src
+
+      // Switch vers tab images
+      document.querySelectorAll('.tab-btn')[2].click()
+    }
+  })
+
+  /* ═══════════════════════════════════════════
+     APPLIQUER TEXTE
+  ═══════════════════════════════════════════ */
+  function applyText() {
+    var newText = document.getElementById('text-input').value
+    var frame   = document.getElementById('preview-frame')
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      var sel = doc.querySelector('[style*="2px solid #7B5CFF"]')
+      if (!sel) { toast('⚠️ Sélectionne d\'abord un texte'); return }
+      // Conserve les enfants HTML si l'élément en a
+      if (sel.children.length === 0) {
+        sel.textContent = newText
+      } else {
+        sel.innerText = newText
+      }
+      sel.style.outline = ''
+      syncCode()
+      toast('✓ Texte modifié !')
+    } catch(e) { toast('Erreur: ' + e.message) }
+  }
+
+  /* ═══════════════════════════════════════════
+     COULEURS
+  ═══════════════════════════════════════════ */
+  function applyStyleRule(selector, prop, value) {
+    var frame = document.getElementById('preview-frame')
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      doc.querySelectorAll(selector).forEach(function(el) {
+        el.style[prop.replace(/-([a-z])/g, function(m, c){ return c.toUpperCase() })] = value
+      })
+      syncCode()
+    } catch(e) {}
+  }
+
+  function applyToElements(selectors, prop, value) {
+    var frame = document.getElementById('preview-frame')
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      selectors.forEach(function(sel) {
+        doc.querySelectorAll(sel).forEach(function(el) {
+          el.style[prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })] = value
+        })
+      })
+      syncCode()
+    } catch(e) {}
+  }
+
+  function applyGradient() {
+    var c1 = document.getElementById('c-grad1').value
+    var c2 = document.getElementById('c-grad2').value
+    var frame = document.getElementById('preview-frame')
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      doc.body.style.background = 'linear-gradient(135deg, ' + c1 + ' 0%, ' + c2 + ' 100%)'
+      syncCode()
+    } catch(e) {}
+  }
+
+  /* ═══════════════════════════════════════════
+     IMAGES
+  ═══════════════════════════════════════════ */
+  function replaceSelectedImage(newSrc) {
+    var frame = document.getElementById('preview-frame')
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      var sel = doc.querySelector('[style*="2px solid #7B5CFF"]')
+      if (sel && sel.tagName === 'IMG') {
+        sel.src = newSrc
+        sel.style.outline = ''
+        syncCode()
+        toast('✓ Image remplacée !')
+      } else {
+        // Cherche la dernière image sélectionnée
+        var imgs = doc.querySelectorAll('img[style*="outline"]')
+        if (imgs.length > 0) {
+          imgs[imgs.length-1].src = newSrc
+          syncCode()
+          toast('✓ Image remplacée !')
+        } else {
+          toast('⚠️ Clique d\'abord sur une image dans le preview')
+        }
+      }
+    } catch(e) { toast('Erreur: ' + e.message) }
+  }
+
+  function uploadLocalImage(input) {
+    var file = input.files[0]
+    if (!file) return
+    var reader = new FileReader()
+    reader.onload = function(e) {
+      replaceSelectedImage(e.target.result)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  function searchPexels() {
+    var query = document.getElementById('pexels-query').value.trim()
+    if (!query) return
+    var grid = document.getElementById('pexels-grid')
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:12px;padding:16px">Recherche en cours...</div>'
+
+    fetch('/api/image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: query, count: 8 })
+    })
+    .then(function(r) { return r.json() })
+    .then(function(data) {
+      if (!data.photos || !data.photos.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:12px;padding:16px">Aucun résultat</div>'
+        return
+      }
+      grid.innerHTML = data.photos.map(function(p) {
+        return '<img class="pexels-thumb" src="' + p.src.medium + '" alt="' + p.alt + '" onclick="replaceSelectedImage(\'' + p.src.large + '\')" title="Cliquer pour utiliser cette image">'
+      }).join('')
+    })
+    .catch(function() {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ff8fab;font-size:12px;padding:16px">Erreur de recherche</div>'
+    })
+  }
+
+  /* ═══════════════════════════════════════════
+     SYNC + SAVE
+  ═══════════════════════════════════════════ */
+  function syncCode() {
+    var frame = document.getElementById('preview-frame')
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      currentCode = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML
+      localStorage.setItem('nyxia_edit_code', currentCode)
+    } catch(e) {}
+  }
+
+  function saveAndDownload() {
+    syncCode()
+    var blob = new Blob([currentCode], { type: 'text/html' })
+    var a    = document.createElement('a')
+    a.href   = URL.createObjectURL(blob)
+    a.download = 'mon-site-nyxia.html'
+    a.click()
+    toast('✓ Site téléchargé !')
+  }
+
+  function copyCode() {
+    syncCode()
+    navigator.clipboard.writeText(currentCode).then(function() {
+      toast('✓ Code copié !')
+    })
+  }
+
+  function resetSite() {
+    if (!confirm('Annuler toutes les modifications ?')) return
+    currentCode = originalCode
+    loadPreview(originalCode)
+    toast('↺ Modifications annulées')
+  }
+
+  /* ═══════════════════════════════════════════
+     TOAST
+  ═══════════════════════════════════════════ */
+  var toastTimer = null
+  function toast(msg) {
+    var el = document.getElementById('toast')
+    el.textContent   = msg
+    el.style.display = 'block'
+    if (toastTimer) clearTimeout(toastTimer)
+    toastTimer = setTimeout(function() { el.style.display = 'none' }, 3000)
+  }
+
+  // Enter dans le champ texte = appliquer
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.ctrlKey) applyText()
+  })
+</script>
+</body>
+</html>
