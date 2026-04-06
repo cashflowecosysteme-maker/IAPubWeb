@@ -1658,7 +1658,7 @@
 
         <h3>NyXia Preview</h3>
 
-        <button class="toolbar-btn" id="btn-edit" onclick="window.open('/editor.html','_blank')" style="background:linear-gradient(135deg,rgba(123,92,255,0.3),rgba(90,108,255,0.3));border-color:rgba(123,92,255,0.5)">✏️ Éditer</button>
+        <button class="toolbar-btn" id="btn-edit" onclick="toggleEditorPanel()" style="background:linear-gradient(135deg,rgba(123,92,255,0.3),rgba(90,108,255,0.3));border-color:rgba(123,92,255,0.5)">✏️ Éditer</button>
 
         <button class="toolbar-btn" id="btn-view-code">View Code</button>
 
@@ -1763,20 +1763,123 @@
 
   <script src="/js/generator.js" defer></script>
   <script>
-    // Fonctions éditeur — attendent que generator.js soit chargé
-    function callWhenReady(fn, args) {
-      if (window._editorsReady) {
-        fn.apply(null, args || [])
+    /* ═══════════════════════════════════════
+       ÉDITEUR INLINE — 100% dans index.html
+       Zéro dépendance à generator.js
+    ═══════════════════════════════════════ */
+
+    var editorOpen = false
+
+    function toggleEditorPanel() {
+      var panel = document.getElementById('editor-panel')
+      var btn   = document.getElementById('btn-edit')
+      if (!panel) return
+      editorOpen = !editorOpen
+      if (editorOpen) {
+        panel.classList.add('open')
+        btn.textContent = '✏️ Fermer éditeur'
+        injectEditorListeners()
       } else {
-        window.addEventListener('nyxia-ready', function() { fn.apply(null, args || []) }, { once: true })
+        panel.classList.remove('open')
+        btn.textContent = '✏️ Éditer'
       }
     }
-    function toggleEditor()          { callWhenReady(function(){ window._toggleEditor() }) }
-    function applyTextEdit()         { callWhenReady(function(){ window._applyTextEdit() }) }
-    function applyColor(type, value) { callWhenReady(function(){ window._applyColor(type, value) }, [type, value]) }
-    function saveEdits()             { callWhenReady(function(){ window._saveEdits() }) }
-    function copyEditedCode()        { callWhenReady(function(){ window._copyEditedCode() }) }
-    function resetEdits()            { callWhenReady(function(){ window._resetEdits() }) }
+
+    // Rétrocompatibilité
+    function toggleEditor() { toggleEditorPanel() }
+
+    function injectEditorListeners() {
+      var frame = document.getElementById('preview-frame')
+      if (!frame || !frame.contentDocument) return
+      try {
+        var doc = frame.contentDocument
+        var old = doc.getElementById('_nyxia_edit_script')
+        if (old) old.remove()
+        var s = doc.createElement('script')
+        s.id = '_nyxia_edit_script'
+        s.textContent =
+          'var _sel=null;' +
+          'document.body.addEventListener("mouseover",function(e){' +
+          '  if(_sel!==e.target){e.target.style.outline="1px dashed rgba(123,92,255,0.4)";}' +
+          '},true);' +
+          'document.body.addEventListener("mouseout",function(e){' +
+          '  if(_sel!==e.target){e.target.style.outline="";}' +
+          '},true);' +
+          'document.body.addEventListener("click",function(e){' +
+          '  e.preventDefault();e.stopPropagation();' +
+          '  if(_sel){_sel.style.outline="";}' +
+          '  _sel=e.target;' +
+          '  _sel.style.outline="2px solid #7B5CFF";' +
+          '  var isImg=(_sel.tagName==="IMG");' +
+          '  var txt=isImg?"":((_sel.innerText||_sel.textContent||"").trim());' +
+          '  window.parent.postMessage({type:"nyxia_click",isImg:isImg,text:txt,tag:_sel.tagName.toLowerCase()},"*");' +
+          '},true);'
+        doc.body.appendChild(s)
+      } catch(e) { console.log('editor inject:', e) }
+    }
+
+    // Reçoit clics depuis l'iframe
+    window.addEventListener('message', function(e) {
+      if (!e.data || e.data.type !== 'nyxia_click') return
+      var sec   = document.getElementById('text-editor-section')
+      var input = document.querySelector('#text-editor-section textarea') ||
+                  document.querySelector('.editor-section textarea')
+      if (sec)   sec.style.display = 'block'
+      if (input) { input.value = e.data.text; input.focus() }
+    })
+
+    function applyTextEdit() {
+      var input = document.querySelector('#text-editor-section textarea') ||
+                  document.querySelector('.editor-section textarea')
+      var frame = document.getElementById('preview-frame')
+      if (!input || !frame || !frame.contentDocument) return
+      try {
+        var sel = frame.contentDocument.querySelector('[style*="2px solid #7B5CFF"]')
+        if (!sel) return
+        sel.textContent = input.value
+        sel.style.outline = ''
+      } catch(e) {}
+    }
+
+    function applyColor(type, value) {
+      var frame = document.getElementById('preview-frame')
+      if (!frame || !frame.contentDocument) return
+      try {
+        var doc = frame.contentDocument
+        var maps = {
+          bg:     function(v){ doc.body.style.background = v },
+          accent: function(v){ doc.querySelectorAll('h1,h2,h3,a').forEach(function(el){ el.style.color=v }) },
+          text:   function(v){ doc.body.style.color = v },
+          btn:    function(v){ doc.querySelectorAll('button').forEach(function(el){ el.style.background=v }) }
+        }
+        if (maps[type]) maps[type](value)
+      } catch(e) {}
+    }
+
+    function saveEdits() {
+      var frame = document.getElementById('preview-frame')
+      if (!frame || !frame.contentDocument) return
+      try {
+        window.generatedCode = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
+        var b = document.querySelector('[onclick="saveEdits()"]')
+        if (b) { var o=b.textContent; b.textContent='✓ Sauvegardé!'; setTimeout(function(){b.textContent=o},2000) }
+      } catch(e) {}
+    }
+
+    function copyEditedCode() {
+      saveEdits()
+      if (window.generatedCode) {
+        navigator.clipboard.writeText(window.generatedCode).then(function() {
+          var b = document.querySelector('[onclick="copyEditedCode()"]')
+          if (b) { var o=b.textContent; b.textContent='✓ Copié!'; setTimeout(function(){b.textContent=o},2000) }
+        })
+      }
+    }
+
+    function resetEdits() {
+      var frame = document.getElementById('preview-frame')
+      if (frame && window.generatedCode) frame.srcdoc = window.generatedCode
+    }
   </script>
 
   <script src="/js/starry-bg.js" defer></script>
