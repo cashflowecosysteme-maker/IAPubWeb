@@ -382,12 +382,6 @@
       .header-brand { width: auto; border: none; }
     }
   </style>
-  <script>
-    // Fonctions disponibles immédiatement pour les onclick HTML
-    function _nc()  { if(window.__nc)  window.__nc();  else window.addEventListener('nyxia_ready', function(){window.__nc()},  {once:true}) }
-    function _ag(a) { if(window.__ag)  window.__ag(a); else window.addEventListener('nyxia_ready', function(){window.__ag(a)}, {once:true}) }
-    function _sp()  { if(window.__sp)  window.__sp();  else window.addEventListener('nyxia_ready', function(){window.__sp()},  {once:true}) }
-  </script>
 </head>
 <body>
 
@@ -427,6 +421,18 @@
           Chat avec NyXia
           <span class="nav-arrow">›</span>
         </div>
+        <div id="chat-submenu" style="padding:4px 8px 4px 20px">
+          <button id="btn-new-conv" style="width:100%;padding:7px 10px;border-radius:8px;border:1px dashed rgba(123,92,255,0.3);background:rgba(123,92,255,0.04);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left">✦ Nouvelle conversation</button>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">Mode</div>
+          <button id="agent-general" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.3);color:#fff;border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">💬 NyXia</button>
+          <button id="agent-copywriter" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">✍️ Copywriter</button>
+          <button id="agent-formation" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🎓 Formation</button>
+          <button id="agent-seo" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🔍 SEO</button>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">📁 Projets</div>
+          <div id="projects-list" style="margin-bottom:8px"><div style="font-size:11px;color:var(--t4)">Aucun projet</div></div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">🔗 Intégrations</div>
+          <div style="font-size:11px;color:var(--t4);padding:6px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.1);background:rgba(123,92,255,0.04)">Webhooks &amp; Zapier<br><span style="font-size:10px;opacity:.5">Bientôt disponible</span></div>
+        </div>
 
         <div class="nav-item" id="nav-generator" onclick="showPanel('generator')">
           <span class="nav-icon">🏗</span>
@@ -460,7 +466,7 @@
           <div class="user-avatar" id="sidebar-avatar">D</div>
           <div class="user-info">
             <div class="user-name" id="sidebar-username">Chargement...</div>
-            <div class="user-plan">✦ Plan Pro</div>
+            <div class="user-plan">✦ Plan Visionnaire</div>
           </div>
         </div>
       </div>
@@ -493,7 +499,14 @@
             <button class="sugg-btn" onclick="sendSuggestion('Comment structurer mon offre ?')">💎 Comment structurer mon offre ?</button>
           </div>
 
+          <div id="attach-bar" style="display:none;padding:6px 20px;background:rgba(123,92,255,0.08);border-top:1px solid rgba(123,92,255,0.1);align-items:center;gap:8px;flex-shrink:0;font-size:12px;color:var(--t3)">
+            <span id="attach-name"></span>
+            <button id="btn-clear-attach" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">✕</button>
+          </div>
           <div class="chat-input-wrap">
+            <label title="PDF, image ou ZIP" style="flex-shrink:0;width:36px;height:36px;border-radius:9px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px">
+              📎<input type="file" id="chat-file" accept=".pdf,.zip,image/*" style="display:none">
+            </label>
             <textarea class="chat-input" id="chat-input" placeholder="Écris ton message..." rows="1"></textarea>
             <button class="btn-send" id="btn-send" onclick="sendMessage()">➤</button>
           </div>
@@ -697,12 +710,36 @@
       var msgs = document.getElementById('chat-messages')
       var div  = document.createElement('div')
       div.className = 'msg bot'
-      var formatted = escHtml(text)
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>')
-      div.innerHTML = '<img src="/NyXia.png" class="msg-avatar" alt="NyXia"><div class="msg-bubble">' + formatted + '</div>'
-      msgs.appendChild(div)
-      msgs.scrollTop = msgs.scrollHeight
+      var formatted = escHtml(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
+      var avatar = document.createElement('img')
+      avatar.src='/NyXia.png'; avatar.className='msg-avatar'; avatar.alt='NyXia'
+      var wrapper = document.createElement('div')
+      wrapper.style.cssText='display:flex;flex-direction:column;gap:4px;max-width:100%'
+      var bubble = document.createElement('div')
+      bubble.className='msg-bubble'; bubble.innerHTML=formatted
+      var bs='padding:2px 9px;border-radius:50px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.04);color:var(--t4);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer'
+      var acts=document.createElement('div'); acts.style.cssText='display:flex;gap:4px;flex-wrap:wrap;margin-top:2px'
+      var spk=document.createElement('button'); spk.style.cssText=bs; spk.textContent='🔊 Écouter'
+      spk.addEventListener('click',function(){ speakMsg(spk,text) })
+      var cpy=document.createElement('button'); cpy.style.cssText=bs; cpy.textContent='📋 Copier'
+      cpy.addEventListener('click',function(){ navigator.clipboard.writeText(text).then(function(){ cpy.textContent='✓'; setTimeout(function(){cpy.textContent='📋 Copier'},2000) }) })
+      var ret=document.createElement('button'); ret.style.cssText=bs; ret.textContent='↺ Réessayer'
+      ret.addEventListener('click',function(){
+        var last=chatHistory.filter(function(m){return m.role==='user'}).pop()
+        if(last){if(chatHistory[chatHistory.length-1].role==='assistant')chatHistory.pop();div.remove();sendMessageText(last.content)}
+      })
+      var pdfBtn=document.createElement('button'); pdfBtn.style.cssText=bs; pdfBtn.textContent='⬇ PDF'
+      var capturedText=text
+      pdfBtn.addEventListener('click',function(){
+        var w=window.open('','_blank'); if(!w) return
+        var body='<h2 style="color:#7B5CFF">NyXia IA</h2>'+escHtml(capturedText).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
+        w.document.write('<!DOCTYPE html><html><head><title>NyXia</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85}</style></head><body>'+body+'</body></html>')
+        w.document.close(); setTimeout(function(){w.print()},300)
+      })
+      acts.appendChild(spk);acts.appendChild(cpy);acts.appendChild(ret);acts.appendChild(pdfBtn)
+      wrapper.appendChild(bubble);wrapper.appendChild(acts)
+      div.appendChild(avatar);div.appendChild(wrapper)
+      msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight
     }
 
     function addUserMessage(text) {
@@ -907,11 +944,112 @@
 
 
 
-    // Enregistre les vraies fonctions pour les proxies
-    window.__nc = _newConversation
-    window.__ag = function(a) { _setAgentStyle(a); setAgent(a) }
-    window.__sp = _showProjects
-    window.dispatchEvent(new Event('nyxia_ready'))
+    /* ══ PROJETS ══ */
+    var _projects=[], _currentProjectId=null, _currentAttachment=null, _currentAgent='general'
+
+    function _loadProjects() {
+      try { _projects=JSON.parse(localStorage.getItem('nyxia_proj_'+(clientEmail||''))||'[]') } catch(e){ _projects=[] }
+      _renderProjects()
+    }
+
+    function _renderProjects() {
+      var list=document.getElementById('projects-list'); if(!list) return
+      if(!_projects.length){ list.innerHTML='<div style="font-size:11px;color:var(--t4)">Aucun projet</div>'; return }
+      list.innerHTML=_projects.map(function(p){
+        var a=p.id===_currentProjectId
+        return '<div data-pid="'+p.id+'" class="proj-item" style="padding:5px 8px;border-radius:6px;cursor:pointer;background:'+(a?'rgba(123,92,255,0.12)':'transparent')+';border:1px solid '+(a?'rgba(123,92,255,0.3)':'transparent')+';margin-bottom:2px"><div style="font-size:11px;color:'+(a?'#a78bfa':'var(--t3)')+';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div><div style="font-size:10px;color:var(--t4)">'+new Date(p.date).toLocaleDateString('fr-CA')+'</div></div>'
+      }).join('')
+    }
+
+    function _saveProject() {
+      if(!chatHistory||!chatHistory.length) return
+      if(_currentProjectId){
+        var p=_projects.find(function(x){return x.id===_currentProjectId})
+        if(p){p.history=chatHistory.slice();p.date=new Date().toISOString()}
+      } else {
+        var proj={id:'p'+Date.now(),name:(clientName||'Conv')+' — '+new Date().toLocaleDateString('fr-CA'),agent:_currentAgent,history:chatHistory.slice(),date:new Date().toISOString()}
+        _projects.unshift(proj); if(_projects.length>20)_projects=_projects.slice(0,20)
+        _currentProjectId=proj.id
+      }
+      try{localStorage.setItem('nyxia_proj_'+(clientEmail||''),JSON.stringify(_projects))}catch(e){}
+      _renderProjects()
+    }
+
+    function _loadProject(id) {
+      if(chatHistory&&chatHistory.length>1) _saveProject()
+      var p=_projects.find(function(x){return x.id===id}); if(!p) return
+      _currentProjectId=id; chatHistory=p.history.slice()
+      _currentAgent=p.agent||'general'
+      document.querySelectorAll('[id^="agent-"]').forEach(function(b){
+        b.style.background='transparent'; b.style.borderColor='rgba(123,92,255,0.1)'; b.style.color='var(--t3)'
+      })
+      var ab=document.getElementById('agent-'+_currentAgent)
+      if(ab){ab.style.background='rgba(123,92,255,0.15)';ab.style.borderColor='rgba(123,92,255,0.3)';ab.style.color='#fff'}
+      var msgs=document.getElementById('chat-messages'); if(msgs) msgs.innerHTML=''
+      chatHistory.forEach(function(m){if(m.role==='user')addUserMessage(m.content);else addBotMessage(m.content)})
+      if(msgs) msgs.scrollTop=msgs.scrollHeight
+      _renderProjects()
+    }
+
+    function _newConversation() {
+      if(chatHistory&&chatHistory.length>1) _saveProject()
+      _currentProjectId=null; chatHistory=[]
+      var msgs=document.getElementById('chat-messages'); if(msgs) msgs.innerHTML=''
+      var sugg=document.getElementById('suggestions'); if(sugg) sugg.style.display='flex'
+      sendWelcome()
+    }
+
+    function _setAgentStyle(agent) {
+      _currentAgent=agent
+      document.querySelectorAll('[id^="agent-"]').forEach(function(b){
+        b.style.background='transparent'; b.style.borderColor='rgba(123,92,255,0.1)'; b.style.color='var(--t3)'
+      })
+      var ab=document.getElementById('agent-'+agent)
+      if(ab){ab.style.background='rgba(123,92,255,0.15)';ab.style.borderColor='rgba(123,92,255,0.3)';ab.style.color='#fff'}
+    }
+
+    /* ══ INIT LISTENERS ══ */
+    document.addEventListener('DOMContentLoaded', function() {
+      // Project clicks via delegation
+      var plist=document.getElementById('projects-list')
+      if(plist) plist.addEventListener('click',function(e){
+        var item=e.target.closest('.proj-item')
+        if(item && item.dataset.pid) _loadProject(item.dataset.pid)
+      })
+      // File input
+      var fi=document.getElementById('chat-file')
+      if(fi) fi.addEventListener('change',function(){
+        var f=this.files[0]; if(!f) return
+        _currentAttachment={name:f.name,type:f.type}
+        var bar=document.getElementById('attach-bar'), nm=document.getElementById('attach-name')
+        if(bar) bar.style.display='flex'
+        if(nm)  nm.innerHTML='<strong>'+f.name+'</strong> ('+(f.size>1048576?(f.size/1048576).toFixed(1)+'MB':Math.round(f.size/1024)+'KB')+') — ✅ Prêt à envoyer'
+        var reader=new FileReader()
+        reader.onload=function(e){_currentAttachment.data=e.target.result.split(',')[1]}
+        reader.readAsDataURL(f)
+      })
+      // Clear attach
+      var ca=document.getElementById('btn-clear-attach')
+      if(ca) ca.addEventListener('click',function(){
+        _currentAttachment=null
+        var bar=document.getElementById('attach-bar'),fi2=document.getElementById('chat-file')
+        if(bar) bar.style.display='none'; if(fi2) fi2.value=''
+      })
+      // Agent buttons
+      ['general','copywriter','formation','seo'].forEach(function(a){
+        var b=document.getElementById('agent-'+a)
+        if(b) b.addEventListener('click',function(){
+          _setAgentStyle(a)
+          setAgent(a)
+        })
+      })
+      // New conversation
+      var nc=document.getElementById('btn-new-conv')
+      if(nc) nc.addEventListener('click',function(){ _newConversation() })
+      // Load projects
+      _loadProjects()
+    })
+
     /* ══════════════════════════════════════
        INPUT AUTO-RESIZE + ENTER
     ══════════════════════════════════════ */
