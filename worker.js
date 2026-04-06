@@ -601,6 +601,95 @@ export default {
       }
     }
 
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/from-url — Génère un site depuis une URL
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/from-url" && request.method === "POST") {
+      try {
+        const body      = await request.json()
+        const targetUrl = body.url    || ""
+        const userPrompt = body.prompt || ""
+
+        if (!targetUrl) {
+          return new Response(JSON.stringify({ success: false, error: "URL requise." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Fetch la page cible
+        let pageContent = ""
+        try {
+          const pageRes = await fetch(targetUrl, {
+            headers: { "User-Agent": "Mozilla/5.0 (compatible; NyXiaBot/1.0)" }
+          })
+          const html = await pageRes.text()
+          // Extrait le texte brut (retire les balises HTML)
+          pageContent = html
+            .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .substring(0, 3000) // Limite à 3000 chars
+        } catch(e) {
+          return new Response(JSON.stringify({ success: false, error: "Impossible d'accéder à cette URL. Vérifie qu'elle est publique." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const systemPrompt = `Tu es un expert en création de sites web modernes et élégants.
+Analyse le contenu fourni et crée un site HTML complet, moderne et professionnel.
+RÈGLES ABSOLUES :
+- Génère UNIQUEMENT du code HTML complet (<!DOCTYPE html>...)
+- Utilise Tailwind CSS via CDN pour le style
+- Design moderne, élégant, professionnel
+- Garde le même secteur d'activité mais modernise tout
+- Textes en français
+- Images via placeholder ou Unsplash
+- PAS de commentaires, PAS d'explication — UNIQUEMENT le code HTML`
+
+        const userMsg = `Voici le contenu du site à réinventer :
+URL : ${targetUrl}
+Contenu extrait : ${pageContent}
+${userPrompt ? "Instructions supplémentaires : " + userPrompt : ""}
+
+Génère un site moderne et professionnel basé sur ce contenu.`
+
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${env.OPENROUTER_KEY}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "z-ai/glm-5v-turbo",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user",   content: userMsg }
+            ],
+            temperature: 0.7,
+            max_tokens: 8000
+          })
+        })
+
+        const data  = await res.json()
+        let htmlOut = data.choices?.[0]?.message?.content || ""
+
+        // Nettoie le code
+        htmlOut = htmlOut.replace(/```html/gi, '').replace(/```/g, '').trim()
+        if (!htmlOut.includes('<!DOCTYPE') && htmlOut.includes('<html')) {
+          htmlOut = '<!DOCTYPE html>
+' + htmlOut
+        }
+
+        return new Response(JSON.stringify({ success: true, html: htmlOut }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
     /* ════════════════════════════════════════════════════
        ROUTE /api/chat — NyXia Setter|Closer (GLM-5 gratuit)
        Cerveau conversationnel basé sur La Psychologie du Clic
