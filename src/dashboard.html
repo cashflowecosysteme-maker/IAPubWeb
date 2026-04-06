@@ -421,22 +421,15 @@
           Chat avec NyXia
           <span class="nav-arrow">›</span>
         </div>
-
-        <!-- SOUS-MENU CHAT — visible quand chat actif -->
-        <div id="chat-submenu" style="margin-top:4px;padding-left:8px">
+        <div id="chat-submenu" style="padding:6px 8px 4px 20px">
           <button onclick="newConversation()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px dashed rgba(123,92,255,0.3);background:rgba(123,92,255,0.04);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left">✦ Nouvelle conversation</button>
-
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">Mode</div>
-          <button class="agent-btn active" id="agent-general" onclick="setAgent('general')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.3);color:#fff;border-radius:8px;cursor:pointer">💬 NyXia</button>
-          <button class="agent-btn" id="agent-copywriter" onclick="setAgent('copywriter')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer">✍️ Copywriter</button>
-          <button class="agent-btn" id="agent-formation" onclick="setAgent('formation')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer">🎓 Formation</button>
-          <button class="agent-btn" id="agent-seo" onclick="setAgent('seo')" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer">🔍 SEO</button>
-
+          <button class="agent-btn active" id="agent-general" onclick="setAgent('general')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.3);color:#fff;border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">💬 NyXia</button>
+          <button class="agent-btn" id="agent-copywriter" onclick="setAgent('copywriter')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">✍️ Copywriter</button>
+          <button class="agent-btn" id="agent-formation" onclick="setAgent('formation')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🎓 Formation</button>
+          <button class="agent-btn" id="agent-seo" onclick="setAgent('seo')" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🔍 SEO</button>
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">📁 Projets</div>
-          <div id="projects-list" style="margin-bottom:8px">
-            <div style="font-size:11px;color:var(--t4)">Aucun projet</div>
-          </div>
-
+          <div id="projects-list" style="margin-bottom:8px"><div style="font-size:11px;color:var(--t4)">Aucun projet</div></div>
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">🔗 Intégrations</div>
           <div style="font-size:11px;color:var(--t4);padding:6px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.1);background:rgba(123,92,255,0.04)">Webhooks & Zapier<br><span style="font-size:10px;opacity:.5">Bientôt disponible</span></div>
         </div>
@@ -506,15 +499,13 @@
             <button class="sugg-btn" onclick="sendSuggestion('Comment structurer mon offre ?')">💎 Comment structurer mon offre ?</button>
           </div>
 
-          <!-- Barre pièce jointe -->
           <div id="attach-bar" style="display:none;padding:6px 20px;background:rgba(123,92,255,0.08);border-top:1px solid rgba(123,92,255,0.1);align-items:center;gap:8px;flex-shrink:0;font-size:12px;color:var(--t3)">
             <span id="attach-name">📎</span>
-            <button onclick="clearAttachment()" style="background:none;border:none;color:var(--t4);cursor:pointer">✕</button>
+            <button style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px" id="attach-clear">✕</button>
           </div>
-
           <div class="chat-input-wrap">
             <label title="Joindre PDF, image ou ZIP" style="flex-shrink:0;width:36px;height:36px;border-radius:9px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px">
-              📎<input type="file" id="chat-file" accept=".pdf,.zip,image/*" style="display:none" onchange="handleAttachment(this)">
+              📎<input type="file" id="chat-file" accept=".pdf,.zip,image/*" style="display:none">
             </label>
             <textarea class="chat-input" id="chat-input" placeholder="Écris ton message..." rows="1"></textarea>
             <button class="btn-send" id="btn-send" onclick="sendMessage()">➤</button>
@@ -722,43 +713,42 @@
       var formatted = escHtml(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
 
       var avatar = document.createElement('img')
-      avatar.src = '/NyXia.png'; avatar.className = 'msg-avatar'; avatar.alt = 'NyXia'
+      avatar.src='/NyXia.png'; avatar.className='msg-avatar'; avatar.alt='NyXia'
 
       var wrapper = document.createElement('div')
-      wrapper.style.cssText = 'display:flex;flex-direction:column;gap:4px;max-width:100%'
+      wrapper.style.cssText='display:flex;flex-direction:column;gap:4px;max-width:100%'
 
       var bubble = document.createElement('div')
-      bubble.className = 'msg-bubble'; bubble.innerHTML = formatted
+      bubble.className='msg-bubble'; bubble.innerHTML=formatted
 
-      var acts = document.createElement('div')
-      acts.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap'
-      var btnStyle = 'padding:2px 9px;border-radius:50px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.04);color:var(--t4);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer;transition:all .2s'
+      var bStyle='padding:2px 9px;border-radius:50px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.04);color:var(--t4);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer'
+      var acts=document.createElement('div'); acts.style.cssText='display:flex;gap:4px;flex-wrap:wrap'
 
-      var spk = document.createElement('button'); spk.style.cssText = btnStyle; spk.textContent = '🔊 Écouter'
-      spk.addEventListener('click', function(){ speakMsg(spk, text) })
+      var spk=document.createElement('button'); spk.style.cssText=bStyle; spk.textContent='🔊 Écouter'
+      spk.addEventListener('click',function(){ speakMsg(spk,text) })
 
-      var cpy = document.createElement('button'); cpy.style.cssText = btnStyle; cpy.textContent = '📋 Copier'
-      cpy.addEventListener('click', function(){
-        navigator.clipboard.writeText(text).then(function(){ cpy.textContent='✓'; setTimeout(function(){cpy.textContent='📋 Copier'},2000) })
+      var cpy=document.createElement('button'); cpy.style.cssText=bStyle; cpy.textContent='📋 Copier'
+      cpy.addEventListener('click',function(){
+        navigator.clipboard.writeText(text).then(function(){ cpy.textContent='✓ Copié'; setTimeout(function(){cpy.textContent='📋 Copier'},2000) })
       })
 
-      var retry = document.createElement('button'); retry.style.cssText = btnStyle; retry.textContent = '↺ Réessayer'
-      retry.addEventListener('click', function(){
-        var last = chatHistory.filter(function(m){return m.role==='user'}).pop()
+      var retry=document.createElement('button'); retry.style.cssText=bStyle; retry.textContent='↺ Réessayer'
+      retry.addEventListener('click',function(){
+        var last=chatHistory.filter(function(m){return m.role==='user'}).pop()
         if(last){ if(chatHistory[chatHistory.length-1].role==='assistant') chatHistory.pop(); div.remove(); sendMessageText(last.content) }
       })
 
-      var pdf = document.createElement('button'); pdf.style.cssText = btnStyle; pdf.textContent = '⬇ PDF'
-      pdf.addEventListener('click', function(){
-        var w = window.open('','_blank')
-        w.document.write('<html><head><title>NyXia</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85;font-size:16px}</style></head><body><h2 style="color:#7B5CFF">NyXia IA</h2><div>'+formatted+'</div></body></html>')
+      var pdf=document.createElement('button'); pdf.style.cssText=bStyle; pdf.textContent='⬇ PDF'
+      pdf.addEventListener('click',function(){
+        var w=window.open('','_blank'); if(!w) return
+        w.document.write('<html><head><title>NyXia</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85;font-size:16px}</style></head><body><h2 style="color:#7B5CFF">NyXia IA</h2>'+formatted+'</body></html>')
         w.document.close(); setTimeout(function(){w.print()},300)
       })
 
       acts.appendChild(spk); acts.appendChild(cpy); acts.appendChild(retry); acts.appendChild(pdf)
       wrapper.appendChild(bubble); wrapper.appendChild(acts)
       div.appendChild(avatar); div.appendChild(wrapper)
-      msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight
+      msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight
     }
 
     function addUserMessage(text) {
@@ -963,72 +953,64 @@
 
 
 
-    /* ══ PROJETS ══ */
-    var projects = [], currentProjectId = null, currentAttachment = null
+    /* ══ PROJETS & HISTORIQUE ══ */
+    var projects=[], currentProjectId=null, currentAttachment=null
 
     function loadProjects() {
-      try { projects = JSON.parse(localStorage.getItem('nyxia_proj_'+clientEmail)||'[]') } catch(e){ projects=[] }
+      try { projects=JSON.parse(localStorage.getItem('nyxia_proj_'+clientEmail)||'[]') } catch(e){ projects=[] }
       renderProjects()
     }
 
     function renderProjects() {
-      var list = document.getElementById('projects-list')
-      if (!list) return
-      if (!projects.length) { list.innerHTML='<div style="font-size:11px;color:var(--t4)">Aucun projet</div>'; return }
-      list.innerHTML = projects.map(function(p){
-        var a = p.id===currentProjectId
+      var list=document.getElementById('projects-list'); if(!list) return
+      if(!projects.length){ list.innerHTML='<div style="font-size:11px;color:var(--t4)">Aucun projet</div>'; return }
+      list.innerHTML=projects.map(function(p){
+        var a=p.id===currentProjectId
         return '<div onclick="loadProject(''+p.id+'')" style="padding:5px 8px;border-radius:6px;cursor:pointer;border:1px solid '+(a?'rgba(123,92,255,0.3)':'transparent')+';background:'+(a?'rgba(123,92,255,0.1)':'transparent')+';margin-bottom:2px"><div style="font-size:11px;color:'+(a?'#a78bfa':'var(--t3)')+';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div><div style="font-size:10px;color:var(--t4)">'+new Date(p.date).toLocaleDateString('fr-CA')+'</div></div>'
       }).join('')
     }
 
     function saveProject() {
-      if (!chatHistory.length) return
-      if (currentProjectId) {
-        var p = projects.find(function(x){return x.id===currentProjectId})
-        if (p) { p.history=chatHistory.slice(); p.date=new Date().toISOString() }
+      if(!chatHistory.length) return
+      if(currentProjectId){
+        var p=projects.find(function(x){return x.id===currentProjectId})
+        if(p){p.history=chatHistory.slice();p.date=new Date().toISOString()}
       } else {
-        var proj = {id:'p'+Date.now(),name:(clientName||'Conv')+' — '+new Date().toLocaleDateString('fr-CA'),agent:currentAgent,history:chatHistory.slice(),date:new Date().toISOString()}
+        var proj={id:'p'+Date.now(),name:(clientName||'Conv')+' — '+new Date().toLocaleDateString('fr-CA'),agent:currentAgent,history:chatHistory.slice(),date:new Date().toISOString()}
         projects.unshift(proj); if(projects.length>20) projects=projects.slice(0,20)
-        currentProjectId = proj.id
+        currentProjectId=proj.id
       }
-      try { localStorage.setItem('nyxia_proj_'+clientEmail, JSON.stringify(projects)) } catch(e){}
+      try{localStorage.setItem('nyxia_proj_'+clientEmail,JSON.stringify(projects))}catch(e){}
       renderProjects()
     }
 
     function loadProject(id) {
-      if (chatHistory.length > 1) saveProject()
-      var p = projects.find(function(x){return x.id===id})
-      if (!p) return
+      if(chatHistory.length>1) saveProject()
+      var p=projects.find(function(x){return x.id===id}); if(!p) return
       currentProjectId=id; chatHistory=p.history.slice(); currentAgent=p.agent||'general'
       document.querySelectorAll('.agent-btn').forEach(function(b){b.classList.remove('active')})
       var ab=document.getElementById('agent-'+currentAgent); if(ab) ab.classList.add('active')
       var msgs=document.getElementById('chat-messages'); msgs.innerHTML=''
-      chatHistory.forEach(function(m){ if(m.role==='user') addUserMessage(m.content); else addBotMessage(m.content) })
+      chatHistory.forEach(function(m){if(m.role==='user')addUserMessage(m.content);else addBotMessage(m.content)})
       msgs.scrollTop=msgs.scrollHeight; renderProjects()
     }
 
     function newConversation() {
-      if (chatHistory.length>1) saveProject()
+      if(chatHistory.length>1) saveProject()
       currentProjectId=null; chatHistory=[]
       document.getElementById('chat-messages').innerHTML=''
       document.getElementById('suggestions').style.display='flex'
       sendWelcome()
     }
 
-    /* ══ PIÈCES JOINTES ══ */
-    function handleAttachment(input) {
-      var file = input.files[0]; if(!file) return
-
-      // Affiche immédiatement le nom du fichier AVANT même de le lire
-      var bar = document.getElementById('attach-bar')
-      var nm  = document.getElementById('attach-name')
-      if(bar) bar.style.display = 'flex'
-      if(nm)  nm.innerHTML = '📎 <strong>' + file.name + '</strong> (' + (file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+'MB' : Math.round(file.size/1024)+'KB') + ') — ✅ Prêt à envoyer'
-
-      var reader = new FileReader()
-      reader.onload = function(e) {
-        currentAttachment = {name:file.name, type:file.type, data:e.target.result.split(',')[1]}
-      }
+    /* ══ PIÈCES JOINTES — initialisées dans DOMContentLoaded ══ */
+    function handleAttachment(file) {
+      if(!file) return
+      var bar=document.getElementById('attach-bar'), nm=document.getElementById('attach-name')
+      if(bar) bar.style.display='flex'
+      if(nm)  nm.innerHTML='📎 <strong>'+file.name+'</strong> ('+(file.size>1024*1024?(file.size/1024/1024).toFixed(1)+'MB':Math.round(file.size/1024)+'KB')+') — ✅ Prêt à envoyer'
+      var reader=new FileReader()
+      reader.onload=function(e){ currentAttachment={name:file.name,type:file.type,data:e.target.result.split(',')[1]} }
       reader.readAsDataURL(file)
     }
 
@@ -1038,9 +1020,17 @@
       if(bar) bar.style.display='none'; if(inp) inp.value=''
     }
 
-    /* ══ INIT ══ */
-    var _origInit = initUI
-    function initUI() { _origInit(); loadProjects() }
+    /* ══ INIT DES LISTENERS — après DOMContentLoaded ══ */
+    document.addEventListener('DOMContentLoaded', function() {
+      var fileInput=document.getElementById('chat-file')
+      if(fileInput) fileInput.addEventListener('change',function(){ if(this.files[0]) handleAttachment(this.files[0]) })
+      var clearBtn=document.getElementById('attach-clear')
+      if(clearBtn) clearBtn.addEventListener('click', clearAttachment)
+    })
+
+    /* ══ LOAD PROJECTS ON AUTH ══ */
+    var _origInitUI = initUI
+    function initUI() { _origInitUI(); loadProjects() }
 
     /* ══════════════════════════════════════
        INPUT AUTO-RESIZE + ENTER
