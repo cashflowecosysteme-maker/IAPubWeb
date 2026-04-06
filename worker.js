@@ -677,8 +677,7 @@ Génère un site moderne et professionnel basé sur ce contenu.`
         // Nettoie le code
         htmlOut = htmlOut.replace(/```html/gi, '').replace(/```/g, '').trim()
         if (!htmlOut.includes('<!DOCTYPE') && htmlOut.includes('<html')) {
-          htmlOut = '<!DOCTYPE html>
-' + htmlOut
+          htmlOut = '<!DOCTYPE html>' + htmlOut
         }
 
         return new Response(JSON.stringify({ success: true, html: htmlOut }),
