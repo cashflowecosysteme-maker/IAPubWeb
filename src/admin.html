@@ -479,7 +479,7 @@
           : '<button class="btn-sm btn-warning" onclick="toggleUser(\'' + esc(u.email) + '\', true)">Désactiver</button>'
 
         return '<div class="user-row' + (u.disabled ? ' disabled-row' : '') + '">'
-          + '<div class="user-email">📧 ' + esc(u.email) + '</div>'
+          + '<div class="user-email">' + (u.firstname ? '<strong>' + esc(u.firstname) + '</strong> — ' : '') + '📧 ' + esc(u.email) + '</div>'
           + statusHtml
           + '<div class="user-actions">'
           + toggleBtn
