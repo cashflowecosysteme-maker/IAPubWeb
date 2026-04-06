@@ -1018,12 +1018,16 @@
     /* ══ PIÈCES JOINTES ══ */
     function handleAttachment(input) {
       var file = input.files[0]; if(!file) return
+
+      // Affiche immédiatement le nom du fichier AVANT même de le lire
+      var bar = document.getElementById('attach-bar')
+      var nm  = document.getElementById('attach-name')
+      if(bar) bar.style.display = 'flex'
+      if(nm)  nm.innerHTML = '📎 <strong>' + file.name + '</strong> (' + (file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+'MB' : Math.round(file.size/1024)+'KB') + ') — ✅ Prêt à envoyer'
+
       var reader = new FileReader()
       reader.onload = function(e) {
-        currentAttachment = {name:file.name,type:file.type,data:e.target.result.split(',')[1]}
-        var bar=document.getElementById('attach-bar'), nm=document.getElementById('attach-name')
-        if(bar) bar.style.display='flex'
-        if(nm)  nm.textContent='📎 '+file.name+' — prêt à envoyer ✓'
+        currentAttachment = {name:file.name, type:file.type, data:e.target.result.split(',')[1]}
       }
       reader.readAsDataURL(file)
     }
