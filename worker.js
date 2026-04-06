@@ -695,10 +695,27 @@ Génère un site moderne et professionnel basé sur ce contenu.`
     ════════════════════════════════════════════════════ */
     if (url.pathname === "/api/chat" && request.method === "POST") {
       try {
-        const body = await request.json()
-        const userMessage = body.message || ""
-        const history     = body.history  || []
-        const userName    = body.userName || ""
+        const body       = await request.json()
+        const userMessage = body.message    || ""
+        const history     = body.history    || []
+        const userName    = body.userName   || ""
+        const attachment  = body.attachment || null
+
+        // Construit le contenu utilisateur (texte + pièce jointe si présente)
+        let userContent = userMessage
+        if (attachment) {
+          if (attachment.type.startsWith('image/')) {
+            // Image — envoi en vision
+            userContent = [
+              { type: "image_url", image_url: { url: "data:" + attachment.type + ";base64," + attachment.data } },
+              { type: "text", text: userMessage || "Analyse cette image et dis-moi ce que tu vois." }
+            ]
+          } else if (attachment.type === 'application/pdf') {
+            userContent = userMessage + "\n\n[L'utilisateur a joint un PDF: " + attachment.name + " — analyse-le et réponds en conséquence]"
+          } else {
+            userContent = userMessage + "\n\n[Fichier joint: " + attachment.name + "]"
+          }
+        }
 
         // Prompts selon l'agent sélectionné
         const agentPrompts = {
@@ -816,8 +833,8 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
         const messages = [
           { role: "system", content: systemPrompt },
-          ...history.slice(-10), // garde les 10 derniers messages
-          { role: "user", content: userMessage }
+          ...history.slice(-10),
+          { role: "user", content: userContent }
         ]
 
         const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
