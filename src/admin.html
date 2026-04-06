@@ -494,6 +494,7 @@
        CRÉER UN UTILISATEUR
     ══════════════════════════════════ */
     function createUser() {
+      var firstname = document.getElementById('new-firstname').value.trim()
       var email    = document.getElementById('new-email').value.trim()
       var password = document.getElementById('new-password').value.trim()
       var btn      = document.getElementById('btn-create')
@@ -510,7 +511,7 @@
       fetch('/api/admin/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: adminToken, email, password })
+        body: JSON.stringify({ token: adminToken, email, password, firstname })
       })
       .then(r => r.json())
       .then(data => {
@@ -519,6 +520,7 @@
         text.textContent = 'Créer'
         if (data.success) {
           showMsg(msg, '✓ Compte créé : ' + email, 'success')
+          document.getElementById('new-firstname').value = ''
           document.getElementById('new-email').value    = ''
           document.getElementById('new-password').value = ''
           loadUsers()
