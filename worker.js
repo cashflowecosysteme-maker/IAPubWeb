@@ -95,7 +95,8 @@ export default {
             { headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
         const email = await env.USERS_KV.get("session:" + token)
-        return new Response(JSON.stringify({ valid: !!email, email }),
+        const firstname = email ? (await env.USERS_KV.get("firstname:" + email) || "") : ""
+        return new Response(JSON.stringify({ valid: !!email, email, firstname }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } })
       } catch(e) {
         return new Response(JSON.stringify({ valid: false }),
@@ -205,8 +206,9 @@ export default {
           return new Response(JSON.stringify({ success: false, error: "Non autorisé." }),
             { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
-        const email    = (body.email    || "").toLowerCase().trim()
-        const password = (body.password || "").trim()
+        const email     = (body.email     || "").toLowerCase().trim()
+        const password  = (body.password  || "").trim()
+        const firstname = (body.firstname || "").trim()
         if (!email || !password) {
           return new Response(JSON.stringify({ success: false, error: "Email et mot de passe requis." }),
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
@@ -220,6 +222,8 @@ export default {
         const hashBuf = await crypto.subtle.digest("SHA-256", encoder.encode(password))
         const hashHex = Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2,"0")).join("")
         await env.USERS_KV.put(email, hashHex)
+        // Sauvegarde le prénom séparément
+        if (firstname) await env.USERS_KV.put("firstname:" + email, firstname)
         return new Response(JSON.stringify({ success: true }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } })
       } catch(e) {
