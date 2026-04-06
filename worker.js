@@ -608,12 +608,12 @@ export default {
 
 
     /* ════════════════════════════════════════════════════
-       ROUTE /api/from-url — Génère un site depuis une URL
+       ROUTE /api/from-url — Génère un site depuis une URL (DeepSeek-v3)
     ════════════════════════════════════════════════════ */
     if (url.pathname === "/api/from-url" && request.method === "POST") {
       try {
-        const body      = await request.json()
-        const targetUrl = body.url    || ""
+        const body       = await request.json()
+        const targetUrl  = body.url    || ""
         const userPrompt = body.prompt || ""
 
         if (!targetUrl) {
@@ -621,68 +621,119 @@ export default {
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-        // Fetch la page cible
-        let pageContent = ""
+        // ── Fetch + extraction intelligente ──
+        let pageData = { title: "", description: "", h1: "", texts: "" }
         try {
           const pageRes = await fetch(targetUrl, {
-            headers: { "User-Agent": "Mozilla/5.0 (compatible; NyXiaBot/1.0)" }
+            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36" }
           })
-          const html = await pageRes.text()
-          // Extrait le texte brut (retire les balises HTML)
-          pageContent = html
-            .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-            .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+          const rawHtml = await pageRes.text()
+
+          // Titre de la page
+          const titleMatch = rawHtml.match(/<title[^>]*>([^<]+)<\/title>/i)
+          pageData.title = titleMatch ? titleMatch[1].trim() : ""
+
+          // Meta description
+          const metaMatch = rawHtml.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)/i)
+            || rawHtml.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i)
+          pageData.description = metaMatch ? metaMatch[1].trim() : ""
+
+          // H1 principal
+          const h1Match = rawHtml.match(/<h1[^>]*>([^<]+)<\/h1>/i)
+          pageData.h1 = h1Match ? h1Match[1].trim() : ""
+
+          // Texte brut (augmenté à 5000 chars pour plus de contexte)
+          pageData.texts = rawHtml
+            .replace(/<script[\s\S]*?<\/script>/gi, '')
+            .replace(/<style[\s\S]*?<\/style>/gi, '')
+            .replace(/<nav[\s\S]*?<\/nav>/gi, '')
+            .replace(/<footer[\s\S]*?<\/footer>/gi, '')
+            .replace(/<header[\s\S]*?<\/header>/gi, '')
             .replace(/<[^>]+>/g, ' ')
             .replace(/\s+/g, ' ')
             .trim()
-            .substring(0, 3000) // Limite à 3000 chars
+            .substring(0, 5000)
+
         } catch(e) {
           return new Response(JSON.stringify({ success: false, error: "Impossible d'accéder à cette URL. Vérifie qu'elle est publique." }),
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-        const systemPrompt = `Tu es un expert en création de sites web modernes et élégants.
-Analyse le contenu fourni et crée un site HTML complet, moderne et professionnel.
-RÈGLES ABSOLUES :
-- Génère UNIQUEMENT du code HTML complet (<!DOCTYPE html>...)
-- Utilise Tailwind CSS via CDN pour le style
-- Design moderne, élégant, professionnel
-- Garde le même secteur d'activité mais modernise tout
-- Textes en français
-- Images via placeholder ou Unsplash
-- PAS de commentaires, PAS d'explication — UNIQUEMENT le code HTML`
+        const systemPrompt = `Tu es NyXia, experte en création de sites web premium.
+Tu reçois le contenu d'un site existant et tu le réinventes en un site HTML moderne et professionnel.
 
-        const userMsg = `Voici le contenu du site à réinventer :
-URL : ${targetUrl}
-Contenu extrait : ${pageContent}
-${userPrompt ? "Instructions supplémentaires : " + userPrompt : ""}
+RÈGLES TECHNIQUES ABSOLUES — respecte-les toutes sans exception :
+1. Commence OBLIGATOIREMENT par <!DOCTYPE html> — rien avant
+2. Dans le <head>, inclus OBLIGATOIREMENT ces deux lignes :
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script>tailwind.config={theme:{extend:{}}}</script>
+3. Utilise Tailwind CSS pour 100% du style — aucun <style> custom sauf pour les animations keyframes
+4. Pour chaque section, ajoute des styles inline de secours : style="background-color:#0f172a;color:#ffffff" etc.
+5. Toutes les images : <img src="https://picsum.photos/seed/MOTCLE/1200/600" alt="..." class="w-full h-64 object-cover">
+6. PAS de commentaires HTML, PAS d'explications — UNIQUEMENT le code HTML complet
 
-Génère un site moderne et professionnel basé sur ce contenu.`
+STRUCTURE OBLIGATOIRE (6 sections minimum) :
+- Hero avec grand titre, sous-titre, CTA prominent
+- Section bénéfices (3 cartes)
+- Section services/offres détaillées
+- Témoignages (3 avis avec étoiles)
+- CTA final avec urgence
+- Footer avec coordonnées
+
+STYLE : moderne, premium, gradients sombres ou clairs selon le secteur, animations CSS subtiles.
+Garde le secteur d'activité et les informations clés du site original.
+Réponds UNIQUEMENT avec le code HTML — zéro texte avant ou après.`
+
+        const userMsg = `Réinvente ce site en version premium :
+
+URL source : ${targetUrl}
+Titre : ${pageData.title}
+Description : ${pageData.description}
+H1 principal : ${pageData.h1}
+Contenu principal :
+${pageData.texts}
+${userPrompt ? "\nInstructions supplémentaires : " + userPrompt : ""}
+
+Génère le HTML complet maintenant.`
 
         const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${env.OPENROUTER_KEY}`,
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://webmasteria.nyxiapublicationweb.com/",
+            "X-Title": "NyXia From-URL Generator"
           },
           body: JSON.stringify({
-            model: "z-ai/glm-5v-turbo",
+            model: "deepseek/deepseek-chat-v3-5",
             messages: [
               { role: "system", content: systemPrompt },
               { role: "user",   content: userMsg }
             ],
             temperature: 0.7,
-            max_tokens: 8000
+            max_tokens: 12000
           })
         })
 
         const data  = await res.json()
         let htmlOut = data.choices?.[0]?.message?.content || ""
 
-        // Nettoie le code
-        htmlOut = htmlOut.replace(/```html/gi, '').replace(/```/g, '').trim()
-        if (!htmlOut.includes('<!DOCTYPE') && htmlOut.includes('<html')) {
-          htmlOut = '<!DOCTYPE html>' + htmlOut
+        // Nettoyage robuste
+        htmlOut = htmlOut.replace(/^[\s\S]*?(?=<!DOCTYPE|<html)/i, '').trim()
+        const m = htmlOut.match(/```(?:html)?\s*([\s\S]*?)```/)
+        if (m) htmlOut = m[1].trim()
+        if (!htmlOut.toLowerCase().startsWith('<!doctype') && htmlOut.includes('<html')) {
+          htmlOut = '<!DOCTYPE html>\n' + htmlOut
+        }
+
+        if (!htmlOut.includes('<html')) {
+          return new Response(JSON.stringify({ success: false, error: "Le modèle n'a pas généré de HTML valide. Réessaie." }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Force l'injection du CDN Tailwind si absent (filet de sécurité)
+        if (!htmlOut.includes('cdn.tailwindcss.com')) {
+          htmlOut = htmlOut.replace('</head>', '<script src="https://cdn.tailwindcss.com"></script>\n</head>')
         }
 
         return new Response(JSON.stringify({ success: true, html: htmlOut }),
