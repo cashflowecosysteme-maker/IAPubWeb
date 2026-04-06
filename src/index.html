@@ -1462,7 +1462,20 @@
 
       <!-- Zone de saisie avec upload -->
 
-      <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- Onglets Image / URL -->
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button id="tab-image" onclick="switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
+        <button id="tab-url" onclick="switchMode('url')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">🔗 Depuis une URL</button>
+      </div>
+
+      <!-- Mode URL -->
+      <div id="url-mode" style="display:none;flex-direction:column;gap:12px;margin-bottom:14px">
+        <input id="url-input" type="url" placeholder="https://monsite.com — NyXia va l'analyser et le réinventer ✨"
+          style="width:100%;padding:16px 20px;border-radius:12px;background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.2);color:#fff;font-family:Outfit,sans-serif;font-size:15px;outline:none">
+        <div style="font-size:12px;color:#8891B8;text-align:center">NyXia analyse le contenu de la page et génère un site modernisé 🚀</div>
+      </div>
+
+      <div id="image-mode" style="display:flex;flex-direction:column;gap:14px">
 
         <div class="input-row">
 
@@ -1515,6 +1528,8 @@
       </div>
 
 
+
+      </div><!-- /image-mode -->
 
       <!-- Pedigree -->
 
