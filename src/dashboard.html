@@ -422,16 +422,17 @@
           <span class="nav-arrow">›</span>
         </div>
         <div id="chat-submenu" style="padding:4px 8px 4px 20px">
-          <button id="btn-new-conv" style="width:100%;padding:7px 10px;border-radius:8px;border:1px dashed rgba(123,92,255,0.3);background:rgba(123,92,255,0.04);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left">✦ Nouvelle conversation</button>
+          <button onclick="_newConversation()" style="width:100%;padding:7px 10px;border-radius:8px;border:1px dashed rgba(123,92,255,0.3);background:rgba(123,92,255,0.04);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left">✦ Nouvelle conversation</button>
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">Mode</div>
-          <button id="agent-general" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.3);color:#fff;border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">💬 NyXia</button>
-          <button id="agent-copywriter" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">✍️ Copywriter</button>
-          <button id="agent-formation" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🎓 Formation</button>
-          <button id="agent-seo" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🔍 SEO</button>
+          <button id="agent-general" onclick="_setAgentStyle('general');setAgent('general')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.3);color:#fff;border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">💬 NyXia</button>
+          <button id="agent-copywriter" onclick="_setAgentStyle('copywriter');setAgent('copywriter')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">✍️ Copywriter</button>
+          <button id="agent-formation" onclick="_setAgentStyle('formation');setAgent('formation')" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🎓 Formation</button>
+          <button id="agent-seo" onclick="_setAgentStyle('seo');setAgent('seo')" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🔍 SEO</button>
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">📁 Projets</div>
+          <button onclick="_showProjects()" style="width:100%;padding:5px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.15);background:transparent;color:var(--t3);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer;text-align:left;margin-bottom:4px">+ Créer un projet</button>
           <div id="projects-list" style="margin-bottom:8px"><div style="font-size:11px;color:var(--t4)">Aucun projet</div></div>
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">🔗 Intégrations</div>
-          <div style="font-size:11px;color:var(--t4);padding:6px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.1);background:rgba(123,92,255,0.04)">Webhooks &amp; Zapier<br><span style="font-size:10px;opacity:.5">Bientôt disponible</span></div>
+          <div style="font-size:11px;color:var(--t4);padding:6px 8px;border-radius:6px;border:1px solid rgba(123,92,255,0.1);background:rgba(123,92,255,0.04)"><div style="margin-bottom:3px"><input id="int-webhook" type="url" placeholder="Webhook URL..." onchange="localStorage.setItem('nw',this.value)" style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.15);border-radius:5px;color:var(--t2);font-size:11px;padding:4px 7px;outline:none;font-family:Outfit,sans-serif"></div><input id="int-zapier" type="url" placeholder="Zapier URL..." onchange="localStorage.setItem('nz',this.value)" style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.15);border-radius:5px;color:var(--t2);font-size:11px;padding:4px 7px;outline:none;font-family:Outfit,sans-serif"></div>
         </div>
 
         <div class="nav-item" id="nav-generator" onclick="showPanel('generator')">
@@ -582,9 +583,14 @@
       .then(data => {
         if (!data.valid) { window.location.href = '/login.html'; return }
         clientEmail = data.email || ''
-        // Utilise le prénom mémorisé par NyXia si disponible
+        // Prénom depuis le compte (enregistré par l'admin) ou localStorage
         var stored = localStorage.getItem('nyxia_username')
-        clientName = stored || ''  // vide = NyXia va demander le prénom
+        if (data.firstname) {
+          clientName = data.firstname
+          localStorage.setItem('nyxia_username', clientName)
+        } else {
+          clientName = stored || ''
+        }
 
         initUI()
       })
@@ -680,14 +686,27 @@
       btn.disabled = true
       addTyping()
 
+      // Inclut la pièce jointe si présente
+      var payload = {
+        message    : text,
+        history    : chatHistory.slice(-10),
+        userName   : clientName,
+        agent      : _currentAgent || currentAgent || 'general',
+        attachment : _currentAttachment || null
+      }
+      // Réinitialise la pièce jointe après envoi
+      if (_currentAttachment) {
+        _currentAttachment = null
+        var bar = document.getElementById('attach-bar')
+        var fi  = document.getElementById('chat-file')
+        if (bar) bar.style.display = 'none'
+        if (fi)  fi.value = ''
+      }
+
       fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message  : text,
-          history  : chatHistory.slice(-10),
-          userName : clientName
-        })
+        body: JSON.stringify(payload)
       })
       .then(r => r.json())
       .then(data => {
@@ -947,6 +966,36 @@
     /* ══ PROJETS ══ */
     var _projects=[], _currentProjectId=null, _currentAttachment=null, _currentAgent='general'
 
+
+    function _showProjects() {
+      if (!chatHistory.length) { return }
+      var name = prompt('Nom du projet :')
+      if (!name) return
+      _currentProjectId = null
+      var proj = {id:'p'+Date.now(), name:name, agent:_currentAgent, history:chatHistory.slice(), date:new Date().toISOString()}
+      _projects.unshift(proj)
+      if (_projects.length > 20) _projects = _projects.slice(0,20)
+      _currentProjectId = proj.id
+      try { localStorage.setItem('nyxia_proj_'+(clientEmail||''), JSON.stringify(_projects)) } catch(e) {}
+      _renderProjects()
+    }
+
+    function _saveIntegrations() {
+      var wh = document.getElementById('int-webhook')
+      var zp = document.getElementById('int-zapier')
+      if (wh) localStorage.setItem('nyxia_webhook', wh.value)
+      if (zp) localStorage.setItem('nyxia_zapier', zp.value)
+      var btn = document.getElementById('btn-save-int')
+      if (btn) { btn.textContent='✓ Sauvegardé'; setTimeout(function(){btn.textContent='💾 Sauvegarder'},2000) }
+    }
+
+    function _loadIntegrations() {
+      var wh = document.getElementById('int-webhook')
+      var zp = document.getElementById('int-zapier')
+      if (wh) wh.value = localStorage.getItem('nyxia_webhook') || ''
+      if (zp) zp.value = localStorage.getItem('nyxia_zapier') || ''
+    }
+
     function _loadProjects() {
       try { _projects=JSON.parse(localStorage.getItem('nyxia_proj_'+(clientEmail||''))||'[]') } catch(e){ _projects=[] }
       _renderProjects()
@@ -1049,6 +1098,33 @@
       // Load projects
       _loadProjects()
     })
+
+
+    /* ══ TTS ══ */
+    var _currentSpkBtn = null
+    function speakMsg(btn, text) {
+      if (!window.speechSynthesis) return
+      if (_currentSpkBtn === btn) {
+        window.speechSynthesis.cancel()
+        btn.textContent = '🔊 Écouter'; btn.style.color = 'var(--t3)'
+        _currentSpkBtn = null; return
+      }
+      window.speechSynthesis.cancel()
+      if (_currentSpkBtn) { _currentSpkBtn.textContent='🔊 Écouter'; _currentSpkBtn.style.color='var(--t3)' }
+      _currentSpkBtn = btn
+      btn.textContent = '🔊 En cours...'; btn.style.color = 'var(--green)'
+      var clean = text.replace(/\*\*(.*?)\*\*/g,'$1').replace(/[✦💜🚀💎]/g,'').replace(/<br>/g,' ').trim()
+      var utt = new SpeechSynthesisUtterance(clean)
+      utt.lang='fr-FR'; utt.rate=0.9; utt.pitch=1.05; utt.volume=1
+      function doSpeak() {
+        var voices=window.speechSynthesis.getVoices()
+        var v=voices.find(function(v){return v.lang==='fr-FR'})||voices.find(function(v){return v.lang.startsWith('fr')})
+        if(v) utt.voice=v
+        window.speechSynthesis.speak(utt)
+      }
+      utt.onend=utt.onerror=function(){ btn.textContent='🔊 Écouter'; btn.style.color='var(--t3)'; _currentSpkBtn=null }
+      window.speechSynthesis.getVoices().length===0?(window.speechSynthesis.onvoiceschanged=doSpeak):doSpeak()
+    }
 
     /* ══════════════════════════════════════
        INPUT AUTO-RESIZE + ENTER
