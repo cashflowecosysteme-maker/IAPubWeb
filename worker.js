@@ -710,55 +710,83 @@ export default {
         const body        = await request.json()
         const html        = body.html        || ""
         const projectName = body.projectName || "site"
+
         if (!html || html.length < 100) {
           return new Response(JSON.stringify({ success: false, error: "HTML vide." }),
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
-        const accountId = env.CF_ACCOUNT_ID
+
+        // CF_ACCOUNT_ID hardcodé ici — ne disparaît plus au redéploiement
+        const accountId = "e13f8e75dfb03c488d4a0c9290cc0c81"
         const apiToken  = env.CF_API_TOKEN
-        // Sécurité : on vérifie les variables
-        if (!accountId || !apiToken) {
-          return new Response(JSON.stringify({ success: false, error: "Configuration serveur manquante (CF_ACCOUNT_ID ou CF_API_TOKEN)." }),
+
+        if (!apiToken) {
+          return new Response(JSON.stringify({ success: false, error: "CF_API_TOKEN manquant dans les variables d'environnement." }),
             { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
-        // On prépare le nom du projet
-        const safeName = "webmasteria-" + projectName.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').substring(0, 50)
+
+        // Nom du projet propre
+        const safeName  = "webmasteria-" + projectName.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').slice(0, 50)
         const htmlBytes = new TextEncoder().encode(html)
         const zipData   = createZipInMemory({ "index.html": htmlBytes })
-        
-        // Fonction pour envoyer le fichier
+
         const doDeploy = async () => {
-          const formData = new FormData()
-          formData.append('file', new Blob([zipData], { type: 'application/zip' }), 'deploy.zip')
-          return await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${safeName}/deployments`, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${apiToken}` },
-            body: formData
-          })
+          const fd = new FormData()
+          fd.append('file', new Blob([zipData], { type: 'application/zip' }), 'deploy.zip')
+          return fetch(
+            `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${safeName}/deployments`,
+            { method: 'POST', headers: { 'Authorization': `Bearer ${apiToken}` }, body: fd }
+          )
         }
-        // 1. On essaie de déployer
-        let res = await doDeploy()
+
+        // 1. Tentative de déploiement
+        let res    = await doDeploy()
         let result = await res.json()
-        // 2. Si Cloudflare dit "Projet introuvable" (erreur 8007), on le crée
-        if (!result.success && result.errors?.[0]?.code === 8007) {
-           // Création du projet
-           await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects`, {
-             method: 'POST',
-             headers: { 'Authorization': `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
-             body: JSON.stringify({ name: safeName })
-           })
-           // On retente le déploiement
-           res = await doDeploy()
-           result = await res.json()
+
+        // 2. Si projet inexistant — détection par message ET par code (Cloudflare n'est pas cohérent)
+        const errMsg = result.errors?.[0]?.message || ""
+        const errCode = result.errors?.[0]?.code
+        const isNotFound = !result.success && (
+          errCode === 8007 ||
+          errMsg.toLowerCase().includes("not found") ||
+          errMsg.toLowerCase().includes("does not exist") ||
+          errMsg.toLowerCase().includes("project name does not match")
+        )
+
+        if (isNotFound) {
+          // Création du projet
+          const createRes = await fetch(
+            `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects`,
+            {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: safeName, production_branch: "main" })
+            }
+          )
+          const createResult = await createRes.json()
+          if (!createResult.success) {
+            const createErr = createResult.errors?.[0]?.message || "Création projet échouée"
+            return new Response(JSON.stringify({ success: false, error: "Création projet : " + createErr }),
+              { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+          }
+          // Petite pause pour que Cloudflare enregistre le projet
+          await new Promise(r => setTimeout(r, 1500))
+          // On retente le déploiement
+          res    = await doDeploy()
+          result = await res.json()
         }
+
         // 3. Gestion des erreurs finales
         if (!result.success) {
-           return new Response(JSON.stringify({ success: false, error: "Cloudflare : " + (result.errors?.[0]?.message || "Erreur inconnue") }),
+          const finalErr = result.errors?.[0]?.message || JSON.stringify(result.errors)
+          return new Response(JSON.stringify({ success: false, error: "Cloudflare : " + finalErr }),
             { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
+
         const pagesUrl = result.result?.url || `https://${safeName}.pages.dev`
         return new Response(JSON.stringify({ success: true, url: pagesUrl }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
       } catch(e) {
         return new Response(JSON.stringify({ success: false, error: e.message }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
