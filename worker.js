@@ -822,6 +822,134 @@ Génère le HTML complet maintenant.`
           htmlOut = htmlOut.replace('</head>', '<script src="https://cdn.tailwindcss.com"></script>\n</head>')
         }
 
+        // 6. INJECTION PREMIUM — animations + scroll reveal garantis peu importe ce que DeepSeek a fait
+        const premiumCSS = `
+<style id="nyxia-premium">
+  /* ── Animations keyframes ── */
+  @keyframes fadeUp   { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+  @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  @keyframes glow     { 0%,100%{box-shadow:0 0 20px rgba(124,58,237,0.4)} 50%{box-shadow:0 0 60px rgba(124,58,237,0.8),0 0 100px rgba(6,182,212,0.3)} }
+  @keyframes shimmer  { 0%{background-position:200% center} 100%{background-position:-200% center} }
+  @keyframes pulse-ring { 0%{transform:scale(1);opacity:1} 100%{transform:scale(1.5);opacity:0} }
+  @keyframes slideInLeft  { from{opacity:0;transform:translateX(-50px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes slideInRight { from{opacity:0;transform:translateX(50px)}  to{opacity:1;transform:translateX(0)} }
+
+  /* ── Classes utilitaires premium ── */
+  .nyxia-fadeup   { opacity:0; }
+  .nyxia-fadein   { opacity:0; }
+  .nyxia-slidel   { opacity:0; }
+  .nyxia-slider   { opacity:0; }
+  .nyxia-animated { }
+
+  .nyxia-float { animation: float 4s ease-in-out infinite; }
+  .nyxia-glow  { animation: glow  3s ease-in-out infinite; }
+
+  /* ── Texte gradient shimmer sur les titres h1 ── */
+  h1 {
+    background-size: 200% auto;
+    animation: shimmer 4s linear infinite;
+  }
+
+  /* ── Hover lift sur toutes les cartes ── */
+  [class*="card"], [class*="Card"], section > div > div {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  [class*="card"]:hover, [class*="Card"]:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+
+  /* ── Boutons — hover glow ── */
+  a[class*="btn"], button[class*="btn"], a[href]:not([href="#"]) {
+    transition: all 0.3s ease;
+  }
+  a[class*="btn"]:hover, button[class*="btn"]:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.15);
+  }
+
+  /* ── Images — zoom au hover ── */
+  img { transition: transform 0.5s ease; }
+  div:hover > img, a:hover > img { transform: scale(1.03); }
+
+  /* ── Smooth scroll global ── */
+  html { scroll-behavior: smooth; }
+</style>`
+
+        const premiumJS = `
+<script id="nyxia-scroll-reveal">
+(function() {
+  // Scroll reveal — applique les animations au défilement
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+      var el = entry.target;
+      var cls = el.className || '';
+      if (cls.includes('nyxia-fadeup')) {
+        el.style.animation = 'fadeUp 0.7s ease forwards';
+      } else if (cls.includes('nyxia-slidel')) {
+        el.style.animation = 'slideInLeft 0.7s ease forwards';
+      } else if (cls.includes('nyxia-slider')) {
+        el.style.animation = 'slideInRight 0.7s ease forwards';
+      } else {
+        el.style.animation = 'fadeIn 0.6s ease forwards';
+        el.style.opacity = '1';
+      }
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.12 });
+
+  // Applique les classes d'animation à tous les éléments de section
+  document.addEventListener('DOMContentLoaded', function() {
+    var sections = document.querySelectorAll('section, .section');
+    sections.forEach(function(sec, si) {
+      // Titre de la section
+      var titles = sec.querySelectorAll('h1,h2,h3');
+      titles.forEach(function(t, i) {
+        t.classList.add('nyxia-fadeup');
+        t.style.animationDelay = (i * 0.1) + 's';
+        observer.observe(t);
+      });
+      // Paragraphes
+      var paras = sec.querySelectorAll('p');
+      paras.forEach(function(p, i) {
+        p.classList.add('nyxia-fadein');
+        p.style.animationDelay = (0.1 + i * 0.08) + 's';
+        observer.observe(p);
+      });
+      // Cartes / blocs enfants directs
+      var cards = sec.querySelectorAll('div > div, li, article');
+      cards.forEach(function(c, i) {
+        if (c.children.length > 0 && c.offsetHeight > 60) {
+          c.classList.add(i % 2 === 0 ? 'nyxia-slidel' : 'nyxia-slider');
+          c.style.animationDelay = (0.1 + i * 0.12) + 's';
+          observer.observe(c);
+        }
+      });
+      // Float sur les images hero
+      if (si === 0) {
+        sec.querySelectorAll('img').forEach(function(img) {
+          img.classList.add('nyxia-float');
+        });
+      }
+    });
+
+    // Hero section — fadeUp immédiat
+    var heroTitles = document.querySelectorAll('section:first-of-type h1, section:first-of-type h2, section:first-of-type p, section:first-of-type a');
+    heroTitles.forEach(function(el, i) {
+      el.style.opacity = '0';
+      el.style.animation = 'fadeUp 0.8s ease ' + (0.2 + i * 0.15) + 's forwards';
+    });
+  });
+})();
+</script>`
+
+        // Injecte le CSS premium avant </head>
+        htmlOut = htmlOut.replace('</head>', premiumCSS + '\n</head>')
+        // Injecte le JS scroll reveal avant </body>
+        htmlOut = htmlOut.replace('</body>', premiumJS + '\n</body>')
+
         return new Response(JSON.stringify({ success: true, html: htmlOut }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } })
 
