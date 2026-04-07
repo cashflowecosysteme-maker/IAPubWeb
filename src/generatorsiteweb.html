@@ -1838,6 +1838,8 @@
 
         <button class="toolbar-btn" id="btn-copy-code">Copy Code</button>
 
+        <button class="toolbar-btn" id="btn-publish" onclick="openPublishModal()" style="background:linear-gradient(135deg,rgba(0,200,100,0.25),rgba(0,150,80,0.2));border-color:rgba(0,200,100,0.4);color:#00E676;font-weight:700">🚀 Publier</button>
+
         <button class="toolbar-btn close-preview" id="btn-close-preview">Fermer</button>
 
       </div>
@@ -1943,6 +1945,68 @@
 
     <pre id="code-output"></pre>
 
+  </div>
+
+  <!-- ══ MODAL PUBLICATION ══ -->
+  <div id="publish-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);align-items:center;justify-content:center">
+    <div style="background:var(--bg2,#0F1C3F);border:1px solid rgba(0,230,118,0.25);border-radius:24px;padding:36px;width:100%;max-width:500px;margin:20px;box-shadow:0 24px 64px rgba(0,0,0,0.6),0 0 60px rgba(0,230,118,0.08)">
+
+      <!-- État : formulaire -->
+      <div id="publish-form-state">
+        <div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:6px">🚀 Publier mon site</div>
+        <div style="font-size:13px;color:var(--t3,#8891B8);margin-bottom:24px">Ton site sera en ligne en quelques secondes sur un sous-domaine gratuit.</div>
+
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2,#D6D9F0);margin-bottom:6px">Nom de ton site</label>
+          <div style="display:flex;align-items:center;gap:0;background:rgba(15,28,63,0.8);border:1px solid rgba(0,230,118,0.2);border-radius:10px;overflow:hidden">
+            <input id="publish-name" type="text" placeholder="mon-site-spa" maxlength="50"
+              style="flex:1;background:transparent;border:none;color:#fff;font-family:Outfit,sans-serif;font-size:14px;padding:12px 14px;outline:none"
+              oninput="updatePublishPreview()">
+            <span style="padding:12px 14px;color:var(--t3,#8891B8);font-size:13px;white-space:nowrap">.pages.dev</span>
+          </div>
+          <div id="publish-preview-url" style="font-size:11px;color:#00E676;margin-top:6px;opacity:0.8"></div>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:24px">
+          <button onclick="closePublishModal()" style="padding:11px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--t2,#D6D9F0);font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
+          <button onclick="doPublish()" id="btn-do-publish" style="padding:11px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#00C864,#00A050);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 24px rgba(0,200,100,0.4);transition:all .2s">🚀 Publier maintenant</button>
+        </div>
+      </div>
+
+      <!-- État : chargement -->
+      <div id="publish-loading-state" style="display:none;text-align:center;padding:20px 0">
+        <div style="width:56px;height:56px;border:3px solid rgba(0,230,118,0.2);border-top-color:#00E676;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px"></div>
+        <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Publication en cours...</div>
+        <div style="font-size:13px;color:var(--t3,#8891B8)">NyXia déploie ton site sur Cloudflare ✨</div>
+      </div>
+
+      <!-- État : succès -->
+      <div id="publish-success-state" style="display:none;text-align:center;padding:10px 0">
+        <div style="font-size:48px;margin-bottom:16px">🎉</div>
+        <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">Ton site est en ligne !</div>
+        <div style="font-size:13px;color:var(--t3,#8891B8);margin-bottom:20px">Accessible dans quelques secondes sur :</div>
+        <a id="publish-result-url" href="#" target="_blank"
+          style="display:block;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);border-radius:12px;padding:14px 20px;color:#00E676;font-family:monospace;font-size:14px;text-decoration:none;word-break:break-all;transition:all .2s"
+          onmouseover="this.style.background='rgba(0,230,118,0.18)'"
+          onmouseout="this.style.background='rgba(0,230,118,0.1)'"></a>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+          <button id="btn-copy-publish-url" onclick="copyPublishUrl()" style="padding:10px 20px;border-radius:50px;border:1px solid rgba(0,230,118,0.3);background:transparent;color:#00E676;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📋 Copier le lien</button>
+          <button onclick="closePublishModal()" style="padding:10px 20px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--p,#7B5CFF),var(--p2,#5A6CFF));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Fermer</button>
+        </div>
+      </div>
+
+      <!-- État : erreur -->
+      <div id="publish-error-state" style="display:none;text-align:center;padding:10px 0">
+        <div style="font-size:40px;margin-bottom:14px">⚠️</div>
+        <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Erreur de publication</div>
+        <div id="publish-error-msg" style="font-size:13px;color:#ff8fab;margin-bottom:20px;line-height:1.5"></div>
+        <div style="display:flex;gap:10px;justify-content:center">
+          <button onclick="showPublishState('form')" style="padding:10px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.3);background:transparent;color:var(--t2,#D6D9F0);font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">↺ Réessayer</button>
+          <button onclick="closePublishModal()" style="padding:10px 20px;border-radius:50px;border:none;background:rgba(255,75,110,0.15);border:1px solid rgba(255,75,110,0.3);color:#ff8fab;font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">Fermer</button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
 
@@ -2137,6 +2201,117 @@
         }).join('')
       })
     }
+
+    /* ══════════════════════════════════════
+       PUBLICATION EN 1 CLIC
+    ══════════════════════════════════════ */
+    var _publishedUrl = ''
+
+    function openPublishModal() {
+      var modal = document.getElementById('publish-modal')
+      if (!modal) return
+      // Génère un nom par défaut depuis le prompt ou la date
+      var input = document.getElementById('user-input')
+      var defaultName = 'mon-site-nyxia'
+      if (input && input.value) {
+        defaultName = input.value
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .split(/\s+/)
+          .slice(0, 4)
+          .join('-')
+          .substring(0, 40) || 'mon-site-nyxia'
+      }
+      document.getElementById('publish-name').value = defaultName
+      updatePublishPreview()
+      showPublishState('form')
+      modal.style.display = 'flex'
+    }
+
+    function closePublishModal() {
+      var modal = document.getElementById('publish-modal')
+      if (modal) modal.style.display = 'none'
+    }
+
+    function updatePublishPreview() {
+      var name = document.getElementById('publish-name').value
+        .toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '')
+      var preview = document.getElementById('publish-preview-url')
+      if (preview) preview.textContent = name ? '→ ' + name + '.pages.dev' : ''
+    }
+
+    function showPublishState(state) {
+      ['form', 'loading', 'success', 'error'].forEach(function(s) {
+        var el = document.getElementById('publish-' + s + '-state')
+        if (el) el.style.display = s === state ? 'block' : 'none'
+      })
+    }
+
+    function copyPublishUrl() {
+      if (_publishedUrl) {
+        navigator.clipboard.writeText(_publishedUrl).then(function() {
+          var btn = document.getElementById('btn-copy-publish-url')
+          if (btn) { btn.textContent = '✓ Copié !'; setTimeout(function(){ btn.textContent = '📋 Copier le lien' }, 2000) }
+        })
+      }
+    }
+
+    function doPublish() {
+      var rawName = document.getElementById('publish-name').value.trim()
+      if (!rawName) {
+        document.getElementById('publish-name').style.borderColor = 'rgba(255,75,110,0.6)'
+        return
+      }
+      var cleanName = rawName.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '').substring(0, 50)
+
+      // Récupère le HTML généré
+      var html = window.generatedCode || ''
+      if (!html) {
+        try {
+          var frame = document.getElementById('preview-frame')
+          if (frame && frame.contentDocument) {
+            html = '<!DOCTYPE html>
+' + frame.contentDocument.documentElement.outerHTML
+          }
+        } catch(e) {}
+      }
+      if (!html || html.length < 100) {
+        showPublishState('error')
+        document.getElementById('publish-error-msg').textContent = 'Aucun site généré à publier. Génère d'abord un site.'
+        return
+      }
+
+      showPublishState('loading')
+
+      fetch('/api/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectName: cleanName, html: html })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        if (data.success && data.url) {
+          _publishedUrl = data.url
+          var urlEl = document.getElementById('publish-result-url')
+          if (urlEl) { urlEl.textContent = data.url; urlEl.href = data.url }
+          showPublishState('success')
+        } else {
+          showPublishState('error')
+          document.getElementById('publish-error-msg').textContent = data.error || 'Erreur inconnue. Réessaie dans un instant.'
+        }
+      })
+      .catch(function(e) {
+        showPublishState('error')
+        document.getElementById('publish-error-msg').textContent = 'Erreur réseau : ' + e.message
+      })
+    }
+
+    // Ferme modal si clic extérieur
+    document.addEventListener('click', function(e) {
+      var modal = document.getElementById('publish-modal')
+      if (modal && modal.style.display === 'flex' && e.target === modal) closePublishModal()
+    })
 
     function toggleNiches() {
       var grid = document.getElementById('niches-grid')
