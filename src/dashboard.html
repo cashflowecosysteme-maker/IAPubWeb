@@ -428,8 +428,8 @@
           <button id="agent-copywriter" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">✍️ Copywriter</button>
           <button id="agent-formation" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🎓 Formation</button>
           <button id="agent-seo" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🔍 SEO</button>
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">📁 Projets</div>
-          <div id="projects-list" style="margin-bottom:8px"><div style="font-size:11px;color:var(--t4)">Aucun projet</div></div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">💾 Sauvegardes</div>
+          <div id="projects-list" style="margin-bottom:8px"><div style="font-size:11px;color:var(--t4)">Aucune sauvegarde</div></div>
 
         </div>
 
@@ -455,6 +455,12 @@
         <div class="nav-item" id="nav-messages" onclick="showPanel('messages')">
           <span class="nav-icon">✉️</span>
           Messagerie
+          <span class="nav-arrow">›</span>
+        </div>
+
+        <div class="nav-item" id="nav-projects" onclick="showPanel('projects')">
+          <span class="nav-icon">📁</span>
+          Projets
           <span class="nav-arrow">›</span>
         </div>
 
@@ -522,6 +528,64 @@
       <!-- ── PANEL MÉDIAS ── -->
       <div class="panel" id="panel-medias">
         <iframe src="/medias.html" class="tool-embed" id="medias-frame"></iframe>
+      </div>
+
+      <!-- ── PANEL PROJETS ── -->
+      <div class="panel" id="panel-projects">
+        <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+
+          <div style="padding:20px 28px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.6);flex-shrink:0;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;background:linear-gradient(135deg,#a78bfa,#4FA3FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">📁 Mes Projets</div>
+              <div style="color:var(--t3);font-size:13px">Organise et retrouve tes projets NyXia</div>
+            </div>
+          </div>
+
+          <div id="projects-grid" style="flex:1;overflow-y:auto;padding:24px 28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;align-content:start">
+            <!-- Carte créer un projet -->
+            <div onclick="openProjectModal()" style="border:2px dashed rgba(123,92,255,0.3);border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;min-height:140px;background:rgba(123,92,255,0.03)" onmouseover="this.style.borderColor='rgba(123,92,255,0.6)';this.style.background='rgba(123,92,255,0.07)'" onmouseout="this.style.borderColor='rgba(123,92,255,0.3)';this.style.background='rgba(123,92,255,0.03)'">
+              <div style="font-size:28px;color:rgba(123,92,255,0.6)">✦</div>
+              <div style="font-size:13px;color:var(--t3);font-weight:500">Créer un nouveau projet</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- MODAL NOUVEAU PROJET -->
+      <div id="project-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+        <div style="background:var(--bg2);border:1px solid rgba(123,92,255,0.25);border-radius:20px;padding:32px;width:100%;max-width:480px;margin:20px;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
+          <div style="font-size:18px;font-weight:700;color:var(--t);margin-bottom:6px">📁 Nouveau Projet</div>
+          <div style="font-size:13px;color:var(--t3);margin-bottom:24px">Crée un projet à travailler avec NyXia</div>
+
+          <div style="margin-bottom:16px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Nom du projet</label>
+            <input id="proj-name" type="text" placeholder="Mon super projet" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(123,92,255,0.5)'" onblur="this.style.borderColor='rgba(123,92,255,0.2)'">
+          </div>
+
+          <div style="margin-bottom:16px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Description</label>
+            <textarea id="proj-desc" placeholder="Décris ton projet..." rows="3" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(123,92,255,0.5)'" onblur="this.style.borderColor='rgba(123,92,255,0.2)'"></textarea>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Type</label>
+            <select id="proj-type" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;cursor:pointer">
+              <option value="livre">📚 Écriture de livre</option>
+              <option value="formation">🎓 Création de formation</option>
+              <option value="site">🌐 Site web</option>
+              <option value="copywriting">✍️ Copywriting</option>
+              <option value="seo">🔍 SEO & Contenu</option>
+              <option value="marketing">📱 Marketing réseaux sociaux</option>
+              <option value="autre">💼 Autre</option>
+            </select>
+          </div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end">
+            <button onclick="closeProjectModal()" style="padding:10px 22px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:transparent;color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
+            <button onclick="createProject()" style="padding:10px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(123,92,255,0.4)">Créer</button>
+          </div>
+        </div>
       </div>
 
       <!-- ── PANEL MESSAGERIE ── -->
@@ -628,6 +692,7 @@
     function showPanel(name) {
       _showPanelBase(name)
       if (name === 'messages') loadMessages()
+      if (name === 'projects') _renderProjectsGrid()
     }
 
     /* ══════════════════════════════════════
@@ -715,7 +780,7 @@
       .then(r => r.json())
       .then(data => {
         removeTyping()
-        var reply = (data.success && data.content) ? data.content : 'Je suis là pour toi ! 💜'
+        var reply = data.content || 'Erreur inattendue — réessaie dans un instant 💜'
         addBotMessage(reply)
         chatHistory.push({ role: 'assistant', content: reply })
         if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20)
@@ -969,6 +1034,125 @@
 
     /* ══ PROJETS ══ */
     var _projects=[], _currentProjectId=null, _currentAttachment=null, _currentAgent='general'
+    var _realProjects=[]  // Vrais projets (séparés des sauvegardes de conv)
+
+    /* ══ VRAIS PROJETS ══ */
+    var _projTypes = {
+      livre:      '📚 Écriture de livre',
+      formation:  '🎓 Création de formation',
+      site:       '🌐 Site web',
+      copywriting:'✍️ Copywriting',
+      seo:        '🔍 SEO & Contenu',
+      marketing:  '📱 Marketing réseaux sociaux',
+      autre:      '💼 Autre'
+    }
+
+    function _loadRealProjects() {
+      try { _realProjects = JSON.parse(localStorage.getItem('nyxia_realproj_'+(clientEmail||''))||'[]') } catch(e){ _realProjects=[] }
+      _renderProjectsGrid()
+    }
+
+    function _saveRealProjects() {
+      try { localStorage.setItem('nyxia_realproj_'+(clientEmail||''), JSON.stringify(_realProjects)) } catch(e){}
+    }
+
+    function openProjectModal() {
+      var modal = document.getElementById('project-modal')
+      if (modal) {
+        modal.style.display = 'flex'
+        document.getElementById('proj-name').focus()
+        document.getElementById('proj-name').value = ''
+        document.getElementById('proj-desc').value = ''
+        document.getElementById('proj-type').value = 'livre'
+      }
+    }
+
+    function closeProjectModal() {
+      var modal = document.getElementById('project-modal')
+      if (modal) modal.style.display = 'none'
+    }
+
+    function createProject() {
+      var name = document.getElementById('proj-name').value.trim()
+      var desc = document.getElementById('proj-desc').value.trim()
+      var type = document.getElementById('proj-type').value
+      if (!name) {
+        document.getElementById('proj-name').style.borderColor = '#FF4B6E'
+        setTimeout(function(){ document.getElementById('proj-name').style.borderColor = 'rgba(123,92,255,0.2)' }, 2000)
+        return
+      }
+      var proj = {
+        id: 'rp' + Date.now(),
+        name: name,
+        desc: desc,
+        type: type,
+        date: new Date().toISOString(),
+        notes: []
+      }
+      _realProjects.unshift(proj)
+      _saveRealProjects()
+      _renderProjectsGrid()
+      closeProjectModal()
+      // Ouvre le projet dans le chat avec NyXia
+      showPanel('chat')
+      var welcome = '📁 **Projet "' + name + '"** ouvert !\\n\\n'
+      if (desc) welcome += desc + '\\n\\n'
+      welcome += 'Type : ' + (_projTypes[type] || type) + '\\n\\nComment puis-je t\'aider avec ce projet ?'
+      var msgs = document.getElementById('chat-messages')
+      if (msgs) msgs.innerHTML = ''
+      chatHistory = []
+      addBotMessage(welcome)
+    }
+
+    function deleteProject(id, e) {
+      e.stopPropagation()
+      if (!confirm('Supprimer ce projet ?')) return
+      _realProjects = _realProjects.filter(function(p){ return p.id !== id })
+      _saveRealProjects()
+      _renderProjectsGrid()
+    }
+
+    function openProject(id) {
+      var p = _realProjects.find(function(x){ return x.id === id })
+      if (!p) return
+      showPanel('chat')
+      var msgs = document.getElementById('chat-messages')
+      if (msgs) msgs.innerHTML = ''
+      chatHistory = []
+      var welcome = '📁 **Projet "' + p.name + '"** rechargé !\\n\\n'
+      if (p.desc) welcome += p.desc + '\\n\\n'
+      welcome += 'Type : ' + (_projTypes[p.type] || p.type) + '\\n\\nSur quoi travaillons-nous aujourd\'hui ?'
+      addBotMessage(welcome)
+    }
+
+    function _renderProjectsGrid() {
+      var grid = document.getElementById('projects-grid')
+      if (!grid) return
+      var createCard = '<div onclick="openProjectModal()" style="border:2px dashed rgba(123,92,255,0.3);border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;min-height:140px;background:rgba(123,92,255,0.03)" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.6)\';this.style.background=\'rgba(123,92,255,0.07)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.3)\';this.style.background=\'rgba(123,92,255,0.03)\'"><div style="font-size:28px;color:rgba(123,92,255,0.6)">✦</div><div style="font-size:13px;color:var(--t3);font-weight:500">Créer un nouveau projet</div></div>'
+      if (!_realProjects.length) {
+        grid.innerHTML = createCard
+        return
+      }
+      var cards = _realProjects.map(function(p) {
+        return '<div onclick="openProject(\'' + p.id + '\')" style="background:rgba(10,22,40,0.8);border:1px solid rgba(123,92,255,0.15);border-radius:16px;padding:20px;cursor:pointer;transition:all .2s;min-height:140px;display:flex;flex-direction:column;position:relative" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.4)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.15)\';this.style.transform=\'none\'">'
+          + '<div style="font-size:11px;color:#a78bfa;margin-bottom:8px;font-weight:600">' + (_projTypes[p.type] || p.type) + '</div>'
+          + '<div style="font-size:15px;font-weight:700;color:var(--t);margin-bottom:6px;line-height:1.3">' + p.name + '</div>'
+          + (p.desc ? '<div style="font-size:12px;color:var(--t3);flex:1;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">' + p.desc + '</div>' : '')
+          + '<div style="font-size:11px;color:var(--t4);margin-top:10px">' + new Date(p.date).toLocaleDateString('fr-CA') + '</div>'
+          + '<button onclick="deleteProject(\'' + p.id + '\',event)" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px;opacity:0;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">🗑</button>'
+          + '</div>'
+      }).join('')
+      grid.innerHTML = createCard + cards
+    }
+
+    // Ferme modal si clic à l'extérieur
+    document.addEventListener('click', function(e) {
+      var modal = document.getElementById('project-modal')
+      if (modal && modal.style.display === 'flex' && e.target === modal) closeProjectModal()
+    })
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeProjectModal()
+    })
 
     function _loadProjects() {
       try { _projects=JSON.parse(localStorage.getItem('nyxia_proj_'+(clientEmail||''))||'[]') } catch(e){ _projects=[] }
@@ -1101,6 +1285,7 @@
       if(nc) nc.addEventListener('click',function(){ _newConversation() })
       // Load projects
       _loadProjects()
+      _loadRealProjects()
     })
 
     /* ══════════════════════════════════════
