@@ -10,93 +10,7 @@
  *   OPENROUTER_KEY  — clé OpenRouter
  *   PEXELS_KEY      — clé Pexels API
  */
-/* ════════════════════════════════════════════════════
-   HELPER — Crée un ZIP minimal en mémoire (format ZIP standard)
-   Cloudflare Workers n'a pas de librairie ZIP native —
-   on implémente le format ZIP minimal (Local File Header + Central Directory)
-════════════════════════════════════════════════════ */
-function createSimpleZip(filename, content) {
-  const enc      = new TextEncoder()
-  const nameBytes = enc.encode(filename)
-  const fileData  = content instanceof Uint8Array ? content : enc.encode(content)
-
-  // CRC32 simple
-  function crc32(data) {
-    let crc = 0xFFFFFFFF
-    const table = new Uint32Array(256)
-    for (let i = 0; i < 256; i++) {
-      let c = i
-      for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1)
-      table[i] = c
-    }
-    for (let i = 0; i < data.length; i++) crc = table[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8)
-    return (crc ^ 0xFFFFFFFF) >>> 0
-  }
-
-  function uint16LE(n) { return [n & 0xFF, (n >> 8) & 0xFF] }
-  function uint32LE(n) { return [n & 0xFF, (n >> 8) & 0xFF, (n >> 16) & 0xFF, (n >> 24) & 0xFF] }
-
-  const crc       = crc32(fileData)
-  const now       = new Date()
-  const dosTime   = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1))
-  const dosDate   = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate())
-
-  // Local file header
-  const lfh = [
-    0x50, 0x4B, 0x03, 0x04,       // signature
-    0x14, 0x00,                    // version needed
-    0x00, 0x00,                    // flags
-    0x00, 0x00,                    // compression (stored)
-    ...uint16LE(dosTime),
-    ...uint16LE(dosDate),
-    ...uint32LE(crc),
-    ...uint32LE(fileData.length),  // compressed size
-    ...uint32LE(fileData.length),  // uncompressed size
-    ...uint16LE(nameBytes.length),
-    0x00, 0x00,                    // extra field length
-    ...nameBytes,
-    ...fileData
-  ]
-
-  const lfhOffset = 0
-
-  // Central directory header
-  const cdh = [
-    0x50, 0x4B, 0x01, 0x02,       // signature
-    0x14, 0x00,                    // version made by
-    0x14, 0x00,                    // version needed
-    0x00, 0x00,                    // flags
-    0x00, 0x00,                    // compression
-    ...uint16LE(dosTime),
-    ...uint16LE(dosDate),
-    ...uint32LE(crc),
-    ...uint32LE(fileData.length),
-    ...uint32LE(fileData.length),
-    ...uint16LE(nameBytes.length),
-    0x00, 0x00,                    // extra field length
-    0x00, 0x00,                    // comment length
-    0x00, 0x00,                    // disk number start
-    0x00, 0x00,                    // internal attributes
-    0x00, 0x00, 0x00, 0x00,        // external attributes
-    ...uint32LE(lfhOffset),        // offset of local header
-    ...nameBytes
-  ]
-
-  // End of central directory
-  const eocd = [
-    0x50, 0x4B, 0x05, 0x06,       // signature
-    0x00, 0x00,                    // disk number
-    0x00, 0x00,                    // disk with central dir
-    0x01, 0x00,                    // number of entries on disk
-    0x01, 0x00,                    // total entries
-    ...uint32LE(cdh.length),       // central dir size
-    ...uint32LE(lfh.length),       // central dir offset
-    0x00, 0x00                     // comment length
-  ]
-
-  const all = new Uint8Array([...lfh, ...cdh, ...eocd])
-  return all.buffer
-}
+import { zipSync } from 'https://esm.sh/fflate@0.8.2'
 
 export default {
   async fetch(request, env) {
@@ -738,9 +652,10 @@ export default {
           })
         })
 
-        // Crée le ZIP minimal en mémoire (format ZIP simplifié)
-        const htmlBytes   = new TextEncoder().encode(html)
-        const zipBuffer   = createSimpleZip("index.html", htmlBytes)
+        // Crée le ZIP en mémoire avec fflate
+        const htmlBytes = new TextEncoder().encode(html)
+        const zipped    = zipSync({ "index.html": htmlBytes }, { level: 6 })
+        const zipBuffer = zipped.buffer
 
         // Déploie sur Cloudflare Pages via FormData
         const formData = new FormData()
