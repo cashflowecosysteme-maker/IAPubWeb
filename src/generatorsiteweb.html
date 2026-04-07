@@ -1506,106 +1506,55 @@
       <!-- Zone de saisie avec upload -->
 
       <!-- ══ TEMPLATES PAR NICHE ══ -->
-      <div id="niche-templates" style="margin-bottom:20px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4)">✦ Démarrer depuis une niche</div>
-          <button onclick="toggleNiches()" id="btn-toggle-niches" style="background:none;border:none;color:var(--t4);font-size:11px;cursor:pointer;font-family:Outfit,sans-serif;transition:color .2s" onmouseover="this.style.color='var(--t3)'" onmouseout="this.style.color='var(--t4)'">Afficher ▾</button>
+      <div id="niche-templates" style="margin-bottom:24px">
+
+        <!-- Titre accrocheur -->
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:15px;font-weight:700;color:var(--t);margin-bottom:4px">✦ Choisis ta niche — NyXia crée ton site</div>
+          <div style="font-size:12px;color:var(--t3)">Clique sur ton secteur et génère en 60 secondes</div>
         </div>
 
-        <div id="niches-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px">
+        <!-- Catégories toujours visibles -->
+        <div id="niches-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
 
           <!-- BIEN-ÊTRE -->
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;margin-top:4px;padding-bottom:4px;border-bottom:1px solid rgba(123,92,255,0.1)">🌿 Bien-être & Santé</div>
-
-          <div class="niche-card" onclick="applyNiche('spa')">
-            <span class="niche-icon">💆</span>
-            <span class="niche-label">Spa & Massage</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('naturopathe')">
-            <span class="niche-icon">🌱</span>
-            <span class="niche-label">Naturopathe</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('therapeute')">
-            <span class="niche-icon">🧠</span>
-            <span class="niche-label">Thérapeute & Psy</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('holistique')">
-            <span class="niche-icon">✨</span>
-            <span class="niche-label">Praticien Holistique</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('aromatherapie')">
-            <span class="niche-icon">🌸</span>
-            <span class="niche-label">Aromatérapie</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('lithotherapie')">
-            <span class="niche-icon">💎</span>
-            <span class="niche-label">Lithothérapie</span>
-          </div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:6px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🌿 Bien-être & Santé</div>
+          <div class="niche-card" onclick="applyNiche('spa')"><span class="niche-icon">💆</span><span class="niche-label">Spa & Massage</span></div>
+          <div class="niche-card" onclick="applyNiche('naturopathe')"><span class="niche-icon">🌱</span><span class="niche-label">Naturopathe</span></div>
+          <div class="niche-card" onclick="applyNiche('therapeute')"><span class="niche-icon">🧠</span><span class="niche-label">Thérapeute & Psy</span></div>
+          <div class="niche-card" onclick="applyNiche('holistique')"><span class="niche-icon">✨</span><span class="niche-label">Praticien Holistique</span></div>
+          <div class="niche-card" onclick="applyNiche('aromatherapie')"><span class="niche-icon">🌸</span><span class="niche-label">Aromatérapie</span></div>
+          <div class="niche-card" onclick="applyNiche('lithotherapie')"><span class="niche-icon">💎</span><span class="niche-label">Lithothérapie</span></div>
 
           <!-- SPIRITUALITÉ -->
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;margin-top:10px;padding-bottom:4px;border-bottom:1px solid rgba(123,92,255,0.1)">🔮 Spiritualité & Ésotérisme</div>
-
-          <div class="niche-card" onclick="applyNiche('medium')">
-            <span class="niche-icon">🔮</span>
-            <span class="niche-label">Médium & Voyance</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('astrologue')">
-            <span class="niche-icon">⭐</span>
-            <span class="niche-label">Astrologue</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('tarologue')">
-            <span class="niche-icon">🃏</span>
-            <span class="niche-label">Tarologue</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('numerologue')">
-            <span class="niche-icon">🔢</span>
-            <span class="niche-label">Numérologue</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('neuro-alchimiste')">
-            <span class="niche-icon">🧬</span>
-            <span class="niche-label">Neuro-Alchimiste</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('spiritualite')">
-            <span class="niche-icon">🕊️</span>
-            <span class="niche-label">Spiritualité</span>
-          </div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🔮 Spiritualité & Ésotérisme</div>
+          <div class="niche-card" onclick="applyNiche('medium')"><span class="niche-icon">🔮</span><span class="niche-label">Médium & Voyance</span></div>
+          <div class="niche-card" onclick="applyNiche('astrologue')"><span class="niche-icon">⭐</span><span class="niche-label">Astrologue</span></div>
+          <div class="niche-card" onclick="applyNiche('tarologue')"><span class="niche-icon">🃏</span><span class="niche-label">Tarologue</span></div>
+          <div class="niche-card" onclick="applyNiche('numerologue')"><span class="niche-icon">🔢</span><span class="niche-label">Numérologue</span></div>
+          <div class="niche-card" onclick="applyNiche('neuro-alchimiste')"><span class="niche-icon">🧬</span><span class="niche-label">Neuro-Alchimiste</span></div>
+          <div class="niche-card" onclick="applyNiche('spiritualite')"><span class="niche-icon">🕊️</span><span class="niche-label">Spiritualité</span></div>
 
           <!-- COACHING & BUSINESS -->
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;margin-top:10px;padding-bottom:4px;border-bottom:1px solid rgba(123,92,255,0.1)">🚀 Coaching & Business</div>
-
-          <div class="niche-card" onclick="applyNiche('coach')">
-            <span class="niche-icon">🎯</span>
-            <span class="niche-label">Coach de vie</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('agence-marketing')">
-            <span class="niche-icon">📈</span>
-            <span class="niche-label">Agence Marketing</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('entrepreneur')">
-            <span class="niche-icon">💼</span>
-            <span class="niche-label">Entrepreneur</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('formation-en-ligne')">
-            <span class="niche-icon">🎓</span>
-            <span class="niche-label">Formation en ligne</span>
-          </div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🚀 Coaching & Business</div>
+          <div class="niche-card" onclick="applyNiche('coach')"><span class="niche-icon">🎯</span><span class="niche-label">Coach de vie</span></div>
+          <div class="niche-card" onclick="applyNiche('agence-marketing')"><span class="niche-icon">📈</span><span class="niche-label">Agence Marketing</span></div>
+          <div class="niche-card" onclick="applyNiche('entrepreneur')"><span class="niche-icon">💼</span><span class="niche-label">Entrepreneur</span></div>
+          <div class="niche-card" onclick="applyNiche('formation-en-ligne')"><span class="niche-icon">🎓</span><span class="niche-label">Formation en ligne</span></div>
 
           <!-- CRÉATION & CULTURE -->
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;margin-top:10px;padding-bottom:4px;border-bottom:1px solid rgba(123,92,255,0.1)">📚 Création & Culture</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">📚 Création & Culture</div>
+          <div class="niche-card" onclick="applyNiche('auteur')"><span class="niche-icon">✍️</span><span class="niche-label">Auteur·trice</span></div>
+          <div class="niche-card" onclick="applyNiche('maison-edition')"><span class="niche-icon">📖</span><span class="niche-label">Maison d'édition</span></div>
+          <div class="niche-card" onclick="applyNiche('restaurant')"><span class="niche-icon">🍽️</span><span class="niche-label">Restaurant & Cuisine</span></div>
 
-          <div class="niche-card" onclick="applyNiche('auteur')">
-            <span class="niche-icon">✍️</span>
-            <span class="niche-label">Auteur·trice</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('maison-edition')">
-            <span class="niche-icon">📖</span>
-            <span class="niche-label">Maison d'édition</span>
-          </div>
-          <div class="niche-card" onclick="applyNiche('restaurant')">
-            <span class="niche-icon">🍽️</span>
-            <span class="niche-label">Restaurant & Cuisine</span>
-          </div>
+        </div>
 
+        <!-- Séparateur -->
+        <div style="display:flex;align-items:center;gap:12px;margin:20px 0 0">
+          <div style="flex:1;height:1px;background:rgba(123,92,255,0.15)"></div>
+          <div style="font-size:12px;color:var(--t4);white-space:nowrap">ou crée depuis une image / URL</div>
+          <div style="flex:1;height:1px;background:rgba(123,92,255,0.15)"></div>
         </div>
       </div>
 
@@ -1629,7 +1578,7 @@
         .niche-card:hover .niche-label { color:#fff; }
       </style>
 
-      <!-- Onglets Image / URL -->
+            <!-- Onglets Image / URL -->
 
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <button id="tab-image" onclick="switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
@@ -2271,14 +2220,13 @@
         try {
           var frame = document.getElementById('preview-frame')
           if (frame && frame.contentDocument) {
-            html = '<!DOCTYPE html>
-' + frame.contentDocument.documentElement.outerHTML
+            html = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
           }
         } catch(e) {}
       }
       if (!html || html.length < 100) {
         showPublishState('error')
-        document.getElementById('publish-error-msg').textContent = 'Aucun site généré à publier. Génère d'abord un site.'
+        document.getElementById('publish-error-msg').textContent = "Aucun site généré à publier. Génère d'abord un site."
         return
       }
 
