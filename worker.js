@@ -701,9 +701,11 @@ export default {
       }
     }
 
-
     /* ════════════════════════════════════════════════════
-       ROUTE /api/publish — Publication 1 clic (Cloudflare Pages)
+       ROUTE /api/publish — Publication via Cloudflare KV
+       Architecture : KV existant (USERS_KV) stocke le HTML
+       sous la clé site:{slug} — zéro config supplémentaire.
+       URL publique : /site/{slug} servi par ce même worker.
     ════════════════════════════════════════════════════ */
     if (url.pathname === "/api/publish" && request.method === "POST") {
       try {
@@ -716,81 +718,45 @@ export default {
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-        // CF_ACCOUNT_ID hardcodé ici — ne disparaît plus au redéploiement
-        const accountId = "e13f8e75dfb03c488d4a0c9290cc0c81"
-        const apiToken  = env.CF_API_TOKEN
+        // Slug propre : lettres, chiffres, tirets uniquement
+        const slug = projectName
+          .toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9-]/g, '-')
+          .replace(/--+/g, '-')
+          .replace(/^-|-$/g, '')
+          .slice(0, 60) || "site"
 
-        if (!apiToken) {
-          return new Response(JSON.stringify({ success: false, error: "CF_API_TOKEN manquant dans les variables d'environnement." }),
-            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
+        // Stockage dans KV — clé : site:{slug}, pas d'expiration
+        await env.USERS_KV.put("site:" + slug, html)
 
-        // Nom du projet propre
-        const safeName  = "webmasteria-" + projectName.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').slice(0, 50)
-        const htmlBytes = new TextEncoder().encode(html)
-        const zipData   = createZipInMemory({ "index.html": htmlBytes })
+        // URL publique sous ton domaine principal
+        const siteUrl = `https://webmasteria.nyxiapublicationweb.com/site/${slug}`
 
-        const doDeploy = async () => {
-          const fd = new FormData()
-          fd.append('file', new Blob([zipData], { type: 'application/zip' }), 'deploy.zip')
-          return fetch(
-            `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${safeName}/deployments`,
-            { method: 'POST', headers: { 'Authorization': `Bearer ${apiToken}` }, body: fd }
-          )
-        }
-
-        // 1. Tentative de déploiement
-        let res    = await doDeploy()
-        let result = await res.json()
-
-        // 2. Si projet inexistant — détection par message ET par code (Cloudflare n'est pas cohérent)
-        const errMsg = result.errors?.[0]?.message || ""
-        const errCode = result.errors?.[0]?.code
-        const isNotFound = !result.success && (
-          errCode === 8007 ||
-          errMsg.toLowerCase().includes("not found") ||
-          errMsg.toLowerCase().includes("does not exist") ||
-          errMsg.toLowerCase().includes("project name does not match")
-        )
-
-        if (isNotFound) {
-          // Création du projet
-          const createRes = await fetch(
-            `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects`,
-            {
-              method: 'POST',
-              headers: { 'Authorization': `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name: safeName, production_branch: "main" })
-            }
-          )
-          const createResult = await createRes.json()
-          if (!createResult.success) {
-            const createErr = createResult.errors?.[0]?.message || "Création projet échouée"
-            return new Response(JSON.stringify({ success: false, error: "Création projet : " + createErr }),
-              { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-          }
-          // Petite pause pour que Cloudflare enregistre le projet
-          await new Promise(r => setTimeout(r, 1500))
-          // On retente le déploiement
-          res    = await doDeploy()
-          result = await res.json()
-        }
-
-        // 3. Gestion des erreurs finales
-        if (!result.success) {
-          const finalErr = result.errors?.[0]?.message || JSON.stringify(result.errors)
-          return new Response(JSON.stringify({ success: false, error: "Cloudflare : " + finalErr }),
-            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
-
-        const pagesUrl = result.result?.url || `https://${safeName}.pages.dev`
-        return new Response(JSON.stringify({ success: true, url: pagesUrl }),
+        return new Response(JSON.stringify({ success: true, url: siteUrl, slug }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } })
 
       } catch(e) {
         return new Response(JSON.stringify({ success: false, error: e.message }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
       }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE GET /site/{slug} — Sert un site client depuis KV
+    ════════════════════════════════════════════════════ */
+    if (url.pathname.startsWith("/site/") && request.method === "GET") {
+      const slug = url.pathname.replace("/site/", "").split("/")[0]
+      if (!slug) {
+        return new Response("Site introuvable.", { status: 404, headers: { "Content-Type": "text/plain" } })
+      }
+      const html = await env.USERS_KV.get("site:" + slug)
+      if (!html) {
+        return new Response("Site introuvable.", { status: 404, headers: { "Content-Type": "text/plain" } })
+      }
+      return new Response(html, {
+        headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=300" }
+      })
     }
 
     /* ════════════════════════════════════════════════════
