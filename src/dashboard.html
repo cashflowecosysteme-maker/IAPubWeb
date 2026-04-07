@@ -652,11 +652,12 @@
     function sendMessage() {
       var input = document.getElementById('chat-input')
       var text  = input.value.trim()
-      if (!text) return
+      // Autorise l'envoi si pièce jointe présente même sans texte
+      if (!text && !_currentAttachment) return
       input.value = ''
       input.style.height = 'auto'
       document.getElementById('suggestions').style.display = 'none'
-      sendMessageText(text)
+      sendMessageText(text || '📎 Fichier joint')
     }
 
     function sendMessageText(text) {
@@ -672,8 +673,29 @@
           document.getElementById('sidebar-avatar').textContent = clientName.charAt(0).toUpperCase()
         }
       }
-      addUserMessage(text)
-      chatHistory.push({ role: 'user', content: text })
+      // Construit le message utilisateur avec pièce jointe éventuelle
+      var attachmentToSend = _currentAttachment ? JSON.parse(JSON.stringify(_currentAttachment)) : null
+      var displayText = text
+      if (attachmentToSend) {
+        displayText = text ? text + '\n📎 ' + attachmentToSend.name : '📎 ' + attachmentToSend.name
+      }
+      addUserMessage(displayText)
+
+      // Message pour l'historique (sans le base64 pour économiser les tokens)
+      var historyContent = text
+      if (attachmentToSend) {
+        historyContent = (text ? text + '\n' : '') + '[Fichier joint: ' + attachmentToSend.name + ' (' + attachmentToSend.type + ')]'
+      }
+      chatHistory.push({ role: 'user', content: historyContent })
+
+      // Reset pièce jointe après envoi
+      if (_currentAttachment) {
+        _currentAttachment = null
+        var bar = document.getElementById('attach-bar')
+        var fi  = document.getElementById('chat-file')
+        if (bar) bar.style.display = 'none'
+        if (fi)  fi.value = ''
+      }
 
       var btn = document.getElementById('btn-send')
       btn.disabled = true
@@ -683,10 +705,11 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message  : text,
-          history  : chatHistory.slice(-10),
-          userName : clientName,
-          agent    : _currentAgent
+          message    : text,
+          history    : chatHistory.slice(-10),
+          userName   : clientName,
+          agent      : _currentAgent,
+          attachment : attachmentToSend
         })
       })
       .then(r => r.json())
@@ -1020,12 +1043,24 @@
       var fi=document.getElementById('chat-file')
       if(fi) fi.addEventListener('change',function(){
         var f=this.files[0]; if(!f) return
-        _currentAttachment={name:f.name,type:f.type}
+        var size = f.size>1048576 ? (f.size/1048576).toFixed(1)+'MB' : Math.round(f.size/1024)+'KB'
+        _currentAttachment={name:f.name,type:f.type,data:null}
         var bar=document.getElementById('attach-bar'), nm=document.getElementById('attach-name')
+        var sendBtn=document.getElementById('btn-send')
         if(bar) bar.style.display='flex'
-        if(nm)  nm.innerHTML='<strong>'+f.name+'</strong> ('+(f.size>1048576?(f.size/1048576).toFixed(1)+'MB':Math.round(f.size/1024)+'KB')+') — ✅ Prêt à envoyer'
+        if(nm)  nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ⏳ Chargement...'
+        if(sendBtn) sendBtn.disabled=true  // bloque l'envoi pendant la lecture
         var reader=new FileReader()
-        reader.onload=function(e){_currentAttachment.data=e.target.result.split(',')[1]}
+        reader.onload=function(e){
+          _currentAttachment.data=e.target.result.split(',')[1]
+          if(nm) nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ✅ Prêt à envoyer'
+          if(sendBtn) sendBtn.disabled=false  // débloque quand c'est prêt
+        }
+        reader.onerror=function(){
+          _currentAttachment=null
+          if(nm) nm.innerHTML='❌ Erreur de lecture — réessaie'
+          if(sendBtn) sendBtn.disabled=false
+        }
         reader.readAsDataURL(f)
       })
       // Clear attach
