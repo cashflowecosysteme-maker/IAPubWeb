@@ -776,7 +776,9 @@ Génère le HTML complet maintenant.`
               { type: "text", text: userMessage || "Analyse cette image et dis-moi ce que tu vois." }
             ]
           } else if (attachment.type === 'application/pdf') {
-            userContent = userMessage + "\n\n[L'utilisateur a joint un PDF: " + attachment.name + " — analyse-le et réponds en conséquence]"
+            // PDF — utilise l'API Anthropic qui lit les PDFs nativement
+            // On marque pour traitement spécial plus bas
+            userContent = { __pdfMode: true, data: attachment.data, name: attachment.name, message: userMessage }
           } else {
             userContent = userMessage + "\n\n[Fichier joint: " + attachment.name + "]"
           }
@@ -898,6 +900,56 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
         const agent = body.agent || 'general'
         const systemPrompt = agentPrompts[agent] || agentPrompts.general
 
+        // ── MODE PDF : utilise l'API Anthropic qui lit les PDFs nativement ──
+        if (userContent && userContent.__pdfMode) {
+          const pdfData    = userContent.data
+          const pdfName    = userContent.name
+          const pdfMessage = userContent.message || 'Analyse ce PDF et réponds à ma demande.'
+
+          const anthropicMessages = [
+            ...history.slice(-6).map(m => ({
+              role: m.role,
+              content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content)
+            })),
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'document',
+                  source: { type: 'base64', media_type: 'application/pdf', data: pdfData }
+                },
+                {
+                  type: 'text',
+                  text: pdfMessage
+                }
+              ]
+            }
+          ]
+
+          const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'x-api-key': env.ANTHROPIC_KEY,
+              'anthropic-version': '2023-06-01',
+              'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-20250514',
+              max_tokens: 4096,
+              system: systemPrompt,
+              messages: anthropicMessages
+            })
+          })
+
+          const anthropicData = await anthropicRes.json()
+          const pdfReply = anthropicData.content?.[0]?.text || 'Je n\'ai pas pu lire le PDF. Réessaie.'
+
+          return new Response(
+            JSON.stringify({ success: true, content: pdfReply }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          )
+        }
+
         const messages = [
           { role: "system", content: systemPrompt },
           ...history.slice(-10),
@@ -924,15 +976,10 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
         const data = await res.json()
         let reply = data.choices?.[0]?.message?.content || ""
+        // Si réponse vide — affiche l'erreur réelle plutôt qu'un fallback trompeur
         if (!reply || reply.trim().length < 5) {
-          // Fallbacks variés pour éviter la répétition
-          const fallbacks = [
-            "Dis-moi en quoi je peux t\'aider aujourd\'hui ? 💜",
-            "Quel est ton projet du moment ?",
-            "Qu\'est-ce que tu voudrais accomplir avec NyXia ?",
-            "Je t\'écoute ! Parle-moi de ton business. 💜"
-          ]
-          reply = fallbacks[Math.floor(Math.random() * fallbacks.length)]
+          const errDetail = data.error?.message || data.choices?.[0]?.finish_reason || 'réponse vide'
+          reply = 'Je rencontre une difficulté technique (' + errDetail + '). Réessaie dans un instant 💜'
         }
 
         return new Response(
@@ -940,8 +987,9 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         )
       } catch(e) {
+        console.error('[NyXia Chat Error]', e.message)
         return new Response(
-          JSON.stringify({ success: true, content: "Je suis là pour toi ! Parle-moi de ton projet. 💜" }),
+          JSON.stringify({ success: false, content: "Erreur technique : " + e.message + ". Réessaie dans un instant 💜" }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         )
       }
