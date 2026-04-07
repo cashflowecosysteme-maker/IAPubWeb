@@ -1505,7 +1505,132 @@
 
       <!-- Zone de saisie avec upload -->
 
+      <!-- ══ TEMPLATES PAR NICHE ══ -->
+      <div id="niche-templates" style="margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4)">✦ Démarrer depuis une niche</div>
+          <button onclick="toggleNiches()" id="btn-toggle-niches" style="background:none;border:none;color:var(--t4);font-size:11px;cursor:pointer;font-family:Outfit,sans-serif;transition:color .2s" onmouseover="this.style.color='var(--t3)'" onmouseout="this.style.color='var(--t4)'">Afficher ▾</button>
+        </div>
+
+        <div id="niches-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px">
+
+          <!-- BIEN-ÊTRE -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;margin-top:4px;padding-bottom:4px;border-bottom:1px solid rgba(123,92,255,0.1)">🌿 Bien-être & Santé</div>
+
+          <div class="niche-card" onclick="applyNiche('spa')">
+            <span class="niche-icon">💆</span>
+            <span class="niche-label">Spa & Massage</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('naturopathe')">
+            <span class="niche-icon">🌱</span>
+            <span class="niche-label">Naturopathe</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('therapeute')">
+            <span class="niche-icon">🧠</span>
+            <span class="niche-label">Thérapeute & Psy</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('holistique')">
+            <span class="niche-icon">✨</span>
+            <span class="niche-label">Praticien Holistique</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('aromatherapie')">
+            <span class="niche-icon">🌸</span>
+            <span class="niche-label">Aromatérapie</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('lithotherapie')">
+            <span class="niche-icon">💎</span>
+            <span class="niche-label">Lithothérapie</span>
+          </div>
+
+          <!-- SPIRITUALITÉ -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;margin-top:10px;padding-bottom:4px;border-bottom:1px solid rgba(123,92,255,0.1)">🔮 Spiritualité & Ésotérisme</div>
+
+          <div class="niche-card" onclick="applyNiche('medium')">
+            <span class="niche-icon">🔮</span>
+            <span class="niche-label">Médium & Voyance</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('astrologue')">
+            <span class="niche-icon">⭐</span>
+            <span class="niche-label">Astrologue</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('tarologue')">
+            <span class="niche-icon">🃏</span>
+            <span class="niche-label">Tarologue</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('numerologue')">
+            <span class="niche-icon">🔢</span>
+            <span class="niche-label">Numérologue</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('neuro-alchimiste')">
+            <span class="niche-icon">🧬</span>
+            <span class="niche-label">Neuro-Alchimiste</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('spiritualite')">
+            <span class="niche-icon">🕊️</span>
+            <span class="niche-label">Spiritualité</span>
+          </div>
+
+          <!-- COACHING & BUSINESS -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;margin-top:10px;padding-bottom:4px;border-bottom:1px solid rgba(123,92,255,0.1)">🚀 Coaching & Business</div>
+
+          <div class="niche-card" onclick="applyNiche('coach')">
+            <span class="niche-icon">🎯</span>
+            <span class="niche-label">Coach de vie</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('agence-marketing')">
+            <span class="niche-icon">📈</span>
+            <span class="niche-label">Agence Marketing</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('entrepreneur')">
+            <span class="niche-icon">💼</span>
+            <span class="niche-label">Entrepreneur</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('formation-en-ligne')">
+            <span class="niche-icon">🎓</span>
+            <span class="niche-label">Formation en ligne</span>
+          </div>
+
+          <!-- CRÉATION & CULTURE -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;margin-top:10px;padding-bottom:4px;border-bottom:1px solid rgba(123,92,255,0.1)">📚 Création & Culture</div>
+
+          <div class="niche-card" onclick="applyNiche('auteur')">
+            <span class="niche-icon">✍️</span>
+            <span class="niche-label">Auteur·trice</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('maison-edition')">
+            <span class="niche-icon">📖</span>
+            <span class="niche-label">Maison d'édition</span>
+          </div>
+          <div class="niche-card" onclick="applyNiche('restaurant')">
+            <span class="niche-icon">🍽️</span>
+            <span class="niche-label">Restaurant & Cuisine</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Styles des cartes niche -->
+      <style>
+        .niche-card {
+          display:flex; flex-direction:column; align-items:center; gap:6px;
+          padding:12px 8px; border-radius:12px;
+          border:1px solid rgba(123,92,255,0.12);
+          background:rgba(123,92,255,0.04);
+          cursor:pointer; transition:all .2s; text-align:center;
+        }
+        .niche-card:hover {
+          border-color:rgba(123,92,255,0.45);
+          background:rgba(123,92,255,0.12);
+          transform:translateY(-2px);
+          box-shadow:0 8px 20px rgba(123,92,255,0.15);
+        }
+        .niche-icon { font-size:22px; }
+        .niche-label { font-size:11px; color:var(--t2); font-weight:500; line-height:1.3; }
+        .niche-card:hover .niche-label { color:#fff; }
+      </style>
+
       <!-- Onglets Image / URL -->
+
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <button id="tab-image" onclick="switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
         <button id="tab-url" onclick="switchMode('url')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">🔗 Depuis une URL</button>
@@ -2011,6 +2136,141 @@
           return '<img src="' + d.dataUrl + '" onclick="replaceEditorImage(window._pexelsEditorImgs[' + i + '].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .2s" onmouseover="this.style.borderColor=\'#7B5CFF\'" onmouseout="this.style.borderColor=\'transparent\'">'
         }).join('')
       })
+    }
+
+    function toggleNiches() {
+      var grid = document.getElementById('niches-grid')
+      var btn  = document.getElementById('btn-toggle-niches')
+      var open = grid.style.display !== 'none' && grid.style.display !== ''
+      grid.style.display = open ? 'none' : 'grid'
+      btn.textContent = open ? 'Afficher ▾' : 'Masquer ▴'
+    }
+
+    var _nichePrompts = {
+      'spa': {
+        mode: 'image',
+        prompt: 'Spa luxueux et centre de bien-être haut de gamme. Ambiance zen, sérénité absolue, soins du corps et de l\'esprit. Services : massages suédois, soins du visage, hammam, jacuzzi, rituels orientaux. Clientèle féminine premium. Design épuré, couleurs douces (blanc, beige, or rose), typographie élégante. Sections : accueil poétique, nos soins signature, forfaits & rituels, témoignages, réservation en ligne.',
+        image: 'https://picsum.photos/seed/spa-luxe/1400/800'
+      },
+      'naturopathe': {
+        mode: 'image',
+        prompt: 'Naturopathe et thérapeute en médecine naturelle. Cabinet professionnel et chaleureux. Approche holistique : nutrition, phytothérapie, hygiène de vie. Tons verts naturels, terre, blanc. Sections : philosophie de soin, approches thérapeutiques, déroulement d\'une consultation, tarifs, prise de rendez-vous. Ambiance naturelle et rassurante.',
+        image: 'https://picsum.photos/seed/nature-plantes/1400/800'
+      },
+      'therapeute': {
+        mode: 'image',
+        prompt: 'Thérapeute en psychologie et développement personnel. Cabinet bienveillant et confidentiel. Spécialités : TCC, EMDR, hypnothérapie, accompagnement anxiété/dépression. Design apaisant, bleus et verts doux. Sections : approche thérapeutique, pour qui ?, déroulement des séances, infos pratiques, contact & rendez-vous. Ton professionnel et humain.',
+        image: 'https://picsum.photos/seed/bureau-psy/1400/800'
+      },
+      'holistique': {
+        mode: 'image',
+        prompt: 'Praticien holistique et accompagnement énergétique. Soins : reiki, magnétisme, kinésiologie, soins chamaniques, reconnexion. Univers spirituel et moderne à la fois. Dorés, violets profonds, blancs. Sections : ma philosophie, les soins proposés, parcours & certifications, témoignages transformateurs, prendre rendez-vous.',
+        image: 'https://picsum.photos/seed/energie-lumiere/1400/800'
+      },
+      'aromatherapie': {
+        mode: 'image',
+        prompt: 'Aromathérapeute et experte en huiles essentielles. Conseils personnalisés, ateliers, vente de produits naturels. Design botanique et élégant : verts, dorés, blanc cassé. Sections : les bienfaits des huiles essentielles, mes services (consultation, ateliers, créations), boutique, blog conseils, contact.',
+        image: 'https://picsum.photos/seed/huiles-essentielles/1400/800'
+      },
+      'lithotherapie': {
+        mode: 'image',
+        prompt: 'Lithothérapeute et spécialiste des cristaux et pierres précieuses. Soins par les pierres, conseil en cristallothérapie, boutique de minéraux. Design mystique et élégant : améthyste, rose des sables, cristal de roche. Sections : les pierres & leurs vertus, mes soins, la boutique, ateliers, contact.',
+        image: 'https://picsum.photos/seed/crystals-gems/1400/800'
+      },
+      'medium': {
+        mode: 'image',
+        prompt: 'Médium professionnel et voyance sérieuse. Consultations privées : médiumnité, communication avec l\'au-delà, guidance spirituelle. Design mystique premium : noirs, violets, dorés, étoiles. Sections : qui suis-je, mes dons & compétences, types de consultations (téléphone/présentiel/distance), témoignages, réserver une séance. Ton sérieux et bienveillant.',
+        image: 'https://picsum.photos/seed/mystique-etoiles/1400/800'
+      },
+      'astrologue': {
+        mode: 'image',
+        prompt: 'Astrologue professionnel et thèmes nataux. Services : thème natal complet, synastrie amoureuse, prévisions annuelles, astro-coaching. Design cosmique luxueux : noir profond, dorés, violets, étoiles et constellations. Sections : l\'astrologie que je pratique, mes consultations, exemples de thèmes, témoignages, commander votre thème.',
+        image: 'https://picsum.photos/seed/cosmos-stars/1400/800'
+      },
+      'tarologue': {
+        mode: 'image',
+        prompt: 'Tarologue et cartomancienne professionnelle. Lectures de tarot de Marseille et tarot divinatoire. Consultations en ligne et présentiel. Design mystique et élégant : tons bordeaux, or, noir. Sections : mon approche du tarot, les tirages proposés, déroulement d\'une séance, galerie de cartes, réserver votre lecture.',
+        image: 'https://picsum.photos/seed/tarot-cards/1400/800'
+      },
+      'numerologue': {
+        mode: 'image',
+        prompt: 'Numérologue certifiée et analyse de chemin de vie. Services : chemin de vie, année personnelle, compatibilité, prénom, bilan numérologique complet. Design mathématique et mystique : dorés, blancs, fond sombre. Sections : la numérologie expliquée, mes analyses, exemples de révélations, témoignages, commander votre analyse.',
+        image: 'https://picsum.photos/seed/nombres-mystique/1400/800'
+      },
+      'neuro-alchimiste': {
+        mode: 'image',
+        prompt: 'Neuro-Alchimiste et coach en transformation profonde. Méthode unique alliant neurosciences, développement personnel et spiritualité. Reprogrammation des croyances limitantes, activation du potentiel. Design futuriste et spirituel : violets électriques, cyans, noir. Sections : la neuro-alchimie expliquée, le programme, transformations clients, témoignages puissants, rejoindre le programme.',
+        image: 'https://picsum.photos/seed/neuro-transformation/1400/800'
+      },
+      'spiritualite': {
+        mode: 'image',
+        prompt: 'Entrepreneur·e en spiritualité et éveil de conscience. Accompagnement, retraites, cercles sacrés, formations. Univers lumineux et élevé : blancs, dorés, violets doux. Sections : ma mission et vision, mes accompagnements, les retraites & cercles, témoignages d\'éveil, rejoindre la communauté.',
+        image: 'https://picsum.photos/seed/lumiere-eveil/1400/800'
+      },
+      'coach': {
+        mode: 'image',
+        prompt: 'Coach de vie et business certifié ICF. Spécialités : confiance en soi, leadership, reconversion, succès. Résultats concrets et mesurables. Design professionnel et dynamique : bleus marine, blancs, accents dorés. Sections : mon approche coaching, pour qui ?, programmes signature, success stories clients, séance découverte gratuite.',
+        image: 'https://picsum.photos/seed/coaching-success/1400/800'
+      },
+      'agence-marketing': {
+        mode: 'image',
+        prompt: 'Agence de marketing digital et stratégie de croissance. Services : SEO, publicité Meta/Google, réseaux sociaux, email marketing, branding. Résultats chiffrés et ROI. Design moderne et ambitieux : noir, blanc, rouge ou violet vif. Sections : nos expertises, notre process, résultats & case studies, équipe, demander un audit gratuit.',
+        image: 'https://picsum.photos/seed/marketing-digital/1400/800'
+      },
+      'entrepreneur': {
+        mode: 'image',
+        prompt: 'Entrepreneur et chef d\'entreprise — présentation corporate et professionnelle. Secteur d\'activité varié, services B2B ou B2C. Design élégant et sobre : blanc, gris anthracite, accent couleur. Sections : notre histoire, nos services, notre équipe, nos références clients, contact & devis.',
+        image: 'https://picsum.photos/seed/entreprise-bureau/1400/800'
+      },
+      'formation-en-ligne': {
+        mode: 'image',
+        prompt: 'Créateur de formations en ligne et e-learning. Formations vidéo, programmes complets, accès à vie. Résultats et transformation garantis. Design moderne et coloré : violets, oranges, blancs. Sections : les formations disponibles, ce que tu vas apprendre, résultats des élèves, témoignages vidéo, s\'inscrire maintenant.',
+        image: 'https://picsum.photos/seed/formation-online/1400/800'
+      },
+      'auteur': {
+        mode: 'image',
+        prompt: 'Auteur·trice et écrivain·e — site vitrine littéraire. Présentation des livres publiés, univers de l\'auteur, blog littéraire. Design élégant et littéraire : tons chauds, typographie serif. Sections : l\'auteur en quelques mots, les livres (couvertures + résumés + liens d\'achat), presse & interviews, événements & dédicaces, contact éditorial.',
+        image: 'https://picsum.photos/seed/livres-litterature/1400/800'
+      },
+      'maison-edition': {
+        mode: 'image',
+        prompt: 'Maison d\'édition indépendante et librairie. Catalogue de livres, appel aux manuscrits, actualités littéraires. Design éditorial et raffiné : blanc, noir, rouge ou vert bouteille. Sections : notre catalogue, nos auteurs, soumettre un manuscrit, actualités & événements, la librairie en ligne.',
+        image: 'https://picsum.photos/seed/edition-librairie/1400/800'
+      },
+      'restaurant': {
+        mode: 'image',
+        prompt: 'Restaurant gastronomique et livre de recettes. Cuisine française moderne, produits locaux et de saison. Chef étoilé ou passionné. Design chaleureux et appétissant : tons chauds, photos de plats. Sections : notre philosophie culinaire, la carte & menus, le chef, réservation en ligne, boutique (livres de recettes, produits).',
+        image: 'https://picsum.photos/seed/gastronomie-chef/1400/800'
+      }
+    }
+
+    function applyNiche(nicheKey) {
+      var niche = _nichePrompts[nicheKey]
+      if (!niche) return
+
+      // Passe en mode image et remplit le prompt
+      switchMode('image')
+
+      var input = document.getElementById('user-input')
+      if (input) {
+        input.value = niche.prompt
+        input.style.borderColor = 'rgba(123,92,255,0.5)'
+        setTimeout(function(){ input.style.borderColor = 'rgba(123,92,255,0.15)' }, 1500)
+        input.focus()
+      }
+
+      // Masque la grille après sélection
+      document.getElementById('niches-grid').style.display = 'none'
+      document.getElementById('btn-toggle-niches').textContent = 'Afficher ▾'
+
+      // Feedback visuel
+      var allCards = document.querySelectorAll('.niche-card')
+      allCards.forEach(function(c) { c.style.borderColor = 'rgba(123,92,255,0.12)' })
+
+      // Toast
+      if (typeof window.showToast === 'function') {
+        window.showToast('Template "' + nicheKey + '" appliqué ✓')
+      }
     }
 
     function switchMode(mode) {
