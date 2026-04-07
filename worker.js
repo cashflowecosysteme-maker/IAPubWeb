@@ -703,7 +703,7 @@ export default {
 
 
     /* ════════════════════════════════════════════════════
-       ROUTE /api/publish — Publication 1 clic (préfixe webmasteria-)
+       ROUTE /api/publish — Publication 1 clic (Fixe sur webmasteria-main)
     ════════════════════════════════════════════════════ */
     if (url.pathname === "/api/publish" && request.method === "POST") {
       try {
@@ -716,13 +716,24 @@ export default {
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-       // --- REMPLACE PAR CECI ---
-const accountId = env.CF_ACCOUNT_ID
-const apiToken  = env.CF_API_TOKEN
+        // --- 1. Récupération et Vérification des Identifiants ---
+        const accountId = env.CF_ACCOUNT_ID
+        const apiToken  = env.CF_API_TOKEN
 
-// FIX : On utilise TOUJOURS le projet "webmasteria-main" que tu as créé manuellement.
-// Cela évite l'erreur "Project not found" et garde tout organisé au même endroit.
-const safeName = "webmasteria-main"
+        // Si l'ID ou le Token manque, on arrête tout de suite avec un message clair
+        if (!accountId || !apiToken) {
+          return new Response(JSON.stringify({ 
+            success: false, 
+            error: "Serveur non configuré. Il manque CF_ACCOUNT_ID ou CF_API_TOKEN dans les variables du Worker." 
+          }), { 
+            status: 500, 
+            headers: { ...corsHeaders, "Content-Type": "application/json" } 
+          });
+        }
+
+        // --- 2. Utilisation du projet EXISTANT 'webmasteria-main' ---
+        // Cela évite l'erreur "Project not found" et les problèmes de création automatique.
+        const safeName = "webmasteria-main";
 
         // Crée le ZIP en mémoire
         const htmlBytes = new TextEncoder().encode(html)
@@ -733,6 +744,7 @@ const safeName = "webmasteria-main"
         formData.append('file', new Blob([zipData], { type: 'application/zip' }), 'deploy.zip')
 
         const deployUrl = `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${safeName}/deployments`
+        
         const cfRes = await fetch(deployUrl, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${apiToken}` },
