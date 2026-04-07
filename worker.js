@@ -716,27 +716,13 @@ export default {
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-        const accountId = env.CF_ACCOUNT_ID
-        const apiToken  = env.CF_API_TOKEN
+       // --- REMPLACE PAR CECI ---
+const accountId = env.CF_ACCOUNT_ID
+const apiToken  = env.CF_API_TOKEN
 
-        // --- VÉRIFICATION DE SÉCURITÉ ---
-        if (!accountId || !apiToken) {
-          return new Response(JSON.stringify({ 
-            success: false, 
-            error: "Configuration serveur incomplète. Vérifiez les variables CF_ACCOUNT_ID et CF_API_TOKEN dans les settings du Worker." 
-          }), { 
-            status: 500, 
-            headers: { ...corsHeaders, "Content-Type": "application/json" } 
-          });
-        }
-
-        // Préfixe webmasteria- pour organiser tous les sites clients dans Cloudflare
-        const safeName = "webmasteria-" + projectName
-          .toLowerCase()
-          .replace(/[^a-z0-9-]/g, '-')
-          .replace(/--+/g, '-')
-          .replace(/^-|-$/g, '')
-          .substring(0, 50)
+// FIX : On utilise TOUJOURS le projet "webmasteria-main" que tu as créé manuellement.
+// Cela évite l'erreur "Project not found" et garde tout organisé au même endroit.
+const safeName = "webmasteria-main"
 
         // Crée le ZIP en mémoire
         const htmlBytes = new TextEncoder().encode(html)
