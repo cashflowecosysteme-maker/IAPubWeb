@@ -713,13 +713,8 @@ export default {
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-        const cfAccountId = env.CF_ACCOUNT_ID
-        const cfApiToken  = env.CF_API_TOKEN
-
-        if (!cfAccountId || !cfApiToken) {
-          return new Response(JSON.stringify({ success: false, error: "Variables CF_ACCOUNT_ID et CF_API_TOKEN non configurées dans le worker." }),
-            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
+        const accountId = env.CF_ACCOUNT_ID
+        const apiToken  = env.CF_API_TOKEN
 
         // Préfixe webmasteria- pour organiser tous les sites clients dans Cloudflare
         const safeName = "webmasteria-" + projectName
@@ -737,10 +732,10 @@ export default {
         const formData = new FormData()
         formData.append('file', new Blob([zipData], { type: 'application/zip' }), 'deploy.zip')
 
-        const deployUrl = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects/${safeName}/deployments`
+        const deployUrl = `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${safeName}/deployments`
         const cfRes = await fetch(deployUrl, {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${cfApiToken}` },
+          headers: { 'Authorization': `Bearer ${apiToken}` },
           body: formData
         })
 
@@ -757,9 +752,9 @@ export default {
         // (Optionnel) Domaine personnalisé si CUSTOM_DOMAIN configuré
         if (env.CUSTOM_DOMAIN) {
           const fullDomain = projectName + "." + env.CUSTOM_DOMAIN
-          await fetch(`https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects/${safeName}/domains`, {
+          await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${safeName}/domains`, {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${cfApiToken}`, 'Content-Type': 'application/json' },
+            headers: { 'Authorization': `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: fullDomain })
           }).catch(() => {})
         }
