@@ -10,7 +10,7 @@
  *   OPENROUTER_KEY  — clé OpenRouter
  *   PEXELS_KEY      — clé Pexels API
  */
-// ── ZIP Natif — Zero Dependency (DataView, format PKZIP Store) ──
+// ── ZIP Natif — Zero Dependency (validé, format PKZIP Store) ──
 const makeCRCTable = () => {
   let c
   const table = []
@@ -29,15 +29,15 @@ const crc32 = (data) => {
   return (crc ^ (-1)) >>> 0
 }
 
-const createZipNative = (files) => {
+const createZipInMemory = (files) => {
   const encoder = new TextEncoder()
   const parts = []
   const centralDir = []
   let offset = 0
 
   for (const [filename, content] of Object.entries(files)) {
-    const filenameBytes = encoder.encode(filename)
-    const contentBytes  = content instanceof Uint8Array ? content : encoder.encode(content)
+    const filenameBytes = filename instanceof Uint8Array ? filename : encoder.encode(filename)
+    const contentBytes  = content  instanceof Uint8Array ? content  : encoder.encode(content)
     const crc  = crc32(contentBytes)
     const size = contentBytes.length
 
@@ -79,29 +79,26 @@ const createZipNative = (files) => {
     cdView.setUint32(42, offset,     true)
     cdHeader.set(filenameBytes, 46)
     centralDir.push(cdHeader)
-
     offset += header.length + size
   }
 
   const cdSize = centralDir.reduce((acc, arr) => acc + arr.length, 0)
   const endCd  = new Uint8Array(22)
   const endView = new DataView(endCd.buffer)
-  endView.setUint32(0,  0x06054b50,            true)
-  endView.setUint16(4,  0,                     true)
-  endView.setUint16(6,  0,                     true)
-  endView.setUint16(8,  Object.keys(files).length, true)
-  endView.setUint16(10, Object.keys(files).length, true)
-  endView.setUint32(12, cdSize,                true)
-  endView.setUint32(16, offset,                true)
-  endView.setUint16(20, 0,                     true)
+  endView.setUint32(0,  0x06054b50,                    true)
+  endView.setUint16(4,  0,                             true)
+  endView.setUint16(6,  0,                             true)
+  endView.setUint16(8,  Object.keys(files).length,     true)
+  endView.setUint16(10, Object.keys(files).length,     true)
+  endView.setUint32(12, cdSize,                        true)
+  endView.setUint32(16, offset,                        true)
+  endView.setUint16(20, 0,                             true)
 
-  const totalLength = offset + cdSize + 22
+  const allParts = [...parts, ...centralDir, endCd]
+  const totalLength = allParts.reduce((acc, arr) => acc + arr.length, 0)
   const result = new Uint8Array(totalLength)
   let pos = 0
-  for (const part of [...parts, ...centralDir, endCd]) {
-    result.set(part, pos)
-    pos += part.length
-  }
+  for (const part of allParts) { result.set(part, pos); pos += part.length }
   return result
 }
 
@@ -703,13 +700,13 @@ export default {
 
 
     /* ════════════════════════════════════════════════════
-       ROUTE /api/publish — Publication 1 clic sur Cloudflare Pages
+       ROUTE /api/publish — Publication 1 clic (préfixe webmasteria-)
     ════════════════════════════════════════════════════ */
     if (url.pathname === "/api/publish" && request.method === "POST") {
       try {
         const body        = await request.json()
         const html        = body.html        || ""
-        const projectName = body.projectName || "mon-site-nyxia"
+        const projectName = body.projectName || "mon-site"
 
         if (!html || html.length < 100) {
           return new Response(JSON.stringify({ success: false, error: "HTML manquant ou vide." }),
@@ -724,66 +721,57 @@ export default {
             { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-        // Nettoie le nom de projet pour le sous-domaine
-        const cleanName = projectName
+        // Préfixe webmasteria- pour organiser tous les sites clients dans Cloudflare
+        const safeName = "webmasteria-" + projectName
           .toLowerCase()
           .replace(/[^a-z0-9-]/g, '-')
           .replace(/--+/g, '-')
           .replace(/^-|-$/g, '')
-          .substring(0, 50) || 'site-nyxia'
+          .substring(0, 50)
 
-        // Crée le projet s'il n'existe pas encore (ignore l'erreur si déjà existant)
-        await fetch(`https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects`, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${cfApiToken}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            name: cleanName,
-            production_branch: "main"
-          })
+        // Crée le ZIP en mémoire
+        const htmlBytes = new TextEncoder().encode(html)
+        const zipData   = createZipInMemory({ "index.html": htmlBytes })
+
+        // Déploie sur Cloudflare Pages
+        const formData = new FormData()
+        formData.append('file', new Blob([zipData], { type: 'application/zip' }), 'deploy.zip')
+
+        const deployUrl = `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects/${safeName}/deployments`
+        const cfRes = await fetch(deployUrl, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${cfApiToken}` },
+          body: formData
         })
 
-        // Crée le ZIP en mémoire (Zero Dependency, DataView natif)
-        const htmlBytes = new TextEncoder().encode(html)
-        const zipData   = createZipNative({ "index.html": htmlBytes })
+        const result = await cfRes.json()
 
-        // Déploie sur Cloudflare Pages via FormData
-        // L'API Pages requiert : le ZIP + un manifest JSON des fichiers
-        const manifest = JSON.stringify({ "index.html": "/index.html" })
-        const formData = new FormData()
-        const zipBlob  = new Blob([zipData], { type: "application/zip" })
-        formData.append("file", zipBlob, "deploy.zip")
-        formData.append("manifest", manifest)
-
-        const deployRes = await fetch(
-          `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects/${cleanName}/deployments`,
-          {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${cfApiToken}` },
-            body: formData
-          }
-        )
-
-        const deployData = await deployRes.json()
-
-        if (deployData.success) {
-          const siteUrl = deployData.result?.url || `https://${cleanName}.pages.dev`
-          return new Response(JSON.stringify({ success: true, url: siteUrl }),
-            { headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        } else {
-          const errMsg = deployData.errors?.[0]?.message || JSON.stringify(deployData.errors)
+        if (!result.success) {
+          const errMsg = result.errors?.[0]?.message || JSON.stringify(result.errors)
           return new Response(JSON.stringify({ success: false, error: "Cloudflare : " + errMsg }),
             { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
+
+        const pagesUrl = result.result?.url || `https://${safeName}.pages.dev`
+
+        // (Optionnel) Domaine personnalisé si CUSTOM_DOMAIN configuré
+        if (env.CUSTOM_DOMAIN) {
+          const fullDomain = projectName + "." + env.CUSTOM_DOMAIN
+          await fetch(`https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects/${safeName}/domains`, {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${cfApiToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: fullDomain })
+          }).catch(() => {})
+        }
+
+        return new Response(JSON.stringify({ success: true, url: pagesUrl, projectName: safeName }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
 
       } catch(e) {
         return new Response(JSON.stringify({ success: false, error: e.message }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
       }
     }
-
 
     /* ════════════════════════════════════════════════════
        ROUTE /api/from-url — Génère un site depuis une URL (DeepSeek-v3)
