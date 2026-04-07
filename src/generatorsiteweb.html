@@ -5,6 +5,7 @@
 <head>
 
   <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/FavIcon.png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -2055,16 +2056,29 @@
     })
 
     function applyTextEdit() {
-      var input = document.querySelector('#text-editor-section textarea') ||
+      // Cherche le bon textarea selon l'éditeur actif
+      var input = document.getElementById('selected-text-input') ||
+                  document.getElementById('edit-text-input') ||
+                  document.querySelector('#text-editor-section textarea') ||
                   document.querySelector('.editor-section textarea')
-      var frame = document.getElementById('preview-frame')
-      if (!input || !frame || !frame.contentDocument) return
+      // Cherche la bonne iframe selon l'éditeur actif
+      var frame = document.getElementById('preview-frame') ||
+                  document.getElementById('editor-preview-frame')
+      if (!input || !frame) return
       try {
-        var sel = frame.contentDocument.querySelector('[style*="2px solid #7B5CFF"]')
+        var doc = frame.contentDocument || frame.contentWindow.document
+        if (!doc) return
+        var sel = doc.querySelector('[style*="2px solid #7B5CFF"]')
+        if (!sel) sel = doc.querySelector('[style*="#7B5CFF"]')
         if (!sel) return
-        sel.textContent = input.value
+        if (sel.children.length === 0) {
+          sel.textContent = input.value
+        } else {
+          sel.innerText = input.value
+        }
         sel.style.outline = ''
-      } catch(e) {}
+        if (typeof saveEdits === 'function') saveEdits()
+      } catch(e) { console.log('applyTextEdit:', e) }
     }
 
     function applyColor(type, value) {
@@ -2376,29 +2390,36 @@
       var niche = _nichePrompts[nicheKey]
       if (!niche) return
 
-      // Passe en mode image et remplit le prompt
-      switchMode('image')
-
-      var input = document.getElementById('user-input')
-      if (input) {
-        input.value = niche.prompt
-        input.style.borderColor = 'rgba(123,92,255,0.5)'
-        setTimeout(function(){ input.style.borderColor = 'rgba(123,92,255,0.15)' }, 1500)
-        input.focus()
-      }
-
-      // Masque la grille après sélection
+      // Ferme la grille
       document.getElementById('niches-grid').style.display = 'none'
-      document.getElementById('btn-toggle-niches').textContent = 'Afficher ▾'
+      var arrow = document.getElementById('niche-arrow')
+      if (arrow) arrow.style.transform = 'rotate(0deg)'
 
-      // Feedback visuel
-      var allCards = document.querySelectorAll('.niche-card')
-      allCards.forEach(function(c) { c.style.borderColor = 'rgba(123,92,255,0.12)' })
-
-      // Toast
-      if (typeof window.showToast === 'function') {
-        window.showToast('Template "' + nicheKey + '" appliqué ✓')
+      // Lance la génération directement — pas besoin de photo
+      if (typeof setLoading === 'function') {
+        setLoading('NyXia crée ton site ' + nicheKey + '...')
       }
+
+      fetch('/api/from-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: 'https://exemple.com',
+          prompt: niche.prompt
+        })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        if (data.success && data.html) {
+          if (typeof showPreview === 'function') showPreview(data.html)
+          if (typeof resetBtn  === 'function') resetBtn('Site généré ✓')
+        } else {
+          if (typeof resetBtn === 'function') resetBtn('Erreur — ' + (data.error || 'Réessaie'))
+        }
+      })
+      .catch(function() {
+        if (typeof resetBtn === 'function') resetBtn('Erreur réseau')
+      })
     }
 
     function switchMode(mode) {
