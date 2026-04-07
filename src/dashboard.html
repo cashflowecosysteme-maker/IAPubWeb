@@ -1257,6 +1257,8 @@
       // Fonction setAgent — change le mode et envoie un message contextuel
       function setAgent(agent) {
         _currentAgent = agent
+        // Ramène toujours au chat quand on change d'agent
+        showPanel('chat')
         var msgs = document.getElementById('chat-messages')
         if (msgs) msgs.innerHTML = ''
         chatHistory = []
