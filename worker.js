@@ -890,7 +890,7 @@ STRUCTURE (8 sections minimum) :
 9. FOOTER élégant
 
 Garde toutes les informations importantes du site original.
-Réponds UNIQUEMENT avec le HTML complet.\`
+Réponds UNIQUEMENT avec le HTML complet.`
 
         const userMsg = `Réinvente ce site en version premium :
 
