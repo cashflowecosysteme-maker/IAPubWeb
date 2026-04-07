@@ -625,38 +625,48 @@ export default {
         let pageData = { title: "", description: "", h1: "", texts: "" }
         try {
           const pageRes = await fetch(targetUrl, {
-            headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36" }
+            headers: {
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+              "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+              "Accept-Language": "fr-FR,fr;q=0.9,en;q=0.8",
+              "Cache-Control": "no-cache"
+            }
           })
-          const rawHtml = await pageRes.text()
 
-          // Titre de la page
-          const titleMatch = rawHtml.match(/<title[^>]*>([^<]+)<\/title>/i)
-          pageData.title = titleMatch ? titleMatch[1].trim() : ""
+          // Si le site bloque (403, 429, etc.) on continue quand même avec juste l'URL
+          if (pageRes.ok) {
+            const rawHtml = await pageRes.text()
 
-          // Meta description
-          const metaMatch = rawHtml.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)/i)
-            || rawHtml.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i)
-          pageData.description = metaMatch ? metaMatch[1].trim() : ""
+            // Titre de la page
+            const titleMatch = rawHtml.match(/<title[^>]*>([^<]+)<\/title>/i)
+            pageData.title = titleMatch ? titleMatch[1].trim() : ""
 
-          // H1 principal
-          const h1Match = rawHtml.match(/<h1[^>]*>([^<]+)<\/h1>/i)
-          pageData.h1 = h1Match ? h1Match[1].trim() : ""
+            // Meta description
+            const metaMatch = rawHtml.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)/i)
+              || rawHtml.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i)
+            pageData.description = metaMatch ? metaMatch[1].trim() : ""
 
-          // Texte brut (augmenté à 5000 chars pour plus de contexte)
-          pageData.texts = rawHtml
-            .replace(/<script[\s\S]*?<\/script>/gi, '')
-            .replace(/<style[\s\S]*?<\/style>/gi, '')
-            .replace(/<nav[\s\S]*?<\/nav>/gi, '')
-            .replace(/<footer[\s\S]*?<\/footer>/gi, '')
-            .replace(/<header[\s\S]*?<\/header>/gi, '')
-            .replace(/<[^>]+>/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim()
-            .substring(0, 5000)
+            // H1 principal
+            const h1Match = rawHtml.match(/<h1[^>]*>([^<]+)<\/h1>/i)
+            pageData.h1 = h1Match ? h1Match[1].trim() : ""
+
+            // Texte brut
+            pageData.texts = rawHtml
+              .replace(/<script[\s\S]*?<\/script>/gi, '')
+              .replace(/<style[\s\S]*?<\/style>/gi, '')
+              .replace(/<nav[\s\S]*?<\/nav>/gi, '')
+              .replace(/<footer[\s\S]*?<\/footer>/gi, '')
+              .replace(/<header[\s\S]*?<\/header>/gi, '')
+              .replace(/<[^>]+>/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim()
+              .substring(0, 5000)
+          }
+          // Si bloqué : pageData reste vide mais on continue avec juste l'URL comme contexte
 
         } catch(e) {
-          return new Response(JSON.stringify({ success: false, error: "Impossible d'accéder à cette URL. Vérifie qu'elle est publique." }),
-            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+          // Erreur réseau totale — on continue quand même avec l'URL
+          // (ne pas bloquer ici, DeepSeek peut inférer depuis l'URL)
         }
 
         const systemPrompt = `Tu es NyXia, experte en création de sites web premium.
@@ -687,11 +697,10 @@ Réponds UNIQUEMENT avec le code HTML — zéro texte avant ou après.`
         const userMsg = `Réinvente ce site en version premium :
 
 URL source : ${targetUrl}
-Titre : ${pageData.title}
-Description : ${pageData.description}
-H1 principal : ${pageData.h1}
-Contenu principal :
-${pageData.texts}
+${pageData.title ? "Titre : " + pageData.title : ""}
+${pageData.description ? "Description : " + pageData.description : ""}
+${pageData.h1 ? "H1 principal : " + pageData.h1 : ""}
+${pageData.texts ? "Contenu principal :\n" + pageData.texts : "Note : le contenu de la page n'a pas pu être extrait. Génère un site professionnel en te basant sur l'URL et le secteur d'activité que tu peux en déduire."}
 ${userPrompt ? "\nInstructions supplémentaires : " + userPrompt : ""}
 
 Génère le HTML complet maintenant.`
@@ -825,7 +834,8 @@ FORMAT :
 - Toujours en français impeccable, ton de Diane Boyer
 
 ${userName ? "Le prénom du client est : " + userName : ""}
-Demande d'abord : quel type de contenu, pour quelle plateforme/objectif, quel est le sujet ?`,
+Si le client précise déjà le type de contenu et le sujet, RÉDIGE DIRECTEMENT sans redemander.
+Si le contexte est insuffisant, pose UNE seule question ciblée.`,
 
           formation: `Tu es NyXia — experte en création de formations en ligne, créée par Diane Boyer.
 Tu aides à structurer et rédiger des formations complètes et engageantes.
@@ -853,7 +863,8 @@ FORMAT :
 - Basé sur les principes de La Psychologie du Clic
 
 ${userName ? "Le prénom du client est : " + userName : ""}
-Demande d'abord : quel est le sujet de la formation, qui est ton audience, quel est le résultat promis ?`,
+Si le client précise le sujet et l'audience, COMMENCE DIRECTEMENT la structure sans redemander.
+Si le contexte est insuffisant, pose UNE seule question ciblée.`,
 
           seo: `Tu es NyXia — experte SEO et optimisation de contenu, créée par Diane Boyer.
 Tu combines psychologie du clic ET meilleures pratiques SEO pour maximiser visibilité ET conversions.
