@@ -750,9 +750,12 @@ export default {
         const zipData   = createZipNative({ "index.html": htmlBytes })
 
         // Déploie sur Cloudflare Pages via FormData
+        // L'API Pages requiert : le ZIP + un manifest JSON des fichiers
+        const manifest = JSON.stringify({ "index.html": "/index.html" })
         const formData = new FormData()
         const zipBlob  = new Blob([zipData], { type: "application/zip" })
         formData.append("file", zipBlob, "deploy.zip")
+        formData.append("manifest", manifest)
 
         const deployRes = await fetch(
           `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects/${cleanName}/deployments`,
