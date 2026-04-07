@@ -10,7 +10,100 @@
  *   OPENROUTER_KEY  — clé OpenRouter
  *   PEXELS_KEY      — clé Pexels API
  */
-import { zipSync } from 'https://esm.sh/fflate@0.8.2'
+// ── ZIP Natif — Zero Dependency (DataView, format PKZIP Store) ──
+const makeCRCTable = () => {
+  let c
+  const table = []
+  for (let n = 0; n < 256; n++) {
+    c = n
+    for (let k = 0; k < 8; k++) c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1))
+    table[n] = c
+  }
+  return table
+}
+const crcTable = makeCRCTable()
+
+const crc32 = (data) => {
+  let crc = 0 ^ (-1)
+  for (let i = 0; i < data.length; i++) crc = (crc >>> 8) ^ crcTable[(crc ^ data[i]) & 0xFF]
+  return (crc ^ (-1)) >>> 0
+}
+
+const createZipNative = (files) => {
+  const encoder = new TextEncoder()
+  const parts = []
+  const centralDir = []
+  let offset = 0
+
+  for (const [filename, content] of Object.entries(files)) {
+    const filenameBytes = encoder.encode(filename)
+    const contentBytes  = content instanceof Uint8Array ? content : encoder.encode(content)
+    const crc  = crc32(contentBytes)
+    const size = contentBytes.length
+
+    const header = new Uint8Array(30 + filenameBytes.length)
+    const view   = new DataView(header.buffer)
+    view.setUint32(0,  0x04034b50, true)
+    view.setUint16(4,  20,         true)
+    view.setUint16(6,  0,          true)
+    view.setUint16(8,  0,          true)
+    view.setUint16(10, 0,          true)
+    view.setUint16(12, 0,          true)
+    view.setUint32(14, crc,        true)
+    view.setUint32(18, size,       true)
+    view.setUint32(22, size,       true)
+    view.setUint16(26, filenameBytes.length, true)
+    view.setUint16(28, 0,          true)
+    header.set(filenameBytes, 30)
+    parts.push(header)
+    parts.push(contentBytes)
+
+    const cdHeader = new Uint8Array(46 + filenameBytes.length)
+    const cdView   = new DataView(cdHeader.buffer)
+    cdView.setUint32(0,  0x02014b50, true)
+    cdView.setUint16(4,  20,         true)
+    cdView.setUint16(6,  20,         true)
+    cdView.setUint16(8,  0,          true)
+    cdView.setUint16(10, 0,          true)
+    cdView.setUint16(12, 0,          true)
+    cdView.setUint16(14, 0,          true)
+    cdView.setUint32(16, crc,        true)
+    cdView.setUint32(20, size,       true)
+    cdView.setUint32(24, size,       true)
+    cdView.setUint16(28, filenameBytes.length, true)
+    cdView.setUint16(30, 0,          true)
+    cdView.setUint16(32, 0,          true)
+    cdView.setUint16(34, 0,          true)
+    cdView.setUint16(36, 0,          true)
+    cdView.setUint32(38, 0,          true)
+    cdView.setUint32(42, offset,     true)
+    cdHeader.set(filenameBytes, 46)
+    centralDir.push(cdHeader)
+
+    offset += header.length + size
+  }
+
+  const cdSize = centralDir.reduce((acc, arr) => acc + arr.length, 0)
+  const endCd  = new Uint8Array(22)
+  const endView = new DataView(endCd.buffer)
+  endView.setUint32(0,  0x06054b50,            true)
+  endView.setUint16(4,  0,                     true)
+  endView.setUint16(6,  0,                     true)
+  endView.setUint16(8,  Object.keys(files).length, true)
+  endView.setUint16(10, Object.keys(files).length, true)
+  endView.setUint32(12, cdSize,                true)
+  endView.setUint32(16, offset,                true)
+  endView.setUint16(20, 0,                     true)
+
+  const totalLength = offset + cdSize + 22
+  const result = new Uint8Array(totalLength)
+  let pos = 0
+  for (const part of [...parts, ...centralDir, endCd]) {
+    result.set(part, pos)
+    pos += part.length
+  }
+  return result
+}
 
 export default {
   async fetch(request, env) {
@@ -652,14 +745,13 @@ export default {
           })
         })
 
-        // Crée le ZIP en mémoire avec fflate
+        // Crée le ZIP en mémoire (Zero Dependency, DataView natif)
         const htmlBytes = new TextEncoder().encode(html)
-        const zipped    = zipSync({ "index.html": htmlBytes }, { level: 6 })
-        const zipBuffer = zipped.buffer
+        const zipData   = createZipNative({ "index.html": htmlBytes })
 
         // Déploie sur Cloudflare Pages via FormData
         const formData = new FormData()
-        const zipBlob  = new Blob([zipBuffer], { type: "application/zip" })
+        const zipBlob  = new Blob([zipData], { type: "application/zip" })
         formData.append("file", zipBlob, "deploy.zip")
 
         const deployRes = await fetch(
