@@ -1508,14 +1508,19 @@
       <!-- ══ TEMPLATES PAR NICHE ══ -->
       <div id="niche-templates" style="margin-bottom:24px">
 
-        <!-- Titre accrocheur -->
-        <div style="text-align:center;margin-bottom:16px">
-          <div style="font-size:15px;font-weight:700;color:var(--t);margin-bottom:4px">✦ Choisis ta niche — NyXia crée ton site</div>
-          <div style="font-size:12px;color:var(--t3)">Clique sur ton secteur et génère en 60 secondes</div>
-        </div>
+        <!-- Titre avec toggle visible -->
+        <button onclick="toggleNiches()" id="btn-toggle-niches"
+          style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.07);cursor:pointer;margin-bottom:12px;transition:all .2s"
+          onmouseover="this.style.background='rgba(123,92,255,0.14)';this.style.borderColor='rgba(123,92,255,0.45)'"
+          onmouseout="this.style.background='rgba(123,92,255,0.07)';this.style.borderColor='rgba(123,92,255,0.25)'">
+          <div style="text-align:left">
+            <div style="font-size:14px;font-weight:700;color:#fff">✦ Démarrer depuis une niche</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:2px">Spa, Coach, Médium, Auteur... NyXia crée ton site en 60 sec</div>
+          </div>
+          <span id="niche-arrow" style="font-size:18px;color:#a78bfa;transition:transform .2s">▾</span>
+        </button>
 
-        <!-- Catégories toujours visibles -->
-        <div id="niches-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <div id="niches-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px">
 
           <!-- BIEN-ÊTRE -->
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:6px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🌿 Bien-être & Santé</div>
@@ -2262,11 +2267,11 @@
     })
 
     function toggleNiches() {
-      var grid = document.getElementById('niches-grid')
-      var btn  = document.getElementById('btn-toggle-niches')
-      var open = grid.style.display !== 'none' && grid.style.display !== ''
-      grid.style.display = open ? 'none' : 'grid'
-      btn.textContent = open ? 'Afficher ▾' : 'Masquer ▴'
+      var grid  = document.getElementById('niches-grid')
+      var arrow = document.getElementById('niche-arrow')
+      var open  = grid.style.display !== 'none' && grid.style.display !== ''
+      grid.style.display  = open ? 'none' : 'grid'
+      if (arrow) arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)'
     }
 
     var _nichePrompts = {
