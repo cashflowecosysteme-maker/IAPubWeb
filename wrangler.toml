@@ -8,3 +8,7 @@ directory = "./src"
 [[kv_namespaces]]
 binding = "USERS_KV"
 id = "9497356c6f5d44fe917809a5889e94cf"
+
+# Variables d'environnement à définir dans le dashboard Cloudflare Workers :
+# OPENROUTER_KEY, PEXELS_KEY, RESEND_KEY, ANTHROPIC_KEY
+# wrangler secret put ANTHROPIC_KEY
