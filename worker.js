@@ -5,10 +5,13 @@
  *   POST /api/vision  — GLM-5V-Turbo (vision + génération HTML premium)
  *   POST /api/image   — Pexels Photos → base64
  *   POST /api/video   — Pexels Videos → URLs MP4
+ *   POST /api/publish — Publication 1 clic (Cloudflare Pages)
  *
- * Variables d'environnement :
+ * Variables d'environnement requises :
  *   OPENROUTER_KEY  — clé OpenRouter
  *   PEXELS_KEY      — clé Pexels API
+ *   CF_ACCOUNT_ID   — ID du compte Cloudflare
+ *   CF_API_TOKEN    — Token API Cloudflare (droits Pages:Edit)
  */
 // ── ZIP Natif — Zero Dependency (validé, format PKZIP Store) ──
 const makeCRCTable = () => {
@@ -646,7 +649,7 @@ export default {
         let sent = 0
 
         for (const email of recipients) {
-          // Sauvegarde dans KV pour que le client le voit dans sa messagerie
+          // Sauvegarde dans KV pour que le client le voie dans sa messagerie
           const msgId  = "admin_" + Date.now() + "_" + Math.random().toString(36).slice(2,6)
           const msgObj = {
             id       : msgId,
@@ -715,6 +718,17 @@ export default {
 
         const accountId = env.CF_ACCOUNT_ID
         const apiToken  = env.CF_API_TOKEN
+
+        // --- VÉRIFICATION DE SÉCURITÉ ---
+        if (!accountId || !apiToken) {
+          return new Response(JSON.stringify({ 
+            success: false, 
+            error: "Configuration serveur incomplète. Vérifiez les variables CF_ACCOUNT_ID et CF_API_TOKEN dans les settings du Worker." 
+          }), { 
+            status: 500, 
+            headers: { ...corsHeaders, "Content-Type": "application/json" } 
+          });
+        }
 
         // Préfixe webmasteria- pour organiser tous les sites clients dans Cloudflare
         const safeName = "webmasteria-" + projectName
@@ -881,11 +895,11 @@ Réponds UNIQUEMENT avec le HTML complet.`
         const userMsg = `Réinvente ce site en version premium :
 
 URL source : ${targetUrl}
-${pageData.title ? "Titre : " + pageData.title : ""}
-${pageData.description ? "Description : " + pageData.description : ""}
-${pageData.h1 ? "H1 principal : " + pageData.h1 : ""}
-${pageData.texts ? "Contenu principal :\n" + pageData.texts : "Note : le contenu de la page n'a pas pu être extrait. Génère un site professionnel en te basant sur l'URL et le secteur d'activité que tu peux en déduire."}
-${userPrompt ? "\nInstructions supplémentaires : " + userPrompt : ""}
+ ${pageData.title ? "Titre : " + pageData.title : ""}
+ ${pageData.description ? "Description : " + pageData.description : ""}
+ ${pageData.h1 ? "H1 principal : " + pageData.h1 : ""}
+ ${pageData.texts ? "Contenu principal :\n" + pageData.texts : "Note : le contenu de la page n'a pas pu être extrait. Génère un site professionnel en te basant sur l'URL et le secteur d'activité que tu peux en déduire."}
+ ${userPrompt ? "\nInstructions supplémentaires : " + userPrompt : ""}
 
 Génère le HTML complet maintenant.`
 
@@ -1159,7 +1173,7 @@ GÉNÉRATION D'IMAGES :
 Si le client demande une image, réponds avec :
 [IMAGE: description précise en anglais]
 
-${userName ? "Le prénom du client est : " + userName : "Tu ne connais pas encore le prénom."}
+ ${userName ? "Le prénom du client est : " + userName : "Tu ne connais pas encore le prénom."}
 Réponds en 2-4 phrases maximum. Sois concise et impactante.`,
 
           copywriter: `Tu es NyXia — experte Copywriter ultra-premium, créée par Diane Boyer.
@@ -1188,7 +1202,7 @@ FORMAT :
 - Pour les annonces : accroche + corps + CTA optimisés conversion
 - Toujours en français impeccable, ton de Diane Boyer
 
-${userName ? "Le prénom du client est : " + userName : ""}
+ ${userName ? "Le prénom du client est : " + userName : ""}
 Si le client précise déjà le type de contenu et le sujet, RÉDIGE DIRECTEMENT sans redemander.
 Si le contexte est insuffisant, pose UNE seule question ciblée.`,
 
@@ -1217,7 +1231,7 @@ FORMAT :
 - Langage accessible, inspirant, actionnable
 - Basé sur les principes de La Psychologie du Clic
 
-${userName ? "Le prénom du client est : " + userName : ""}
+ ${userName ? "Le prénom du client est : " + userName : ""}
 Si le client précise le sujet et l'audience, COMMENCE DIRECTEMENT la structure sans redemander.
 Si le contexte est insuffisant, pose UNE seule question ciblée.`,
 
@@ -1246,7 +1260,7 @@ FORMAT :
 - Méta-données optimisées systématiquement
 - Conseils d'implémentation pratiques
 
-${userName ? "Le prénom du client est : " + userName : ""}
+ ${userName ? "Le prénom du client est : " + userName : ""}
 Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?`
         }
 
