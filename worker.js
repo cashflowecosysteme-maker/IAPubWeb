@@ -727,20 +727,61 @@ Génère le HTML complet maintenant.`
         const data  = await res.json()
         let htmlOut = data.choices?.[0]?.message?.content || ""
 
-        // Nettoyage robuste
-        htmlOut = htmlOut.replace(/^[\s\S]*?(?=<!DOCTYPE|<html)/i, '').trim()
-        const m = htmlOut.match(/```(?:html)?\s*([\s\S]*?)```/)
-        if (m) htmlOut = m[1].trim()
-        if (!htmlOut.toLowerCase().startsWith('<!doctype') && htmlOut.includes('<html')) {
+        // Si DeepSeek échoue ou retourne vide — fallback Gemini Flash
+        if (!htmlOut || htmlOut.trim().length < 100) {
+          const res2 = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${env.OPENROUTER_KEY}`,
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model: "google/gemini-2.0-flash-001",
+              messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user",   content: userMsg }
+              ],
+              temperature: 0.7,
+              max_tokens: 8000
+            })
+          })
+          const data2 = await res2.json()
+          htmlOut = data2.choices?.[0]?.message?.content || ""
+
+          if (!htmlOut || htmlOut.trim().length < 100) {
+            const errInfo = data.error?.message || data2.error?.message || 'Les deux modèles ont échoué'
+            return new Response(JSON.stringify({ success: false, error: "Génération échouée : " + errInfo }),
+              { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+          }
+        }
+
+        // Nettoyage — ordre correct :
+        // 1. Retire les backticks markdown en premier
+        const codeBlock = htmlOut.match(/```(?:html)?\s*([\s\S]*?)```/)
+        if (codeBlock) {
+          htmlOut = codeBlock[1].trim()
+        } else {
+          // 2. Si pas de backticks, coupe tout ce qui précède <!DOCTYPE ou <html
+          const docStart = htmlOut.search(/<!DOCTYPE|<html/i)
+          if (docStart > 0) htmlOut = htmlOut.substring(docStart)
+        }
+
+        htmlOut = htmlOut.trim()
+
+        // 3. Ajoute DOCTYPE si manquant
+        if (htmlOut.toLowerCase().includes('<html') && !htmlOut.toLowerCase().startsWith('<!doctype')) {
           htmlOut = '<!DOCTYPE html>\n' + htmlOut
         }
 
-        if (!htmlOut.includes('<html')) {
-          return new Response(JSON.stringify({ success: false, error: "Le modèle n'a pas généré de HTML valide. Réessaie." }),
+        // 4. Validation finale
+        if (!htmlOut.toLowerCase().includes('<html')) {
+          // Log ce que DeepSeek a retourné pour diagnostiquer
+          const preview = (data.choices?.[0]?.message?.content || '').substring(0, 200)
+          return new Response(JSON.stringify({ success: false, error: "HTML invalide. Réponse reçue : " + preview }),
             { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-        // Force l'injection du CDN Tailwind si absent (filet de sécurité)
+        // 5. Force Tailwind CDN si absent
         if (!htmlOut.includes('cdn.tailwindcss.com')) {
           htmlOut = htmlOut.replace('</head>', '<script src="https://cdn.tailwindcss.com"></script>\n</head>')
         }
