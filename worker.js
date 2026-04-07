@@ -10,6 +10,94 @@
  *   OPENROUTER_KEY  — clé OpenRouter
  *   PEXELS_KEY      — clé Pexels API
  */
+/* ════════════════════════════════════════════════════
+   HELPER — Crée un ZIP minimal en mémoire (format ZIP standard)
+   Cloudflare Workers n'a pas de librairie ZIP native —
+   on implémente le format ZIP minimal (Local File Header + Central Directory)
+════════════════════════════════════════════════════ */
+function createSimpleZip(filename, content) {
+  const enc      = new TextEncoder()
+  const nameBytes = enc.encode(filename)
+  const fileData  = content instanceof Uint8Array ? content : enc.encode(content)
+
+  // CRC32 simple
+  function crc32(data) {
+    let crc = 0xFFFFFFFF
+    const table = new Uint32Array(256)
+    for (let i = 0; i < 256; i++) {
+      let c = i
+      for (let j = 0; j < 8; j++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1)
+      table[i] = c
+    }
+    for (let i = 0; i < data.length; i++) crc = table[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8)
+    return (crc ^ 0xFFFFFFFF) >>> 0
+  }
+
+  function uint16LE(n) { return [n & 0xFF, (n >> 8) & 0xFF] }
+  function uint32LE(n) { return [n & 0xFF, (n >> 8) & 0xFF, (n >> 16) & 0xFF, (n >> 24) & 0xFF] }
+
+  const crc       = crc32(fileData)
+  const now       = new Date()
+  const dosTime   = ((now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1))
+  const dosDate   = (((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate())
+
+  // Local file header
+  const lfh = [
+    0x50, 0x4B, 0x03, 0x04,       // signature
+    0x14, 0x00,                    // version needed
+    0x00, 0x00,                    // flags
+    0x00, 0x00,                    // compression (stored)
+    ...uint16LE(dosTime),
+    ...uint16LE(dosDate),
+    ...uint32LE(crc),
+    ...uint32LE(fileData.length),  // compressed size
+    ...uint32LE(fileData.length),  // uncompressed size
+    ...uint16LE(nameBytes.length),
+    0x00, 0x00,                    // extra field length
+    ...nameBytes,
+    ...fileData
+  ]
+
+  const lfhOffset = 0
+
+  // Central directory header
+  const cdh = [
+    0x50, 0x4B, 0x01, 0x02,       // signature
+    0x14, 0x00,                    // version made by
+    0x14, 0x00,                    // version needed
+    0x00, 0x00,                    // flags
+    0x00, 0x00,                    // compression
+    ...uint16LE(dosTime),
+    ...uint16LE(dosDate),
+    ...uint32LE(crc),
+    ...uint32LE(fileData.length),
+    ...uint32LE(fileData.length),
+    ...uint16LE(nameBytes.length),
+    0x00, 0x00,                    // extra field length
+    0x00, 0x00,                    // comment length
+    0x00, 0x00,                    // disk number start
+    0x00, 0x00,                    // internal attributes
+    0x00, 0x00, 0x00, 0x00,        // external attributes
+    ...uint32LE(lfhOffset),        // offset of local header
+    ...nameBytes
+  ]
+
+  // End of central directory
+  const eocd = [
+    0x50, 0x4B, 0x05, 0x06,       // signature
+    0x00, 0x00,                    // disk number
+    0x00, 0x00,                    // disk with central dir
+    0x01, 0x00,                    // number of entries on disk
+    0x01, 0x00,                    // total entries
+    ...uint32LE(cdh.length),       // central dir size
+    ...uint32LE(lfh.length),       // central dir offset
+    0x00, 0x00                     // comment length
+  ]
+
+  const all = new Uint8Array([...lfh, ...cdh, ...eocd])
+  return all.buffer
+}
+
 export default {
   async fetch(request, env) {
 
@@ -600,6 +688,86 @@ export default {
 
         return new Response(JSON.stringify({ success: true, sent }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/publish — Publication 1 clic sur Cloudflare Pages
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/publish" && request.method === "POST") {
+      try {
+        const body        = await request.json()
+        const html        = body.html        || ""
+        const projectName = body.projectName || "mon-site-nyxia"
+
+        if (!html || html.length < 100) {
+          return new Response(JSON.stringify({ success: false, error: "HTML manquant ou vide." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const cfAccountId = env.CF_ACCOUNT_ID
+        const cfApiToken  = env.CF_API_TOKEN
+
+        if (!cfAccountId || !cfApiToken) {
+          return new Response(JSON.stringify({ success: false, error: "Variables CF_ACCOUNT_ID et CF_API_TOKEN non configurées dans le worker." }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Nettoie le nom de projet pour le sous-domaine
+        const cleanName = projectName
+          .toLowerCase()
+          .replace(/[^a-z0-9-]/g, '-')
+          .replace(/--+/g, '-')
+          .replace(/^-|-$/g, '')
+          .substring(0, 50) || 'site-nyxia'
+
+        // Crée le projet s'il n'existe pas encore (ignore l'erreur si déjà existant)
+        await fetch(`https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects`, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${cfApiToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: cleanName,
+            production_branch: "main"
+          })
+        })
+
+        // Crée le ZIP minimal en mémoire (format ZIP simplifié)
+        const htmlBytes   = new TextEncoder().encode(html)
+        const zipBuffer   = createSimpleZip("index.html", htmlBytes)
+
+        // Déploie sur Cloudflare Pages via FormData
+        const formData = new FormData()
+        const zipBlob  = new Blob([zipBuffer], { type: "application/zip" })
+        formData.append("file", zipBlob, "deploy.zip")
+
+        const deployRes = await fetch(
+          `https://api.cloudflare.com/client/v4/accounts/${cfAccountId}/pages/projects/${cleanName}/deployments`,
+          {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${cfApiToken}` },
+            body: formData
+          }
+        )
+
+        const deployData = await deployRes.json()
+
+        if (deployData.success) {
+          const siteUrl = deployData.result?.url || `https://${cleanName}.pages.dev`
+          return new Response(JSON.stringify({ success: true, url: siteUrl }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        } else {
+          const errMsg = deployData.errors?.[0]?.message || JSON.stringify(deployData.errors)
+          return new Response(JSON.stringify({ success: false, error: "Cloudflare : " + errMsg }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
       } catch(e) {
         return new Response(JSON.stringify({ success: false, error: e.message }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
