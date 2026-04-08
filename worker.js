@@ -1459,10 +1459,22 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
       const userPrompt  = body.prompt    || ""
       const imageBase64 = body.image     || ""
       const imageType   = body.imageType || "image/jpeg"
+      const imageUrl    = body.imageUrl  || ""  // URL directe pour les templates niche
 
-      if (!imageBase64) {
+      // Accepte soit base64, soit imageUrl (Picsum pour templates)
+      if (!imageBase64 && !imageUrl) {
         return new Response(JSON.stringify({ error: "Aucune image reçue." }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+
+      // Construit le bloc image pour GLM selon le mode
+      let imageContent
+      if (imageBase64) {
+        // Mode upload — base64
+        imageContent = { type: "image_url", image_url: { url: `data:${imageType};base64,${imageBase64}` } }
+      } else {
+        // Mode template niche — URL Picsum directe
+        imageContent = { type: "image_url", image_url: { url: imageUrl } }
       }
 
       const glmRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -1491,10 +1503,7 @@ Tu réponds UNIQUEMENT avec du code HTML complet, sans aucun texte avant ou apr�
             {
               role: "user",
               content: [
-                {
-                  type: "image_url",
-                  image_url: { url: `data:${imageType};base64,${imageBase64}` }
-                },
+                imageContent,
                 {
                   type: "text",
                   text: `Analyse cette image avec une précision absolue et génère un site web HTML complet sur le thème : "${userPrompt}"
