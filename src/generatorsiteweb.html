@@ -2030,8 +2030,8 @@
       <!-- Onglets Image / URL -->
 
       <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button id="tab-image" onclick="switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
-        <button id="tab-url" onclick="switchMode('url')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">🔗 Depuis une URL</button>
+        <button id="tab-image" onclick="window.switchMode && window.switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
+        <button id="tab-url" onclick="window.switchMode && window.switchMode('url')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">🔗 Depuis une URL</button>
       </div>
 
       <!-- Mode URL -->
