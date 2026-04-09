@@ -5,13 +5,14 @@
 <head>
 
   <meta charset="UTF-8">
-  <link rel="icon" type="image/png" href="/FavIcon.png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>NyXia IA — Votre site d'affiliation prêt en 60 secondes</title>
 
 
+
+  <!-- Polices EXACTES de nyxiapublicationweb.com -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -20,6 +21,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 
+
+  <!-- Styles NyXia — Exact réplica de nyxiapublicationweb.com -->
 
   <style>
 
@@ -63,6 +66,8 @@
 
 
 
+    /* Titre glow — exact réplica */
+
     .h1-glow {
 
       background: linear-gradient(135deg, #a78bfa, var(--p3));
@@ -78,6 +83,8 @@
     }
 
 
+
+    /* Bouton Primary — EXACT réplica nyxiapublicationweb.com */
 
     .btn-primary {
 
@@ -113,9 +120,15 @@
 
     }
 
-    .btn-primary:active { transform: translateY(-1px); }
+    .btn-primary:active {
+
+      transform: translateY(-1px);
+
+    }
 
 
+
+    /* Bouton Secondary — EXACT réplica */
 
     .btn-secondary {
 
@@ -147,11 +160,20 @@
 
     }
 
-    .btn-secondary:hover { border-color: var(--p); color: var(--t); }
+    .btn-secondary:hover {
+
+      border-color: var(--p);
+
+      color: var(--t);
+
+    }
 
 
 
 
+    /* ═══════════════════════════════════
+       OVERLAY NYXIA GÉNÉRATION PREMIUM
+    ═══════════════════════════════════ */
     #nyxia-loading-overlay {
       display: none;
       position: fixed;
@@ -164,7 +186,10 @@
       animation: overlayIn .4s ease;
     }
     #nyxia-loading-overlay.visible { display: flex; }
-    @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
 
     .overlay-nyxia-img {
       width: 320px;
@@ -175,8 +200,8 @@
       margin-bottom: 32px;
     }
     @keyframes nyxiaFloat {
-      0%,100% { transform: translateY(0); filter: drop-shadow(0 0 40px rgba(123,92,255,0.6)); }
-      50% { transform: translateY(-12px); filter: drop-shadow(0 0 60px rgba(123,92,255,0.9)); }
+      0%,100% { transform: translateY(0);   filter: drop-shadow(0 0 40px rgba(123,92,255,0.6)); }
+      50%      { transform: translateY(-12px); filter: drop-shadow(0 0 60px rgba(123,92,255,0.9)); }
     }
 
     .overlay-message {
@@ -192,7 +217,10 @@
       transition: opacity .3s;
     }
 
-    .overlay-progress-wrap { width: 320px; max-width: 70vw; }
+    .overlay-progress-wrap {
+      width: 320px;
+      max-width: 70vw;
+    }
     .overlay-progress-bar {
       height: 3px;
       background: rgba(123,92,255,0.15);
@@ -209,7 +237,10 @@
       transition: width .4s ease;
       animation: shimmerBar 2s linear infinite;
     }
-    @keyframes shimmerBar { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shimmerBar {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
     .overlay-progress-label {
       font-size: 12px;
       color: rgba(136,145,184,0.6);
@@ -218,7 +249,13 @@
       text-transform: uppercase;
     }
 
-    .overlay-stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    /* Particules étoiles en arrière-plan de l'overlay */
+    .overlay-stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
     .overlay-star {
       position: absolute;
       width: 2px; height: 2px;
@@ -227,12 +264,19 @@
       animation: starTwinkle var(--d, 3s) ease-in-out infinite;
       opacity: var(--o, 0.5);
     }
-    @keyframes starTwinkle { 0%,100% { opacity: var(--o, 0.5); transform: scale(1); } 50% { opacity: 1; transform: scale(1.5); } }
+    @keyframes starTwinkle {
+      0%,100% { opacity: var(--o, 0.5); transform: scale(1); }
+      50%      { opacity: 1; transform: scale(1.5); }
+    }
 
+    /* Bouton Générer premium */
     #generate-btn {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(8,15,40,0.95) 0%, rgba(15,25,60,0.95) 50%, rgba(8,15,40,0.95) 100%) !important;
+      background: linear-gradient(135deg,
+        rgba(8,15,40,0.95) 0%,
+        rgba(15,25,60,0.95) 50%,
+        rgba(8,15,40,0.95) 100%) !important;
       border: 1px solid rgba(212,175,80,0.45) !important;
       border-radius: 50px !important;
       color: #fff !important;
@@ -243,7 +287,10 @@
       padding: 13px 40px !important;
       backdrop-filter: blur(12px) !important;
       width: auto !important;
-      box-shadow: 0 0 0 1px rgba(212,175,80,0.15), inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.4) !important;
+      box-shadow:
+        0 0 0 1px rgba(212,175,80,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 4px 24px rgba(0,0,0,0.4) !important;
       transition: all .3s ease !important;
       cursor: pointer !important;
     }
@@ -251,7 +298,10 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(105deg, transparent 30%, rgba(212,175,80,0.06) 50%, transparent 70%);
+      background: linear-gradient(105deg,
+        transparent 30%,
+        rgba(212,175,80,0.06) 50%,
+        transparent 70%);
       transform: translateX(-100%);
       animation: btnShimmer 3s ease-in-out infinite;
     }
@@ -260,45 +310,110 @@
       position: absolute;
       inset: -1px;
       border-radius: 50px;
-      background: linear-gradient(135deg, rgba(212,175,80,0.3), transparent 40%, transparent 60%, rgba(212,175,80,0.15));
+      background: linear-gradient(135deg,
+        rgba(212,175,80,0.3),
+        transparent 40%,
+        transparent 60%,
+        rgba(212,175,80,0.15));
       z-index: -1;
       opacity: 0;
       transition: opacity .3s;
     }
-    @keyframes btnShimmer { 0% { transform: translateX(-100%); } 60% { transform: translateX(100%); } 100% { transform: translateX(100%); } }
+    @keyframes btnShimmer {
+      0%   { transform: translateX(-100%); }
+      60%  { transform: translateX(100%); }
+      100% { transform: translateX(100%); }
+    }
     #generate-btn:not(:disabled):hover {
-      background: linear-gradient(135deg, rgba(12,22,55,0.98) 0%, rgba(20,35,80,0.98) 50%, rgba(12,22,55,0.98) 100%) !important;
+      background: linear-gradient(135deg,
+        rgba(12,22,55,0.98) 0%,
+        rgba(20,35,80,0.98) 50%,
+        rgba(12,22,55,0.98) 100%) !important;
       border-color: rgba(212,175,80,0.75) !important;
-      box-shadow: 0 0 0 1px rgba(212,175,80,0.3), 0 0 30px rgba(212,175,80,0.12), 0 0 60px rgba(212,175,80,0.06), inset 0 1px 0 rgba(255,255,255,0.08), 0 6px 32px rgba(0,0,0,0.5) !important;
+      box-shadow:
+        0 0 0 1px rgba(212,175,80,0.3),
+        0 0 30px rgba(212,175,80,0.12),
+        0 0 60px rgba(212,175,80,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 6px 32px rgba(0,0,0,0.5) !important;
       transform: translateY(-2px) !important;
       letter-spacing: 1.5px !important;
     }
-    #generate-btn:not(:disabled):hover::after { opacity: 1; }
-    #generate-btn:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
+    #generate-btn:not(:disabled):hover::after {
+      opacity: 1;
+    }
+    #generate-btn:disabled {
+      opacity: 0.5 !important;
+      cursor: not-allowed !important;
+    }
+
+    /* Glow d'ambiance — exact réplica */
 
     .hero-glow {
+
       position: absolute;
+
       bottom: 10%;
+
       right: 5%;
+
       width: 500px;
+
       height: 500px;
+
       border-radius: 50%;
+
       background: radial-gradient(circle, rgba(123,92,255,0.15) 0%, transparent 70%);
+
       animation: glowPulse 4s ease-in-out infinite;
+
       pointer-events: none;
+
     }
-    @keyframes glowPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
+
+    @keyframes glowPulse {
+
+      0%, 100% { opacity: 1; transform: scale(1); }
+
+      50% { opacity: 0.6; transform: scale(1.1); }
+
+    }
+
+
+
+    /* Pilier cards — style site ref */
 
     .pillar-card {
-      background: rgba(26,37,84,0.5);
-      border: 1px solid rgba(123,92,255,0.12);
-      border-radius: var(--r);
-      padding: 28px 24px;
-      backdrop-filter: blur(10px);
-      transition: all .3s;
-    }
-    .pillar-card:hover { border-color: rgba(123,92,255,0.3); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
 
+      background: rgba(26,37,84,0.5);
+
+      border: 1px solid rgba(123,92,255,0.12);
+
+      border-radius: var(--r);
+
+      padding: 28px 24px;
+
+      backdrop-filter: blur(10px);
+
+      transition: all .3s;
+
+    }
+
+    .pillar-card:hover {
+
+      border-color: rgba(123,92,255,0.3);
+
+      transform: translateY(-4px);
+
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+
+    }
+
+
+
+
+
+    /* ═══ ÉDITEUR PLEINE PAGE ═══ */
     #fullpage-editor {
       display: none;
       position: fixed;
@@ -392,8 +507,16 @@
       line-height: 1.6;
     }
 
-    #editor-preview-wrap { flex: 1; overflow: hidden; position: relative; }
-    #editor-preview-frame { width: 100%; height: 100%; border: none; }
+    #editor-preview-wrap {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    #editor-preview-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
     #editor-selected-info {
       position: absolute;
       top: 12px;
@@ -409,6 +532,9 @@
       white-space: nowrap;
     }
 
+    /* ═══════════════════════════════════
+       ÉDITEUR INLINE
+    ═══════════════════════════════════ */
     #editor-panel {
       position: absolute;
       right: 0; top: 0; bottom: 0;
@@ -421,7 +547,10 @@
       backdrop-filter: blur(20px);
       animation: slideInRight .2s ease;
     }
-    @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to   { transform: translateX(0);   opacity: 1; }
+    }
     #editor-panel.open { display: flex; }
 
     .editor-header {
@@ -432,8 +561,15 @@
       color: var(--p3);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .editor-section { padding: 14px 16px; border-bottom: 1px solid rgba(123,92,255,0.08); }
-    .editor-section-title { font-size: 11px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; }
+    .editor-section {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(123,92,255,0.08);
+    }
+    .editor-section-title {
+      font-size: 11px; font-weight: 700;
+      color: var(--t3); text-transform: uppercase;
+      letter-spacing: .8px; margin-bottom: 10px;
+    }
     .editor-input {
       width: 100%; background: rgba(15,28,63,0.7);
       border: 1px solid rgba(123,92,255,0.2); border-radius: 8px;
@@ -443,8 +579,13 @@
     }
     .editor-input:focus { border-color: rgba(123,92,255,0.5); }
 
-    .color-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .color-item label { font-size: 11px; color: var(--t3); display: block; margin-bottom: 4px; }
+    .color-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .color-item label {
+      font-size: 11px; color: var(--t3); display: block; margin-bottom: 4px;
+    }
     .color-item input[type="color"] {
       width: 100%; height: 32px; border-radius: 6px;
       border: 1px solid rgba(123,92,255,0.2); cursor: pointer;
@@ -467,110 +608,788 @@
       border: 1px solid rgba(123,92,255,0.2); color: var(--t2);
     }
     .btn-editor-secondary:hover { border-color: var(--p); color: var(--t); }
-    .editor-hint { font-size: 11px; color: var(--t4); padding: 10px 16px; text-align: center; line-height: 1.6; }
-    .edit-mode-active #preview-frame { cursor: crosshair; }
-    .toolbar-btn.edit-active { background: rgba(123,92,255,0.3) !important; border-color: var(--p) !important; color: var(--t) !important; }
+
+    .editor-hint {
+      font-size: 11px; color: var(--t4);
+      padding: 10px 16px; text-align: center; line-height: 1.6;
+    }
+
+    /* Mode édition — highlight au hover dans l'iframe */
+    .edit-mode-active #preview-frame {
+      cursor: crosshair;
+    }
+    .toolbar-btn.edit-active {
+      background: rgba(123,92,255,0.3) !important;
+      border-color: var(--p) !important;
+      color: var(--t) !important;
+    }
+
+    /* ===== WIDGET NYXIA — EXACT REPLICA ===== */
+
+
+
+    /* Toggle (pastille) */
 
     #nyxia-toggle {
-      position: fixed; bottom: 24px; right: 24px;
-      width: 60px; height: 60px; border-radius: 50%;
-      border: 2px solid rgba(123,92,255,0.5);
-      background: rgba(15,28,63,0.9);
-      backdrop-filter: blur(12px);
-      cursor: pointer; z-index: 9999;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 30px rgba(123,92,255,0.3);
-      transition: all .25s; padding: 0;
-      animation: nyxiaBreath 3s ease-in-out infinite;
-    }
-    #nyxia-toggle:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(123,92,255,0.5); }
-    #nyxia-toggle img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
-    @keyframes nyxiaBreath { 0%, 100% { box-shadow: 0 0 30px rgba(123,92,255,0.3); } 50% { box-shadow: 0 0 45px rgba(123,92,255,0.55), 0 0 60px rgba(123,92,255,0.2); } }
 
-    .nyxia-online { position: absolute; bottom: 2px; right: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--green); border: 2px solid var(--bg1); }
+      position: fixed;
+
+      bottom: 24px;
+
+      right: 24px;
+
+      width: 60px;
+
+      height: 60px;
+
+      border-radius: 50%;
+
+      border: 2px solid rgba(123,92,255,0.5);
+
+      background: rgba(15,28,63,0.9);
+
+      backdrop-filter: blur(12px);
+
+      cursor: pointer;
+
+      z-index: 9999;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      box-shadow: 0 0 30px rgba(123,92,255,0.3);
+
+      transition: all .25s;
+
+      padding: 0;
+
+      animation: nyxiaBreath 3s ease-in-out infinite;
+
+    }
+
+    #nyxia-toggle:hover {
+
+      transform: scale(1.1);
+
+      box-shadow: 0 0 50px rgba(123,92,255,0.5);
+
+    }
+
+    #nyxia-toggle img {
+
+      width: 42px;
+
+      height: 42px;
+
+      border-radius: 50%;
+
+      object-fit: cover;
+
+    }
+
+    @keyframes nyxiaBreath {
+
+      0%, 100% { box-shadow: 0 0 30px rgba(123,92,255,0.3); }
+
+      50% { box-shadow: 0 0 45px rgba(123,92,255,0.55), 0 0 60px rgba(123,92,255,0.2); }
+
+    }
+
+
+
+    /* Pastille verte "En ligne" */
+
+    .nyxia-online {
+
+      position: absolute;
+
+      bottom: 2px;
+
+      right: 2px;
+
+      width: 14px;
+
+      height: 14px;
+
+      border-radius: 50%;
+
+      background: var(--green);
+
+      border: 2px solid var(--bg1);
+
+    }
+
+
+
+    /* Chat Panel */
 
     #nyxia-chat {
-      position: fixed; bottom: 96px; right: 24px;
-      width: 380px; max-width: calc(100vw - 48px);
-      height: 520px; max-height: calc(100vh - 140px);
+
+      position: fixed;
+
+      bottom: 96px;
+
+      right: 24px;
+
+      width: 380px;
+
+      max-width: calc(100vw - 48px);
+
+      height: 520px;
+
+      max-height: calc(100vh - 140px);
+
       background: rgba(15,28,63,0.97);
+
       border: 1px solid rgba(123,92,255,0.3);
-      border-radius: 20px; z-index: 9999;
-      display: none; flex-direction: column;
+
+      border-radius: 20px;
+
+      z-index: 9999;
+
+      display: none;
+
+      flex-direction: column;
+
       backdrop-filter: blur(20px);
+
       box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(123,92,255,0.15);
+
       overflow: hidden;
+
     }
-    @keyframes nxSlideIn { from { opacity: 0; transform: translateY(20px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    #nyxia-chat.open { display: flex; animation: nxSlideIn .3s ease; }
 
-    #nyxia-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid rgba(123,92,255,0.15); background: rgba(10,18,40,0.6); }
-    #nyxia-header img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(123,92,255,0.4); }
+    @keyframes nxSlideIn {
 
-    #nyxia-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-    @keyframes nxMsgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      from { opacity: 0; transform: translateY(20px) scale(.95); }
+
+      to { opacity: 1; transform: translateY(0) scale(1); }
+
+    }
+
+    #nyxia-chat.open {
+
+      display: flex;
+
+      animation: nxSlideIn .3s ease;
+
+    }
+
+
+
+    /* Header */
+
+    #nyxia-header {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 14px 16px;
+
+      border-bottom: 1px solid rgba(123,92,255,0.15);
+
+      background: rgba(10,18,40,0.6);
+
+    }
+
+    #nyxia-header img {
+
+      width: 36px;
+
+      height: 36px;
+
+      border-radius: 50%;
+
+      object-fit: cover;
+
+      border: 1.5px solid rgba(123,92,255,0.4);
+
+    }
+
+
+
+    /* Messages */
+
+    #nyxia-messages {
+
+      flex: 1;
+
+      overflow-y: auto;
+
+      padding: 16px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 12px;
+
+    }
+
+    @keyframes nxMsgIn {
+
+      from { opacity: 0; transform: translateY(8px); }
+
+      to { opacity: 1; transform: translateY(0); }
+
+    }
+
     .nx-msg { max-width: 85%; animation: nxMsgIn .2s ease; }
+
     .nx-msg.bot { align-self: flex-start; }
+
     .nx-msg.user { align-self: flex-end; }
-    .nx-msg.bot .nx-bubble { background: rgba(26,37,84,0.7); color: #d6d9f0; padding: 12px 16px; border-radius: var(--r); border-top-left-radius: 4px; border: 1px solid rgba(123,92,255,0.1); font-size: 13px; line-height: 1.6; }
-    .nx-msg.user .nx-bubble { background: linear-gradient(135deg, var(--p), var(--p2)); color: #fff; padding: 12px 16px; border-radius: var(--r); border-top-right-radius: 4px; font-size: 13px; line-height: 1.6; }
+
+    .nx-msg.bot .nx-bubble {
+
+      background: rgba(26,37,84,0.7);
+
+      color: #d6d9f0;
+
+      padding: 12px 16px;
+
+      border-radius: var(--r);
+
+      border-top-left-radius: 4px;
+
+      border: 1px solid rgba(123,92,255,0.1);
+
+      font-size: 13px;
+
+      line-height: 1.6;
+
+    }
+
+    .nx-msg.user .nx-bubble {
+
+      background: linear-gradient(135deg, var(--p), var(--p2));
+
+      color: #fff;
+
+      padding: 12px 16px;
+
+      border-radius: var(--r);
+
+      border-top-right-radius: 4px;
+
+      font-size: 13px;
+
+      line-height: 1.6;
+
+    }
+
+
+
+    /* Typing dots */
 
     .nx-dots { display: inline-flex; gap: 3px; }
-    .nx-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--t3); animation: nxPulse 1.4s infinite; }
-    .nx-dots i:nth-child(2) { animation-delay: .2s; }
-    .nx-dots i:nth-child(3) { animation-delay: .4s; }
-    @keyframes nxPulse { 0%, 80%, 100% { opacity: .3; transform: scale(.8); } 40% { opacity: 1; transform: scale(1); } }
 
-    #nyxia-input-row { display: flex; gap: 8px; padding: 10px 14px 14px; border-top: 1px solid rgba(123,92,255,0.1); }
-    #nyxia-input { flex: 1; padding: 10px 14px; border-radius: 12px; background: rgba(10,18,40,0.8); border: 1px solid rgba(123,92,255,0.15); color: #fff; font-family: 'Outfit', sans-serif; font-size: 13px; outline: none; transition: border-color .2s; }
+    .nx-dots i {
+
+      width: 4px; height: 4px; border-radius: 50%;
+
+      background: var(--t3);
+
+      animation: nxPulse 1.4s infinite;
+
+    }
+
+    .nx-dots i:nth-child(2) { animation-delay: .2s; }
+
+    .nx-dots i:nth-child(3) { animation-delay: .4s; }
+
+    @keyframes nxPulse {
+
+      0%, 80%, 100% { opacity: .3; transform: scale(.8); }
+
+      40% { opacity: 1; transform: scale(1); }
+
+    }
+
+
+
+    /* Input row */
+
+    #nyxia-input-row {
+
+      display: flex;
+
+      gap: 8px;
+
+      padding: 10px 14px 14px;
+
+      border-top: 1px solid rgba(123,92,255,0.1);
+
+    }
+
+    #nyxia-input {
+
+      flex: 1;
+
+      padding: 10px 14px;
+
+      border-radius: 12px;
+
+      background: rgba(10,18,40,0.8);
+
+      border: 1px solid rgba(123,92,255,0.15);
+
+      color: #fff;
+
+      font-family: 'Outfit', sans-serif;
+
+      font-size: 13px;
+
+      outline: none;
+
+      transition: border-color .2s;
+
+    }
+
     #nyxia-input:focus { border-color: rgba(123,92,255,0.4); }
+
     #nyxia-input::placeholder { color: rgba(136,145,184,0.4); }
-    #nyxia-send { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--p), var(--p2)); border: none; color: #fff; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+
+
+
+    #nyxia-send {
+
+      width: 38px;
+
+      height: 38px;
+
+      border-radius: 10px;
+
+      background: linear-gradient(135deg, var(--p), var(--p2));
+
+      border: none;
+
+      color: #fff;
+
+      font-size: 15px;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      transition: all .15s;
+
+    }
+
     #nyxia-send:hover { transform: scale(1.05); }
-    #nyxia-close { margin-left: auto; color: var(--t3); font-size: 20px; cursor: pointer; opacity: 0.6; transition: opacity .2s; background: none; border: none; line-height: 1; }
+
+
+
+    /* Close button */
+
+    #nyxia-close {
+
+      margin-left: auto;
+
+      color: var(--t3);
+
+      font-size: 20px;
+
+      cursor: pointer;
+
+      opacity: 0.6;
+
+      transition: opacity .2s;
+
+      background: none;
+
+      border: none;
+
+      line-height: 1;
+
+    }
+
     #nyxia-close:hover { opacity: 1; }
 
-    .input-row { display: flex; gap: 10px; align-items: center; }
-    .input-row input { flex: 1; }
-    .upload-btn {
-      width: 52px; height: 52px; border-radius: var(--r);
-      border: 1px solid rgba(123,92,255,0.25);
-      background: rgba(123,92,255,0.08); color: var(--p);
-      font-size: 22px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all .2s; flex-shrink: 0;
+
+
+    /* ===== UPLOAD IMAGE ===== */
+
+    .input-row {
+
+      display: flex;
+
+      gap: 10px;
+
+      align-items: center;
+
     }
-    .upload-btn:hover { border-color: var(--p); background: rgba(123,92,255,0.18); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(123,92,255,0.3); }
-    .upload-btn svg { width: 22px; height: 22px; fill: currentColor; }
 
-    #upload-preview { display: none; position: relative; border-radius: var(--r); overflow: hidden; border: 1px solid rgba(123,92,255,0.2); max-height: 180px; }
-    #upload-preview img { width: 100%; height: 180px; object-fit: cover; }
-    #upload-preview .remove-img { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(0,0,0,0.7); color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
-    #upload-preview .remove-img:hover { background: rgba(255,60,60,0.8); }
+    .input-row input {
 
-    #preview-panel { display: none; position: fixed; inset: 0; z-index: 8000; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); animation: nxFadeIn .3s ease; }
-    @keyframes nxFadeIn { from { opacity: 0; } to { opacity: 1; } }
-    #preview-container { width: 100%; height: 100%; display: flex; flex-direction: column; }
-    #preview-toolbar { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: rgba(15,28,63,0.95); border-bottom: 1px solid rgba(123,92,255,0.2); flex-shrink: 0; }
-    #preview-toolbar h3 { color: var(--p); font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; flex: 1; }
-    .toolbar-btn { padding: 8px 18px; border-radius: 10px; border: 1px solid rgba(123,92,255,0.3); background: rgba(123,92,255,0.1); color: var(--t2); font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 6px; }
-    .toolbar-btn:hover { border-color: var(--p); color: var(--t); }
-    .toolbar-btn.close-preview { background: rgba(255,60,60,0.15); border-color: rgba(255,60,60,0.3); color: #ff6b6b; }
-    .toolbar-btn.close-preview:hover { background: rgba(255,60,60,0.3); }
-    #preview-frame { flex: 1; border: none; background: #fff; }
+      flex: 1;
 
-    #code-modal { display: none; position: fixed; inset: 0; z-index: 8500; background: rgba(0,0,0,0.9); animation: nxFadeIn .2s ease; }
-    #code-modal pre { width: 100%; height: 100%; overflow: auto; padding: 24px; color: #a78bfa; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
-    #code-modal .code-toolbar { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: rgba(15,28,63,0.95); border-bottom: 1px solid rgba(123,92,255,0.2); }
-    #code-modal .code-toolbar h3 { color: var(--green); font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; flex: 1; }
+    }
+
+    .upload-btn {
+
+      width: 52px;
+
+      height: 52px;
+
+      border-radius: var(--r);
+
+      border: 1px solid rgba(123,92,255,0.25);
+
+      background: rgba(123,92,255,0.08);
+
+      color: var(--p);
+
+      font-size: 22px;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      transition: all .2s;
+
+      flex-shrink: 0;
+
+    }
+
+    .upload-btn:hover {
+
+      border-color: var(--p);
+
+      background: rgba(123,92,255,0.18);
+
+      transform: translateY(-2px);
+
+      box-shadow: 0 4px 20px rgba(123,92,255,0.3);
+
+    }
+
+    .upload-btn svg {
+
+      width: 22px;
+
+      height: 22px;
+
+      fill: currentColor;
+
+    }
+
+
+
+    /* Thumbnail preview */
+
+    #upload-preview {
+
+      display: none;
+
+      position: relative;
+
+      border-radius: var(--r);
+
+      overflow: hidden;
+
+      border: 1px solid rgba(123,92,255,0.2);
+
+      max-height: 180px;
+
+    }
+
+    #upload-preview img {
+
+      width: 100%;
+
+      height: 180px;
+
+      object-fit: cover;
+
+    }
+
+    #upload-preview .remove-img {
+
+      position: absolute;
+
+      top: 8px;
+
+      right: 8px;
+
+      width: 28px;
+
+      height: 28px;
+
+      border-radius: 50%;
+
+      border: none;
+
+      background: rgba(0,0,0,0.7);
+
+      color: #fff;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      transition: all .15s;
+
+    }
+
+    #upload-preview .remove-img:hover {
+
+      background: rgba(255,60,60,0.8);
+
+    }
+
+
+
+    /* ===== PREVIEW PANEL ===== */
+
+    #preview-panel {
+
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 8000;
+
+      background: rgba(0,0,0,0.85);
+
+      backdrop-filter: blur(8px);
+
+      animation: nxFadeIn .3s ease;
+
+    }
+
+    @keyframes nxFadeIn {
+
+      from { opacity: 0; }
+
+      to { opacity: 1; }
+
+    }
+
+    #preview-container {
+
+      width: 100%;
+
+      height: 100%;
+
+      display: flex;
+
+      flex-direction: column;
+
+    }
+
+    #preview-toolbar {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      padding: 12px 20px;
+
+      background: rgba(15,28,63,0.95);
+
+      border-bottom: 1px solid rgba(123,92,255,0.2);
+
+      flex-shrink: 0;
+
+    }
+
+    #preview-toolbar h3 {
+
+      color: var(--p);
+
+      font-family: 'Space Grotesk', sans-serif;
+
+      font-weight: 600;
+
+      font-size: 15px;
+
+      flex: 1;
+
+    }
+
+    .toolbar-btn {
+
+      padding: 8px 18px;
+
+      border-radius: 10px;
+
+      border: 1px solid rgba(123,92,255,0.3);
+
+      background: rgba(123,92,255,0.1);
+
+      color: var(--t2);
+
+      font-family: 'Space Grotesk', sans-serif;
+
+      font-size: 13px;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      transition: all .15s;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 6px;
+
+    }
+
+    .toolbar-btn:hover {
+
+      border-color: var(--p);
+
+      color: var(--t);
+
+    }
+
+    .toolbar-btn.close-preview {
+
+      background: rgba(255,60,60,0.15);
+
+      border-color: rgba(255,60,60,0.3);
+
+      color: #ff6b6b;
+
+    }
+
+    .toolbar-btn.close-preview:hover {
+
+      background: rgba(255,60,60,0.3);
+
+    }
+
+    #preview-frame {
+
+      flex: 1;
+
+      border: none;
+
+      background: #fff;
+
+    }
+
+    #code-modal {
+
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 8500;
+
+      background: rgba(0,0,0,0.9);
+
+      animation: nxFadeIn .2s ease;
+
+    }
+
+    #code-modal pre {
+
+      width: 100%;
+
+      height: 100%;
+
+      overflow: auto;
+
+      padding: 24px;
+
+      color: #a78bfa;
+
+      font-family: 'Courier New', monospace;
+
+      font-size: 13px;
+
+      line-height: 1.6;
+
+      white-space: pre-wrap;
+
+      word-break: break-word;
+
+    }
+
+    #code-modal .code-toolbar {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      padding: 12px 20px;
+
+      background: rgba(15,28,63,0.95);
+
+      border-bottom: 1px solid rgba(123,92,255,0.2);
+
+    }
+
+    #code-modal .code-toolbar h3 {
+
+      color: var(--green);
+
+      font-family: 'Space Grotesk', sans-serif;
+
+      font-weight: 600;
+
+      font-size: 15px;
+
+      flex: 1;
+
+    }
+
+
+
+    /* Responsive widget */
 
     @media (max-width: 480px) {
-      #nyxia-chat { width: calc(100vw - 16px); right: 8px; bottom: 88px; height: calc(100vh - 110px); }
+
+      #nyxia-chat {
+
+        width: calc(100vw - 16px);
+
+        right: 8px;
+
+        bottom: 88px;
+
+        height: calc(100vh - 110px);
+
+      }
+
     }
 
   </style>
 
   <script>
+    /* Protection NyXia — vérifie la session */
     ;(function() {
       var token = sessionStorage.getItem('nyxia_token')
       if (!token) { window.location.href = '/login.html'; return }
@@ -586,214 +1405,349 @@
   </script>
 </head>
 
+
+
 <body>
+
+
+
+  <!-- Canvas étoilé -->
 
   <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none"></canvas>
 
+
+
+  <!-- Glow d'ambiance -->
+
   <div class="hero-glow"></div>
+
+
+
+  <!-- Hero Section -->
 
   <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px 16px">
 
+
+
     <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:40px">
 
+
+
+      <!-- Marque -->
+
       <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;line-height:1.2">
+
         NyXia <span style="background:linear-gradient(135deg,var(--p),var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span>
+
       </h1>
 
+
+
+      <!-- Promesse -->
+
       <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem,3.5vw,2rem);color:var(--t2);font-weight:600;line-height:1.4">
-       Votre site Web réalisé par NyXia IA en <span style="color:var(--p)">moins de 10 minutes</span>
+
+       Votre site Web réalisé par NyXia IA en <br> <span style="color:var(--p)">moins de 10 minutes</span>
+
       </h2>
 
+
+
+      <!-- Description -->
+
       <p style="color:var(--t3);font-size:clamp(0.95rem,2vw,1.1rem);max-width:560px;margin:0 auto;line-height:1.7">
+
         NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>. Elle crée, publie et optimise votre Empire pendant que vous dormez.
+
       </p>
 
+
+
+      <!-- 3 Piliers -->
+
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:left">
+
+
+
         <div class="pillar-card">
+
           <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Visibilité permanente sur Google</p>
+
           <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Votre site trouvé par des milliers de personnes chaque jour, sans effort</p>
+
         </div>
+
+
+
         <div class="pillar-card">
+
           <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Mots qui vendent pour vous</p>
+
           <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Chaque phrase est conçue pour transformer un visiteur en acheteur</p>
+
         </div>
+
+
+
         <div class="pillar-card">
+
           <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Commissions en automatique</p>
+
           <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Gagnez des revenus sans intervenir, grâce à l'intelligence artificielle</p>
+
         </div>
+
+
+
       </div>
 
-      <div id="niche-templates" style="margin-bottom:24px">
-        <button onclick="toggleNiches()" id="btn-toggle-niches" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.07);cursor:pointer;margin-bottom:12px;transition:all .2s" onmouseover="this.style.background='rgba(123,92,255,0.14)';this.style.borderColor='rgba(123,92,255,0.45)'" onmouseout="this.style.background='rgba(123,92,255,0.07)';this.style.borderColor='rgba(123,92,255,0.25)'">
-          <div style="text-align:left">
-            <div style="font-size:14px;font-weight:700;color:#fff">✦ Démarrer depuis une niche</div>
-            <div style="font-size:12px;color:var(--t3);margin-top:2px">Spa, Coach, Médium, Auteur... NyXia crée ton site en 60 sec</div>
-          </div>
-          <span id="niche-arrow" style="font-size:18px;color:#a78bfa;transition:transform .2s">▾</span>
-        </button>
-        <div id="niches-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:6px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🌿 Bien-être & Santé</div>
-          <div class="niche-card" onclick="applyNiche('spa')"><span class="niche-icon">💆</span><span class="niche-label">Spa & Massage</span></div>
-          <div class="niche-card" onclick="applyNiche('naturopathe')"><span class="niche-icon">🌱</span><span class="niche-label">Naturopathe</span></div>
-          <div class="niche-card" onclick="applyNiche('therapeute')"><span class="niche-icon">🧠</span><span class="niche-label">Thérapeute & Psy</span></div>
-          <div class="niche-card" onclick="applyNiche('holistique')"><span class="niche-icon">✨</span><span class="niche-label">Praticien Holistique</span></div>
-          <div class="niche-card" onclick="applyNiche('aromatherapie')"><span class="niche-icon">🌸</span><span class="niche-label">Aromatérapie</span></div>
-          <div class="niche-card" onclick="applyNiche('lithotherapie')"><span class="niche-icon">💎</span><span class="niche-label">Lithothérapie</span></div>
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🔮 Spiritualité & Ésotérisme</div>
-          <div class="niche-card" onclick="applyNiche('medium')"><span class="niche-icon">🔮</span><span class="niche-label">Médium & Voyance</span></div>
-          <div class="niche-card" onclick="applyNiche('astrologue')"><span class="niche-icon">⭐</span><span class="niche-label">Astrologue</span></div>
-          <div class="niche-card" onclick="applyNiche('tarologue')"><span class="niche-icon">🃏</span><span class="niche-label">Tarologue</span></div>
-          <div class="niche-card" onclick="applyNiche('numerologue')"><span class="niche-icon">🔢</span><span class="niche-label">Numérologue</span></div>
-          <div class="niche-card" onclick="applyNiche('neuro-alchimiste')"><span class="niche-icon">🧬</span><span class="niche-label">Neuro-Alchimiste</span></div>
-          <div class="niche-card" onclick="applyNiche('spiritualite')"><span class="niche-icon">🕊️</span><span class="niche-label">Spiritualité</span></div>
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🚀 Coaching & Business</div>
-          <div class="niche-card" onclick="applyNiche('coach')"><span class="niche-icon">🎯</span><span class="niche-label">Coach de vie</span></div>
-          <div class="niche-card" onclick="applyNiche('agence-marketing')"><span class="niche-icon">📈</span><span class="niche-label">Agence Marketing</span></div>
-          <div class="niche-card" onclick="applyNiche('entrepreneur')"><span class="niche-icon">💼</span><span class="niche-label">Entrepreneur</span></div>
-          <div class="niche-card" onclick="applyNiche('formation-en-ligne')"><span class="niche-icon">🎓</span><span class="niche-label">Formation en ligne</span></div>
-          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">📚 Création & Culture</div>
-          <div class="niche-card" onclick="applyNiche('auteur')"><span class="niche-icon">✍️</span><span class="niche-label">Auteur·trice</span></div>
-          <div class="niche-card" onclick="applyNiche('maison-edition')"><span class="niche-icon">📖</span><span class="niche-label">Maison d'édition</span></div>
-          <div class="niche-card" onclick="applyNiche('restaurant')"><span class="niche-icon">🍽️</span><span class="niche-label">Restaurant & Cuisine</span></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px;margin:20px 0 0">
-          <div style="flex:1;height:1px;background:rgba(123,92,255,0.15)"></div>
-          <div style="font-size:12px;color:var(--t4);white-space:nowrap">ou crée depuis une image / URL</div>
-          <div style="flex:1;height:1px;background:rgba(123,92,255,0.15)"></div>
-        </div>
-      </div>
 
-      <style>
-        .niche-card { display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; border-radius:12px; border:1px solid rgba(123,92,255,0.12); background:rgba(123,92,255,0.04); cursor:pointer; transition:all .2s; text-align:center; }
-        .niche-card:hover { border-color:rgba(123,92,255,0.45); background:rgba(123,92,255,0.12); transform:translateY(-2px); box-shadow:0 8px 20px rgba(123,92,255,0.15); }
-        .niche-icon { font-size:22px; }
-        .niche-label { font-size:11px; color:var(--t2); font-weight:500; line-height:1.3; }
-        .niche-card:hover .niche-label { color:#fff; }
-      </style>
+
+      <!-- Zone de saisie avec upload -->
+
+     
+            <!-- Onglets Image / URL -->
 
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <button id="tab-image" onclick="switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
         <button id="tab-url" onclick="switchMode('url')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">🔗 Depuis une URL</button>
       </div>
 
+      <!-- Mode URL -->
       <div id="url-mode" style="display:none;flex-direction:column;gap:12px;margin-bottom:14px">
-        <input id="url-input" type="url" placeholder="https://monsite.com — NyXia va l'analyser et le réinventer ✨" style="width:100%;padding:16px 20px;border-radius:12px;background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.2);color:#fff;font-family:Outfit,sans-serif;font-size:15px;outline:none">
+        <input id="url-input" type="url" placeholder="https://monsite.com — NyXia va l'analyser et le réinventer ✨"
+          style="width:100%;padding:16px 20px;border-radius:12px;background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.2);color:#fff;font-family:Outfit,sans-serif;font-size:15px;outline:none">
         <div style="font-size:12px;color:#8891B8;text-align:center">NyXia analyse le contenu de la page et génère un site modernisé 🚀</div>
       </div>
 
       <div id="image-mode" style="display:flex;flex-direction:column;gap:14px">
+
         <div class="input-row">
-          <input id="user-input" type="text" placeholder="✍️ Ex: Spa bien-être, Coach de vie, Naturopathe, Boutique bijoux..." style="width:100%;padding:16px 20px;border-radius:var(--r);background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.15);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s">
+
+          <input
+
+            id="user-input"
+
+            type="text"
+
+            placeholder="✍️ Ex: Spa bien-être, Coach de vie, Naturopathe, Boutique bijoux..."
+
+            style="width:100%;padding:16px 20px;border-radius:var(--r);background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.15);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s"
+
+          >
+
           <button class="upload-btn" id="upload-btn" title="Uploader une image">
+
             <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
           </button>
+
           <input type="file" id="file-input" accept="image/*" style="display:none">
+
         </div>
+
+        <!-- Thumbnail de l'image uploadée -->
+
         <div id="upload-preview">
+
           <img id="preview-thumb" src="" alt="Aperçu">
+
           <button class="remove-img" id="remove-img">&times;</button>
+
         </div>
+
       </div>
 
+
+
+      </div><!-- /image-mode -->
+
+      <!-- Bouton générer — toujours visible -->
       <button id="generate-btn" class="btn-primary" style="margin-top:14px;display:block;margin-left:auto;margin-right:auto">
         ✨ Créer mon site avec NyXia
       </button>
 
+      <!-- Pedigree -->
+
       <p style="color:var(--t3);font-size:0.75rem;opacity:0.5">
-        Une technologie <a href="https://www.publication-web.com" target="_blank" rel="noopener" style="color:var(--p);opacity:0.7;text-decoration:none">Publication-Web.com</a> — Visionnaire depuis 1997
+
+       <br> Une technologie <a href="https://www.publication-web.com" target="_blank" rel="noopener" style="color:var(--p);opacity:0.7;text-decoration:none">Publication-Web.com</a> — Visionnaire depuis 1997
+
       </p>
 
+
+
     </div>
+
+
+
   </main>
 
+
+
+  <!-- ===== WIDGET NYXIA CLOSER — Avatar réel, zéro texte pré-rempli ===== -->
+
+
+
+
+
+  <!-- ═══ ÉDITEUR PLEINE PAGE ═══ -->
   <div id="fullpage-editor">
     <div id="editor-sidebar">
       <h2>✏️ Éditeur NyXia</h2>
+
       <div class="edit-section" id="text-edit-section" style="display:none">
         <div class="edit-section-title">✏️ Texte sélectionné</div>
         <textarea class="edit-textarea" id="edit-text-input"></textarea>
         <button class="btn-edit-action btn-save-edit" id="btn-apply-text" style="margin-top:8px">✓ Appliquer</button>
       </div>
+
       <div class="edit-section">
         <div class="edit-section-title">🎨 Couleurs</div>
         <div class="color-row">
-          <div><label class="color-lbl">Fond</label><input type="color" class="color-pick" id="ec-bg" value="#ffffff"></div>
-          <div><label class="color-lbl">Accent</label><input type="color" class="color-pick" id="ec-accent" value="#7B5CFF"></div>
-          <div><label class="color-lbl">Texte</label><input type="color" class="color-pick" id="ec-text" value="#000000"></div>
-          <div><label class="color-lbl">Boutons</label><input type="color" class="color-pick" id="ec-btn" value="#5A6CFF"></div>
+          <div>
+            <label class="color-lbl">Fond</label>
+            <input type="color" class="color-pick" id="ec-bg" value="#ffffff">
+          </div>
+          <div>
+            <label class="color-lbl">Accent</label>
+            <input type="color" class="color-pick" id="ec-accent" value="#7B5CFF">
+          </div>
+          <div>
+            <label class="color-lbl">Texte</label>
+            <input type="color" class="color-pick" id="ec-text" value="#000000">
+          </div>
+          <div>
+            <label class="color-lbl">Boutons</label>
+            <input type="color" class="color-pick" id="ec-btn" value="#5A6CFF">
+          </div>
         </div>
       </div>
+
       <div class="edit-section">
         <div class="edit-section-title">⚡ Actions</div>
         <button class="btn-edit-action btn-save-edit" id="btn-save-edits">💾 Sauvegarder</button>
         <button class="btn-edit-action btn-copy-edit" id="btn-copy-edits">📋 Copier le code</button>
         <button class="btn-edit-action btn-close-edit" id="btn-close-editor">✕ Fermer l'éditeur</button>
       </div>
+
       <div class="edit-hint">💡 Clique sur un texte dans le preview pour le modifier</div>
     </div>
+
     <div id="editor-preview-wrap">
       <div id="editor-selected-info">✏️ Élément sélectionné — modifie le texte à gauche</div>
-      <iframe id="editor-preview-frame"></iframe>
+      <iframe id="editor-preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
     </div>
   </div>
 
+  <!-- ═══ OVERLAY NYXIA GÉNÉRATION PREMIUM ═══ -->
   <div id="nyxia-loading-overlay">
     <div class="overlay-stars" id="overlay-stars"></div>
     <img src="/TravailDureNyxia.png" alt="NyXia travaille..." class="overlay-nyxia-img">
     <div class="overlay-message" id="overlay-message">NyXia prépare ton univers...</div>
     <div class="overlay-progress-wrap">
-      <div class="overlay-progress-bar"><div class="overlay-progress-fill" id="overlay-progress"></div></div>
+      <div class="overlay-progress-bar">
+        <div class="overlay-progress-fill" id="overlay-progress"></div>
+      </div>
       <div class="overlay-progress-label" id="overlay-progress-label">Initialisation</div>
     </div>
   </div>
 
+  <!-- Pastille flottante avec avatar NyXia.png -->
+
   <div id="nyxia-toggle">
+
     <img src="/NyXia.png" alt="NyXia">
+
     <span class="nyxia-online"></span>
+
   </div>
+
+
+
+  <!-- Panel de chat -->
 
   <div id="nyxia-chat">
+
     <div id="nyxia-header">
+
       <img src="/NyXia.png" alt="NyXia">
+
       <div>
+
         <div style="color:var(--p);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">NyXia IA</div>
+
         <div style="color:var(--green);font-size:11px">En ligne</div>
+
       </div>
+
       <button id="nyxia-close">&times;</button>
+
     </div>
+
     <div id="nyxia-messages"></div>
+
     <div id="nyxia-input-row">
+
       <input id="nyxia-input" type="text" placeholder="Écris à NyXia...">
+
       <button id="nyxia-send">&#10148;</button>
+
     </div>
+
   </div>
 
+
+
+  <!-- ===== PREVIEW PANEL (overlay) ===== -->
+
   <div id="preview-panel">
+
     <div id="preview-container">
+
       <div id="preview-toolbar">
+
         <h3>NyXia Preview</h3>
+
         <button class="toolbar-btn" id="btn-edit" onclick="toggleEditorPanel()" style="background:linear-gradient(135deg,rgba(123,92,255,0.3),rgba(90,108,255,0.3));border-color:rgba(123,92,255,0.5)">✏️ Éditer</button>
+
         <button class="toolbar-btn" id="btn-view-code">View Code</button>
+
         <button class="toolbar-btn" id="btn-copy-code">Copy Code</button>
+
         <button class="toolbar-btn" id="btn-publish" onclick="openPublishModal()" style="background:linear-gradient(135deg,rgba(0,200,100,0.25),rgba(0,150,80,0.2));border-color:rgba(0,200,100,0.4);color:#00E676;font-weight:700">🚀 Publier</button>
+
         <button class="toolbar-btn close-preview" id="btn-close-preview">Fermer</button>
+
       </div>
+
       <div style="position:relative;flex:1;display:flex;overflow:hidden">
-        <iframe id="preview-frame" style="flex:1;border:none;height:100%"></iframe>
+
+        <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-popups" style="flex:1;border:none;height:100%"></iframe>
+
+        <!-- PANNEAU ÉDITEUR -->
         <div id="editor-panel">
           <div class="editor-header">
             ✏️ Éditeur
             <button onclick="toggleEditor()" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px">✕</button>
           </div>
+
+          <!-- Texte sélectionné -->
           <div class="editor-section" id="text-editor-section" style="display:none">
             <div class="editor-section-title">✏️ Modifier le texte</div>
             <textarea class="editor-input" id="selected-text-input" rows="4"></textarea>
-            <button class="btn-editor btn-editor-primary" onclick="applyTextEdit()" style="margin-top:8px">✓ Appliquer</button>
+            <button class="btn-editor btn-editor-primary" onclick="applyTextEdit()" style="margin-top:8px">
+              ✓ Appliquer
+            </button>
           </div>
+
+          <!-- Images -->
           <div class="editor-section" id="img-editor-section" style="display:none">
             <div class="editor-section-title">🖼 Remplacer l'image</div>
             <img id="img-editor-preview" style="width:100%;height:70px;object-fit:cover;border-radius:6px;margin-bottom:8px;border:1px solid rgba(123,92,255,0.2)">
-            <button class="btn-editor btn-editor-primary" onclick="document.getElementById('img-editor-upload').click()" style="margin-bottom:6px">📁 Télécharger depuis mon ordi</button>
+            <button class="btn-editor btn-editor-primary" onclick="document.getElementById('img-editor-upload').click()" style="margin-bottom:6px">
+              📁 Télécharger depuis mon ordi
+            </button>
             <input type="file" id="img-editor-upload" accept="image/*" style="display:none" onchange="uploadEditorImage(this)">
             <div style="display:flex;gap:6px;margin-bottom:6px">
               <input class="editor-input" type="text" id="img-pexels-query" placeholder="Chercher sur Pexels..." style="min-height:unset;height:36px;padding:6px 10px;font-size:12px" onkeydown="if(event.key==='Enter')searchEditorPexels()">
@@ -801,69 +1755,124 @@
             </div>
             <div id="img-pexels-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:5px"></div>
           </div>
+
+          <!-- Couleurs -->
           <div class="editor-section">
             <div class="editor-section-title">🎨 Couleurs</div>
             <div class="color-grid">
-              <div class="color-item"><label>Fond</label><input type="color" id="color-bg" value="#0F1C3F" oninput="applyColor('bg', this.value)"></div>
-              <div class="color-item"><label>Accent</label><input type="color" id="color-accent" value="#7B5CFF" oninput="applyColor('accent', this.value)"></div>
-              <div class="color-item"><label>Texte</label><input type="color" id="color-text" value="#FFFFFF" oninput="applyColor('text', this.value)"></div>
-              <div class="color-item"><label>Boutons</label><input type="color" id="color-btn" value="#5A6CFF" oninput="applyColor('btn', this.value)"></div>
+              <div class="color-item">
+                <label>Fond</label>
+                <input type="color" id="color-bg" value="#0F1C3F" oninput="applyColor('bg', this.value)">
+              </div>
+              <div class="color-item">
+                <label>Accent</label>
+                <input type="color" id="color-accent" value="#7B5CFF" oninput="applyColor('accent', this.value)">
+              </div>
+              <div class="color-item">
+                <label>Texte</label>
+                <input type="color" id="color-text" value="#FFFFFF" oninput="applyColor('text', this.value)">
+              </div>
+              <div class="color-item">
+                <label>Boutons</label>
+                <input type="color" id="color-btn" value="#5A6CFF" oninput="applyColor('btn', this.value)">
+              </div>
             </div>
           </div>
+
+          <!-- Actions -->
           <div class="editor-section">
             <div class="editor-section-title">⚡ Actions</div>
-            <button class="btn-editor btn-editor-primary" onclick="saveEdits()" style="margin-bottom:6px">💾 Sauvegarder les modifications</button>
-            <button class="btn-editor btn-editor-secondary" onclick="copyEditedCode()">📋 Copier le code</button>
-            <button class="btn-editor btn-editor-secondary" onclick="resetEdits()" style="margin-top:6px">↺ Réinitialiser</button>
+            <button class="btn-editor btn-editor-primary" onclick="saveEdits()" style="margin-bottom:6px">
+              💾 Sauvegarder les modifications
+            </button>
+            <button class="btn-editor btn-editor-secondary" onclick="copyEditedCode()">
+              📋 Copier le code
+            </button>
+            <button class="btn-editor btn-editor-secondary" onclick="resetEdits()" style="margin-top:6px">
+              ↺ Réinitialiser
+            </button>
           </div>
-          <div class="editor-hint">💡 Clique sur n'importe quel texte dans le preview pour le modifier directement</div>
+
+          <div class="editor-hint">
+            💡 Clique sur n'importe quel texte dans le preview pour le modifier directement
+          </div>
         </div>
+
       </div>
+
     </div>
+
   </div>
+
+
+
+  <!-- ===== CODE MODAL ===== -->
 
   <div id="code-modal">
+
     <div class="code-toolbar">
+
       <h3>Code HTML généré</h3>
+
       <button class="toolbar-btn" id="btn-copy-modal">Copier</button>
+
       <button class="toolbar-btn close-preview" id="btn-close-code">Fermer</button>
+
     </div>
+
     <pre id="code-output"></pre>
+
   </div>
 
+  <!-- ══ MODAL PUBLICATION ══ -->
   <div id="publish-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);align-items:center;justify-content:center">
     <div style="background:var(--bg2,#0F1C3F);border:1px solid rgba(0,230,118,0.25);border-radius:24px;padding:36px;width:100%;max-width:500px;margin:20px;box-shadow:0 24px 64px rgba(0,0,0,0.6),0 0 60px rgba(0,230,118,0.08)">
+
+      <!-- État : formulaire -->
       <div id="publish-form-state">
         <div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:6px">🚀 Publier mon site</div>
         <div style="font-size:13px;color:var(--t3,#8891B8);margin-bottom:24px">Ton site sera en ligne en quelques secondes sur un sous-domaine gratuit.</div>
+
         <div style="margin-bottom:16px">
           <label style="display:block;font-size:12px;font-weight:600;color:var(--t2,#D6D9F0);margin-bottom:6px">Nom de ton site</label>
           <div style="display:flex;align-items:center;gap:0;background:rgba(15,28,63,0.8);border:1px solid rgba(0,230,118,0.2);border-radius:10px;overflow:hidden">
-            <input id="publish-name" type="text" placeholder="mon-site-spa" maxlength="50" style="flex:1;background:transparent;border:none;color:#fff;font-family:Outfit,sans-serif;font-size:14px;padding:12px 14px;outline:none" oninput="updatePublishPreview()">
+            <input id="publish-name" type="text" placeholder="mon-site-spa" maxlength="50"
+              style="flex:1;background:transparent;border:none;color:#fff;font-family:Outfit,sans-serif;font-size:14px;padding:12px 14px;outline:none"
+              oninput="updatePublishPreview()">
             <span style="padding:12px 14px;color:var(--t3,#8891B8);font-size:13px;white-space:nowrap">.pages.dev</span>
           </div>
           <div id="publish-preview-url" style="font-size:11px;color:#00E676;margin-top:6px;opacity:0.8"></div>
         </div>
+
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:24px">
           <button onclick="closePublishModal()" style="padding:11px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--t2,#D6D9F0);font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
           <button onclick="doPublish()" id="btn-do-publish" style="padding:11px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#00C864,#00A050);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 24px rgba(0,200,100,0.4);transition:all .2s">🚀 Publier maintenant</button>
         </div>
       </div>
+
+      <!-- État : chargement -->
       <div id="publish-loading-state" style="display:none;text-align:center;padding:20px 0">
         <div style="width:56px;height:56px;border:3px solid rgba(0,230,118,0.2);border-top-color:#00E676;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px"></div>
         <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Publication en cours...</div>
         <div style="font-size:13px;color:var(--t3,#8891B8)">NyXia déploie ton site sur notre serveur ✨</div>
       </div>
+
+      <!-- État : succès -->
       <div id="publish-success-state" style="display:none;text-align:center;padding:10px 0">
         <div style="font-size:48px;margin-bottom:16px">🎉</div>
         <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">Ton site est en ligne !</div>
         <div style="font-size:13px;color:var(--t3,#8891B8);margin-bottom:20px">Accessible dans quelques secondes sur :</div>
-        <a id="publish-result-url" href="#" target="_blank" style="display:block;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);border-radius:12px;padding:14px 20px;color:#00E676;font-family:monospace;font-size:14px;text-decoration:none;word-break:break-all;transition:all .2s" onmouseover="this.style.background='rgba(0,230,118,0.18)'" onmouseout="this.style.background='rgba(0,230,118,0.1)'"></a>
+        <a id="publish-result-url" href="#" target="_blank"
+          style="display:block;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);border-radius:12px;padding:14px 20px;color:#00E676;font-family:monospace;font-size:14px;text-decoration:none;word-break:break-all;transition:all .2s"
+          onmouseover="this.style.background='rgba(0,230,118,0.18)'"
+          onmouseout="this.style.background='rgba(0,230,118,0.1)'"></a>
         <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
           <button id="btn-copy-publish-url" onclick="copyPublishUrl()" style="padding:10px 20px;border-radius:50px;border:1px solid rgba(0,230,118,0.3);background:transparent;color:#00E676;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📋 Copier le lien</button>
           <button onclick="closePublishModal()" style="padding:10px 20px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--p,#7B5CFF),var(--p2,#5A6CFF));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Fermer</button>
         </div>
       </div>
+
+      <!-- État : erreur -->
       <div id="publish-error-state" style="display:none;text-align:center;padding:10px 0">
         <div style="font-size:40px;margin-bottom:14px">⚠️</div>
         <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Erreur de publication</div>
@@ -873,11 +1882,22 @@
           <button onclick="closePublishModal()" style="padding:10px 20px;border-radius:50px;border:none;background:rgba(255,75,110,0.15);border:1px solid rgba(255,75,110,0.3);color:#ff8fab;font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">Fermer</button>
         </div>
       </div>
+
     </div>
   </div>
 
+
+
+  <!-- Scripts non-bloquants -->
+
+
   <script src="/js/generator.js" defer></script>
   <script>
+    /* ═══════════════════════════════════════
+       ÉDITEUR INLINE — 100% dans index.html
+       Zéro dépendance à generator.js
+    ═══════════════════════════════════════ */
+
     var editorOpen = false
 
     function toggleEditorPanel() {
@@ -895,101 +1915,101 @@
       }
     }
 
+    // Rétrocompatibilité
     function toggleEditor() { toggleEditorPanel() }
 
     function injectEditorListeners() {
-      var frame = document.getElementById('preview-frame') || document.getElementById('editor-preview-frame')
-      if (!frame) return
+      var frame = document.getElementById('preview-frame')
+      if (!frame || !frame.contentDocument) return
       try {
-        var doc = frame.contentDocument || frame.contentWindow.document
-        if (!doc || !doc.documentElement) return
+        var doc = frame.contentDocument
         var old = doc.getElementById('_nyxia_edit_script')
         if (old) old.remove()
         var s = doc.createElement('script')
         s.id = '_nyxia_edit_script'
         s.textContent =
           'var _sel=null;' +
-          'document.documentElement.style.cursor="crosshair";' +
-          'document.documentElement.addEventListener("mouseover",function(e){' +
-          '  if(e.target.getAttribute("data-nyxia-sel")!=="1")e.target.style.outline="1px dashed rgba(123,92,255,0.4)";' +
+          'document.body.addEventListener("mouseover",function(e){' +
+          '  if(_sel!==e.target){e.target.style.outline="1px dashed rgba(123,92,255,0.4)";}' +
           '},true);' +
-          'document.documentElement.addEventListener("mouseout",function(e){' +
-          '  if(e.target.getAttribute("data-nyxia-sel")!=="1"&&e.target.style)e.target.style.outline="";' +
+          'document.body.addEventListener("mouseout",function(e){' +
+          '  if(_sel!==e.target){e.target.style.outline="";}' +
           '},true);' +
-          'document.documentElement.addEventListener("click",function(e){' +
+          'document.body.addEventListener("click",function(e){' +
           '  e.preventDefault();e.stopPropagation();' +
-          '  var prev=document.querySelector("[data-nyxia-sel=1]");' +
-          '  if(prev){prev.style.outline="";prev.removeAttribute("data-nyxia-sel");}' +
+          '  if(_sel){_sel.style.outline="";}' +
           '  _sel=e.target;' +
           '  _sel.style.outline="2px solid #7B5CFF";' +
-          '  _sel.setAttribute("data-nyxia-sel","1");' +
           '  var isImg=(_sel.tagName==="IMG");' +
           '  var txt=isImg?"":((_sel.innerText||_sel.textContent||"").trim());' +
           '  var imgIdx=-1;if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===_sel){imgIdx=i;break;}}}' +
           '  window.parent.postMessage({type:"nyxia_click",isImg:isImg,text:txt,tag:_sel.tagName.toLowerCase(),src:isImg?_sel.src:"",imgIdx:imgIdx},"*");' +
           '},true);'
-        var target = doc.head || doc.documentElement
-        target.insertBefore(s, target.firstChild)
+        doc.body.appendChild(s)
       } catch(e) { console.log('editor inject:', e) }
     }
 
     var _selectedImgIdx = -1
 
+    // Reçoit clics depuis l'iframe
     window.addEventListener('message', function(e) {
       if (!e.data || e.data.type !== 'nyxia_click') return
       if (!e.data.isImg) {
-        document.getElementById('text-editor-section').style.display = 'block'
-        document.getElementById('img-editor-section').style.display = 'none'
+        // TEXTE
+        var sec   = document.getElementById('text-editor-section')
+        var imgSec = document.getElementById('img-editor-section')
         var input = document.getElementById('selected-text-input')
+        if (imgSec) imgSec.style.display = 'none'
+        if (sec)   sec.style.display = 'block'
         if (input) { input.value = e.data.text; input.focus() }
       } else {
+        // IMAGE
         _selectedImgIdx = e.data.imgIdx
-        document.getElementById('text-editor-section').style.display = 'none'
-        document.getElementById('img-editor-section').style.display = 'block'
-        document.getElementById('img-editor-preview').src = e.data.src
-        document.getElementById('img-pexels-grid').innerHTML = ''
+        var sec   = document.getElementById('text-editor-section')
+        var imgSec = document.getElementById('img-editor-section')
+        if (sec)    sec.style.display = 'none'
+        if (imgSec) imgSec.style.display = 'block'
+        var prev = document.getElementById('img-editor-preview')
+        if (prev) prev.src = e.data.src
+        // Reset grille Pexels
+        var grid = document.getElementById('img-pexels-grid')
+        if (grid) grid.innerHTML = ''
       }
     })
 
     function applyTextEdit() {
-      var input = document.getElementById('selected-text-input') || document.getElementById('edit-text-input')
-      if (!input) return
+      var input = document.querySelector('#text-editor-section textarea') ||
+                  document.querySelector('.editor-section textarea')
+      var frame = document.getElementById('preview-frame')
+      if (!input || !frame || !frame.contentDocument) return
       try {
-        var frame = document.getElementById('preview-frame') || document.getElementById('editor-preview-frame')
-        var doc = frame.contentDocument || frame.contentWindow.document
-        var sel = doc.querySelector('[data-nyxia-sel="1"]')
-        if (!sel) { alert("Clique d'abord sur un texte dans le preview"); return }
-        if (sel.children.length === 0) sel.textContent = input.value
-        else sel.innerText = input.value
+        var sel = frame.contentDocument.querySelector('[style*="2px solid #7B5CFF"]')
+        if (!sel) return
+        sel.textContent = input.value
         sel.style.outline = ''
-        sel.removeAttribute('data-nyxia-sel')
-        saveEdits()
-      } catch(e) { alert('Erreur: ' + e.message) }
+      } catch(e) {}
     }
 
     function applyColor(type, value) {
-      var frame = document.getElementById('preview-frame') || document.getElementById('editor-preview-frame')
-      if (!frame) return
+      var frame = document.getElementById('preview-frame')
+      if (!frame || !frame.contentDocument) return
       try {
-        var doc = frame.contentDocument || frame.contentWindow.document
-        if (!doc) return
-        if (type === 'bg') { doc.body.style.background = value }
-        else if (type === 'accent') { doc.querySelectorAll('h1,h2,h3,a').forEach(function(el){ el.style.color = value }) }
-        else if (type === 'text') {
-          var st = doc.getElementById('_nyxia_cs')
-          if (!st) { st = doc.createElement('style'); st.id = '_nyxia_cs'; (doc.head||doc.documentElement).appendChild(st) }
-          st.textContent = 'body, body * { color: ' + value + ' !important; }'
+        var doc = frame.contentDocument
+        var maps = {
+          bg:     function(v){ doc.body.style.background = v },
+          accent: function(v){ doc.querySelectorAll('h1,h2,h3,a').forEach(function(el){ el.style.color=v }) },
+          text:   function(v){ doc.body.style.color = v },
+          btn:    function(v){ doc.querySelectorAll('button').forEach(function(el){ el.style.background=v }) }
         }
-        else if (type === 'btn') { doc.querySelectorAll('button,.btn').forEach(function(el){ el.style.background = value }) }
+        if (maps[type]) maps[type](value)
       } catch(e) {}
     }
 
     function saveEdits() {
-      var frame = document.getElementById('preview-frame') || document.getElementById('editor-preview-frame')
-      if (!frame) return
+      var frame = document.getElementById('preview-frame')
+      if (!frame || !frame.contentDocument) return
       try {
-        var doc = frame.contentDocument || frame.contentWindow.document
-        if (doc && doc.documentElement) window.generatedCode = '<!DOCTYPE html>' + doc.documentElement.outerHTML
+        window.generatedCode = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
         var b = document.querySelector('[onclick="saveEdits()"]')
         if (b) { var o=b.textContent; b.textContent='✓ Sauvegardé!'; setTimeout(function(){b.textContent=o},2000) }
       } catch(e) {}
@@ -1006,9 +2026,8 @@
     }
 
     function resetEdits() {
-      if (!window.generatedCode) return
-      var frame = document.getElementById('preview-frame') || document.getElementById('editor-preview-frame')
-      if (frame) frame.srcdoc = window.generatedCode
+      var frame = document.getElementById('preview-frame')
+      if (frame && window.generatedCode) frame.srcdoc = window.generatedCode
     }
 
     function uploadEditorImage(input) {
@@ -1021,17 +2040,14 @@
     }
 
     function replaceEditorImage(newSrc) {
-      if (_selectedImgIdx < 0) { alert('Clique d\'abord sur une image'); return }
-      var frame = document.getElementById('preview-frame') || document.getElementById('editor-preview-frame')
-      if (!frame) return
+      if (_selectedImgIdx < 0) { alert('Clique d\'abord sur une image dans le preview'); return }
+      var frame = document.getElementById('preview-frame')
+      if (!frame || !frame.contentDocument) return
       try {
-        var doc = frame.contentDocument || frame.contentWindow.document
-        if (!doc) return
-        var imgs = doc.querySelectorAll('img')
+        var imgs = frame.contentDocument.querySelectorAll('img')
         if (imgs[_selectedImgIdx]) {
           imgs[_selectedImgIdx].src = newSrc
           imgs[_selectedImgIdx].style.outline = ''
-          imgs[_selectedImgIdx].removeAttribute('data-nyxia-sel')
           document.getElementById('img-editor-preview').src = newSrc
           saveEdits()
         }
@@ -1045,106 +2061,302 @@
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Recherche...</div>'
       var promises = []
       for (var i = 0; i < 4; i++) {
-        promises.push(fetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:query})}).then(function(r){return r.json()}).catch(function(){return null}))
+        promises.push(fetch('/api/image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: query })
+        }).then(function(r) { return r.json() }).catch(function(){ return null }))
       }
       Promise.all(promises).then(function(results) {
-        window._pexelsEditorImgs = results.filter(function(d){return d&&d.success&&d.dataUrl})
-        if (!window._pexelsEditorImgs.length) { grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Aucun résultat</div>'; return }
-        grid.innerHTML = window._pexelsEditorImgs.map(function(d,i){return '<img src="'+d.dataUrl+'" onclick="replaceEditorImage(window._pexelsEditorImgs['+i+'].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent" onmouseover="this.style.borderColor=\'#7B5CFF\'" onmouseout="this.style.borderColor=\'transparent\'">'}).join('')
+        window._pexelsEditorImgs = results.filter(function(d){ return d && d.success && d.dataUrl })
+        if (!window._pexelsEditorImgs.length) {
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Aucun résultat</div>'
+          return
+        }
+        grid.innerHTML = window._pexelsEditorImgs.map(function(d, i) {
+          return '<img src="' + d.dataUrl + '" onclick="replaceEditorImage(window._pexelsEditorImgs[' + i + '].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .2s" onmouseover="this.style.borderColor=\'#7B5CFF\'" onmouseout="this.style.borderColor=\'transparent\'">'
+        }).join('')
       })
     }
 
+    /* ══════════════════════════════════════
+       PUBLICATION EN 1 CLIC
+    ══════════════════════════════════════ */
     var _publishedUrl = ''
+
     function openPublishModal() {
       var modal = document.getElementById('publish-modal')
       if (!modal) return
+      // Génère un nom par défaut depuis le prompt ou la date
       var input = document.getElementById('user-input')
       var defaultName = 'mon-site-nyxia'
-      if (input && input.value) defaultName = input.value.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().split(/\s+/).slice(0,4).join('-').substring(0,40) || 'mon-site-nyxia'
+      if (input && input.value) {
+        defaultName = input.value
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .split(/\s+/)
+          .slice(0, 4)
+          .join('-')
+          .substring(0, 40) || 'mon-site-nyxia'
+      }
       document.getElementById('publish-name').value = defaultName
       updatePublishPreview()
       showPublishState('form')
       modal.style.display = 'flex'
     }
-    function closePublishModal() { var m=document.getElementById('publish-modal'); if(m)m.style.display='none' }
+
+    function closePublishModal() {
+      var modal = document.getElementById('publish-modal')
+      if (modal) modal.style.display = 'none'
+    }
+
     function updatePublishPreview() {
-      var name = document.getElementById('publish-name').value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'')
-      var p = document.getElementById('publish-preview-url')
-      if (p) p.textContent = name ? '→ ' + name + '.pages.dev' : ''
+      var name = document.getElementById('publish-name').value
+        .toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '')
+      var preview = document.getElementById('publish-preview-url')
+      if (preview) preview.textContent = name ? '→ ' + name + '.pages.dev' : ''
     }
+
     function showPublishState(state) {
-      ['form','loading','success','error'].forEach(function(s){var el=document.getElementById('publish-'+s+'-state');if(el)el.style.display=s===state?'block':'none'})
+      ['form', 'loading', 'success', 'error'].forEach(function(s) {
+        var el = document.getElementById('publish-' + s + '-state')
+        if (el) el.style.display = s === state ? 'block' : 'none'
+      })
     }
+
     function copyPublishUrl() {
-      if (_publishedUrl) navigator.clipboard.writeText(_publishedUrl).then(function(){var b=document.getElementById('btn-copy-publish-url');if(b){b.textContent='✓ Copié !';setTimeout(function(){b.textContent='📋 Copier le lien'},2000)}})
+      if (_publishedUrl) {
+        navigator.clipboard.writeText(_publishedUrl).then(function() {
+          var btn = document.getElementById('btn-copy-publish-url')
+          if (btn) { btn.textContent = '✓ Copié !'; setTimeout(function(){ btn.textContent = '📋 Copier le lien' }, 2000) }
+        })
+      }
     }
+
     function doPublish() {
       var rawName = document.getElementById('publish-name').value.trim()
-      if (!rawName) { document.getElementById('publish-name').style.borderColor='rgba(255,75,110,0.6)'; return }
-      var cleanName = rawName.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'').substring(0,50)
+      if (!rawName) {
+        document.getElementById('publish-name').style.borderColor = 'rgba(255,75,110,0.6)'
+        return
+      }
+      var cleanName = rawName.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '').substring(0, 50)
+
+      // Récupère le HTML généré
       var html = window.generatedCode || ''
-      if (!html) { try{var f=document.getElementById('preview-frame');if(f){var d=f.contentDocument||f.contentWindow.document;if(d&&d.documentElement)html='<!DOCTYPE html>'+d.documentElement.outerHTML}}catch(e){} }
-      if (!html||html.length<100) { showPublishState('error'); document.getElementById('publish-error-msg').textContent="Aucun site généré. Génère d'abord un site."; return }
+      if (!html) {
+        try {
+          var frame = document.getElementById('preview-frame')
+          if (frame && frame.contentDocument) {
+            html = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
+          }
+        } catch(e) {}
+      }
+      if (!html || html.length < 100) {
+        showPublishState('error')
+        document.getElementById('publish-error-msg').textContent = "Aucun site généré à publier. Génère d'abord un site."
+        return
+      }
+
       showPublishState('loading')
-      fetch('/api/publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectName:cleanName,html:html})})
-      .then(function(r){return r.json()})
-      .then(function(data){if(data.success&&data.url){_publishedUrl=data.url;var u=document.getElementById('publish-result-url');if(u){u.textContent=data.url;u.href=data.url}showPublishState('success')}else{showPublishState('error');document.getElementById('publish-error-msg').textContent=data.error||'Erreur inconnue'}})
-      .catch(function(e){showPublishState('error');document.getElementById('publish-error-msg').textContent='Erreur réseau : '+e.message})
+
+      fetch('/api/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectName: cleanName, html: html })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        if (data.success && data.url) {
+          _publishedUrl = data.url
+          var urlEl = document.getElementById('publish-result-url')
+          if (urlEl) { urlEl.textContent = data.url; urlEl.href = data.url }
+          showPublishState('success')
+        } else {
+          showPublishState('error')
+          document.getElementById('publish-error-msg').textContent = data.error || 'Erreur inconnue. Réessaie dans un instant.'
+        }
+      })
+      .catch(function(e) {
+        showPublishState('error')
+        document.getElementById('publish-error-msg').textContent = 'Erreur réseau : ' + e.message
+      })
     }
-    document.addEventListener('click',function(e){var m=document.getElementById('publish-modal');if(m&&m.style.display==='flex'&&e.target===m)closePublishModal()})
+
+    // Ferme modal si clic extérieur
+    document.addEventListener('click', function(e) {
+      var modal = document.getElementById('publish-modal')
+      if (modal && modal.style.display === 'flex' && e.target === modal) closePublishModal()
+    })
 
     function toggleNiches() {
-      var grid=document.getElementById('niches-grid'),arrow=document.getElementById('niche-arrow')
-      var open=grid.style.display!=='none'&&grid.style.display!==''
-      grid.style.display=open?'none':'grid'
-      if(arrow)arrow.style.transform=open?'rotate(0deg)':'rotate(180deg)'
+      var grid  = document.getElementById('niches-grid')
+      var arrow = document.getElementById('niche-arrow')
+      var open  = grid.style.display !== 'none' && grid.style.display !== ''
+      grid.style.display  = open ? 'none' : 'grid'
+      if (arrow) arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)'
     }
 
     var _nichePrompts = {
-      'spa':{mode:'image',prompt:"Spa luxueux et centre de bien-être haut de gamme. Ambiance zen, sérénité absolue, soins du corps et de l'esprit. Services : massages suédois, soins du visage, hammam, jacuzzi, rituels orientaux. Clientèle féminine premium. Design épuré, couleurs douces (blanc, beige, or rose), typographie élégante. Sections : accueil poétique, nos soins signature, forfaits & rituels, témoignages, réservation en ligne.",image:'https://picsum.photos/seed/spa-luxe/1400/800'},
-      'naturopathe':{mode:'image',prompt:"Naturopathe et thérapeute en médecine naturelle. Cabinet professionnel et chaleureux. Approche holistique : nutrition, phytothérapie, hygiène de vie. Tons verts naturels, terre, blanc. Sections : philosophie de soin, approches thérapeutiques, déroulement d'une consultation, tarifs, prise de rendez-vous. Ambiance naturelle et rassurante.",image:'https://picsum.photos/seed/nature-plantes/1400/800'},
-      'therapeute':{mode:'image',prompt:"Thérapeute en psychologie et développement personnel. Cabinet bienveillant et confidentiel. Spécialités : TCC, EMDR, hypnothérapie, accompagnement anxiété/dépression. Design apaisant, bleus et verts doux. Sections : approche thérapeutique, pour qui ?, déroulement des séances, infos pratiques, contact & rendez-vous. Ton professionnel et humain.",image:'https://picsum.photos/seed/bureau-psy/1400/800'},
-      'holistique':{mode:'image',prompt:"Praticien holistique et accompagnement énergétique. Soins : reiki, magnétisme, kinésiologie, soins chamaniques, reconnexion. Univers spirituel et moderne à la fois. Dorés, violets profonds, blancs. Sections : ma philosophie, les soins proposés, parcours & certifications, témoignages transformateurs, prendre rendez-vous.",image:'https://picsum.photos/seed/energie-lumiere/1400/800'},
-      'aromatherapie':{mode:'image',prompt:"Aromathérapeute et experte en huiles essentielles. Conseils personnalisés, ateliers, vente de produits naturels. Design botanique et élégant : verts, dorés, blanc cassé. Sections : les bienfaits des huiles essentielles, mes services (consultation, ateliers, créations), boutique, blog conseils, contact.",image:'https://picsum.photos/seed/huiles-essentielles/1400/800'},
-      'lithotherapie':{mode:'image',prompt:"Lithothérapeute et spécialiste des cristaux et pierres précieuses. Soins par les pierres, conseil en cristallothérapie, boutique de minéraux. Design mystique et élégant : améthyste, rose des sables, cristal de roche. Sections : les pierres & leurs vertus, mes soins, la boutique, ateliers, contact.",image:'https://picsum.photos/seed/crystals-gems/1400/800'},
-      'medium':{mode:'image',prompt:"Médium professionnel et voyance sérieuse. Consultations privées : médiumnité, communication avec l'au-delà, guidance spirituelle. Design mystique premium : noirs, violets, dorés, étoiles. Sections : qui suis-je, mes dons & compétences, types de consultations (téléphone/présentiel/distance), témoignages, réserver une séance. Ton sérieux et bienveillant.",image:'https://picsum.photos/seed/mystique-etoiles/1400/800'},
-      'astrologue':{mode:'image',prompt:"Astrologue professionnel et thèmes nataux. Services : thème natal complet, synastrie amoureuse, prévisions annuelles, astro-coaching. Design cosmique luxueux : noir profond, dorés, violets, étoiles et constellations. Sections : l'astrologie que je pratique, mes consultations, exemples de thèmes, témoignages, commander votre thème.",image:'https://picsum.photos/seed/cosmos-stars/1400/800'},
-      'tarologue':{mode:'image',prompt:"Tarologue et cartomancienne professionnelle. Lectures de tarot de Marseille et tarot divinatoire. Consultations en ligne et présentiel. Design mystique et élégant : tons bordeaux, or, noir. Sections : mon approche du tarot, les tirages proposés, déroulement d'une séance, galerie de cartes, réserver votre lecture.",image:'https://picsum.photos/seed/tarot-cards/1400/800'},
-      'numerologue':{mode:'image',prompt:"Numérologue certifiée et analyse de chemin de vie. Services : chemin de vie, année personnelle, compatibilité, prénom, bilan numérologique complet. Design mathématique et mystique : dorés, blancs, fond sombre. Sections : la numérologie expliquée, mes analyses, exemples de révélations, témoignages, commander votre analyse.",image:'https://picsum.photos/seed/nombres-mystique/1400/800'},
-      'neuro-alchimiste':{mode:'image',prompt:"Neuro-Alchimiste et coach en transformation profonde. Méthode unique alliant neurosciences, développement personnel et spiritualité. Reprogrammation des croyances limitantes, activation du potentiel. Design futuriste et spirituel : violets électriques, cyans, noir. Sections : la neuro-alchimie expliquée, le programme, transformations clients, témoignages puissants, rejoindre le programme.",image:'https://picsum.photos/seed/neuro-transformation/1400/800'},
-      'spiritualite':{mode:'image',prompt:"Entrepreneur·e en spiritualité et éveil de conscience. Accompagnement, retraites, cercles sacrés, formations. Univers lumineux et élevé : blancs, dorés, violets doux. Sections : ma mission et vision, mes accompagnements, les retraites & cercles, témoignages d'éveil, rejoindre la communauté.",image:'https://picsum.photos/seed/lumiere-eveil/1400/800'},
-      'coach':{mode:'image',prompt:"Coach de vie et business certifié ICF. Spécialités : confiance en soi, leadership, reconversion, succès. Résultats concrets et mesurables. Design professionnel et dynamique : bleus marine, blancs, accents dorés. Sections : mon approche coaching, pour qui ?, programmes signature, success stories clients, séance découverte gratuite.",image:'https://picsum.photos/seed/coaching-success/1400/800'},
-      'agence-marketing':{mode:'image',prompt:"Agence de marketing digital et stratégie de croissance. Services : SEO, publicité Meta/Google, réseaux sociaux, email marketing, branding. Résultats chiffrés et ROI. Design moderne et ambitieux : noir, blanc, rouge ou violet vif. Sections : nos expertises, notre process, résultats & case studies, équipe, demander un audit gratuit.",image:'https://picsum.photos/seed/marketing-digital/1400/800'},
-      'entrepreneur':{mode:'image',prompt:"Entrepreneur et chef d'entreprise — présentation corporate et professionnelle. Secteur d'activité varié, services B2B ou B2C. Design élégant et sobre : blanc, gris anthracite, accent couleur. Sections : notre histoire, nos services, notre équipe, nos références clients, contact & devis.",image:'https://picsum.photos/seed/entreprise-bureau/1400/800'},
-      'formation-en-ligne':{mode:'image',prompt:"Créateur de formations en ligne et e-learning. Formations vidéo, programmes complets, accès à vie. Résultats et transformation garantis. Design moderne et coloré : violets, oranges, blancs. Sections : les formations disponibles, ce que tu vas apprendre, résultats des élèves, témoignages vidéo, s'inscrire maintenant.",image:'https://picsum.photos/seed/formation-online/1400/800'},
-      'auteur':{mode:'image',prompt:"Auteur·trice et écrivain·e — site vitrine littéraire. Présentation des livres publiés, univers de l'auteur, blog littéraire. Design élégant et littéraire : tons chauds, typographie serif. Sections : l'auteur en quelques mots, les livres (couvertures + résumés + liens d'achat), presse & interviews, événements & dédicaces, contact éditorial.",image:'https://picsum.photos/seed/livres-litterature/1400/800'},
-      'maison-edition':{mode:'image',prompt:"Maison d'édition indépendante et librairie. Catalogue de livres, appel aux manuscrits, actualités littéraires. Design éditorial et raffiné : blanc, noir, rouge ou vert bouteille. Sections : notre catalogue, nos auteurs, soumettre un manuscrit, actualités & événements, la librairie en ligne.",image:'https://picsum.photos/seed/edition-librairie/1400/800'},
-      'restaurant':{mode:'image',prompt:"Restaurant gastronomique et livre de recettes. Cuisine française moderne, produits locaux et de saison. Chef étoilé ou passionné. Design chaleureux et appétissant : tons chauds, photos de plats. Sections : notre philosophie culinaire, la carte & menus, le chef, réservation en ligne, boutique (livres de recettes, produits).",image:'https://picsum.photos/seed/gastronomie-chef/1400/800'}
+      'spa': {
+        mode: 'image',
+        prompt: 'Spa luxueux et centre de bien-être haut de gamme. Ambiance zen, sérénité absolue, soins du corps et de l\'esprit. Services : massages suédois, soins du visage, hammam, jacuzzi, rituels orientaux. Clientèle féminine premium. Design épuré, couleurs douces (blanc, beige, or rose), typographie élégante. Sections : accueil poétique, nos soins signature, forfaits & rituels, témoignages, réservation en ligne.',
+        image: 'https://picsum.photos/seed/spa-luxe/1400/800'
+      },
+      'naturopathe': {
+        mode: 'image',
+        prompt: 'Naturopathe et thérapeute en médecine naturelle. Cabinet professionnel et chaleureux. Approche holistique : nutrition, phytothérapie, hygiène de vie. Tons verts naturels, terre, blanc. Sections : philosophie de soin, approches thérapeutiques, déroulement d\'une consultation, tarifs, prise de rendez-vous. Ambiance naturelle et rassurante.',
+        image: 'https://picsum.photos/seed/nature-plantes/1400/800'
+      },
+      'therapeute': {
+        mode: 'image',
+        prompt: 'Thérapeute en psychologie et développement personnel. Cabinet bienveillant et confidentiel. Spécialités : TCC, EMDR, hypnothérapie, accompagnement anxiété/dépression. Design apaisant, bleus et verts doux. Sections : approche thérapeutique, pour qui ?, déroulement des séances, infos pratiques, contact & rendez-vous. Ton professionnel et humain.',
+        image: 'https://picsum.photos/seed/bureau-psy/1400/800'
+      },
+      'holistique': {
+        mode: 'image',
+        prompt: 'Praticien holistique et accompagnement énergétique. Soins : reiki, magnétisme, kinésiologie, soins chamaniques, reconnexion. Univers spirituel et moderne à la fois. Dorés, violets profonds, blancs. Sections : ma philosophie, les soins proposés, parcours & certifications, témoignages transformateurs, prendre rendez-vous.',
+        image: 'https://picsum.photos/seed/energie-lumiere/1400/800'
+      },
+      'aromatherapie': {
+        mode: 'image',
+        prompt: 'Aromathérapeute et experte en huiles essentielles. Conseils personnalisés, ateliers, vente de produits naturels. Design botanique et élégant : verts, dorés, blanc cassé. Sections : les bienfaits des huiles essentielles, mes services (consultation, ateliers, créations), boutique, blog conseils, contact.',
+        image: 'https://picsum.photos/seed/huiles-essentielles/1400/800'
+      },
+      'lithotherapie': {
+        mode: 'image',
+        prompt: 'Lithothérapeute et spécialiste des cristaux et pierres précieuses. Soins par les pierres, conseil en cristallothérapie, boutique de minéraux. Design mystique et élégant : améthyste, rose des sables, cristal de roche. Sections : les pierres & leurs vertus, mes soins, la boutique, ateliers, contact.',
+        image: 'https://picsum.photos/seed/crystals-gems/1400/800'
+      },
+      'medium': {
+        mode: 'image',
+        prompt: 'Médium professionnel et voyance sérieuse. Consultations privées : médiumnité, communication avec l\'au-delà, guidance spirituelle. Design mystique premium : noirs, violets, dorés, étoiles. Sections : qui suis-je, mes dons & compétences, types de consultations (téléphone/présentiel/distance), témoignages, réserver une séance. Ton sérieux et bienveillant.',
+        image: 'https://picsum.photos/seed/mystique-etoiles/1400/800'
+      },
+      'astrologue': {
+        mode: 'image',
+        prompt: 'Astrologue professionnel et thèmes nataux. Services : thème natal complet, synastrie amoureuse, prévisions annuelles, astro-coaching. Design cosmique luxueux : noir profond, dorés, violets, étoiles et constellations. Sections : l\'astrologie que je pratique, mes consultations, exemples de thèmes, témoignages, commander votre thème.',
+        image: 'https://picsum.photos/seed/cosmos-stars/1400/800'
+      },
+      'tarologue': {
+        mode: 'image',
+        prompt: 'Tarologue et cartomancienne professionnelle. Lectures de tarot de Marseille et tarot divinatoire. Consultations en ligne et présentiel. Design mystique et élégant : tons bordeaux, or, noir. Sections : mon approche du tarot, les tirages proposés, déroulement d\'une séance, galerie de cartes, réserver votre lecture.',
+        image: 'https://picsum.photos/seed/tarot-cards/1400/800'
+      },
+      'numerologue': {
+        mode: 'image',
+        prompt: 'Numérologue certifiée et analyse de chemin de vie. Services : chemin de vie, année personnelle, compatibilité, prénom, bilan numérologique complet. Design mathématique et mystique : dorés, blancs, fond sombre. Sections : la numérologie expliquée, mes analyses, exemples de révélations, témoignages, commander votre analyse.',
+        image: 'https://picsum.photos/seed/nombres-mystique/1400/800'
+      },
+      'neuro-alchimiste': {
+        mode: 'image',
+        prompt: 'Neuro-Alchimiste et coach en transformation profonde. Méthode unique alliant neurosciences, développement personnel et spiritualité. Reprogrammation des croyances limitantes, activation du potentiel. Design futuriste et spirituel : violets électriques, cyans, noir. Sections : la neuro-alchimie expliquée, le programme, transformations clients, témoignages puissants, rejoindre le programme.',
+        image: 'https://picsum.photos/seed/neuro-transformation/1400/800'
+      },
+      'spiritualite': {
+        mode: 'image',
+        prompt: 'Entrepreneur·e en spiritualité et éveil de conscience. Accompagnement, retraites, cercles sacrés, formations. Univers lumineux et élevé : blancs, dorés, violets doux. Sections : ma mission et vision, mes accompagnements, les retraites & cercles, témoignages d\'éveil, rejoindre la communauté.',
+        image: 'https://picsum.photos/seed/lumiere-eveil/1400/800'
+      },
+      'coach': {
+        mode: 'image',
+        prompt: 'Coach de vie et business certifié ICF. Spécialités : confiance en soi, leadership, reconversion, succès. Résultats concrets et mesurables. Design professionnel et dynamique : bleus marine, blancs, accents dorés. Sections : mon approche coaching, pour qui ?, programmes signature, success stories clients, séance découverte gratuite.',
+        image: 'https://picsum.photos/seed/coaching-success/1400/800'
+      },
+      'agence-marketing': {
+        mode: 'image',
+        prompt: 'Agence de marketing digital et stratégie de croissance. Services : SEO, publicité Meta/Google, réseaux sociaux, email marketing, branding. Résultats chiffrés et ROI. Design moderne et ambitieux : noir, blanc, rouge ou violet vif. Sections : nos expertises, notre process, résultats & case studies, équipe, demander un audit gratuit.',
+        image: 'https://picsum.photos/seed/marketing-digital/1400/800'
+      },
+      'entrepreneur': {
+        mode: 'image',
+        prompt: 'Entrepreneur et chef d\'entreprise — présentation corporate et professionnelle. Secteur d\'activité varié, services B2B ou B2C. Design élégant et sobre : blanc, gris anthracite, accent couleur. Sections : notre histoire, nos services, notre équipe, nos références clients, contact & devis.',
+        image: 'https://picsum.photos/seed/entreprise-bureau/1400/800'
+      },
+      'formation-en-ligne': {
+        mode: 'image',
+        prompt: 'Créateur de formations en ligne et e-learning. Formations vidéo, programmes complets, accès à vie. Résultats et transformation garantis. Design moderne et coloré : violets, oranges, blancs. Sections : les formations disponibles, ce que tu vas apprendre, résultats des élèves, témoignages vidéo, s\'inscrire maintenant.',
+        image: 'https://picsum.photos/seed/formation-online/1400/800'
+      },
+      'auteur': {
+        mode: 'image',
+        prompt: 'Auteur·trice et écrivain·e — site vitrine littéraire. Présentation des livres publiés, univers de l\'auteur, blog littéraire. Design élégant et littéraire : tons chauds, typographie serif. Sections : l\'auteur en quelques mots, les livres (couvertures + résumés + liens d\'achat), presse & interviews, événements & dédicaces, contact éditorial.',
+        image: 'https://picsum.photos/seed/livres-litterature/1400/800'
+      },
+      'maison-edition': {
+        mode: 'image',
+        prompt: 'Maison d\'édition indépendante et librairie. Catalogue de livres, appel aux manuscrits, actualités littéraires. Design éditorial et raffiné : blanc, noir, rouge ou vert bouteille. Sections : notre catalogue, nos auteurs, soumettre un manuscrit, actualités & événements, la librairie en ligne.',
+        image: 'https://picsum.photos/seed/edition-librairie/1400/800'
+      },
+      'restaurant': {
+        mode: 'image',
+        prompt: 'Restaurant gastronomique et livre de recettes. Cuisine française moderne, produits locaux et de saison. Chef étoilé ou passionné. Design chaleureux et appétissant : tons chauds, photos de plats. Sections : notre philosophie culinaire, la carte & menus, le chef, réservation en ligne, boutique (livres de recettes, produits).',
+        image: 'https://picsum.photos/seed/gastronomie-chef/1400/800'
+      }
     }
 
     function applyNiche(nicheKey) {
       var niche = _nichePrompts[nicheKey]
       if (!niche) return
+
+      // Passe en mode image et remplit le prompt
+      switchMode('image')
+
+      var input = document.getElementById('user-input')
+      if (input) {
+        input.value = niche.prompt
+        input.style.borderColor = 'rgba(123,92,255,0.5)'
+        setTimeout(function(){ input.style.borderColor = 'rgba(123,92,255,0.15)' }, 1500)
+        input.focus()
+      }
+
+      // Masque la grille après sélection
       document.getElementById('niches-grid').style.display = 'none'
-      var arrow = document.getElementById('niche-arrow')
-      if (arrow) arrow.style.transform = 'rotate(0deg)'
-      if (typeof setLoading === 'function') setLoading('NyXia crée ton site ' + nicheKey + '...')
-      fetch('/api/from-url',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:'https://exemple.com',prompt:niche.prompt})})
-      .then(function(r){return r.json()})
-      .then(function(data){if(data.success&&data.html){if(typeof showPreview==='function')showPreview(data.html);if(typeof resetBtn==='function')resetBtn('Site généré ✓')}else{if(typeof resetBtn==='function')resetBtn('Erreur — '+(data.error||'Réessaie'))}})
-      .catch(function(){if(typeof resetBtn==='function')resetBtn('Erreur réseau')})
+      document.getElementById('btn-toggle-niches').textContent = 'Afficher ▾'
+
+      // Feedback visuel
+      var allCards = document.querySelectorAll('.niche-card')
+      allCards.forEach(function(c) { c.style.borderColor = 'rgba(123,92,255,0.12)' })
+
+      // Toast
+      if (typeof window.showToast === 'function') {
+        window.showToast('Template "' + nicheKey + '" appliqué ✓')
+      }
     }
 
     function switchMode(mode) {
-      var tabImg=document.getElementById('tab-image'),tabUrl=document.getElementById('tab-url'),imgMode=document.getElementById('image-mode'),urlMode=document.getElementById('url-mode')
+      var tabImg  = document.getElementById('tab-image')
+      var tabUrl  = document.getElementById('tab-url')
+      var imgMode = document.getElementById('image-mode')
+      var urlMode = document.getElementById('url-mode')
       if (!tabImg) return
-      if (mode==='url'){tabUrl.style.background='linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))';tabUrl.style.borderColor='rgba(123,92,255,0.4)';tabUrl.style.color='#fff';tabImg.style.background='rgba(123,92,255,0.05)';tabImg.style.borderColor='rgba(123,92,255,0.15)';tabImg.style.color='#8891B8';imgMode.style.display='none';urlMode.style.display='flex'}
-      else{tabImg.style.background='linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))';tabImg.style.borderColor='rgba(123,92,255,0.4)';tabImg.style.color='#fff';tabUrl.style.background='rgba(123,92,255,0.05)';tabUrl.style.borderColor='rgba(123,92,255,0.15)';tabUrl.style.color='#8891B8';imgMode.style.display='flex';urlMode.style.display='none'}
+      if (mode === 'url') {
+        tabUrl.style.background = 'linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))'
+        tabUrl.style.borderColor = 'rgba(123,92,255,0.4)'
+        tabUrl.style.color = '#fff'
+        tabImg.style.background = 'rgba(123,92,255,0.05)'
+        tabImg.style.borderColor = 'rgba(123,92,255,0.15)'
+        tabImg.style.color = '#8891B8'
+        imgMode.style.display = 'none'
+        urlMode.style.display = 'flex'
+      } else {
+        tabImg.style.background = 'linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))'
+        tabImg.style.borderColor = 'rgba(123,92,255,0.4)'
+        tabImg.style.color = '#fff'
+        tabUrl.style.background = 'rgba(123,92,255,0.05)'
+        tabUrl.style.borderColor = 'rgba(123,92,255,0.15)'
+        tabUrl.style.color = '#8891B8'
+        imgMode.style.display = 'flex'
+        urlMode.style.display = 'none'
+      }
       window._currentMode = mode
     }
   </script>
 
   <script src="/js/starry-bg.js" defer></script>
+
+
+
 
 </body>
 
