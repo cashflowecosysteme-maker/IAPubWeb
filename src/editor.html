@@ -183,6 +183,7 @@
         <div class="section-label">Actions</div>
         <button class="btn btn-primary" onclick="saveAndDownload()">💾 Sauvegarder les modifications</button>
         <button class="btn btn-secondary" onclick="copyCode()">📋 Copier le code</button>
+        <button class="btn btn-secondary" onclick="resetSite()">↺ Réinitialiser</button>
         <a href="javascript:history.back()" class="btn-back" style="display:flex;margin-top:8px">← Retour au générateur</a>
       </div>
 
@@ -201,7 +202,7 @@
       <button class="btn-back" onclick="window.close()">✕ Fermer</button>
     </div>
     <div class="hint-bar" id="hint-bar">👆 Clique sur un texte pour modifier · Clique sur une image pour la remplacer</div>
-    <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    <iframe id="preview-frame"></iframe>
   </div>
 
 </div>
@@ -211,15 +212,18 @@
   <div class="popup-title">🖼 Remplacer l'image</div>
   <img id="popup-preview" class="popup-preview" src="" alt="Image sélectionnée">
 
+  <!-- Bouton upload -->
   <button class="popup-btn popup-btn-upload" onclick="document.getElementById('img-upload-popup').click()">
     📁 <span>Télécharger depuis mon ordi</span>
   </button>
   <input type="file" id="img-upload-popup" accept="image/*" style="display:none" onchange="uploadPopupImage(this)">
 
+  <!-- Bouton Pexels -->
   <button class="popup-btn popup-btn-pexels" onclick="togglePexelsPanel()">
     🔍 <span>Chercher sur Pexels</span>
   </button>
 
+  <!-- Panel Pexels inline -->
   <div id="pexels-panel">
     <div class="pexels-search">
       <input type="text" id="pexels-query-popup" placeholder="Ex: nature, spa, business..." onkeydown="if(event.key==='Enter') searchPexelsPopup()">
@@ -243,15 +247,15 @@
   var originalCode   = ''
   var currentCode    = ''
   var editMode       = false
-  var selectedImgIdx = -1
+  var selectedImgIdx = -1  // index de l'image ciblée dans l'iframe
 
   /* ══════════════════════════════════════
-     HELPER : accès au document de l'iframe
+     ACCÈS SÉCURISÉ AU DOM DE L'IFRAME
   ══════════════════════════════════════ */
   function getDoc() {
     try {
-      var frame = document.getElementById('preview-frame')
-      return frame.contentDocument || frame.contentWindow.document
+      var f = document.getElementById('preview-frame')
+      return f.contentDocument || f.contentWindow.document
     } catch(e) {
       return null
     }
@@ -270,30 +274,30 @@
     originalCode = code
     currentCode  = code
     loadPreview(code)
+    // Active le mode édition automatiquement
     setTimeout(function() { if (!editMode) toggleEditMode() }, 800)
   })
 
   /* ══════════════════════════════════════
      LOAD PREVIEW
-     - Supprime les CSP du site généré
-       (ils bloqueraient notre script injecté)
-     - Recrée l'iframe pour un chargement propre
+     Supprime le sandbox et les CSP qui
+     bloquaient l'accès au DOM.
   ══════════════════════════════════════ */
   function loadPreview(html) {
-    // Supprime les meta CSP qui bloqueraient les scripts inline
+    // Supprime les meta CSP du site généré
     html = html.replace(/<meta[^>]*http-equiv\s*=\s*["']Content-Security-Policy["'][^>]*\/?>/gi, '')
-
+    
     var frame = document.getElementById('preview-frame')
     var parent = frame.parentElement
-    var newFrame = document.createElement('iframe')
-    newFrame.id = 'preview-frame'
-    newFrame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups')
-    newFrame.style.cssText = 'flex:1;border:none;width:100%;'
-    parent.replaceChild(newFrame, frame)
-    newFrame.onload = function() {
+    var nf = document.createElement('iframe')
+    nf.id = 'preview-frame'
+    // PAS de sandbox ici : c'est ce qui bloquait tout
+    nf.style.cssText = 'flex:1;border:none;width:100%;'
+    parent.replaceChild(nf, frame)
+    nf.onload = function() {
       if (editMode) injectEditListeners()
     }
-    newFrame.srcdoc = html
+    nf.srcdoc = html
   }
 
   /* ══════════════════════════════════════
@@ -330,30 +334,30 @@
 
   /* ══════════════════════════════════════
      INJECTION DANS L'IFRAME
-     Script ULTRA SIMPLE :
-     - Sur clic : pose un attribut data-nyxia-sel
-       et envoie la sélection au parent via postMessage
-     - RIEN D'AUTRE (pas de listener de messages)
-     Les modifications se font par accès direct
-     au DOM depuis le parent.
+     Injecté dans le HEAD pour être sûr
+     d'être le premier script exécuté.
   ══════════════════════════════════════ */
   function injectEditListeners() {
     try {
       var doc = getDoc()
-      if (!doc || !doc.body) return
+      if (!doc) return
       var old = doc.getElementById('_nyxia_ed')
       if (old) old.remove()
       var s = doc.createElement('script')
       s.id = '_nyxia_ed'
       s.textContent = [
-        'document.body.style.cursor="crosshair";',
-        'document.body.addEventListener("mouseover",function(e){',
-        '  if(e.target.getAttribute("data-nyxia-sel")!=="1")e.target.style.outline="1px dashed rgba(123,92,255,0.5)";',
+        'document.documentElement.style.cursor="crosshair";',
+        'document.documentElement.addEventListener("mouseover",function(e){',
+        '  if(e.target.getAttribute("data-nyxia-sel")!=="1"){',
+        '    e.target.style.outline="1px dashed rgba(123,92,255,0.5)";',
+        '  }',
         '},true);',
-        'document.body.addEventListener("mouseout",function(e){',
-        '  if(e.target.getAttribute("data-nyxia-sel")!=="1"&&e.target.style)e.target.style.outline="";',
+        'document.documentElement.addEventListener("mouseout",function(e){',
+        '  if(e.target.getAttribute("data-nyxia-sel")!=="1"&&e.target.style){',
+        '    e.target.style.outline="";',
+        '  }',
         '},true);',
-        'document.body.addEventListener("click",function(e){',
+        'document.documentElement.addEventListener("click",function(e){',
         '  e.preventDefault();',
         '  e.stopPropagation();',
         '  var prev=document.querySelector("[data-nyxia-sel=1]");',
@@ -370,119 +374,33 @@
         '  window.parent.postMessage({type:"nyxia-sel",isImg:isImg,txt:txt,src:src,tag:tag,imgIdx:imgIdx,x:e.clientX,y:e.clientY},"*");',
         '},true);'
       ].join('\n')
-      doc.body.appendChild(s)
+      var target = doc.head || doc.documentElement
+      target.insertBefore(s, target.firstChild)
     } catch(e) { console.log('inject err:', e) }
   }
 
   /* ══════════════════════════════════════
-     RÉCEPTION DE LA SÉLECTION (depuis iframe)
+     RÉCEPTION SÉLECTION DEPUIS IFRAME
   ══════════════════════════════════════ */
   window.addEventListener('message', function(e) {
     if (!e.data || e.data.type !== 'nyxia-sel') return
 
     if (!e.data.isImg) {
+      // ── TEXTE sélectionné ──
       closeImgPopup()
       document.getElementById('selected-info').classList.add('visible')
       document.getElementById('selected-tag').textContent = '<' + e.data.tag + '>'
       document.getElementById('selected-preview').textContent = e.data.txt.substring(0, 80) + (e.data.txt.length > 80 ? '...' : '')
       document.getElementById('text-input').value = e.data.txt
+      // Switche vers onglet texte
       switchTab('texte', document.querySelector('.tab-btn'))
+
     } else {
+      // ── IMAGE sélectionnée — ouvre popup ──
       selectedImgIdx = e.data.imgIdx
       showImgPopup(e.data.src, e.data.x, e.data.y)
     }
   })
-
-  /* ══════════════════════════════════════
-     MODIFIER TEXTE
-     Accès DIRECT au DOM de l'iframe,
-     cherche l'élément par data-nyxia-sel
-  ══════════════════════════════════════ */
-  function applyText() {
-    var newText = document.getElementById('text-input').value
-    try {
-      var doc = getDoc()
-      if (!doc) { toast('⚠️ Aperçu non chargé'); return }
-
-      var sel = doc.querySelector('[data-nyxia-sel="1"]')
-      if (!sel) { toast('⚠️ Clique d\'abord sur un texte dans le preview'); return }
-
-      if (sel.children.length === 0) {
-        sel.textContent = newText
-      } else {
-        sel.innerText = newText
-      }
-
-      sel.style.outline = ''
-      sel.removeAttribute('data-nyxia-sel')
-      syncCode()
-      toast('✓ Texte modifié !')
-    } catch(err) {
-      toast('⚠️ Erreur : ' + err.message)
-    }
-  }
-
-  /* ══════════════════════════════════════
-     COULEUR DU TEXTE
-     Injecte un <style> avec !important
-     pour forcer TOUS les éléments
-  ══════════════════════════════════════ */
-  function applyTextColor(value) {
-    try {
-      var doc = getDoc()
-      if (!doc) { toast('⚠️ Aperçu non chargé'); return }
-
-      var st = doc.getElementById('_nyxia_cs')
-      if (!st) {
-        st = doc.createElement('style')
-        st.id = '_nyxia_cs'
-        var head = doc.head || doc.documentElement
-        head.appendChild(st)
-      }
-      st.textContent = 'body, body * { color: ' + value + ' !important; }'
-      syncCode()
-      toast('✓ Couleur de texte appliquée !')
-    } catch(err) {
-      toast('⚠️ Erreur : ' + err.message)
-    }
-  }
-
-  /* ══════════════════════════════════════
-     COULEURS — style inline direct
-  ══════════════════════════════════════ */
-  function applyStyleRule(selector, prop, value) {
-    try {
-      var doc = getDoc()
-      if (!doc) return
-      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
-      var els = doc.querySelectorAll(selector)
-      for (var i = 0; i < els.length; i++) {
-        els[i].style[camel] = value
-      }
-      syncCode()
-    } catch(err) {}
-  }
-
-  function applyToElements(selectors, prop, value) {
-    try {
-      var doc = getDoc()
-      if (!doc) return
-      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
-      for (var si = 0; si < selectors.length; si++) {
-        var els = doc.querySelectorAll(selectors[si])
-        for (var i = 0; i < els.length; i++) {
-          els[i].style[camel] = value
-        }
-      }
-      syncCode()
-    } catch(err) {}
-  }
-
-  function applyGradient() {
-    var c1 = document.getElementById('c-grad1').value
-    var c2 = document.getElementById('c-grad2').value
-    applyStyleRule('body', 'background', 'linear-gradient(135deg,' + c1 + ',' + c2 + ')')
-  }
 
   /* ══════════════════════════════════════
      POPUP IMAGE
@@ -491,10 +409,12 @@
     var popup = document.getElementById('img-popup')
     document.getElementById('popup-preview').src = src
 
+    // Positionne la popup près du clic (décalée de la sidebar)
     var sidebarW = 280
     var absX = sidebarW + clickX
     var absY = clickY
 
+    // Évite que la popup sorte de l'écran
     var popW = 260, popH = 300
     var left = Math.min(absX + 10, window.innerWidth - popW - 10)
     var top  = Math.min(absY - 40, window.innerHeight - popH - 10)
@@ -504,6 +424,7 @@
     popup.style.top  = top + 'px'
     popup.classList.add('visible')
 
+    // Reset panel Pexels
     document.getElementById('pexels-panel').style.display = 'none'
   }
 
@@ -520,6 +441,7 @@
     }
   }
 
+  // Ferme popup si on clique ailleurs
   document.addEventListener('click', function(e) {
     var popup = document.getElementById('img-popup')
     if (popup.classList.contains('visible') && !popup.contains(e.target)) {
@@ -528,7 +450,7 @@
   })
 
   /* ══════════════════════════════════════
-     REMPLACEMENT IMAGE — accès direct
+     REMPLACEMENT IMAGE — par index (fiable)
   ══════════════════════════════════════ */
   function replaceImageByIndex(newSrc) {
     if (selectedImgIdx < 0) { toast('⚠️ Aucune image sélectionnée'); return }
@@ -543,9 +465,7 @@
       syncCode()
       closeImgPopup()
       toast('✓ Image remplacée !')
-    } catch(err) {
-      toast('⚠️ Erreur : ' + err.message)
-    }
+    } catch(e) { toast('Erreur: ' + e.message) }
   }
 
   function uploadPopupImage(input) {
@@ -554,6 +474,7 @@
     var reader = new FileReader()
     reader.onload = function(ev) { replaceImageByIndex(ev.target.result) }
     reader.readAsDataURL(file)
+    // Reset input pour permettre re-upload du même fichier
     input.value = ''
   }
 
@@ -563,6 +484,7 @@
     var grid = document.getElementById('pexels-grid-popup')
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:10px">Recherche...</div>'
 
+    // 4 requêtes parallèles
     var promises = []
     for (var i = 0; i < 4; i++) {
       promises.push(
@@ -584,6 +506,7 @@
       grid.innerHTML = imgs.map(function(d, i) {
         return '<img class="pexels-thumb" src="' + d.dataUrl + '" title="' + (d.photographer || '') + '" onclick="selectPexelsImage(' + i + ')" data-idx="' + i + '">'
       }).join('')
+      // Stocke les dataUrls pour y accéder au clic
       window._pexelsResults = imgs
     }).catch(function() {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ff8fab;font-size:11px;padding:10px">Erreur — réessaie</div>'
@@ -594,6 +517,80 @@
     if (window._pexelsResults && window._pexelsResults[i]) {
       replaceImageByIndex(window._pexelsResults[i].dataUrl)
     }
+  }
+
+  /* ══════════════════════════════════════
+     MODIFIER TEXTE
+  ══════════════════════════════════════ */
+  function applyText() {
+    var newText = document.getElementById('text-input').value
+    try {
+      var doc = getDoc()
+      if (!doc) { toast('⚠️ Aperçu non chargé'); return }
+      var sel = doc.querySelector('[data-nyxia-sel="1"]')
+      if (!sel) { toast('⚠️ Clique d\'abord sur un texte dans le preview'); return }
+      if (sel.children.length === 0) sel.textContent = newText
+      else sel.innerText = newText
+      sel.style.outline = ''
+      sel.removeAttribute('data-nyxia-sel')
+      syncCode()
+      toast('✓ Texte modifié !')
+    } catch(e) { toast('Erreur: ' + e.message) }
+  }
+
+  /* ══════════════════════════════════════
+     COULEUR DU TEXTE
+     Injecte un <style> avec !important
+     pour forcer TOUS les éléments
+  ══════════════════════════════════════ */
+  function applyTextColor(value) {
+    try {
+      var doc = getDoc()
+      if (!doc) { toast('⚠️ Aperçu non chargé'); return }
+      var st = doc.getElementById('_nyxia_cs')
+      if (!st) {
+        st = doc.createElement('style')
+        st.id = '_nyxia_cs'
+        var head = doc.head || doc.documentElement
+        head.appendChild(st)
+      }
+      st.textContent = 'body, body * { color: ' + value + ' !important; }'
+      syncCode()
+      toast('✓ Couleur de texte appliquée !')
+    } catch(e) { toast('Erreur: ' + e.message) }
+  }
+
+  /* ══════════════════════════════════════
+     COULEURS
+  ══════════════════════════════════════ */
+  function applyStyleRule(selector, prop, value) {
+    try {
+      var doc = getDoc()
+      if (!doc) return
+      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
+      var els = doc.querySelectorAll(selector)
+      for (var i = 0; i < els.length; i++) { els[i].style[camel] = value }
+      syncCode()
+    } catch(e) {}
+  }
+
+  function applyToElements(selectors, prop, value) {
+    try {
+      var doc = getDoc()
+      if (!doc) return
+      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
+      for (var si = 0; si < selectors.length; si++) {
+        var els = doc.querySelectorAll(selectors[si])
+        for (var i = 0; i < els.length; i++) { els[i].style[camel] = value }
+      }
+      syncCode()
+    } catch(e) {}
+  }
+
+  function applyGradient() {
+    var c1 = document.getElementById('c-grad1').value
+    var c2 = document.getElementById('c-grad2').value
+    applyStyleRule('body', 'background', 'linear-gradient(135deg,' + c1 + ',' + c2 + ')')
   }
 
   /* ══════════════════════════════════════
@@ -622,6 +619,14 @@
   function copyCode() {
     syncCode()
     navigator.clipboard.writeText(currentCode).then(function() { toast('✓ Code copié !') })
+  }
+
+  function resetSite() {
+    if (!confirm('Annuler toutes les modifications ?')) return
+    currentCode = originalCode
+    loadPreview(originalCode)
+    selectedImgIdx = -1
+    toast('↺ Réinitialisé')
   }
 
   /* ══════════════════════════════════════
