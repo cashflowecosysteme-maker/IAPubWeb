@@ -2675,7 +2675,7 @@
       }
       if (!html || html.length < 100) {
         showPublishState('error')
-        document.getElementById('publish-error-msg').textContent = "Aucun site généré à publier. Génère d'abord un site."
+        document.getElementById('publish-error-msg').textContent = "Aucun site généré. Génère un site en premier."
         return
       }
 
@@ -3081,7 +3081,7 @@
       if (!html || html.length < 100) {
         showPublishState('error')
         var errEl = document.getElementById('publish-error-msg')
-        if (errEl) errEl.textContent = "Génère d'abord un site avant de publier."
+        if (errEl) errEl.textContent = "Génère un site en premier."
         return
       }
 
@@ -3184,6 +3184,27 @@
       }
     }
     window.replaceEditorImage = replaceEditorImage
+
+    function switchMode(mode) {
+      var tabImg  = document.getElementById('tab-image')
+      var tabUrl  = document.getElementById('tab-url')
+      var imgMode = document.getElementById('image-mode')
+      var urlMode = document.getElementById('url-mode')
+      if (!tabImg) return
+      window._currentMode = mode
+      if (mode === 'url') {
+        tabUrl.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+        tabImg.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+        if (imgMode) imgMode.style.display = 'none'
+        if (urlMode) urlMode.style.display = 'flex'
+      } else {
+        tabImg.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+        tabUrl.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+        if (imgMode) imgMode.style.display = 'flex'
+        if (urlMode) urlMode.style.display = 'none'
+      }
+    }
+    window.switchMode = switchMode
   </script>
 </body>
 
