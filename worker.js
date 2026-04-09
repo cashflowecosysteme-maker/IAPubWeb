@@ -759,127 +759,6 @@ export default {
       })
     }
 
-
-    /* ════════════════════════════════════════════════════
-       ROUTE /api/sites/save — Sauvegarde un site généré
-       lié au compte client (token requis)
-       Clé KV : usersite:{email}:{id}
-    ════════════════════════════════════════════════════ */
-    if (url.pathname === "/api/sites/save" && request.method === "POST") {
-      try {
-        const body  = await request.json()
-        const token = body.token || ""
-        const html  = body.html  || ""
-        const name  = body.name  || "Mon site"
-
-        if (!token) {
-          return new Response(JSON.stringify({ success: false, error: "Token requis." }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
-        if (!html || html.length < 100) {
-          return new Response(JSON.stringify({ success: false, error: "HTML vide." }),
-            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
-
-        const email = await env.USERS_KV.get("session:" + token)
-        if (!email) {
-          return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
-
-        // Génère un slug unique pour ce site
-        const slug = name
-          .toLowerCase()
-          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^a-z0-9-]/g, '-')
-          .replace(/--+/g, '-')
-          .replace(/^-|-$/g, '')
-          .slice(0, 40) || "site"
-
-        const id      = slug + "-" + Date.now().toString(36)
-        const siteUrl = "https://webmasteria.nyxiapublicationweb.com/site/" + id
-
-        // Sauvegarde le HTML public (accessible via /site/{id})
-        await env.USERS_KV.put("site:" + id, html)
-
-        // Sauvegarde les métadonnées liées au client
-        const meta = JSON.stringify({
-          id,
-          name,
-          slug,
-          url  : siteUrl,
-          date : new Date().toISOString(),
-          email
-        })
-        await env.USERS_KV.put("usersite:" + email + ":" + id, meta)
-
-        return new Response(JSON.stringify({ success: true, id, url: siteUrl }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
-
-      } catch(e) {
-        return new Response(JSON.stringify({ success: false, error: e.message }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-      }
-    }
-
-    /* ════════════════════════════════════════════════════
-       ROUTE /api/sites/list — Liste les sites d'un client
-    ════════════════════════════════════════════════════ */
-    if (url.pathname === "/api/sites/list" && request.method === "POST") {
-      try {
-        const body  = await request.json()
-        const token = body.token || ""
-
-        const email = await env.USERS_KV.get("session:" + token)
-        if (!email) {
-          return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
-
-        const list  = await env.USERS_KV.list({ prefix: "usersite:" + email + ":" })
-        const sites = []
-        for (const key of list.keys) {
-          const val = await env.USERS_KV.get(key.name)
-          if (val) sites.push(JSON.parse(val))
-        }
-        sites.sort((a, b) => new Date(b.date) - new Date(a.date))
-
-        return new Response(JSON.stringify({ success: true, sites }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
-
-      } catch(e) {
-        return new Response(JSON.stringify({ success: false, error: e.message }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-      }
-    }
-
-    /* ════════════════════════════════════════════════════
-       ROUTE /api/sites/delete — Supprime un site client
-    ════════════════════════════════════════════════════ */
-    if (url.pathname === "/api/sites/delete" && request.method === "POST") {
-      try {
-        const body  = await request.json()
-        const token = body.token || ""
-        const id    = body.id   || ""
-
-        const email = await env.USERS_KV.get("session:" + token)
-        if (!email) {
-          return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
-            { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
-
-        await env.USERS_KV.delete("site:" + id)
-        await env.USERS_KV.delete("usersite:" + email + ":" + id)
-
-        return new Response(JSON.stringify({ success: true }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
-
-      } catch(e) {
-        return new Response(JSON.stringify({ success: false, error: e.message }),
-          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-      }
-    }
-
     /* ════════════════════════════════════════════════════
        ROUTE /api/from-url — Génère un site depuis une URL (DeepSeek-v3)
     ════════════════════════════════════════════════════ */
@@ -1580,22 +1459,10 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
       const userPrompt  = body.prompt    || ""
       const imageBase64 = body.image     || ""
       const imageType   = body.imageType || "image/jpeg"
-      const imageUrl    = body.imageUrl  || ""  // URL directe pour les templates niche
 
-      // Accepte soit base64, soit imageUrl (Picsum pour templates)
-      if (!imageBase64 && !imageUrl) {
+      if (!imageBase64) {
         return new Response(JSON.stringify({ error: "Aucune image reçue." }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-      }
-
-      // Construit le bloc image pour GLM selon le mode
-      let imageContent
-      if (imageBase64) {
-        // Mode upload — base64
-        imageContent = { type: "image_url", image_url: { url: `data:${imageType};base64,${imageBase64}` } }
-      } else {
-        // Mode template niche — URL Picsum directe
-        imageContent = { type: "image_url", image_url: { url: imageUrl } }
       }
 
       const glmRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -1624,7 +1491,10 @@ Tu réponds UNIQUEMENT avec du code HTML complet, sans aucun texte avant ou apr�
             {
               role: "user",
               content: [
-                imageContent,
+                {
+                  type: "image_url",
+                  image_url: { url: `data:${imageType};base64,${imageBase64}` }
+                },
                 {
                   type: "text",
                   text: `Analyse cette image avec une précision absolue et génère un site web HTML complet sur le thème : "${userPrompt}"
