@@ -5,10 +5,13 @@
  *   POST /api/vision  — GLM-5V-Turbo (vision + génération HTML premium)
  *   POST /api/image   — Pexels Photos → base64
  *   POST /api/video   — Pexels Videos → URLs MP4
+ *   POST /api/publish — Publication 1 clic (Cloudflare Pages)
  *
- * Variables d'environnement :
+ * Variables d'environnement requises :
  *   OPENROUTER_KEY  — clé OpenRouter
  *   PEXELS_KEY      — clé Pexels API
+ *   CF_ACCOUNT_ID   — ID du compte Cloudflare
+ *   CF_API_TOKEN    — Token API Cloudflare (droits Pages:Edit)
  */
 // ── ZIP Natif — Zero Dependency (validé, format PKZIP Store) ──
 const makeCRCTable = () => {
@@ -646,7 +649,7 @@ export default {
         let sent = 0
 
         for (const email of recipients) {
-          // Sauvegarde dans KV pour que le client le voit dans sa messagerie
+          // Sauvegarde dans KV pour que le client le voie dans sa messagerie
           const msgId  = "admin_" + Date.now() + "_" + Math.random().toString(36).slice(2,6)
           const msgObj = {
             id       : msgId,
@@ -698,74 +701,62 @@ export default {
       }
     }
 
-
     /* ════════════════════════════════════════════════════
-       ROUTE /api/publish — Publication 1 clic (préfixe webmasteria-)
+       ROUTE /api/publish — Publication via Cloudflare KV
+       Architecture : KV existant (USERS_KV) stocke le HTML
+       sous la clé site:{slug} — zéro config supplémentaire.
+       URL publique : /site/{slug} servi par ce même worker.
     ════════════════════════════════════════════════════ */
     if (url.pathname === "/api/publish" && request.method === "POST") {
       try {
         const body        = await request.json()
         const html        = body.html        || ""
-        const projectName = body.projectName || "mon-site"
+        const projectName = body.projectName || "site"
 
         if (!html || html.length < 100) {
-          return new Response(JSON.stringify({ success: false, error: "HTML manquant ou vide." }),
+          return new Response(JSON.stringify({ success: false, error: "HTML vide." }),
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
-        const accountId = env.CF_ACCOUNT_ID
-        const apiToken  = env.CF_API_TOKEN
-
-        // Préfixe webmasteria- pour organiser tous les sites clients dans Cloudflare
-        const safeName = "webmasteria-" + projectName
+        // Slug propre : lettres, chiffres, tirets uniquement
+        const slug = projectName
           .toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
           .replace(/[^a-z0-9-]/g, '-')
           .replace(/--+/g, '-')
           .replace(/^-|-$/g, '')
-          .substring(0, 50)
+          .slice(0, 60) || "site"
 
-        // Crée le ZIP en mémoire
-        const htmlBytes = new TextEncoder().encode(html)
-        const zipData   = createZipInMemory({ "index.html": htmlBytes })
+        // Stockage dans KV — clé : site:{slug}, pas d'expiration
+        await env.USERS_KV.put("site:" + slug, html)
 
-        // Déploie sur Cloudflare Pages
-        const formData = new FormData()
-        formData.append('file', new Blob([zipData], { type: 'application/zip' }), 'deploy.zip')
+        // URL publique sous ton domaine principal
+        const siteUrl = `https://webmasteria.nyxiapublicationweb.com/site/${slug}`
 
-        const deployUrl = `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${safeName}/deployments`
-        const cfRes = await fetch(deployUrl, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${apiToken}` },
-          body: formData
-        })
-
-        const result = await cfRes.json()
-
-        if (!result.success) {
-          const errMsg = result.errors?.[0]?.message || JSON.stringify(result.errors)
-          return new Response(JSON.stringify({ success: false, error: "Cloudflare : " + errMsg }),
-            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
-        }
-
-        const pagesUrl = result.result?.url || `https://${safeName}.pages.dev`
-
-        // (Optionnel) Domaine personnalisé si CUSTOM_DOMAIN configuré
-        if (env.CUSTOM_DOMAIN) {
-          const fullDomain = projectName + "." + env.CUSTOM_DOMAIN
-          await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${safeName}/domains`, {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${apiToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: fullDomain })
-          }).catch(() => {})
-        }
-
-        return new Response(JSON.stringify({ success: true, url: pagesUrl, projectName: safeName }),
+        return new Response(JSON.stringify({ success: true, url: siteUrl, slug }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } })
 
       } catch(e) {
         return new Response(JSON.stringify({ success: false, error: e.message }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
       }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE GET /site/{slug} — Sert un site client depuis KV
+    ════════════════════════════════════════════════════ */
+    if (url.pathname.startsWith("/site/") && request.method === "GET") {
+      const slug = url.pathname.replace("/site/", "").split("/")[0]
+      if (!slug) {
+        return new Response("Site introuvable.", { status: 404, headers: { "Content-Type": "text/plain" } })
+      }
+      const html = await env.USERS_KV.get("site:" + slug)
+      if (!html) {
+        return new Response("Site introuvable.", { status: 404, headers: { "Content-Type": "text/plain" } })
+      }
+      return new Response(html, {
+        headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=300" }
+      })
     }
 
     /* ════════════════════════════════════════════════════
@@ -881,11 +872,11 @@ Réponds UNIQUEMENT avec le HTML complet.`
         const userMsg = `Réinvente ce site en version premium :
 
 URL source : ${targetUrl}
-${pageData.title ? "Titre : " + pageData.title : ""}
-${pageData.description ? "Description : " + pageData.description : ""}
-${pageData.h1 ? "H1 principal : " + pageData.h1 : ""}
-${pageData.texts ? "Contenu principal :\n" + pageData.texts : "Note : le contenu de la page n'a pas pu être extrait. Génère un site professionnel en te basant sur l'URL et le secteur d'activité que tu peux en déduire."}
-${userPrompt ? "\nInstructions supplémentaires : " + userPrompt : ""}
+ ${pageData.title ? "Titre : " + pageData.title : ""}
+ ${pageData.description ? "Description : " + pageData.description : ""}
+ ${pageData.h1 ? "H1 principal : " + pageData.h1 : ""}
+ ${pageData.texts ? "Contenu principal :\n" + pageData.texts : "Note : le contenu de la page n'a pas pu être extrait. Génère un site professionnel en te basant sur l'URL et le secteur d'activité que tu peux en déduire."}
+ ${userPrompt ? "\nInstructions supplémentaires : " + userPrompt : ""}
 
 Génère le HTML complet maintenant.`
 
@@ -1159,7 +1150,7 @@ GÉNÉRATION D'IMAGES :
 Si le client demande une image, réponds avec :
 [IMAGE: description précise en anglais]
 
-${userName ? "Le prénom du client est : " + userName : "Tu ne connais pas encore le prénom."}
+ ${userName ? "Le prénom du client est : " + userName : "Tu ne connais pas encore le prénom."}
 Réponds en 2-4 phrases maximum. Sois concise et impactante.`,
 
           copywriter: `Tu es NyXia — experte Copywriter ultra-premium, créée par Diane Boyer.
@@ -1188,7 +1179,7 @@ FORMAT :
 - Pour les annonces : accroche + corps + CTA optimisés conversion
 - Toujours en français impeccable, ton de Diane Boyer
 
-${userName ? "Le prénom du client est : " + userName : ""}
+ ${userName ? "Le prénom du client est : " + userName : ""}
 Si le client précise déjà le type de contenu et le sujet, RÉDIGE DIRECTEMENT sans redemander.
 Si le contexte est insuffisant, pose UNE seule question ciblée.`,
 
@@ -1217,7 +1208,7 @@ FORMAT :
 - Langage accessible, inspirant, actionnable
 - Basé sur les principes de La Psychologie du Clic
 
-${userName ? "Le prénom du client est : " + userName : ""}
+ ${userName ? "Le prénom du client est : " + userName : ""}
 Si le client précise le sujet et l'audience, COMMENCE DIRECTEMENT la structure sans redemander.
 Si le contexte est insuffisant, pose UNE seule question ciblée.`,
 
@@ -1246,7 +1237,7 @@ FORMAT :
 - Méta-données optimisées systématiquement
 - Conseils d'implémentation pratiques
 
-${userName ? "Le prénom du client est : " + userName : ""}
+ ${userName ? "Le prénom du client est : " + userName : ""}
 Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?`
         }
 
@@ -1468,10 +1459,22 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
       const userPrompt  = body.prompt    || ""
       const imageBase64 = body.image     || ""
       const imageType   = body.imageType || "image/jpeg"
+      const imageUrl    = body.imageUrl  || ""  // URL directe pour les templates niche
 
-      if (!imageBase64) {
+      // Accepte soit base64, soit imageUrl (Picsum pour templates)
+      if (!imageBase64 && !imageUrl) {
         return new Response(JSON.stringify({ error: "Aucune image reçue." }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+
+      // Construit le bloc image pour GLM selon le mode
+      let imageContent
+      if (imageBase64) {
+        // Mode upload — base64
+        imageContent = { type: "image_url", image_url: { url: `data:${imageType};base64,${imageBase64}` } }
+      } else {
+        // Mode template niche — URL Picsum directe
+        imageContent = { type: "image_url", image_url: { url: imageUrl } }
       }
 
       const glmRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -1500,10 +1503,7 @@ Tu réponds UNIQUEMENT avec du code HTML complet, sans aucun texte avant ou apr�
             {
               role: "user",
               content: [
-                {
-                  type: "image_url",
-                  image_url: { url: `data:${imageType};base64,${imageBase64}` }
-                },
+                imageContent,
                 {
                   type: "text",
                   text: `Analyse cette image avec une précision absolue et génère un site web HTML complet sur le thème : "${userPrompt}"
