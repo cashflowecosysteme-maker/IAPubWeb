@@ -1,3211 +1,1482 @@
 <!DOCTYPE html>
-
 <html lang="fr">
-
 <head>
-
   <meta charset="UTF-8">
-
+  <link rel="icon" type="image/png" href="/FavIcon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>NyXia IA — Votre site d'affiliation prêt en 60 secondes</title>
-
-
-
-  <!-- Polices EXACTES de nyxiapublicationweb.com -->
+  <title>NyXia IA — Mon Espace</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-
-
-  <!-- Styles NyXia — Exact réplica de nyxiapublicationweb.com -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 
   <style>
-
     :root {
-
-      --bg1: #0F1C3F;
-
-      --bg2: #1A2554;
-
-      --bg3: #2A3A6E;
-
+      --bg1: #0A1628;
+      --bg2: #0F1C3F;
+      --bg3: #1A2554;
+      --sidebar: #080f22;
       --p: #7B5CFF;
-
       --p2: #5A6CFF;
-
       --p3: #4FA3FF;
-
-      --g1: #3E2D7A;
-
-      --g2: #2B245C;
-
       --glow: rgba(123,92,255,0.4);
-
       --t: #FFFFFF;
-
       --t2: #D6D9F0;
-
       --t3: #8891B8;
-
+      --t4: #4a5278;
       --green: #00E676;
-
+      --gold: #F4C842;
       --r: 14px;
-
     }
 
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height: 100%; overflow: hidden; }
 
-
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body { background: var(--bg1); color: var(--t2); font-family: 'Outfit', sans-serif; }
-
-
-
-    /* Titre glow — exact réplica */
-
-    .h1-glow {
-
-      background: linear-gradient(135deg, #a78bfa, var(--p3));
-
-      -webkit-background-clip: text;
-
-      -webkit-text-fill-color: transparent;
-
-      background-clip: text;
-
-      filter: drop-shadow(0 0 20px rgba(123,92,255,0.5));
-
-    }
-
-
-
-    /* Bouton Primary — EXACT réplica nyxiapublicationweb.com */
-
-    .btn-primary {
-
-      padding: 18px 40px;
-
-      border-radius: 50px;
-
-      border: none;
-
-      background: linear-gradient(135deg, var(--p), var(--p2));
-
-      color: #fff;
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-size: 16px;
-
-      font-weight: 700;
-
-      cursor: pointer;
-
-      box-shadow: 0 0 32px rgba(123,92,255,0.45), 0 4px 20px rgba(0,0,0,0.3);
-
-      transition: all .25s;
-
-    }
-
-    .btn-primary:hover {
-
-      transform: translateY(-3px);
-
-      box-shadow: 0 0 52px rgba(123,92,255,0.7), 0 8px 32px rgba(0,0,0,0.4);
-
-    }
-
-    .btn-primary:active {
-
-      transform: translateY(-1px);
-
-    }
-
-
-
-    /* Bouton Secondary — EXACT réplica */
-
-    .btn-secondary {
-
-      padding: 17px 36px;
-
-      border-radius: 50px;
-
-      border: 1px solid rgba(123,92,255,0.4);
-
-      background: rgba(123,92,255,0.08);
-
+    body {
+      background: var(--bg1);
       color: var(--t2);
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-size: 16px;
-
-      font-weight: 600;
-
-      cursor: pointer;
-
-      backdrop-filter: blur(10px);
-
-      transition: all .2s;
-
-      text-decoration: none;
-
-      display: inline-block;
-
-    }
-
-    .btn-secondary:hover {
-
-      border-color: var(--p);
-
-      color: var(--t);
-
-    }
-
-
-
-
-    /* ═══════════════════════════════════
-       OVERLAY NYXIA GÉNÉRATION PREMIUM
-    ═══════════════════════════════════ */
-    #nyxia-loading-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9000;
-      background: radial-gradient(ellipse at center, #0d1535 0%, #060c1f 100%);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      animation: overlayIn .4s ease;
-    }
-    #nyxia-loading-overlay.visible { display: flex; }
-    @keyframes overlayIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    .overlay-nyxia-img {
-      width: 320px;
-      max-width: 70vw;
-      object-fit: contain;
-      filter: drop-shadow(0 0 40px rgba(123,92,255,0.6));
-      animation: nyxiaFloat 3s ease-in-out infinite;
-      margin-bottom: 32px;
-    }
-    @keyframes nyxiaFloat {
-      0%,100% { transform: translateY(0);   filter: drop-shadow(0 0 40px rgba(123,92,255,0.6)); }
-      50%      { transform: translateY(-12px); filter: drop-shadow(0 0 60px rgba(123,92,255,0.9)); }
-    }
-
-    .overlay-message {
-      font-family: 'Cormorant Garamond', 'Space Grotesk', serif;
-      font-size: clamp(18px, 3vw, 26px);
-      font-weight: 600;
-      color: #a78bfa;
-      text-align: center;
-      margin-bottom: 24px;
-      letter-spacing: .5px;
-      filter: drop-shadow(0 0 16px rgba(123,92,255,0.5));
-      min-height: 36px;
-      transition: opacity .3s;
-    }
-
-    .overlay-progress-wrap {
-      width: 320px;
-      max-width: 70vw;
-    }
-    .overlay-progress-bar {
-      height: 3px;
-      background: rgba(123,92,255,0.15);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-    .overlay-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #7B5CFF, #4FA3FF, #7B5CFF);
-      background-size: 200% 100%;
-      border-radius: 2px;
-      width: 0%;
-      transition: width .4s ease;
-      animation: shimmerBar 2s linear infinite;
-    }
-    @keyframes shimmerBar {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    .overlay-progress-label {
-      font-size: 12px;
-      color: rgba(136,145,184,0.6);
-      text-align: center;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-    }
-
-    /* Particules étoiles en arrière-plan de l'overlay */
-    .overlay-stars {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .overlay-star {
-      position: absolute;
-      width: 2px; height: 2px;
-      background: #fff;
-      border-radius: 50%;
-      animation: starTwinkle var(--d, 3s) ease-in-out infinite;
-      opacity: var(--o, 0.5);
-    }
-    @keyframes starTwinkle {
-      0%,100% { opacity: var(--o, 0.5); transform: scale(1); }
-      50%      { opacity: 1; transform: scale(1.5); }
-    }
-
-    /* Bouton Générer premium */
-    #generate-btn {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg,
-        rgba(8,15,40,0.95) 0%,
-        rgba(15,25,60,0.95) 50%,
-        rgba(8,15,40,0.95) 100%) !important;
-      border: 1px solid rgba(212,175,80,0.45) !important;
-      border-radius: 50px !important;
-      color: #fff !important;
-      font-family: 'Space Grotesk', sans-serif !important;
-      font-size: 14px !important;
-      font-weight: 600 !important;
-      letter-spacing: 1px !important;
-      padding: 13px 40px !important;
-      backdrop-filter: blur(12px) !important;
-      width: auto !important;
-      box-shadow:
-        0 0 0 1px rgba(212,175,80,0.15),
-        inset 0 1px 0 rgba(255,255,255,0.05),
-        0 4px 24px rgba(0,0,0,0.4) !important;
-      transition: all .3s ease !important;
-      cursor: pointer !important;
-    }
-    #generate-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(105deg,
-        transparent 30%,
-        rgba(212,175,80,0.06) 50%,
-        transparent 70%);
-      transform: translateX(-100%);
-      animation: btnShimmer 3s ease-in-out infinite;
-    }
-    #generate-btn::after {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 50px;
-      background: linear-gradient(135deg,
-        rgba(212,175,80,0.3),
-        transparent 40%,
-        transparent 60%,
-        rgba(212,175,80,0.15));
-      z-index: -1;
-      opacity: 0;
-      transition: opacity .3s;
-    }
-    @keyframes btnShimmer {
-      0%   { transform: translateX(-100%); }
-      60%  { transform: translateX(100%); }
-      100% { transform: translateX(100%); }
-    }
-    #generate-btn:not(:disabled):hover {
-      background: linear-gradient(135deg,
-        rgba(12,22,55,0.98) 0%,
-        rgba(20,35,80,0.98) 50%,
-        rgba(12,22,55,0.98) 100%) !important;
-      border-color: rgba(212,175,80,0.75) !important;
-      box-shadow:
-        0 0 0 1px rgba(212,175,80,0.3),
-        0 0 30px rgba(212,175,80,0.12),
-        0 0 60px rgba(212,175,80,0.06),
-        inset 0 1px 0 rgba(255,255,255,0.08),
-        0 6px 32px rgba(0,0,0,0.5) !important;
-      transform: translateY(-2px) !important;
-      letter-spacing: 1.5px !important;
-    }
-    #generate-btn:not(:disabled):hover::after {
-      opacity: 1;
-    }
-    #generate-btn:disabled {
-      opacity: 0.5 !important;
-      cursor: not-allowed !important;
-    }
-
-    /* Glow d'ambiance — exact réplica */
-
-    .hero-glow {
-
-      position: absolute;
-
-      bottom: 10%;
-
-      right: 5%;
-
-      width: 500px;
-
-      height: 500px;
-
-      border-radius: 50%;
-
-      background: radial-gradient(circle, rgba(123,92,255,0.15) 0%, transparent 70%);
-
-      animation: glowPulse 4s ease-in-out infinite;
-
-      pointer-events: none;
-
-    }
-
-    @keyframes glowPulse {
-
-      0%, 100% { opacity: 1; transform: scale(1); }
-
-      50% { opacity: 0.6; transform: scale(1.1); }
-
-    }
-
-
-
-    /* Pilier cards — style site ref */
-
-    .pillar-card {
-
-      background: rgba(26,37,84,0.5);
-
-      border: 1px solid rgba(123,92,255,0.12);
-
-      border-radius: var(--r);
-
-      padding: 28px 24px;
-
-      backdrop-filter: blur(10px);
-
-      transition: all .3s;
-
-    }
-
-    .pillar-card:hover {
-
-      border-color: rgba(123,92,255,0.3);
-
-      transform: translateY(-4px);
-
-      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-
-    }
-
-
-
-
-
-    /* ═══ ÉDITEUR PLEINE PAGE ═══ */
-    #fullpage-editor {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9500;
-      background: var(--bg1, #0F1C3F);
-      flex-direction: row;
-    }
-    #fullpage-editor.open { display: flex; }
-
-    #editor-sidebar {
-      width: 260px;
-      flex-shrink: 0;
-      background: rgba(8,15,34,0.98);
-      border-right: 1px solid rgba(123,92,255,0.15);
+      font-family: 'Outfit', sans-serif;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
     }
-    #editor-sidebar h2 {
-      padding: 16px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: #a78bfa;
-      border-bottom: 1px solid rgba(123,92,255,0.1);
+
+    /* ── CANVAS ÉTOILES ── */
+    #starry-canvas {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
     }
-    .edit-section {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(123,92,255,0.07);
+
+    /* ══════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════ */
+    header {
+      position: relative; z-index: 100;
+      height: 56px;
+      background: rgba(8,15,34,0.95);
+      border-bottom: 1px solid rgba(123,92,255,0.12);
+      backdrop-filter: blur(20px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px 0 0;
+      flex-shrink: 0;
     }
-    .edit-section-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: #8891B8;
-      text-transform: uppercase;
-      letter-spacing: .8px;
-      margin-bottom: 10px;
+
+    .header-brand {
+      width: 240px; flex-shrink: 0;
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 16px;
+      border-right: 1px solid rgba(123,92,255,0.1);
+      height: 100%;
     }
-    .edit-textarea {
-      width: 100%;
-      min-height: 80px;
-      background: rgba(15,28,63,0.7);
-      border: 1px solid rgba(123,92,255,0.2);
-      border-radius: 8px;
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px;
-      padding: 8px 10px;
-      outline: none;
-      resize: vertical;
-      transition: border-color .2s;
+    .header-brand img {
+      width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
+      border: 1.5px solid rgba(123,92,255,0.5);
+      box-shadow: 0 0 20px rgba(123,92,255,0.4);
+      animation: breathe 3s ease-in-out infinite;
     }
-    .edit-textarea:focus { border-color: rgba(123,92,255,0.5); }
-    .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .color-lbl { font-size: 11px; color: #8891B8; display: block; margin-bottom: 4px; }
-    .color-pick {
-      width: 100%; height: 30px;
-      border-radius: 6px;
-      border: 1px solid rgba(123,92,255,0.2);
-      cursor: pointer; background: none; padding: 2px;
+    @keyframes breathe {
+      0%,100% { box-shadow: 0 0 20px rgba(123,92,255,0.4); }
+      50% { box-shadow: 0 0 35px rgba(123,92,255,0.7), 0 0 60px rgba(123,92,255,0.2); }
     }
-    .btn-edit-action {
-      width: 100%; padding: 9px 14px;
-      border-radius: 8px; border: none;
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: all .2s;
-      margin-bottom: 6px;
+    .brand-info { line-height: 1.2; }
+    .brand-name {
+      font-size: 15px; font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .btn-save-edit {
-      background: linear-gradient(135deg, #7B5CFF, #5A6CFF);
-      color: #fff;
-      box-shadow: 0 0 16px rgba(123,92,255,0.35);
+    .brand-status { font-size: 11px; color: var(--green); display: flex; align-items: center; gap: 4px; }
+    .brand-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse-green 2s ease-in-out infinite; }
+    @keyframes pulse-green { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+
+    .header-center {
+      flex: 1; display: flex; align-items: center; justify-content: center;
     }
-    .btn-copy-edit {
-      background: rgba(123,92,255,0.08);
-      border: 1px solid rgba(123,92,255,0.2);
-      color: #D6D9F0;
+    .welcome-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; font-style: italic;
+      color: var(--t3);
     }
-    .btn-close-edit {
-      background: rgba(255,75,110,0.1);
-      border: 1px solid rgba(255,75,110,0.25);
+    .welcome-text strong { color: var(--gold); font-style: normal; font-weight: 600; }
+
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-header {
+      padding: 6px 16px; border-radius: 50px; border: none;
+      font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .btn-pro {
+      background: linear-gradient(135deg, var(--gold), #e6a800);
+      color: #1a1000;
+    }
+    .btn-logout {
+      background: rgba(255,75,110,0.1); border: 1px solid rgba(255,75,110,0.25);
       color: #ff8fab;
     }
-    .edit-hint {
-      font-size: 11px;
-      color: #4a5278;
-      padding: 10px 16px;
-      text-align: center;
-      line-height: 1.6;
+    .btn-logout:hover { background: rgba(255,75,110,0.2); }
+
+    /* ══════════════════════════════════════
+       BODY LAYOUT
+    ══════════════════════════════════════ */
+    .app-body {
+      display: flex; flex: 1; overflow: hidden;
+      position: relative; z-index: 1;
     }
 
-    #editor-preview-wrap {
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
-    #editor-preview-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    #editor-selected-info {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(123,92,255,0.9);
-      color: #fff;
-      font-size: 12px;
-      padding: 6px 16px;
-      border-radius: 50px;
-      display: none;
-      backdrop-filter: blur(8px);
-      white-space: nowrap;
+    /* ══════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════ */
+    aside {
+      width: 240px; flex-shrink: 0;
+      background: rgba(8,15,34,0.97);
+      border-right: 1px solid rgba(123,92,255,0.1);
+      display: flex; flex-direction: column;
+      overflow-y: auto; overflow-x: hidden;
     }
 
-    /* ═══════════════════════════════════
-       ÉDITEUR INLINE
-    ═══════════════════════════════════ */
-    #editor-panel {
-      position: absolute;
-      right: 0; top: 0; bottom: 0;
-      width: 280px;
-      background: rgba(10,18,40,0.97);
-      border-left: 1px solid rgba(123,92,255,0.2);
-      display: none;
-      flex-direction: column;
-      z-index: 10;
-      backdrop-filter: blur(20px);
-      animation: slideInRight .2s ease;
-    }
-    @keyframes slideInRight {
-      from { transform: translateX(100%); opacity: 0; }
-      to   { transform: translateX(0);   opacity: 1; }
-    }
-    #editor-panel.open { display: flex; }
-
-    .editor-header {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(123,92,255,0.15);
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 13px; font-weight: 700;
-      color: var(--p3);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .editor-section {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(123,92,255,0.08);
-    }
-    .editor-section-title {
-      font-size: 11px; font-weight: 700;
-      color: var(--t3); text-transform: uppercase;
-      letter-spacing: .8px; margin-bottom: 10px;
-    }
-    .editor-input {
-      width: 100%; background: rgba(15,28,63,0.7);
-      border: 1px solid rgba(123,92,255,0.2); border-radius: 8px;
-      color: var(--t); font-family: 'Outfit', sans-serif;
-      font-size: 13px; padding: 8px 10px; outline: none;
-      resize: vertical; min-height: 60px; transition: border-color .2s;
-    }
-    .editor-input:focus { border-color: rgba(123,92,255,0.5); }
-
-    .color-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    .color-item label {
-      font-size: 11px; color: var(--t3); display: block; margin-bottom: 4px;
-    }
-    .color-item input[type="color"] {
-      width: 100%; height: 32px; border-radius: 6px;
-      border: 1px solid rgba(123,92,255,0.2); cursor: pointer;
-      background: none; padding: 2px;
+    .sidebar-section { padding: 20px 12px 8px; }
+    .sidebar-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      color: var(--t4); text-transform: uppercase; padding: 0 8px;
+      margin-bottom: 6px;
     }
 
-    .btn-editor {
-      margin: 4px 0; padding: 8px 14px; border-radius: 8px;
-      border: none; font-family: 'Outfit', sans-serif;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-      transition: all .2s; width: 100%; text-align: left;
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 10px;
+      cursor: pointer; transition: all .2s;
+      color: var(--t3); font-size: 14px; font-weight: 500;
+      border: 1px solid transparent; margin-bottom: 2px;
+      text-decoration: none; user-select: none;
     }
-    .btn-editor-primary {
+    .nav-item:hover { background: rgba(123,92,255,0.08); color: var(--t2); border-color: rgba(123,92,255,0.1); }
+    .nav-item.active {
+      background: rgba(123,92,255,0.15); color: var(--t);
+      border-color: rgba(123,92,255,0.3);
+      box-shadow: 0 0 16px rgba(123,92,255,0.1);
+    }
+    .nav-item .nav-icon { font-size: 16px; flex-shrink: 0; }
+    .nav-arrow { margin-left: auto; font-size: 10px; color: var(--t4); }
+
+    .sidebar-divider {
+      height: 1px; background: rgba(123,92,255,0.08);
+      margin: 8px 12px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto; padding: 12px;
+      border-top: 1px solid rgba(123,92,255,0.08);
+    }
+    .user-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 10px;
+      background: rgba(123,92,255,0.06); border: 1px solid rgba(123,92,255,0.1);
+    }
+    .user-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
       background: linear-gradient(135deg, var(--p), var(--p2));
-      color: #fff; box-shadow: 0 0 16px rgba(123,92,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
     }
-    .btn-editor-primary:hover { box-shadow: 0 0 24px rgba(123,92,255,0.5); }
-    .btn-editor-secondary {
-      background: rgba(123,92,255,0.08);
-      border: 1px solid rgba(123,92,255,0.2); color: var(--t2);
-    }
-    .btn-editor-secondary:hover { border-color: var(--p); color: var(--t); }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: 13px; font-weight: 600; color: var(--t2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-plan { font-size: 11px; color: var(--gold); }
 
-    .editor-hint {
-      font-size: 11px; color: var(--t4);
-      padding: 10px 16px; text-align: center; line-height: 1.6;
-    }
-
-    /* Mode édition — highlight au hover dans l'iframe */
-    .edit-mode-active #preview-frame {
-      cursor: crosshair;
-    }
-    .toolbar-btn.edit-active {
-      background: rgba(123,92,255,0.3) !important;
-      border-color: var(--p) !important;
-      color: var(--t) !important;
+    /* ══════════════════════════════════════
+       MAIN CONTENT
+    ══════════════════════════════════════ */
+    .main-content {
+      flex: 1; display: flex; flex-direction: column;
+      overflow: hidden; position: relative;
     }
 
-    /* ===== WIDGET NYXIA — EXACT REPLICA ===== */
+    /* ══════════════════════════════════════
+       PANELS
+    ══════════════════════════════════════ */
+    .panel { display: none; flex: 1; overflow: hidden; }
+    .panel.active { display: flex; flex-direction: column; }
 
-
-
-    /* Toggle (pastille) */
-
-    #nyxia-toggle {
-
-      position: fixed;
-
-      bottom: 24px;
-
-      right: 24px;
-
-      width: 60px;
-
-      height: 60px;
-
-      border-radius: 50%;
-
-      border: 2px solid rgba(123,92,255,0.5);
-
-      background: rgba(15,28,63,0.9);
-
-      backdrop-filter: blur(12px);
-
-      cursor: pointer;
-
-      z-index: 9999;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      box-shadow: 0 0 30px rgba(123,92,255,0.3);
-
-      transition: all .25s;
-
-      padding: 0;
-
-      animation: nyxiaBreath 3s ease-in-out infinite;
-
+    /* ── PANEL CHAT ── */
+    #panel-chat {
+      flex-direction: row;
     }
 
-    #nyxia-toggle:hover {
-
-      transform: scale(1.1);
-
-      box-shadow: 0 0 50px rgba(123,92,255,0.5);
-
-    }
-
-    #nyxia-toggle img {
-
-      width: 42px;
-
-      height: 42px;
-
-      border-radius: 50%;
-
-      object-fit: cover;
-
-    }
-
-    @keyframes nyxiaBreath {
-
-      0%, 100% { box-shadow: 0 0 30px rgba(123,92,255,0.3); }
-
-      50% { box-shadow: 0 0 45px rgba(123,92,255,0.55), 0 0 60px rgba(123,92,255,0.2); }
-
-    }
-
-
-
-    /* Pastille verte "En ligne" */
-
-    .nyxia-online {
-
-      position: absolute;
-
-      bottom: 2px;
-
-      right: 2px;
-
-      width: 14px;
-
-      height: 14px;
-
-      border-radius: 50%;
-
-      background: var(--green);
-
-      border: 2px solid var(--bg1);
-
-    }
-
-
-
-    /* Chat Panel */
-
-    #nyxia-chat {
-
-      position: fixed;
-
-      bottom: 96px;
-
-      right: 24px;
-
-      width: 380px;
-
-      max-width: calc(100vw - 48px);
-
-      height: 520px;
-
-      max-height: calc(100vh - 140px);
-
-      background: rgba(15,28,63,0.97);
-
-      border: 1px solid rgba(123,92,255,0.3);
-
-      border-radius: 20px;
-
-      z-index: 9999;
-
-      display: none;
-
-      flex-direction: column;
-
-      backdrop-filter: blur(20px);
-
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(123,92,255,0.15);
-
+    .chat-area {
+      flex: 1; display: flex; flex-direction: column;
       overflow: hidden;
-
     }
 
-    @keyframes nxSlideIn {
+    .chat-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(123,92,255,0.1);
+      background: rgba(10,22,40,0.6); backdrop-filter: blur(10px);
+      display: flex; align-items: center; gap: 14px; flex-shrink: 0;
+    }
+    .chat-header img {
+      width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
+      border: 2px solid rgba(123,92,255,0.4);
+      box-shadow: 0 0 24px rgba(123,92,255,0.35);
+    }
+    .chat-header-info { flex: 1; }
+    .chat-header-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 600;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .chat-header-sub { font-size: 12px; color: var(--t3); }
 
-      from { opacity: 0; transform: translateY(20px) scale(.95); }
+    .btn-speak {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 50px;
+      border: 1px solid rgba(123,92,255,0.25); background: rgba(123,92,255,0.08);
+      color: var(--t3); font-family: 'Outfit', sans-serif; font-size: 12px;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-speak:hover { border-color: var(--p); color: var(--t2); }
+    .btn-speak.speaking { border-color: var(--green); color: var(--green); background: rgba(0,230,118,0.08); animation: speakPulse 1s ease-in-out infinite; }
+    @keyframes speakPulse { 0%,100% { opacity:1; } 50% { opacity:.6; } }
 
-      to { opacity: 1; transform: translateY(0) scale(1); }
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 24px;
+      display: flex; flex-direction: column; gap: 16px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(123,92,255,0.2); border-radius: 2px; }
 
+    .msg { display: flex; gap: 10px; animation: msgIn .3s ease; max-width: 80%; }
+    @keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      object-fit: cover; border: 1.5px solid rgba(123,92,255,0.3);
+      margin-top: 2px;
     }
 
-    #nyxia-chat.open {
-
-      display: flex;
-
-      animation: nxSlideIn .3s ease;
-
+    .msg-bubble {
+      padding: 12px 16px; border-radius: 16px;
+      font-size: 14px; line-height: 1.65;
     }
-
-
-
-    /* Header */
-
-    #nyxia-header {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 10px;
-
-      padding: 14px 16px;
-
-      border-bottom: 1px solid rgba(123,92,255,0.15);
-
-      background: rgba(10,18,40,0.6);
-
-    }
-
-    #nyxia-header img {
-
-      width: 36px;
-
-      height: 36px;
-
-      border-radius: 50%;
-
-      object-fit: cover;
-
-      border: 1.5px solid rgba(123,92,255,0.4);
-
-    }
-
-
-
-    /* Messages */
-
-    #nyxia-messages {
-
-      flex: 1;
-
-      overflow-y: auto;
-
-      padding: 16px;
-
-      display: flex;
-
-      flex-direction: column;
-
-      gap: 12px;
-
-    }
-
-    @keyframes nxMsgIn {
-
-      from { opacity: 0; transform: translateY(8px); }
-
-      to { opacity: 1; transform: translateY(0); }
-
-    }
-
-    .nx-msg { max-width: 85%; animation: nxMsgIn .2s ease; }
-
-    .nx-msg.bot { align-self: flex-start; }
-
-    .nx-msg.user { align-self: flex-end; }
-
-    .nx-msg.bot .nx-bubble {
-
-      background: rgba(26,37,84,0.7);
-
-      color: #d6d9f0;
-
-      padding: 12px 16px;
-
-      border-radius: var(--r);
-
+    .msg.bot .msg-bubble {
+      background: rgba(26,37,84,0.7); color: var(--t2);
+      border: 1px solid rgba(123,92,255,0.12);
       border-top-left-radius: 4px;
-
-      border: 1px solid rgba(123,92,255,0.1);
-
-      font-size: 13px;
-
-      line-height: 1.6;
-
     }
-
-    .nx-msg.user .nx-bubble {
-
+    .msg.user .msg-bubble {
       background: linear-gradient(135deg, var(--p), var(--p2));
-
-      color: #fff;
-
-      padding: 12px 16px;
-
-      border-radius: var(--r);
-
-      border-top-right-radius: 4px;
-
-      font-size: 13px;
-
-      line-height: 1.6;
-
+      color: #fff; border-top-right-radius: 4px;
     }
 
-
+    /* Suggestions rapides */
+    .suggestions {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding: 0 24px 16px;
+    }
+    .sugg-btn {
+      padding: 8px 16px; border-radius: 50px;
+      border: 1px solid rgba(123,92,255,0.25); background: rgba(123,92,255,0.07);
+      color: var(--t3); font-family: 'Outfit', sans-serif; font-size: 13px;
+      cursor: pointer; transition: all .2s;
+    }
+    .sugg-btn:hover { border-color: var(--p); color: var(--t2); background: rgba(123,92,255,0.14); transform: translateY(-1px); }
 
     /* Typing dots */
-
-    .nx-dots { display: inline-flex; gap: 3px; }
-
+    .nx-dots { display: inline-flex; gap: 4px; align-items: center; }
     .nx-dots i {
-
-      width: 4px; height: 4px; border-radius: 50%;
-
-      background: var(--t3);
-
-      animation: nxPulse 1.4s infinite;
-
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--p3); display: inline-block;
+      animation: dotBounce .9s ease-in-out infinite;
     }
+    .nx-dots i:nth-child(2) { animation-delay: .15s; }
+    .nx-dots i:nth-child(3) { animation-delay: .3s; }
+    @keyframes dotBounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } }
 
-    .nx-dots i:nth-child(2) { animation-delay: .2s; }
-
-    .nx-dots i:nth-child(3) { animation-delay: .4s; }
-
-    @keyframes nxPulse {
-
-      0%, 80%, 100% { opacity: .3; transform: scale(.8); }
-
-      40% { opacity: 1; transform: scale(1); }
-
-    }
-
-
-
-    /* Input row */
-
-    #nyxia-input-row {
-
-      display: flex;
-
-      gap: 8px;
-
-      padding: 10px 14px 14px;
-
+    /* Chat input */
+    .chat-input-wrap {
+      padding: 16px 24px;
       border-top: 1px solid rgba(123,92,255,0.1);
-
+      background: rgba(10,22,40,0.8); backdrop-filter: blur(10px);
+      display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0;
     }
-
-    #nyxia-input {
-
-      flex: 1;
-
-      padding: 10px 14px;
-
-      border-radius: 12px;
-
-      background: rgba(10,18,40,0.8);
-
-      border: 1px solid rgba(123,92,255,0.15);
-
-      color: #fff;
-
-      font-family: 'Outfit', sans-serif;
-
-      font-size: 13px;
-
-      outline: none;
-
-      transition: border-color .2s;
-
+    .chat-input {
+      flex: 1; background: rgba(15,28,63,0.7);
+      border: 1px solid rgba(123,92,255,0.2); border-radius: 14px;
+      color: var(--t); font-family: 'Outfit', sans-serif; font-size: 14px;
+      padding: 12px 16px; outline: none; resize: none;
+      transition: border-color .2s; min-height: 46px; max-height: 120px;
+      line-height: 1.5;
     }
+    .chat-input:focus { border-color: rgba(123,92,255,0.5); }
+    .chat-input::placeholder { color: var(--t4); }
 
-    #nyxia-input:focus { border-color: rgba(123,92,255,0.4); }
-
-    #nyxia-input::placeholder { color: rgba(136,145,184,0.4); }
-
-
-
-    #nyxia-send {
-
-      width: 38px;
-
-      height: 38px;
-
-      border-radius: 10px;
-
+    .btn-send {
+      width: 44px; height: 44px; border-radius: 12px; border: none;
       background: linear-gradient(135deg, var(--p), var(--p2));
+      color: #fff; cursor: pointer; transition: all .25s; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 20px rgba(123,92,255,0.4); font-size: 16px;
+    }
+    .btn-send:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 32px rgba(123,92,255,0.6); }
+    .btn-send:disabled { opacity: .5; cursor: not-allowed; }
 
-      border: none;
-
-      color: #fff;
-
-      font-size: 15px;
-
-      cursor: pointer;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      transition: all .15s;
-
+    .chat-hint {
+      text-align: center; font-size: 11px; color: var(--t4);
+      padding: 6px 0 0;
     }
 
-    #nyxia-send:hover { transform: scale(1.05); }
-
-
-
-    /* Close button */
-
-    #nyxia-close {
-
-      margin-left: auto;
-
-      color: var(--t3);
-
-      font-size: 20px;
-
-      cursor: pointer;
-
-      opacity: 0.6;
-
-      transition: opacity .2s;
-
-      background: none;
-
-      border: none;
-
-      line-height: 1;
-
+    /* ── PANEL GÉNÉRATEUR ── */
+    #panel-generator {
+      flex-direction: column; overflow-y: auto;
     }
-
-    #nyxia-close:hover { opacity: 1; }
-
-
-
-    /* ===== UPLOAD IMAGE ===== */
-
-    .input-row {
-
-      display: flex;
-
-      gap: 10px;
-
-      align-items: center;
-
-    }
-
-    .input-row input {
-
-      flex: 1;
-
-    }
-
-    .upload-btn {
-
-      width: 52px;
-
-      height: 52px;
-
-      border-radius: var(--r);
-
-      border: 1px solid rgba(123,92,255,0.25);
-
-      background: rgba(123,92,255,0.08);
-
-      color: var(--p);
-
-      font-size: 22px;
-
-      cursor: pointer;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      transition: all .2s;
-
+    .panel-header {
+      padding: 24px 32px 0;
       flex-shrink: 0;
+    }
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 600;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 4px;
+    }
+    .panel-sub { color: var(--t3); font-size: 14px; margin-bottom: 24px; }
 
+    .tool-embed {
+      flex: 1; border: none; width: 100%; height: 100%;
+      background: transparent;
     }
 
-    .upload-btn:hover {
+    /* ── PANEL MÉDIAS ── */
+    #panel-medias { overflow: hidden; }
+    #panel-medias iframe { width: 100%; height: 100%; border: none; }
 
-      border-color: var(--p);
-
-      background: rgba(123,92,255,0.18);
-
-      transform: translateY(-2px);
-
-      box-shadow: 0 4px 20px rgba(123,92,255,0.3);
-
+    /* ── PANEL MESSAGERIE ── */
+    #panel-messages {
+      align-items: center; justify-content: center; flex-direction: column;
     }
-
-    .upload-btn svg {
-
-      width: 22px;
-
-      height: 22px;
-
-      fill: currentColor;
-
+    .coming-soon {
+      text-align: center; padding: 60px 40px;
     }
-
-
-
-    /* Thumbnail preview */
-
-    #upload-preview {
-
-      display: none;
-
-      position: relative;
-
-      border-radius: var(--r);
-
-      overflow: hidden;
-
-      border: 1px solid rgba(123,92,255,0.2);
-
-      max-height: 180px;
-
+    .coming-soon-icon { font-size: 64px; margin-bottom: 20px; }
+    .coming-soon h2 {
+      font-family: 'Cormorant Garamond', serif; font-size: 32px;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 10px;
     }
+    .coming-soon p { color: var(--t3); font-size: 15px; max-width: 400px; line-height: 1.7; }
 
-    #upload-preview img {
-
-      width: 100%;
-
-      height: 180px;
-
-      object-fit: cover;
-
+    /* ══════════════════════════════════════
+       RESPONSIVE MOBILE
+    ══════════════════════════════════════ */
+    @media (max-width: 768px) {
+      aside { width: 200px; }
+      .header-brand { width: 200px; }
+      .header-center { display: none; }
+      .chat-messages { padding: 16px; }
+      .chat-input-wrap { padding: 12px 16px; }
+      .suggestions { padding: 0 16px 12px; }
     }
-
-    #upload-preview .remove-img {
-
-      position: absolute;
-
-      top: 8px;
-
-      right: 8px;
-
-      width: 28px;
-
-      height: 28px;
-
-      border-radius: 50%;
-
-      border: none;
-
-      background: rgba(0,0,0,0.7);
-
-      color: #fff;
-
-      font-size: 16px;
-
-      cursor: pointer;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      transition: all .15s;
-
+    @media (max-width: 600px) {
+      aside { display: none; }
+      .header-brand { width: auto; border: none; }
     }
-
-    #upload-preview .remove-img:hover {
-
-      background: rgba(255,60,60,0.8);
-
-    }
-
-
-
-    /* ===== PREVIEW PANEL ===== */
-
-    #preview-panel {
-
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 8000;
-
-      background: rgba(0,0,0,0.85);
-
-      backdrop-filter: blur(8px);
-
-      animation: nxFadeIn .3s ease;
-
-    }
-
-    @keyframes nxFadeIn {
-
-      from { opacity: 0; }
-
-      to { opacity: 1; }
-
-    }
-
-    #preview-container {
-
-      width: 100%;
-
-      height: 100%;
-
-      display: flex;
-
-      flex-direction: column;
-
-    }
-
-    #preview-toolbar {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      padding: 12px 20px;
-
-      background: rgba(15,28,63,0.95);
-
-      border-bottom: 1px solid rgba(123,92,255,0.2);
-
-      flex-shrink: 0;
-
-    }
-
-    #preview-toolbar h3 {
-
-      color: var(--p);
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-weight: 600;
-
-      font-size: 15px;
-
-      flex: 1;
-
-    }
-
-    .toolbar-btn {
-
-      padding: 8px 18px;
-
-      border-radius: 10px;
-
-      border: 1px solid rgba(123,92,255,0.3);
-
-      background: rgba(123,92,255,0.1);
-
-      color: var(--t2);
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-size: 13px;
-
-      font-weight: 600;
-
-      cursor: pointer;
-
-      transition: all .15s;
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 6px;
-
-    }
-
-    .toolbar-btn:hover {
-
-      border-color: var(--p);
-
-      color: var(--t);
-
-    }
-
-    .toolbar-btn.close-preview {
-
-      background: rgba(255,60,60,0.15);
-
-      border-color: rgba(255,60,60,0.3);
-
-      color: #ff6b6b;
-
-    }
-
-    .toolbar-btn.close-preview:hover {
-
-      background: rgba(255,60,60,0.3);
-
-    }
-
-    #preview-frame {
-
-      flex: 1;
-
-      border: none;
-
-      background: #fff;
-
-    }
-
-    #code-modal {
-
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 8500;
-
-      background: rgba(0,0,0,0.9);
-
-      animation: nxFadeIn .2s ease;
-
-    }
-
-    #code-modal pre {
-
-      width: 100%;
-
-      height: 100%;
-
-      overflow: auto;
-
-      padding: 24px;
-
-      color: #a78bfa;
-
-      font-family: 'Courier New', monospace;
-
-      font-size: 13px;
-
-      line-height: 1.6;
-
-      white-space: pre-wrap;
-
-      word-break: break-word;
-
-    }
-
-    #code-modal .code-toolbar {
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      padding: 12px 20px;
-
-      background: rgba(15,28,63,0.95);
-
-      border-bottom: 1px solid rgba(123,92,255,0.2);
-
-    }
-
-    #code-modal .code-toolbar h3 {
-
-      color: var(--green);
-
-      font-family: 'Space Grotesk', sans-serif;
-
-      font-weight: 600;
-
-      font-size: 15px;
-
-      flex: 1;
-
-    }
-
-
-
-    /* Responsive widget */
-
-    @media (max-width: 480px) {
-
-      #nyxia-chat {
-
-        width: calc(100vw - 16px);
-
-        right: 8px;
-
-        bottom: 88px;
-
-        height: calc(100vh - 110px);
-
-      }
-
-    }
-
   </style>
+</head>
+<body>
+
+  <canvas id="starry-canvas"></canvas>
+
+  <!-- Audio NyXia -->
+  <audio id="nyxia-audio" src="/NyXiaVoix-RobotParfait1.mp3" preload="auto"></audio>
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <div class="header-brand">
+      <img src="/NyXia.png" alt="NyXia">
+      <div class="brand-info">
+        <div class="brand-name">NyXia IA</div>
+        <div class="brand-status">En ligne</div>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="welcome-text">Bienvenue dans mon univers ✦ <strong id="header-username"></strong></div>
+    </div>
+    <div class="header-actions">
+      <span class="btn-header btn-pro">✦ Visionnaire</span>
+      <button class="btn-header btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+  </header>
+
+  <!-- ══ BODY ══ -->
+  <div class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Navigation</div>
+
+        <div class="nav-item active" id="nav-chat" onclick="showPanel('chat')">
+          <span class="nav-icon">💬</span>
+          Chat avec NyXia
+          <span class="nav-arrow">›</span>
+        </div>
+        <div id="chat-submenu" style="padding:4px 8px 4px 20px">
+          <button id="btn-new-conv" style="width:100%;padding:7px 10px;border-radius:8px;border:1px dashed rgba(123,92,255,0.3);background:rgba(123,92,255,0.04);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left">✦ Nouvelle conversation</button>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">Mode</div>
+          <button id="agent-general" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.3);color:#fff;border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">💬 NyXia</button>
+          <button id="agent-copywriter" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">✍️ Copywriter</button>
+          <button id="agent-formation" style="width:100%;text-align:left;margin-bottom:2px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🎓 Formation</button>
+          <button id="agent-seo" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🔍 SEO</button>
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">💾 Sauvegardes</div>
+          <div id="projects-list" style="margin-bottom:8px"><div style="font-size:11px;color:var(--t4)">Aucune sauvegarde</div></div>
+
+        </div>
+
+        <div class="nav-item" id="nav-generator" onclick="showPanel('generator')">
+          <span class="nav-icon">🏗</span>
+          Créer mon site
+          <span class="nav-arrow">›</span>
+        </div>
+
+        <div class="nav-item" id="nav-medias" onclick="showPanel('medias')">
+          <span class="nav-icon">🎬</span>
+          Photos &amp; Vidéos
+          <span class="nav-arrow">›</span>
+        </div>
+
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Menu</div>
+
+        <div class="nav-item" id="nav-messages" onclick="showPanel('messages')">
+          <span class="nav-icon">✉️</span>
+          Messagerie
+          <span class="nav-arrow">›</span>
+        </div>
+
+        <div class="nav-item" id="nav-projects" onclick="showPanel('projects')">
+          <span class="nav-icon">📁</span>
+          Projets
+          <span class="nav-arrow">›</span>
+        </div>
+
+        <div class="nav-item" id="nav-sites" onclick="showPanel('sites')">
+          <span class="nav-icon">🌐</span>
+          Mes Sites
+          <span class="nav-arrow">›</span>
+        </div>
+
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="user-card">
+          <div class="user-avatar" id="sidebar-avatar">D</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebar-username">Chargement...</div>
+            <div class="user-plan">✦ Plan Visionnaire</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+      <!-- ── PANEL CHAT ── -->
+      <div class="panel active" id="panel-chat">
+        <div class="chat-area">
+
+          <div class="chat-header">
+            <img src="/NyXia.png" alt="NyXia">
+            <div class="chat-header-info">
+              <div class="chat-header-name">NyXia IA</div>
+              <div class="chat-header-sub">Ton agente IA · Marketing &amp; Conversion</div>
+            </div>
+            <button class="btn-speak" id="btn-speak" onclick="toggleSpeak()">
+              🔊 Écouter NyXia
+            </button>
+          </div>
+
+          <div class="chat-messages" id="chat-messages"></div>
+
+          <div class="suggestions" id="suggestions">
+            <button class="sugg-btn" onclick="sendSuggestion('Je veux créer un site web')">🌐 Je veux créer un site web</button>
+            <button class="sugg-btn" onclick="sendSuggestion('Aide-moi avec mes publications')">📱 Aide-moi avec mes publications</button>
+            <button class="sugg-btn" onclick="sendSuggestion('Je veux plus de clients')">🚀 Je veux plus de clients</button>
+            <button class="sugg-btn" onclick="sendSuggestion('Comment structurer mon offre ?')">💎 Comment structurer mon offre ?</button>
+          </div>
+
+          <div id="attach-bar" style="display:none;padding:6px 20px;background:rgba(123,92,255,0.08);border-top:1px solid rgba(123,92,255,0.1);align-items:center;gap:8px;flex-shrink:0;font-size:12px;color:var(--t3)">
+            <span id="attach-name"></span>
+            <button id="btn-clear-attach" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px">✕</button>
+          </div>
+          <div class="chat-input-wrap">
+            <label title="PDF, image ou ZIP" style="flex-shrink:0;width:36px;height:36px;border-radius:9px;border:1px solid rgba(123,92,255,0.2);background:rgba(123,92,255,0.06);color:var(--t3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px">
+              📎<input type="file" id="chat-file" accept=".pdf,.zip,image/*" style="display:none">
+            </label>
+            <textarea class="chat-input" id="chat-input" placeholder="Écris ton message..." rows="1"></textarea>
+            <button class="btn-send" id="btn-send" onclick="sendMessage()">➤</button>
+          </div>
+          <div class="chat-hint">Entrée pour envoyer · Shift+Entrée pour un retour à la ligne</div>
+
+        </div>
+      </div>
+
+      <!-- ── PANEL GÉNÉRATEUR ── -->
+      <div class="panel" id="panel-generator">
+        <iframe src="/generatorsiteweb.html" class="tool-embed" id="generator-frame"></iframe>
+      </div>
+
+      <!-- ── PANEL MÉDIAS ── -->
+      <div class="panel" id="panel-medias">
+        <iframe src="/medias.html" class="tool-embed" id="medias-frame"></iframe>
+      </div>
+
+      <!-- ── PANEL PROJETS ── -->
+      <div class="panel" id="panel-projects">
+        <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+
+          <div style="padding:20px 28px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.6);flex-shrink:0;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;background:linear-gradient(135deg,#a78bfa,#4FA3FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">📁 Mes Projets</div>
+              <div style="color:var(--t3);font-size:13px">Organise et retrouve tes projets NyXia</div>
+            </div>
+          </div>
+
+          <div id="projects-grid" style="flex:1;overflow-y:auto;padding:24px 28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;align-content:start">
+            <!-- Carte créer un projet -->
+            <div onclick="openProjectModal()" style="border:2px dashed rgba(123,92,255,0.3);border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;min-height:140px;background:rgba(123,92,255,0.03)" onmouseover="this.style.borderColor='rgba(123,92,255,0.6)';this.style.background='rgba(123,92,255,0.07)'" onmouseout="this.style.borderColor='rgba(123,92,255,0.3)';this.style.background='rgba(123,92,255,0.03)'">
+              <div style="font-size:28px;color:rgba(123,92,255,0.6)">✦</div>
+              <div style="font-size:13px;color:var(--t3);font-weight:500">Créer un nouveau projet</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- MODAL NOUVEAU PROJET -->
+      <div id="project-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+        <div style="background:var(--bg2);border:1px solid rgba(123,92,255,0.25);border-radius:20px;padding:32px;width:100%;max-width:480px;margin:20px;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
+          <div style="font-size:18px;font-weight:700;color:var(--t);margin-bottom:6px">📁 Nouveau Projet</div>
+          <div style="font-size:13px;color:var(--t3);margin-bottom:24px">Crée un projet à travailler avec NyXia</div>
+
+          <div style="margin-bottom:16px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Nom du projet</label>
+            <input id="proj-name" type="text" placeholder="Mon super projet" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(123,92,255,0.5)'" onblur="this.style.borderColor='rgba(123,92,255,0.2)'">
+          </div>
+
+          <div style="margin-bottom:16px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Description</label>
+            <textarea id="proj-desc" placeholder="Décris ton projet..." rows="3" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(123,92,255,0.5)'" onblur="this.style.borderColor='rgba(123,92,255,0.2)'"></textarea>
+          </div>
+
+          <div style="margin-bottom:24px">
+            <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Type</label>
+            <select id="proj-type" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;cursor:pointer">
+              <option value="livre">📚 Écriture de livre</option>
+              <option value="formation">🎓 Création de formation</option>
+              <option value="site">🌐 Site web</option>
+              <option value="copywriting">✍️ Copywriting</option>
+              <option value="seo">🔍 SEO & Contenu</option>
+              <option value="marketing">📱 Marketing réseaux sociaux</option>
+              <option value="autre">💼 Autre</option>
+            </select>
+          </div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end">
+            <button onclick="closeProjectModal()" style="padding:10px 22px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:transparent;color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
+            <button onclick="createProject()" style="padding:10px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(123,92,255,0.4)">Créer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PANEL MES SITES ── -->
+      <div class="panel" id="panel-sites">
+        <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+
+          <div style="padding:20px 28px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.6);flex-shrink:0;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;background:linear-gradient(135deg,#a78bfa,#4FA3FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">🌐 Mes Sites Générés</div>
+              <div style="color:var(--t3);font-size:13px">Retrouve et republie tous tes sites créés avec NyXia</div>
+            </div>
+            <button onclick="loadMySites()" style="padding:8px 18px;border-radius:50px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.08);color:#a78bfa;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">↻ Actualiser</button>
+          </div>
+
+          <div id="sites-list" style="flex:1;overflow-y:auto;padding:24px 28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;align-content:start">
+            <div style="text-align:center;color:var(--t3);padding:60px;grid-column:1/-1;font-size:14px" id="sites-empty">Chargement...</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── PANEL MESSAGERIE ── -->
+      <div class="panel" id="panel-messages">
+        <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
+
+          <!-- Header -->
+          <div style="padding:20px 28px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.6);flex-shrink:0">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;background:linear-gradient(135deg,#a78bfa,#4FA3FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">✉️ Messagerie</div>
+            <div style="color:var(--t3);font-size:13px">Échange directement avec Diane Boyer</div>
+          </div>
+
+          <!-- Liste messages -->
+          <div id="msg-list" style="flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:12px">
+            <div style="text-align:center;color:var(--t3);padding:40px;font-size:14px" id="msg-empty">Chargement...</div>
+          </div>
+
+          <!-- Formulaire envoi -->
+          <div style="padding:16px 28px;border-top:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.8);flex-shrink:0">
+            <div style="margin-bottom:10px">
+              <textarea id="msg-input" placeholder="Écris ton message à Diane..." style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:14px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:12px 16px;outline:none;resize:none;height:80px;transition:border-color .2s"></textarea>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:50px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.07);color:var(--t3);font-size:13px;cursor:pointer;transition:all .2s">
+                📎 Joindre un fichier
+                <input type="file" id="msg-file" multiple accept="image/*,.pdf,.doc,.docx" style="display:none" onchange="previewAttachments()">
+              </label>
+              <div id="attach-preview" style="display:flex;gap:6px;flex-wrap:wrap;flex:1"></div>
+              <button onclick="sendClientMessage()" style="padding:10px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;font-family:Space Grotesk,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(123,92,255,0.4);transition:all .25s" id="btn-send-msg">Envoyer ➤</button>
+            </div>
+            <div id="msg-status" style="display:none;margin-top:10px;font-size:13px;padding:8px 14px;border-radius:10px"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/js/starry-bg.js" defer></script>
 
   <script>
-    /* Protection NyXia — vérifie la session */
-    ;(function() {
-      var token = sessionStorage.getItem('nyxia_token')
-      if (!token) { window.location.href = '/login.html'; return }
+    /* ══════════════════════════════════════
+       AUTH — vérification session
+    ══════════════════════════════════════ */
+    var sessionToken = sessionStorage.getItem('nyxia_token') || ''
+    var clientEmail  = ''
+    var clientName   = ''
+
+    ;(function checkAuth() {
+      if (!sessionToken) { window.location.href = '/login.html'; return }
       fetch('/api/check-auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: token })
+        body: JSON.stringify({ token: sessionToken })
       })
-      .then(function(r) { return r.json() })
-      .then(function(data) { if (!data.valid) window.location.href = '/login.html' })
-      .catch(function() { window.location.href = '/login.html' })
+      .then(r => r.json())
+      .then(data => {
+        if (!data.valid) { window.location.href = '/login.html'; return }
+        clientEmail = data.email || ''
+        // Utilise le prénom mémorisé par NyXia si disponible
+        var stored = localStorage.getItem('nyxia_username')
+        clientName = stored || ''  // vide = NyXia va demander le prénom
+
+        initUI()
+      })
+      .catch(() => { window.location.href = '/login.html' })
     })()
-  </script>
-</head>
 
-
-
-<body>
-
-  <script>
-    window.toggleNiches = function() {
-      var grid = document.getElementById('niches-grid')
-      var btn  = document.getElementById('btn-toggle-niches')
-      if (!grid || !btn) return
-      var open = grid.style.display !== 'none' && grid.style.display !== ''
-      grid.style.display = open ? 'none' : 'grid'
-      btn.textContent = open ? 'Afficher ▾' : 'Masquer ▴'
-    }
-    window.applyNiche = function(nicheKey) {
-      // Sera redéfini par le script principal — ce stub évite l'erreur au clic rapide
-      var btn = document.getElementById('generate-btn')
-      var input = document.getElementById('user-input')
-      var prompts = {
-        'spa': 'Spa luxueux et centre de bien-être haut de gamme. Ambiance zen, sérénité absolue, soins du corps et de l\'esprit. Services : massages suédois, soins du visage, hammam, jacuzzi, rituels orientaux. Clientèle féminine premium. Design épuré, couleurs douces (blanc, beige, or rose), typographie élégante.',
-        'naturopathe': 'Naturopathe et thérapeute en médecine naturelle. Cabinet professionnel et chaleureux. Approche holistique : nutrition, phytothérapie, hygiène de vie. Tons verts naturels, terre, blanc.',
-        'therapeute': 'Thérapeute en psychologie et développement personnel. Cabinet bienveillant et confidentiel. Spécialités : TCC, EMDR, hypnothérapie.',
-        'holistique': 'Praticien holistique et accompagnement énergétique. Soins : reiki, magnétisme, kinésiologie.',
-        'aromatherapie': 'Aromathérapeute et experte en huiles essentielles. Conseils personnalisés, ateliers, vente de produits naturels.',
-        'lithotherapie': 'Lithothérapeute et spécialiste des cristaux et pierres précieuses.',
-        'medium': 'Médium professionnel et voyance sérieuse. Consultations privées.',
-        'astrologue': 'Astrologue professionnel et thèmes nataux. Services : thème natal complet, synastrie amoureuse.',
-        'tarologue': 'Tarologue et cartomancienne professionnelle. Lectures de tarot de Marseille.',
-        'numerologue': 'Numérologue certifiée et analyse de chemin de vie.',
-        'neuro-alchimiste': 'Neuro-Alchimiste et coach en transformation profonde.',
-        'spiritualite': 'Entrepreneur en spiritualité et éveil de conscience.',
-        'coach': 'Coach de vie et business certifié ICF. Spécialités : confiance en soi, leadership, reconversion.',
-        'agence-marketing': 'Agence de marketing digital et stratégie de croissance.',
-        'entrepreneur': 'Entrepreneur et chef d\'entreprise — présentation corporate et professionnelle.',
-        'formation-en-ligne': 'Créateur de formations en ligne et e-learning.',
-        'auteur': 'Auteur·trice et écrivain·e — site vitrine littéraire.',
-        'maison-edition': 'Maison d\'édition indépendante et librairie.',
-        'restaurant': 'Restaurant gastronomique et livre de recettes. Cuisine française moderne.'
+    function initUI() {
+      // Joue la voix NyXia à l'accueil
+      var audio = document.getElementById('nyxia-audio')
+      if (audio) {
+        audio.volume = 0.7
+        audio.play().catch(function(){}) // catch si autoplay bloqué
       }
-      var images = {
-        'spa':'https://picsum.photos/seed/spa-luxe/1400/800',
-        'naturopathe':'https://picsum.photos/seed/nature-plantes/1400/800',
-        'therapeute':'https://picsum.photos/seed/bureau-psy/1400/800',
-        'holistique':'https://picsum.photos/seed/energie-lumiere/1400/800',
-        'aromatherapie':'https://picsum.photos/seed/huiles-essentielles/1400/800',
-        'lithotherapie':'https://picsum.photos/seed/crystals-gems/1400/800',
-        'medium':'https://picsum.photos/seed/mystique-etoiles/1400/800',
-        'astrologue':'https://picsum.photos/seed/cosmos-stars/1400/800',
-        'tarologue':'https://picsum.photos/seed/tarot-cards/1400/800',
-        'numerologue':'https://picsum.photos/seed/nombres-mystique/1400/800',
-        'neuro-alchimiste':'https://picsum.photos/seed/neuro-transformation/1400/800',
-        'spiritualite':'https://picsum.photos/seed/lumiere-eveil/1400/800',
-        'coach':'https://picsum.photos/seed/coaching-success/1400/800',
-        'agence-marketing':'https://picsum.photos/seed/marketing-digital/1400/800',
-        'entrepreneur':'https://picsum.photos/seed/entreprise-bureau/1400/800',
-        'formation-en-ligne':'https://picsum.photos/seed/formation-online/1400/800',
-        'auteur':'https://picsum.photos/seed/livres-litterature/1400/800',
-        'maison-edition':'https://picsum.photos/seed/edition-librairie/1400/800',
-        'restaurant':'https://picsum.photos/seed/gastronomie-chef/1400/800'
-      }
-
-      // Feedback visuel
-      document.querySelectorAll('.tpl-card').forEach(function(c) { c.classList.remove('selected') })
-      document.querySelectorAll('.tpl-card').forEach(function(c) {
-        if (c.getAttribute('onclick') === "window.applyNiche('" + nicheKey + "')") c.classList.add('selected')
-      })
-
-      var promptText = prompts[nicheKey] || nicheKey
-      var imageUrl   = images[nicheKey] || ('https://picsum.photos/seed/' + nicheKey + '/1400/800')
-
-      // Remplit le champ prompt
-      if (input) input.value = promptText
-
-      // Lance la génération directement
-      window._generateNicheDirectly(promptText, imageUrl)
+      document.getElementById('header-username').textContent = clientName
+      document.getElementById('sidebar-username').textContent = clientName
+      document.getElementById('sidebar-avatar').textContent = clientName.charAt(0).toUpperCase()
+      sendWelcome()
     }
 
-    window._generateNicheDirectly = function(promptText, imageUrl) {
-      var overlay = document.getElementById('nyxia-loading-overlay')
-      var msgEl   = document.getElementById('overlay-message')
-      var progEl  = document.getElementById('overlay-progress')
-      var lblEl   = document.getElementById('overlay-progress-label')
-      var btn     = document.getElementById('generate-btn')
-
-      if (overlay) overlay.classList.add('visible')
-      if (btn) btn.disabled = true
-
-      var messages = ['NyXia analyse le template...','Extraction des couleurs...','Génération HTML premium...','Intégration des images...','Finalisation...']
-      var mIdx = 0, prog = 15
-      var interval = setInterval(function() {
-        prog = Math.min(prog + 14, 88)
-        mIdx = Math.min(mIdx + 1, messages.length - 1)
-        if (progEl) progEl.style.width = prog + '%'
-        if (msgEl)  msgEl.textContent  = messages[mIdx]
-        if (lblEl)  lblEl.textContent  = prog + '%'
-      }, 2500)
-
-      fetch('/api/vision', {
+    function logout() {
+      fetch('/api/logout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: promptText, imageUrl: imageUrl })
-      })
-      .then(function(r) { return r.json() })
-      .then(function(data) {
-        clearInterval(interval)
-        var html = data.choices && data.choices[0] && data.choices[0].message
-          ? data.choices[0].message.content : null
-        if (!html) {
-          if (overlay) overlay.classList.remove('visible')
-          if (btn) { btn.disabled = false }
-          alert('Erreur de génération — réessaie.')
-          return
-        }
-        if (progEl) progEl.style.width = '100%'
-        if (msgEl)  msgEl.textContent  = '❆ Ton site est prêt ! ❆'
-        setTimeout(function() {
-          if (overlay) overlay.classList.remove('visible')
-          if (btn) { btn.disabled = false; btn.textContent = 'Site généré ✓' }
-          var panel = document.getElementById('preview-panel')
-          var frame = document.getElementById('preview-frame')
-          if (panel && frame) { frame.srcdoc = html; panel.style.display = 'block' }
-          try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
-          try { sessionStorage.setItem('nyxia_edit_code', html) } catch(e) {}
-          // Auto-save dans l'historique client
-          var token = sessionStorage.getItem('nyxia_token') || ''
-          if (token) {
-            var siteName = (document.getElementById('user-input') || {}).value || 'Mon site'
-            fetch('/api/sites/save', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ token: token, html: html, name: siteName.substring(0, 50) })
-            }).catch(function(){})
-          }
-        }, 1200)
-      })
-      .catch(function(e) {
-        clearInterval(interval)
-        if (overlay) overlay.classList.remove('visible')
-        if (btn) btn.disabled = false
-        alert('Erreur réseau : ' + e.message)
-      })
-    }
-  </script>
-
-
-
-
-  <!-- Canvas étoilé -->
-
-  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none"></canvas>
-
-
-
-  <!-- Glow d'ambiance -->
-
-  <div class="hero-glow"></div>
-
-
-
-  <!-- Hero Section -->
-
-  <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px 16px">
-
-
-
-    <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:40px">
-
-
-
-      <!-- Marque -->
-
-      <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;line-height:1.2">
-
-        NyXia <span style="background:linear-gradient(135deg,var(--p),var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span>
-
-      </h1>
-
-
-
-      <!-- Promesse -->
-
-      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem,3.5vw,2rem);color:var(--t2);font-weight:600;line-height:1.4">
-
-       Votre site Web réalisé par NyXia IA en <span style="color:var(--p)">moins de 10 minutes</span>
-
-      </h2>
-
-
-
-      <!-- Description -->
-
-      <p style="color:var(--t3);font-size:clamp(0.95rem,2vw,1.1rem);max-width:560px;margin:0 auto;line-height:1.7">
-
-        NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>. Elle crée, publie et optimise votre Empire pendant que vous dormez.
-
-      </p>
-
-
-
-      <!-- 3 Piliers -->
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:left">
-
-
-
-        <div class="pillar-card">
-
-          <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Visibilité permanente sur Google</p>
-
-          <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Votre site trouvé par des milliers de personnes chaque jour, sans effort</p>
-
-        </div>
-
-
-
-        <div class="pillar-card">
-
-          <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Mots qui vendent pour vous</p>
-
-          <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Chaque phrase est conçue pour transformer un visiteur en acheteur</p>
-
-        </div>
-
-
-
-        <div class="pillar-card">
-
-          <p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Commissions en automatique</p>
-
-          <p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Gagnez des revenus sans intervenir, grâce à l'intelligence artificielle</p>
-
-        </div>
-
-
-
-      </div>
-
-
-
-      <!-- Zone de saisie avec upload -->
-
-      <!-- ══ TEMPLATES PAR NICHE ══ -->
-      <div id="niche-templates" style="margin-bottom:24px">
-
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4)">✦ Choisissez votre template</div>
-          <button onclick="window.toggleNiches()" id="btn-toggle-niches" style="background:none;border:none;color:var(--t4);font-size:11px;cursor:pointer;font-family:Outfit,sans-serif;transition:color .2s" onmouseover="this.style.color='var(--t3)'" onmouseout="this.style.color='var(--t4)'">Afficher ▾</button>
-        </div>
-
-        <style>
-          .tpl-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-          }
-          .tpl-cat {
-            font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-            color:var(--t4);grid-column:1/-1;margin-top:10px;padding-bottom:6px;
-            border-bottom:1px solid rgba(123,92,255,0.1);
-          }
-          .tpl-card {
-            border-radius:12px;
-            border:2px solid rgba(123,92,255,0.12);
-            overflow:hidden;
-            cursor:pointer;
-            transition:all .22s cubic-bezier(.4,0,.2,1);
-            background:#0a1228;
-            position:relative;
-          }
-          .tpl-card:hover {
-            border-color:rgba(123,92,255,0.6);
-            transform:translateY(-3px) scale(1.02);
-            box-shadow:0 12px 32px rgba(123,92,255,0.2);
-          }
-          .tpl-card.selected {
-            border-color:#7B5CFF;
-            box-shadow:0 0 0 3px rgba(123,92,255,0.25), 0 12px 32px rgba(123,92,255,0.25);
-          }
-          .tpl-card.selected::after {
-            content:"✓";
-            position:absolute;top:7px;right:7px;
-            width:20px;height:20px;border-radius:50%;
-            background:#7B5CFF;color:#fff;
-            font-size:11px;font-weight:700;
-            display:flex;align-items:center;justify-content:center;
-            line-height:20px;text-align:center;
-          }
-          /* Miniature visuelle */
-          .tpl-thumb {
-            height:110px;
-            position:relative;
-            overflow:hidden;
-            display:flex;flex-direction:column;
-            padding:10px;
-            gap:5px;
-          }
-          .tpl-thumb-bar {
-            height:3px;border-radius:2px;
-            width:60%;
-          }
-          .tpl-thumb-bar.w40 { width:40%; }
-          .tpl-thumb-bar.w80 { width:80%; }
-          .tpl-thumb-bar.w30 { width:30%; }
-          .tpl-thumb-title {
-            font-size:9px;font-weight:700;line-height:1.3;
-            margin-top:2px;
-          }
-          .tpl-thumb-sub {
-            font-size:7px;opacity:.7;line-height:1.4;
-          }
-          .tpl-thumb-btn {
-            margin-top:auto;align-self:flex-start;
-            padding:2px 8px;border-radius:10px;
-            font-size:7px;font-weight:700;
-          }
-          .tpl-thumb-img {
-            position:absolute;bottom:0;right:0;
-            width:36px;height:36px;border-radius:8px 0 0 0;
-            opacity:.25;
-            font-size:22px;
-            display:flex;align-items:center;justify-content:center;
-          }
-          .tpl-name {
-            padding:7px 10px;
-            font-size:11px;font-weight:700;
-            letter-spacing:.04em;text-transform:uppercase;
-            text-align:center;
-            border-top:1px solid rgba(255,255,255,0.06);
-          }
-          .tpl-sub {
-            font-size:10px;color:var(--t4);
-            text-align:center;padding:0 10px 7px;
-          }
-        </style>
-
-        <div id="niches-grid" class="tpl-grid" style="display:none">
-
-          <div class="tpl-cat">🌿 Bien-être & Santé</div>
-
-          <!-- SPA -->
-          <div class="tpl-card" onclick="window.applyNiche('spa')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a0e2e 0%,#2d1654 100%)">
-              <div class="tpl-thumb-bar" style="background:#c9a0dc"></div>
-              <div class="tpl-thumb-title" style="color:#e8d5f5">Spa & Bien-être</div>
-              <div class="tpl-thumb-sub" style="color:#c9a0dc">Soins · Massages · Rituels</div>
-              <div class="tpl-thumb-btn" style="background:rgba(201,160,220,.2);color:#e8d5f5;border:1px solid rgba(201,160,220,.4)">Réserver</div>
-              <div class="tpl-thumb-img">💆</div>
-            </div>
-            <div class="tpl-name" style="color:#e8d5f5">Spa & Massage</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- NATUROPATHE -->
-          <div class="tpl-card" onclick="window.applyNiche('naturopathe')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#0d1f0e 0%,#1a3a1c 100%)">
-              <div class="tpl-thumb-bar" style="background:#52b788"></div>
-              <div class="tpl-thumb-title" style="color:#d8f3dc">Naturopathe</div>
-              <div class="tpl-thumb-sub" style="color:#95d5b2">Nutrition · Phytothérapie</div>
-              <div class="tpl-thumb-btn" style="background:rgba(82,183,136,.2);color:#d8f3dc;border:1px solid rgba(82,183,136,.4)">Consulter</div>
-              <div class="tpl-thumb-img">🌱</div>
-            </div>
-            <div class="tpl-name" style="color:#95d5b2">Naturopathe</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- THERAPEUTE -->
-          <div class="tpl-card" onclick="window.applyNiche('therapeute')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#0e1a2e 0%,#162844 100%)">
-              <div class="tpl-thumb-bar" style="background:#4fa3d1"></div>
-              <div class="tpl-thumb-title" style="color:#cce8f4">Thérapeute</div>
-              <div class="tpl-thumb-sub" style="color:#90c9e8">TCC · EMDR · Hypnose</div>
-              <div class="tpl-thumb-btn" style="background:rgba(79,163,209,.2);color:#cce8f4;border:1px solid rgba(79,163,209,.4)">Rendez-vous</div>
-              <div class="tpl-thumb-img">🧠</div>
-            </div>
-            <div class="tpl-name" style="color:#90c9e8">Thérapeute & Psy</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- HOLISTIQUE -->
-          <div class="tpl-card" onclick="window.applyNiche('holistique')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a1030 0%,#2e1a50 100%)">
-              <div class="tpl-thumb-bar" style="background:#f4c842"></div>
-              <div class="tpl-thumb-title" style="color:#fef3c7">Praticien Holistique</div>
-              <div class="tpl-thumb-sub" style="color:#f4c842">Reiki · Magnétisme · Énergie</div>
-              <div class="tpl-thumb-btn" style="background:rgba(244,200,66,.15);color:#fef3c7;border:1px solid rgba(244,200,66,.35)">Soins</div>
-              <div class="tpl-thumb-img">✨</div>
-            </div>
-            <div class="tpl-name" style="color:#f4c842">Praticien Holistique</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- AROMATHERAPIE -->
-          <div class="tpl-card" onclick="window.applyNiche('aromatherapie')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a1505 0%,#2e2408 100%)">
-              <div class="tpl-thumb-bar" style="background:#a3b18a"></div>
-              <div class="tpl-thumb-title" style="color:#f0ead2">Aromathérapeute</div>
-              <div class="tpl-thumb-sub" style="color:#a3b18a">Huiles essentielles · Ateliers</div>
-              <div class="tpl-thumb-btn" style="background:rgba(163,177,138,.2);color:#f0ead2;border:1px solid rgba(163,177,138,.4)">Découvrir</div>
-              <div class="tpl-thumb-img">🌸</div>
-            </div>
-            <div class="tpl-name" style="color:#a3b18a">Aromatérapie</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- LITHOTHERAPIE -->
-          <div class="tpl-card" onclick="window.applyNiche('lithotherapie')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1c1030 0%,#2e1850 100%)">
-              <div class="tpl-thumb-bar" style="background:#9b72cf"></div>
-              <div class="tpl-thumb-title" style="color:#ede0ff">Lithothérapie</div>
-              <div class="tpl-thumb-sub" style="color:#c4a8e8">Cristaux · Pierres · Minéraux</div>
-              <div class="tpl-thumb-btn" style="background:rgba(155,114,207,.2);color:#ede0ff;border:1px solid rgba(155,114,207,.4)">Boutique</div>
-              <div class="tpl-thumb-img">💎</div>
-            </div>
-            <div class="tpl-name" style="color:#c4a8e8">Lithothérapie</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <div class="tpl-cat">🔮 Spiritualité & Ésotérisme</div>
-
-          <!-- MEDIUM -->
-          <div class="tpl-card" onclick="window.applyNiche('medium')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#08040f 0%,#150a28 100%)">
-              <div style="display:flex;gap:3px;margin-bottom:3px">
-                <div style="width:4px;height:4px;border-radius:50%;background:#f4c842;opacity:.8"></div>
-                <div style="width:4px;height:4px;border-radius:50%;background:#f4c842;opacity:.5"></div>
-                <div style="width:4px;height:4px;border-radius:50%;background:#f4c842;opacity:.3"></div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fef3c7;font-family:Georgia,serif;font-style:italic">Médium Professionnel</div>
-              <div class="tpl-thumb-sub" style="color:#f4c842">Médiumnité · Guidance · Révélations</div>
-              <div class="tpl-thumb-btn" style="background:rgba(244,200,66,.15);color:#fef3c7;border:1px solid rgba(244,200,66,.3)">Consulter</div>
-              <div class="tpl-thumb-img">🔮</div>
-            </div>
-            <div class="tpl-name" style="color:#f4c842">Médium & Voyance</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- ASTROLOGUE -->
-          <div class="tpl-card" onclick="window.applyNiche('astrologue')">
-            <div class="tpl-thumb" style="background:radial-gradient(ellipse at top,#0d0d2b 0%,#050514 100%)">
-              <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:3px">
-                <div style="width:3px;height:3px;border-radius:50%;background:#fff;opacity:.9"></div>
-                <div style="width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5"></div>
-                <div style="width:3px;height:3px;border-radius:50%;background:#fff;opacity:.7"></div>
-                <div style="width:2px;height:2px;border-radius:50%;background:#fff;opacity:.4"></div>
-                <div style="width:4px;height:4px;border-radius:50%;background:#f4c842;opacity:.9"></div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fff;font-family:Georgia,serif">Astrologue</div>
-              <div class="tpl-thumb-sub" style="color:#a8b4d8">Thèmes nataux · Synastrie · Prévisions</div>
-              <div class="tpl-thumb-btn" style="background:rgba(168,180,216,.15);color:#fff;border:1px solid rgba(168,180,216,.3)">Commander</div>
-              <div class="tpl-thumb-img">⭐</div>
-            </div>
-            <div class="tpl-name" style="color:#a8b4d8">Astrologue</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- TAROLOGUE -->
-          <div class="tpl-card" onclick="window.applyNiche('tarologue')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a0808 0%,#2e1010 100%)">
-              <div class="tpl-thumb-bar" style="background:#c9a84c"></div>
-              <div class="tpl-thumb-title" style="color:#fef3c7;font-family:Georgia,serif;font-style:italic">Tarologue</div>
-              <div class="tpl-thumb-sub" style="color:#c9a84c">Tarot de Marseille · Tirages</div>
-              <div class="tpl-thumb-btn" style="background:rgba(201,168,76,.15);color:#fef3c7;border:1px solid rgba(201,168,76,.35)">Réserver</div>
-              <div class="tpl-thumb-img">🃏</div>
-            </div>
-            <div class="tpl-name" style="color:#c9a84c">Tarologue</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- NUMEROLOGUE -->
-          <div class="tpl-card" onclick="window.applyNiche('numerologue')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#0a0f1e 0%,#101828 100%)">
-              <div style="display:flex;gap:4px;margin-bottom:4px">
-                <div style="width:14px;height:14px;border-radius:4px;background:rgba(79,163,255,.25);border:1px solid rgba(79,163,255,.4);color:#4fa3ff;font-size:7px;display:flex;align-items:center;justify-content:center;font-weight:700">7</div>
-                <div style="width:14px;height:14px;border-radius:4px;background:rgba(79,163,255,.1);border:1px solid rgba(79,163,255,.2);color:#4fa3ff;font-size:7px;display:flex;align-items:center;justify-content:center">3</div>
-                <div style="width:14px;height:14px;border-radius:4px;background:rgba(79,163,255,.1);border:1px solid rgba(79,163,255,.2);color:#4fa3ff;font-size:7px;display:flex;align-items:center;justify-content:center">9</div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#e0f0ff">Numérologue</div>
-              <div class="tpl-thumb-sub" style="color:#7ab8e8">Chemin de vie · Analyse</div>
-              <div class="tpl-thumb-btn" style="background:rgba(79,163,255,.2);color:#e0f0ff;border:1px solid rgba(79,163,255,.4)">Analyse</div>
-            </div>
-            <div class="tpl-name" style="color:#7ab8e8">Numérologue</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- NEURO-ALCHIMISTE -->
-          <div class="tpl-card" onclick="window.applyNiche('neuro-alchimiste')">
-            <div class="tpl-thumb" style="background:linear-gradient(135deg,#08041a 0%,#0e0830 50%,#04101a 100%)">
-              <div class="tpl-thumb-bar" style="background:linear-gradient(90deg,#7B5CFF,#00e5ff);height:2px"></div>
-              <div class="tpl-thumb-bar w40" style="background:rgba(0,229,255,.4);height:1px;margin-top:2px"></div>
-              <div class="tpl-thumb-title" style="color:#e0f8ff;font-size:8px;letter-spacing:.5px">NEURO-ALCHIMISTE</div>
-              <div class="tpl-thumb-sub" style="color:#7B5CFF">Neurosciences · Transformation</div>
-              <div class="tpl-thumb-btn" style="background:linear-gradient(135deg,rgba(123,92,255,.3),rgba(0,229,255,.2));color:#e0f8ff;border:1px solid rgba(0,229,255,.3)">Programme</div>
-            </div>
-            <div class="tpl-name" style="color:#00e5ff">Neuro-Alchimiste</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- SPIRITUALITE -->
-          <div class="tpl-card" onclick="window.applyNiche('spiritualite')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a1228 0%,#2a1e44 100%)">
-              <div style="display:flex;justify-content:center;gap:8px;margin-bottom:4px">
-                <div style="width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#fff8e1,#f4c842);opacity:.9"></div>
-                <div style="width:5px;height:5px;border-radius:50%;background:#f4c842;opacity:.5;margin-top:2px"></div>
-                <div style="width:6px;height:6px;border-radius:50%;background:#f4c842;opacity:.7;margin-top:1px"></div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fef9ee;text-align:center;font-family:Georgia,serif">Éveil & Spiritualité</div>
-              <div class="tpl-thumb-sub" style="color:#f4c842;text-align:center">Retraites · Cercles Sacrés</div>
-              <div style="margin-top:auto;text-align:center">
-                <span style="background:rgba(244,200,66,.15);color:#fef9ee;border:1px solid rgba(244,200,66,.3);padding:2px 8px;border-radius:10px;font-size:7px;font-weight:700">Rejoindre</span>
-              </div>
-            </div>
-            <div class="tpl-name" style="color:#f4c842">Spiritualité</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <div class="tpl-cat">🚀 Coaching & Business</div>
-
-          <!-- COACH -->
-          <div class="tpl-card" onclick="window.applyNiche('coach')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#050e1f 0%,#0c1a38 100%)">
-              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-                <div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ea580c);display:flex;align-items:center;justify-content:center;font-size:9px">🎯</div>
-                <div style="font-size:8px;font-weight:700;color:#fff;letter-spacing:.5px">COACH CERTIFIÉ ICF</div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fff;font-size:10px">Transformez votre vie</div>
-              <div class="tpl-thumb-sub" style="color:#94a3b8">Leadership · Confiance · Succès</div>
-              <div class="tpl-thumb-btn" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none">Séance gratuite</div>
-            </div>
-            <div class="tpl-name" style="color:#fb923c">Coach de vie</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- AGENCE MARKETING -->
-          <div class="tpl-card" onclick="window.applyNiche('agence-marketing')">
-            <div class="tpl-thumb" style="background:#0a0a0a">
-              <div style="display:flex;gap:3px;margin-bottom:5px">
-                <div style="flex:1;height:4px;border-radius:2px;background:#7B5CFF"></div>
-                <div style="flex:2;height:4px;border-radius:2px;background:rgba(123,92,255,.3)"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:rgba(123,92,255,.15)"></div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fff;letter-spacing:.5px;font-size:8px;text-transform:uppercase">Agence Marketing Digital</div>
-              <div class="tpl-thumb-sub" style="color:#888">SEO · Meta Ads · Branding</div>
-              <div class="tpl-thumb-btn" style="background:#7B5CFF;color:#fff;border:none">Audit gratuit</div>
-              <div class="tpl-thumb-img">📈</div>
-            </div>
-            <div class="tpl-name" style="color:#a78bfa">Agence Marketing</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- ENTREPRENEUR -->
-          <div class="tpl-card" onclick="window.applyNiche('entrepreneur')">
-            <div class="tpl-thumb" style="background:#f8fafc">
-              <div style="height:3px;background:linear-gradient(90deg,#1e3a5f,#2d5a8e);margin-bottom:6px;border-radius:2px"></div>
-              <div class="tpl-thumb-title" style="color:#1e3a5f;font-size:9px;font-weight:800;letter-spacing:.3px">MON ENTREPRISE</div>
-              <div class="tpl-thumb-bar w80" style="background:#e2e8f0;height:3px;margin:3px 0"></div>
-              <div class="tpl-thumb-bar w40" style="background:#e2e8f0;height:3px"></div>
-              <div class="tpl-thumb-btn" style="background:#1e3a5f;color:#fff;border:none;margin-top:6px">Contact</div>
-            </div>
-            <div class="tpl-name" style="color:#7ab8e8">Entrepreneur</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- FORMATION EN LIGNE -->
-          <div class="tpl-card" onclick="window.applyNiche('formation-en-ligne')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#0f0a1e 0%,#1a0f35 100%)">
-              <div style="display:flex;gap:4px;margin-bottom:5px">
-                <div style="padding:2px 6px;border-radius:4px;background:rgba(249,115,22,.2);color:#fb923c;font-size:7px;font-weight:700;border:1px solid rgba(249,115,22,.3)">NOUVEAU</div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fff">Formation en ligne</div>
-              <div class="tpl-thumb-sub" style="color:#a78bfa">Vidéos · Modules · Accès à vie</div>
-              <div class="tpl-thumb-btn" style="background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;border:none">S'inscrire</div>
-            </div>
-            <div class="tpl-name" style="color:#a78bfa">Formation en ligne</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <div class="tpl-cat">📚 Création & Culture</div>
-
-          <!-- AUTEUR -->
-          <div class="tpl-card" onclick="window.applyNiche('auteur')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a1208 0%,#2e2010 100%)">
-              <div class="tpl-thumb-bar" style="background:#c9a84c"></div>
-              <div class="tpl-thumb-title" style="color:#fef3c7;font-family:Georgia,serif;font-style:italic">Mon univers littéraire</div>
-              <div class="tpl-thumb-sub" style="color:#c9a84c">Romans · Essais · Poésie</div>
-              <div class="tpl-thumb-btn" style="background:rgba(201,168,76,.15);color:#fef3c7;border:1px solid rgba(201,168,76,.3)">Mes livres</div>
-              <div class="tpl-thumb-img">✍️</div>
-            </div>
-            <div class="tpl-name" style="color:#c9a84c">Auteur·trice</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- MAISON EDITION -->
-          <div class="tpl-card" onclick="window.applyNiche('maison-edition')">
-            <div class="tpl-thumb" style="background:#fafaf8">
-              <div style="height:2px;background:#1a1a1a;margin-bottom:6px"></div>
-              <div class="tpl-thumb-title" style="color:#1a1a1a;font-family:Georgia,serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase">Maison d'Édition</div>
-              <div class="tpl-thumb-bar w60" style="background:#e5e5e5;height:2px;margin:4px 0"></div>
-              <div style="display:flex;gap:3px;margin-top:4px">
-                <div style="width:18px;height:24px;background:#2d6a2d;border-radius:2px"></div>
-                <div style="width:18px;height:24px;background:#6b2d2d;border-radius:2px"></div>
-                <div style="width:18px;height:24px;background:#2d3a6b;border-radius:2px"></div>
-              </div>
-            </div>
-            <div class="tpl-name" style="color:#888">Maison d'Édition</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- RESTAURANT -->
-          <div class="tpl-card" onclick="window.applyNiche('restaurant')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a0a06 0%,#2e1208 100%)">
-              <div class="tpl-thumb-bar" style="background:#d4845a"></div>
-              <div class="tpl-thumb-title" style="color:#fef0e8;font-family:Georgia,serif;font-style:italic">Restaurant Gastronomique</div>
-              <div class="tpl-thumb-sub" style="color:#d4845a">Cuisine française · Saison</div>
-              <div class="tpl-thumb-btn" style="background:rgba(212,132,90,.2);color:#fef0e8;border:1px solid rgba(212,132,90,.4)">Réserver</div>
-              <div class="tpl-thumb-img">🍽️</div>
-            </div>
-            <div class="tpl-name" style="color:#d4845a">Restaurant</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Onglets Image / URL -->
-
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button id="tab-image" onclick="window.switchMode && window.switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
-        <button id="tab-url" onclick="window.switchMode && window.switchMode('url')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">🔗 Depuis une URL</button>
-      </div>
-
-      <!-- Mode URL -->
-      <div id="url-mode" style="display:none;flex-direction:column;gap:12px;margin-bottom:14px">
-        <input id="url-input" type="url" placeholder="https://monsite.com — NyXia va l'analyser et le réinventer ✨"
-          style="width:100%;padding:16px 20px;border-radius:12px;background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.2);color:#fff;font-family:Outfit,sans-serif;font-size:15px;outline:none">
-        <div style="font-size:12px;color:#8891B8;text-align:center">NyXia analyse le contenu de la page et génère un site modernisé 🚀</div>
-      </div>
-
-      <div id="image-mode" style="display:flex;flex-direction:column;gap:14px">
-
-        <div class="input-row">
-
-          <input
-
-            id="user-input"
-
-            type="text"
-
-            placeholder="✍️ Ex: Spa bien-être, Coach de vie, Naturopathe, Boutique bijoux..."
-
-            style="width:100%;padding:16px 20px;border-radius:var(--r);background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.15);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s"
-
-          >
-
-          <button class="upload-btn" id="upload-btn" title="Uploader une image">
-
-            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-
-          </button>
-
-          <input type="file" id="file-input" accept="image/*" style="display:none">
-
-        </div>
-
-        <!-- Thumbnail de l'image uploadée -->
-
-        <div id="upload-preview">
-
-          <img id="preview-thumb" src="" alt="Aperçu">
-
-          <button class="remove-img" id="remove-img">&times;</button>
-
-        </div>
-
-      </div>
-
-
-
-      </div><!-- /image-mode -->
-
-      <!-- Bouton générer — toujours visible -->
-      <button id="generate-btn" class="btn-primary" style="margin-top:14px;display:block;margin-left:auto;margin-right:auto">
-        ✨ Créer mon site avec NyXia
-      </button>
-
-      <!-- Pedigree -->
-
-      <p style="color:var(--t3);font-size:0.75rem;opacity:0.5">
-
-        Une technologie <a href="https://www.publication-web.com" target="_blank" rel="noopener" style="color:var(--p);opacity:0.7;text-decoration:none">Publication-Web.com</a> — Visionnaire depuis 1997
-
-      </p>
-
-
-
-    </div>
-
-
-
-  </main>
-
-
-
-  <!-- ===== WIDGET NYXIA CLOSER — Avatar réel, zéro texte pré-rempli ===== -->
-
-
-
-
-
-  <!-- ═══ ÉDITEUR PLEINE PAGE ═══ -->
-  <div id="fullpage-editor">
-    <div id="editor-sidebar">
-      <h2>✏️ Éditeur NyXia</h2>
-
-      <div class="edit-section" id="text-edit-section" style="display:none">
-        <div class="edit-section-title">✏️ Texte sélectionné</div>
-        <textarea class="edit-textarea" id="edit-text-input"></textarea>
-        <button class="btn-edit-action btn-save-edit" id="btn-apply-text" style="margin-top:8px">✓ Appliquer</button>
-      </div>
-
-      <div class="edit-section">
-        <div class="edit-section-title">🎨 Couleurs</div>
-        <div class="color-row">
-          <div>
-            <label class="color-lbl">Fond</label>
-            <input type="color" class="color-pick" id="ec-bg" value="#ffffff">
-          </div>
-          <div>
-            <label class="color-lbl">Accent</label>
-            <input type="color" class="color-pick" id="ec-accent" value="#7B5CFF">
-          </div>
-          <div>
-            <label class="color-lbl">Texte</label>
-            <input type="color" class="color-pick" id="ec-text" value="#000000">
-          </div>
-          <div>
-            <label class="color-lbl">Boutons</label>
-            <input type="color" class="color-pick" id="ec-btn" value="#5A6CFF">
-          </div>
-        </div>
-      </div>
-
-      <div class="edit-section">
-        <div class="edit-section-title">⚡ Actions</div>
-        <button class="btn-edit-action btn-save-edit" id="btn-save-edits">💾 Sauvegarder</button>
-        <button class="btn-edit-action btn-copy-edit" id="btn-copy-edits">📋 Copier le code</button>
-        <button class="btn-edit-action btn-close-edit" id="btn-close-editor">✕ Fermer l'éditeur</button>
-      </div>
-
-      <div class="edit-hint">💡 Clique sur un texte dans le preview pour le modifier</div>
-    </div>
-
-    <div id="editor-preview-wrap">
-      <div id="editor-selected-info">✏️ Élément sélectionné — modifie le texte à gauche</div>
-      <iframe id="editor-preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
-    </div>
-  </div>
-
-  <!-- ═══ OVERLAY NYXIA GÉNÉRATION PREMIUM ═══ -->
-  <div id="nyxia-loading-overlay">
-    <div class="overlay-stars" id="overlay-stars"></div>
-    <img src="/TravailDureNyxia.png" alt="NyXia travaille..." class="overlay-nyxia-img">
-    <div class="overlay-message" id="overlay-message">NyXia prépare ton univers...</div>
-    <div class="overlay-progress-wrap">
-      <div class="overlay-progress-bar">
-        <div class="overlay-progress-fill" id="overlay-progress"></div>
-      </div>
-      <div class="overlay-progress-label" id="overlay-progress-label">Initialisation</div>
-    </div>
-  </div>
-
-  <!-- Pastille flottante avec avatar NyXia.png -->
-
-  <div id="nyxia-toggle">
-
-    <img src="/NyXia.png" alt="NyXia">
-
-    <span class="nyxia-online"></span>
-
-  </div>
-
-
-
-  <!-- Panel de chat -->
-
-  <div id="nyxia-chat">
-
-    <div id="nyxia-header">
-
-      <img src="/NyXia.png" alt="NyXia">
-
-      <div>
-
-        <div style="color:var(--p);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">NyXia IA</div>
-
-        <div style="color:var(--green);font-size:11px">En ligne</div>
-
-      </div>
-
-      <button id="nyxia-close">&times;</button>
-
-    </div>
-
-    <div id="nyxia-messages"></div>
-
-    <div id="nyxia-input-row">
-
-      <input id="nyxia-input" type="text" placeholder="Écris à NyXia...">
-
-      <button id="nyxia-send">&#10148;</button>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- ===== PREVIEW PANEL (overlay) ===== -->
-
-  <div id="preview-panel">
-
-    <div id="preview-container">
-
-      <div id="preview-toolbar">
-
-        <h3>NyXia Preview</h3>
-
-        <button class="toolbar-btn" id="btn-edit" onclick="toggleEditorPanel()" style="background:linear-gradient(135deg,rgba(123,92,255,0.3),rgba(90,108,255,0.3));border-color:rgba(123,92,255,0.5)">✏️ Éditer</button>
-
-        <button class="toolbar-btn" id="btn-view-code">View Code</button>
-
-        <button class="toolbar-btn" id="btn-copy-code">Copy Code</button>
-
-        <button class="toolbar-btn" id="btn-publish" onclick="openPublishModal()" style="background:linear-gradient(135deg,rgba(0,200,100,0.25),rgba(0,150,80,0.2));border-color:rgba(0,200,100,0.4);color:#00E676;font-weight:700">🚀 Publier</button>
-
-        <button class="toolbar-btn close-preview" id="btn-close-preview">Fermer</button>
-
-      </div>
-
-      <div style="position:relative;flex:1;display:flex;overflow:hidden">
-
-        <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-popups" style="flex:1;border:none;height:100%"></iframe>
-
-        <!-- PANNEAU ÉDITEUR -->
-        <div id="editor-panel">
-          <div class="editor-header">
-            ✏️ Éditeur
-            <button onclick="toggleEditor()" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px">✕</button>
-          </div>
-
-          <!-- Texte sélectionné -->
-          <div class="editor-section" id="text-editor-section" style="display:none">
-            <div class="editor-section-title">✏️ Modifier le texte</div>
-            <textarea class="editor-input" id="selected-text-input" rows="4"></textarea>
-            <button class="btn-editor btn-editor-primary" onclick="applyTextEdit()" style="margin-top:8px">
-              ✓ Appliquer
-            </button>
-          </div>
-
-          <!-- Images -->
-          <div class="editor-section" id="img-editor-section" style="display:none">
-            <div class="editor-section-title">🖼 Remplacer l'image</div>
-            <img id="img-editor-preview" style="width:100%;height:70px;object-fit:cover;border-radius:6px;margin-bottom:8px;border:1px solid rgba(123,92,255,0.2)">
-            <button class="btn-editor btn-editor-primary" onclick="document.getElementById('img-editor-upload').click()" style="margin-bottom:6px">
-              📁 Télécharger depuis mon ordi
-            </button>
-            <input type="file" id="img-editor-upload" accept="image/*" style="display:none" onchange="uploadEditorImage(this)">
-            <div style="display:flex;gap:6px;margin-bottom:6px">
-              <input class="editor-input" type="text" id="img-pexels-query" placeholder="Chercher sur Pexels..." style="min-height:unset;height:36px;padding:6px 10px;font-size:12px" onkeydown="if(event.key==='Enter')searchEditorPexels()">
-              <button class="btn-editor btn-editor-secondary" onclick="searchEditorPexels()" style="width:auto;padding:6px 10px;font-size:13px">🔍</button>
-            </div>
-            <div id="img-pexels-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:5px"></div>
-          </div>
-
-          <!-- Couleurs -->
-          <div class="editor-section">
-            <div class="editor-section-title">🎨 Couleurs</div>
-            <div class="color-grid">
-              <div class="color-item">
-                <label>Fond</label>
-                <input type="color" id="color-bg" value="#0F1C3F" oninput="applyColor('bg', this.value)">
-              </div>
-              <div class="color-item">
-                <label>Accent</label>
-                <input type="color" id="color-accent" value="#7B5CFF" oninput="applyColor('accent', this.value)">
-              </div>
-              <div class="color-item">
-                <label>Texte</label>
-                <input type="color" id="color-text" value="#FFFFFF" oninput="applyColor('text', this.value)">
-              </div>
-              <div class="color-item">
-                <label>Boutons</label>
-                <input type="color" id="color-btn" value="#5A6CFF" oninput="applyColor('btn', this.value)">
-              </div>
-            </div>
-          </div>
-
-          <!-- Actions -->
-          <div class="editor-section">
-            <div class="editor-section-title">⚡ Actions</div>
-            <button class="btn-editor btn-editor-primary" onclick="saveEdits()" style="margin-bottom:6px">
-              💾 Sauvegarder les modifications
-            </button>
-            <button class="btn-editor btn-editor-secondary" onclick="copyEditedCode()">
-              📋 Copier le code
-            </button>
-            <button class="btn-editor btn-editor-secondary" onclick="resetEdits()" style="margin-top:6px">
-              ↺ Réinitialiser
-            </button>
-          </div>
-
-          <div class="editor-hint">
-            💡 Clique sur n'importe quel texte dans le preview pour le modifier directement
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- ===== CODE MODAL ===== -->
-
-  <div id="code-modal">
-
-    <div class="code-toolbar">
-
-      <h3>Code HTML généré</h3>
-
-      <button class="toolbar-btn" id="btn-copy-modal">Copier</button>
-
-      <button class="toolbar-btn close-preview" id="btn-close-code">Fermer</button>
-
-    </div>
-
-    <pre id="code-output"></pre>
-
-  </div>
-
-  <!-- ══ MODAL PUBLICATION ══ -->
-  <div id="publish-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);align-items:center;justify-content:center">
-    <div style="background:var(--bg2,#0F1C3F);border:1px solid rgba(0,230,118,0.25);border-radius:24px;padding:36px;width:100%;max-width:500px;margin:20px;box-shadow:0 24px 64px rgba(0,0,0,0.6),0 0 60px rgba(0,230,118,0.08)">
-
-      <!-- État : formulaire -->
-      <div id="publish-form-state">
-        <div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:6px">🚀 Publier mon site</div>
-        <div style="font-size:13px;color:var(--t3,#8891B8);margin-bottom:24px">Ton site sera en ligne en quelques secondes sur un sous-domaine gratuit.</div>
-
-        <div style="margin-bottom:16px">
-          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2,#D6D9F0);margin-bottom:6px">Nom de ton site</label>
-          <div style="display:flex;align-items:center;gap:0;background:rgba(15,28,63,0.8);border:1px solid rgba(0,230,118,0.2);border-radius:10px;overflow:hidden">
-            <input id="publish-name" type="text" placeholder="mon-site-spa" maxlength="50"
-              style="flex:1;background:transparent;border:none;color:#fff;font-family:Outfit,sans-serif;font-size:14px;padding:12px 14px;outline:none"
-              oninput="updatePublishPreview()">
-            <span style="padding:12px 14px;color:var(--t3,#8891B8);font-size:13px;white-space:nowrap">.pages.dev</span>
-          </div>
-          <div id="publish-preview-url" style="font-size:11px;color:#00E676;margin-top:6px;opacity:0.8"></div>
-        </div>
-
-        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:24px">
-          <button onclick="closePublishModal()" style="padding:11px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--t2,#D6D9F0);font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
-          <button onclick="doPublish()" id="btn-do-publish" style="padding:11px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#00C864,#00A050);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 24px rgba(0,200,100,0.4);transition:all .2s">🚀 Publier maintenant</button>
-        </div>
-      </div>
-
-      <!-- État : chargement -->
-      <div id="publish-loading-state" style="display:none;text-align:center;padding:20px 0">
-        <div style="width:56px;height:56px;border:3px solid rgba(0,230,118,0.2);border-top-color:#00E676;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px"></div>
-        <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Publication en cours...</div>
-        <div style="font-size:13px;color:var(--t3,#8891B8)">NyXia déploie ton site sur Cloudflare ✨</div>
-      </div>
-
-      <!-- État : succès -->
-      <div id="publish-success-state" style="display:none;text-align:center;padding:10px 0">
-        <div style="font-size:48px;margin-bottom:16px">🎉</div>
-        <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">Ton site est en ligne !</div>
-        <div style="font-size:13px;color:var(--t3,#8891B8);margin-bottom:20px">Accessible dans quelques secondes sur :</div>
-        <a id="publish-result-url" href="#" target="_blank"
-          style="display:block;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);border-radius:12px;padding:14px 20px;color:#00E676;font-family:monospace;font-size:14px;text-decoration:none;word-break:break-all;transition:all .2s"
-          onmouseover="this.style.background='rgba(0,230,118,0.18)'"
-          onmouseout="this.style.background='rgba(0,230,118,0.1)'"></a>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
-          <button id="btn-copy-publish-url" onclick="copyPublishUrl()" style="padding:10px 20px;border-radius:50px;border:1px solid rgba(0,230,118,0.3);background:transparent;color:#00E676;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📋 Copier le lien</button>
-          <button onclick="closePublishModal()" style="padding:10px 20px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--p,#7B5CFF),var(--p2,#5A6CFF));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Fermer</button>
-        </div>
-      </div>
-
-      <!-- État : erreur -->
-      <div id="publish-error-state" style="display:none;text-align:center;padding:10px 0">
-        <div style="font-size:40px;margin-bottom:14px">⚠️</div>
-        <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Erreur de publication</div>
-        <div id="publish-error-msg" style="font-size:13px;color:#ff8fab;margin-bottom:20px;line-height:1.5"></div>
-        <div style="display:flex;gap:10px;justify-content:center">
-          <button onclick="showPublishState('form')" style="padding:10px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.3);background:transparent;color:var(--t2,#D6D9F0);font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">↺ Réessayer</button>
-          <button onclick="closePublishModal()" style="padding:10px 20px;border-radius:50px;border:none;background:rgba(255,75,110,0.15);border:1px solid rgba(255,75,110,0.3);color:#ff8fab;font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">Fermer</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-
-
-  <!-- Scripts non-bloquants -->
-
-
-  <script src="/js/generator.js"></script>
-  <script>
-    /* ═══════════════════════════════════════
-       ÉDITEUR INLINE — 100% dans index.html
-       Zéro dépendance à generator.js
-    ═══════════════════════════════════════ */
-
-    var editorOpen = false
-
-    function toggleEditorPanel() {
-      var panel = document.getElementById('editor-panel')
-      var btn   = document.getElementById('btn-edit')
-      if (!panel) return
-      editorOpen = !editorOpen
-      if (editorOpen) {
-        panel.classList.add('open')
-        btn.textContent = '✏️ Fermer éditeur'
-        injectEditorListeners()
-      } else {
-        panel.classList.remove('open')
-        btn.textContent = '✏️ Éditer'
-      }
-    }
-
-    // Rétrocompatibilité
-    function toggleEditor() { toggleEditorPanel() }
-
-    function injectEditorListeners() {
-      var frame = document.getElementById('preview-frame')
-      if (!frame || !frame.contentDocument) return
-      try {
-        var doc = frame.contentDocument
-        var old = doc.getElementById('_nyxia_edit_script')
-        if (old) old.remove()
-        var s = doc.createElement('script')
-        s.id = '_nyxia_edit_script'
-        s.textContent =
-          'var _sel=null;' +
-          'document.body.addEventListener("mouseover",function(e){' +
-          '  if(_sel!==e.target){e.target.style.outline="1px dashed rgba(123,92,255,0.4)";}' +
-          '},true);' +
-          'document.body.addEventListener("mouseout",function(e){' +
-          '  if(_sel!==e.target){e.target.style.outline="";}' +
-          '},true);' +
-          'document.body.addEventListener("click",function(e){' +
-          '  e.preventDefault();e.stopPropagation();' +
-          '  if(_sel){_sel.style.outline="";}' +
-          '  _sel=e.target;' +
-          '  _sel.style.outline="2px solid #7B5CFF";' +
-          '  var isImg=(_sel.tagName==="IMG");' +
-          '  var txt=isImg?"":((_sel.innerText||_sel.textContent||"").trim());' +
-          '  var imgIdx=-1;if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===_sel){imgIdx=i;break;}}}' +
-          '  window.parent.postMessage({type:"nyxia_click",isImg:isImg,text:txt,tag:_sel.tagName.toLowerCase(),src:isImg?_sel.src:"",imgIdx:imgIdx},"*");' +
-          '},true);'
-        doc.body.appendChild(s)
-      } catch(e) { console.log('editor inject:', e) }
-    }
-
-    var _selectedImgIdx = -1
-
-    // Reçoit clics depuis l'iframe
-    window.addEventListener('message', function(e) {
-      if (!e.data || e.data.type !== 'nyxia_click') return
-      if (!e.data.isImg) {
-        // TEXTE
-        var sec   = document.getElementById('text-editor-section')
-        var imgSec = document.getElementById('img-editor-section')
-        var input = document.getElementById('selected-text-input')
-        if (imgSec) imgSec.style.display = 'none'
-        if (sec)   sec.style.display = 'block'
-        if (input) { input.value = e.data.text; input.focus() }
-      } else {
-        // IMAGE
-        _selectedImgIdx = e.data.imgIdx
-        var sec   = document.getElementById('text-editor-section')
-        var imgSec = document.getElementById('img-editor-section')
-        if (sec)    sec.style.display = 'none'
-        if (imgSec) imgSec.style.display = 'block'
-        var prev = document.getElementById('img-editor-preview')
-        if (prev) prev.src = e.data.src
-        // Reset grille Pexels
-        var grid = document.getElementById('img-pexels-grid')
-        if (grid) grid.innerHTML = ''
-      }
-    })
-
-    function applyTextEdit() {
-      var input = document.querySelector('#text-editor-section textarea') ||
-                  document.querySelector('.editor-section textarea')
-      var frame = document.getElementById('preview-frame')
-      if (!input || !frame || !frame.contentDocument) return
-      try {
-        var sel = frame.contentDocument.querySelector('[style*="2px solid #7B5CFF"]')
-        if (!sel) return
-        sel.textContent = input.value
-        sel.style.outline = ''
-      } catch(e) {}
-    }
-
-    function applyColor(type, value) {
-      var frame = document.getElementById('preview-frame')
-      if (!frame || !frame.contentDocument) return
-      try {
-        var doc = frame.contentDocument
-        var maps = {
-          bg:     function(v){ doc.body.style.background = v },
-          accent: function(v){ doc.querySelectorAll('h1,h2,h3,a').forEach(function(el){ el.style.color=v }) },
-          text:   function(v){ doc.body.style.color = v },
-          btn:    function(v){ doc.querySelectorAll('button').forEach(function(el){ el.style.background=v }) }
-        }
-        if (maps[type]) maps[type](value)
-      } catch(e) {}
-    }
-
-    function saveEdits() {
-      var frame = document.getElementById('preview-frame')
-      if (!frame || !frame.contentDocument) return
-      try {
-        window.generatedCode = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
-        var b = document.querySelector('[onclick="saveEdits()"]')
-        if (b) { var o=b.textContent; b.textContent='✓ Sauvegardé!'; setTimeout(function(){b.textContent=o},2000) }
-      } catch(e) {}
-    }
-
-    function copyEditedCode() {
-      saveEdits()
-      if (window.generatedCode) {
-        navigator.clipboard.writeText(window.generatedCode).then(function() {
-          var b = document.querySelector('[onclick="copyEditedCode()"]')
-          if (b) { var o=b.textContent; b.textContent='✓ Copié!'; setTimeout(function(){b.textContent=o},2000) }
-        })
-      }
-    }
-
-    function resetEdits() {
-      var frame = document.getElementById('preview-frame')
-      if (frame && window.generatedCode) frame.srcdoc = window.generatedCode
-    }
-
-    function uploadEditorImage(input) {
-      var file = input.files[0]
-      if (!file) return
-      var reader = new FileReader()
-      reader.onload = function(ev) { replaceEditorImage(ev.target.result) }
-      reader.readAsDataURL(file)
-      input.value = ''
-    }
-
-    function replaceEditorImage(newSrc) {
-      if (_selectedImgIdx < 0) { alert('Clique d\'abord sur une image dans le preview'); return }
-      var frame = document.getElementById('preview-frame')
-      if (!frame || !frame.contentDocument) return
-      try {
-        var imgs = frame.contentDocument.querySelectorAll('img')
-        if (imgs[_selectedImgIdx]) {
-          imgs[_selectedImgIdx].src = newSrc
-          imgs[_selectedImgIdx].style.outline = ''
-          document.getElementById('img-editor-preview').src = newSrc
-          saveEdits()
-        }
-      } catch(e) {}
-    }
-
-    function searchEditorPexels() {
-      var query = document.getElementById('img-pexels-query').value.trim()
-      if (!query) return
-      var grid = document.getElementById('img-pexels-grid')
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Recherche...</div>'
-      var promises = []
-      for (var i = 0; i < 4; i++) {
-        promises.push(fetch('/api/image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: query })
-        }).then(function(r) { return r.json() }).catch(function(){ return null }))
-      }
-      Promise.all(promises).then(function(results) {
-        window._pexelsEditorImgs = results.filter(function(d){ return d && d.success && d.dataUrl })
-        if (!window._pexelsEditorImgs.length) {
-          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Aucun résultat</div>'
-          return
-        }
-        grid.innerHTML = window._pexelsEditorImgs.map(function(d, i) {
-          return '<img src="' + d.dataUrl + '" onclick="replaceEditorImage(window._pexelsEditorImgs[' + i + '].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .2s" onmouseover="this.style.borderColor=\'#7B5CFF\'" onmouseout="this.style.borderColor=\'transparent\'">'
-        }).join('')
+        body: JSON.stringify({ token: sessionToken })
+      }).finally(() => {
+        sessionStorage.removeItem('nyxia_token')
+        localStorage.removeItem('nyxia_username')
+        window.location.href = '/login.html'
       })
     }
 
     /* ══════════════════════════════════════
-       PUBLICATION EN 1 CLIC
+       NAVIGATION PANELS
     ══════════════════════════════════════ */
-    var _publishedUrl = ''
-
-    function openPublishModal() {
-      var modal = document.getElementById('publish-modal')
-      if (!modal) return
-      // Génère un nom par défaut depuis le prompt ou la date
-      var input = document.getElementById('user-input')
-      var defaultName = 'mon-site-nyxia'
-      if (input && input.value) {
-        defaultName = input.value
-          .toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, '')
-          .trim()
-          .split(/\s+/)
-          .slice(0, 4)
-          .join('-')
-          .substring(0, 40) || 'mon-site-nyxia'
-      }
-      document.getElementById('publish-name').value = defaultName
-      updatePublishPreview()
-      showPublishState('form')
-      modal.style.display = 'flex'
+    function _showPanelBase(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+      document.getElementById('panel-' + name).classList.add('active')
+      var navEl = document.getElementById('nav-' + name)
+      if (navEl) navEl.classList.add('active')
+    }
+    function showPanel(name) {
+      _showPanelBase(name)
+      if (name === 'messages') loadMessages()
+      if (name === 'projects') _renderProjectsGrid()
+      if (name === 'sites') loadMySites()
     }
 
-    function closePublishModal() {
-      var modal = document.getElementById('publish-modal')
-      if (modal) modal.style.display = 'none'
+    /* ══════════════════════════════════════
+       CHAT
+    ══════════════════════════════════════ */
+    var chatHistory  = []
+    var isSpeaking   = false
+    var speechQueue  = []
+
+    function sendWelcome() {
+      var welcome = clientName
+        ? 'Bienvenue dans mon univers ✦\n\nSalut **' + clientName + '** ! Je suis NyXia, ton agente IA spécialisée en marketing et conversion. 💜\n\nDis-moi, quel est ton projet du moment ?'
+        : 'Bienvenue dans mon univers ✦\n\nJe suis **NyXia**, ton agente IA spécialisée en marketing et conversion. 💜\n\nAvant tout — comment tu t\'appelles ?'
+      addBotMessage(welcome)
     }
 
-    function updatePublishPreview() {
-      var name = document.getElementById('publish-name').value
-        .toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '')
-      var preview = document.getElementById('publish-preview-url')
-      if (preview) preview.textContent = name ? '→ ' + name + '.pages.dev' : ''
+    function sendSuggestion(text) {
+      document.getElementById('suggestions').style.display = 'none'
+      sendMessageText(text)
     }
 
-    function showPublishState(state) {
-      ['form', 'loading', 'success', 'error'].forEach(function(s) {
-        var el = document.getElementById('publish-' + s + '-state')
-        if (el) el.style.display = s === state ? 'block' : 'none'
-      })
+    function sendMessage() {
+      var input = document.getElementById('chat-input')
+      var text  = input.value.trim()
+      // Autorise l'envoi si pièce jointe présente même sans texte
+      if (!text && !_currentAttachment) return
+      input.value = ''
+      input.style.height = 'auto'
+      document.getElementById('suggestions').style.display = 'none'
+      sendMessageText(text || '📎 Fichier joint')
     }
 
-    function copyPublishUrl() {
-      if (_publishedUrl) {
-        navigator.clipboard.writeText(_publishedUrl).then(function() {
-          var btn = document.getElementById('btn-copy-publish-url')
-          if (btn) { btn.textContent = '✓ Copié !'; setTimeout(function(){ btn.textContent = '📋 Copier le lien' }, 2000) }
-        })
+    function sendMessageText(text) {
+      // Si NyXia vient de demander le prénom et qu'on ne le connaît pas encore
+      if (!clientName) {
+        var lastMsg = document.querySelector('#chat-messages .msg.bot:last-child .msg-bubble')
+        if (lastMsg && (lastMsg.textContent.includes('appelles') || lastMsg.textContent.includes('prénom'))) {
+          var name = text.trim().split(' ')[0]
+          clientName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
+          localStorage.setItem('nyxia_username', clientName)
+          document.getElementById('header-username').textContent = clientName
+          document.getElementById('sidebar-username').textContent = clientName
+          document.getElementById('sidebar-avatar').textContent = clientName.charAt(0).toUpperCase()
+        }
       }
-    }
-
-    function doPublish() {
-      var rawName = document.getElementById('publish-name').value.trim()
-      if (!rawName) {
-        document.getElementById('publish-name').style.borderColor = 'rgba(255,75,110,0.6)'
-        return
+      // Construit le message utilisateur avec pièce jointe éventuelle
+      var attachmentToSend = _currentAttachment ? JSON.parse(JSON.stringify(_currentAttachment)) : null
+      var displayText = text
+      if (attachmentToSend) {
+        displayText = text ? text + '\n📎 ' + attachmentToSend.name : '📎 ' + attachmentToSend.name
       }
-      var cleanName = rawName.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-').replace(/^-|-$/g, '').substring(0, 50)
+      addUserMessage(displayText)
 
-      // Récupère le HTML généré
-      var html = window.generatedCode || ''
-      if (!html) {
-        try {
-          var frame = document.getElementById('preview-frame')
-          if (frame && frame.contentDocument) {
-            html = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
-          }
-        } catch(e) {}
+      // Message pour l'historique (sans le base64 pour économiser les tokens)
+      var historyContent = text
+      if (attachmentToSend) {
+        historyContent = (text ? text + '\n' : '') + '[Fichier joint: ' + attachmentToSend.name + ' (' + attachmentToSend.type + ')]'
       }
-      if (!html || html.length < 100) {
-        showPublishState('error')
-        document.getElementById('publish-error-msg').textContent = "Aucun site généré. Génère un site en premier."
-        return
+      chatHistory.push({ role: 'user', content: historyContent })
+
+      // Reset pièce jointe après envoi
+      if (_currentAttachment) {
+        _currentAttachment = null
+        var bar = document.getElementById('attach-bar')
+        var fi  = document.getElementById('chat-file')
+        if (bar) bar.style.display = 'none'
+        if (fi)  fi.value = ''
       }
 
-      showPublishState('loading')
+      var btn = document.getElementById('btn-send')
+      btn.disabled = true
+      addTyping()
 
-      fetch('/api/publish', {
+      fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectName: cleanName, html: html })
-      })
-      .then(function(r) { return r.json() })
-      .then(function(data) {
-        if (data.success && data.url) {
-          _publishedUrl = data.url
-          var urlEl = document.getElementById('publish-result-url')
-          if (urlEl) { urlEl.textContent = data.url; urlEl.href = data.url }
-          showPublishState('success')
-        } else {
-          showPublishState('error')
-          document.getElementById('publish-error-msg').textContent = data.error || 'Erreur inconnue. Réessaie dans un instant.'
-        }
-      })
-      .catch(function(e) {
-        showPublishState('error')
-        document.getElementById('publish-error-msg').textContent = 'Erreur réseau : ' + e.message
-      })
-    }
-
-    // Ferme modal si clic extérieur
-    document.addEventListener('click', function(e) {
-      var modal = document.getElementById('publish-modal')
-      if (modal && modal.style.display === 'flex' && e.target === modal) closePublishModal()
-    })
-
-    function toggleNiches() {
-      var grid = document.getElementById('niches-grid')
-      var btn  = document.getElementById('btn-toggle-niches')
-      var open = grid.style.display !== 'none' && grid.style.display !== ''
-      grid.style.display = open ? 'none' : 'grid'
-      btn.textContent = open ? 'Afficher ▾' : 'Masquer ▴'
-    }
-    window.toggleNiches = toggleNiches
-
-    var _nichePrompts = {
-      'spa': {
-        mode: 'image',
-        prompt: 'Spa luxueux et centre de bien-être haut de gamme. Ambiance zen, sérénité absolue, soins du corps et de l\'esprit. Services : massages suédois, soins du visage, hammam, jacuzzi, rituels orientaux. Clientèle féminine premium. Design épuré, couleurs douces (blanc, beige, or rose), typographie élégante. Sections : accueil poétique, nos soins signature, forfaits & rituels, témoignages, réservation en ligne.',
-        image: 'https://picsum.photos/seed/spa-luxe/1400/800'
-      },
-      'naturopathe': {
-        mode: 'image',
-        prompt: 'Naturopathe et thérapeute en médecine naturelle. Cabinet professionnel et chaleureux. Approche holistique : nutrition, phytothérapie, hygiène de vie. Tons verts naturels, terre, blanc. Sections : philosophie de soin, approches thérapeutiques, déroulement d\'une consultation, tarifs, prise de rendez-vous. Ambiance naturelle et rassurante.',
-        image: 'https://picsum.photos/seed/nature-plantes/1400/800'
-      },
-      'therapeute': {
-        mode: 'image',
-        prompt: 'Thérapeute en psychologie et développement personnel. Cabinet bienveillant et confidentiel. Spécialités : TCC, EMDR, hypnothérapie, accompagnement anxiété/dépression. Design apaisant, bleus et verts doux. Sections : approche thérapeutique, pour qui ?, déroulement des séances, infos pratiques, contact & rendez-vous. Ton professionnel et humain.',
-        image: 'https://picsum.photos/seed/bureau-psy/1400/800'
-      },
-      'holistique': {
-        mode: 'image',
-        prompt: 'Praticien holistique et accompagnement énergétique. Soins : reiki, magnétisme, kinésiologie, soins chamaniques, reconnexion. Univers spirituel et moderne à la fois. Dorés, violets profonds, blancs. Sections : ma philosophie, les soins proposés, parcours & certifications, témoignages transformateurs, prendre rendez-vous.',
-        image: 'https://picsum.photos/seed/energie-lumiere/1400/800'
-      },
-      'aromatherapie': {
-        mode: 'image',
-        prompt: 'Aromathérapeute et experte en huiles essentielles. Conseils personnalisés, ateliers, vente de produits naturels. Design botanique et élégant : verts, dorés, blanc cassé. Sections : les bienfaits des huiles essentielles, mes services (consultation, ateliers, créations), boutique, blog conseils, contact.',
-        image: 'https://picsum.photos/seed/huiles-essentielles/1400/800'
-      },
-      'lithotherapie': {
-        mode: 'image',
-        prompt: 'Lithothérapeute et spécialiste des cristaux et pierres précieuses. Soins par les pierres, conseil en cristallothérapie, boutique de minéraux. Design mystique et élégant : améthyste, rose des sables, cristal de roche. Sections : les pierres & leurs vertus, mes soins, la boutique, ateliers, contact.',
-        image: 'https://picsum.photos/seed/crystals-gems/1400/800'
-      },
-      'medium': {
-        mode: 'image',
-        prompt: 'Médium professionnel et voyance sérieuse. Consultations privées : médiumnité, communication avec l\'au-delà, guidance spirituelle. Design mystique premium : noirs, violets, dorés, étoiles. Sections : qui suis-je, mes dons & compétences, types de consultations (téléphone/présentiel/distance), témoignages, réserver une séance. Ton sérieux et bienveillant.',
-        image: 'https://picsum.photos/seed/mystique-etoiles/1400/800'
-      },
-      'astrologue': {
-        mode: 'image',
-        prompt: 'Astrologue professionnel et thèmes nataux. Services : thème natal complet, synastrie amoureuse, prévisions annuelles, astro-coaching. Design cosmique luxueux : noir profond, dorés, violets, étoiles et constellations. Sections : l\'astrologie que je pratique, mes consultations, exemples de thèmes, témoignages, commander votre thème.',
-        image: 'https://picsum.photos/seed/cosmos-stars/1400/800'
-      },
-      'tarologue': {
-        mode: 'image',
-        prompt: 'Tarologue et cartomancienne professionnelle. Lectures de tarot de Marseille et tarot divinatoire. Consultations en ligne et présentiel. Design mystique et élégant : tons bordeaux, or, noir. Sections : mon approche du tarot, les tirages proposés, déroulement d\'une séance, galerie de cartes, réserver votre lecture.',
-        image: 'https://picsum.photos/seed/tarot-cards/1400/800'
-      },
-      'numerologue': {
-        mode: 'image',
-        prompt: 'Numérologue certifiée et analyse de chemin de vie. Services : chemin de vie, année personnelle, compatibilité, prénom, bilan numérologique complet. Design mathématique et mystique : dorés, blancs, fond sombre. Sections : la numérologie expliquée, mes analyses, exemples de révélations, témoignages, commander votre analyse.',
-        image: 'https://picsum.photos/seed/nombres-mystique/1400/800'
-      },
-      'neuro-alchimiste': {
-        mode: 'image',
-        prompt: 'Neuro-Alchimiste et coach en transformation profonde. Méthode unique alliant neurosciences, développement personnel et spiritualité. Reprogrammation des croyances limitantes, activation du potentiel. Design futuriste et spirituel : violets électriques, cyans, noir. Sections : la neuro-alchimie expliquée, le programme, transformations clients, témoignages puissants, rejoindre le programme.',
-        image: 'https://picsum.photos/seed/neuro-transformation/1400/800'
-      },
-      'spiritualite': {
-        mode: 'image',
-        prompt: 'Entrepreneur·e en spiritualité et éveil de conscience. Accompagnement, retraites, cercles sacrés, formations. Univers lumineux et élevé : blancs, dorés, violets doux. Sections : ma mission et vision, mes accompagnements, les retraites & cercles, témoignages d\'éveil, rejoindre la communauté.',
-        image: 'https://picsum.photos/seed/lumiere-eveil/1400/800'
-      },
-      'coach': {
-        mode: 'image',
-        prompt: 'Coach de vie et business certifié ICF. Spécialités : confiance en soi, leadership, reconversion, succès. Résultats concrets et mesurables. Design professionnel et dynamique : bleus marine, blancs, accents dorés. Sections : mon approche coaching, pour qui ?, programmes signature, success stories clients, séance découverte gratuite.',
-        image: 'https://picsum.photos/seed/coaching-success/1400/800'
-      },
-      'agence-marketing': {
-        mode: 'image',
-        prompt: 'Agence de marketing digital et stratégie de croissance. Services : SEO, publicité Meta/Google, réseaux sociaux, email marketing, branding. Résultats chiffrés et ROI. Design moderne et ambitieux : noir, blanc, rouge ou violet vif. Sections : nos expertises, notre process, résultats & case studies, équipe, demander un audit gratuit.',
-        image: 'https://picsum.photos/seed/marketing-digital/1400/800'
-      },
-      'entrepreneur': {
-        mode: 'image',
-        prompt: 'Entrepreneur et chef d\'entreprise — présentation corporate et professionnelle. Secteur d\'activité varié, services B2B ou B2C. Design élégant et sobre : blanc, gris anthracite, accent couleur. Sections : notre histoire, nos services, notre équipe, nos références clients, contact & devis.',
-        image: 'https://picsum.photos/seed/entreprise-bureau/1400/800'
-      },
-      'formation-en-ligne': {
-        mode: 'image',
-        prompt: 'Créateur de formations en ligne et e-learning. Formations vidéo, programmes complets, accès à vie. Résultats et transformation garantis. Design moderne et coloré : violets, oranges, blancs. Sections : les formations disponibles, ce que tu vas apprendre, résultats des élèves, témoignages vidéo, s\'inscrire maintenant.',
-        image: 'https://picsum.photos/seed/formation-online/1400/800'
-      },
-      'auteur': {
-        mode: 'image',
-        prompt: 'Auteur·trice et écrivain·e — site vitrine littéraire. Présentation des livres publiés, univers de l\'auteur, blog littéraire. Design élégant et littéraire : tons chauds, typographie serif. Sections : l\'auteur en quelques mots, les livres (couvertures + résumés + liens d\'achat), presse & interviews, événements & dédicaces, contact éditorial.',
-        image: 'https://picsum.photos/seed/livres-litterature/1400/800'
-      },
-      'maison-edition': {
-        mode: 'image',
-        prompt: 'Maison d\'édition indépendante et librairie. Catalogue de livres, appel aux manuscrits, actualités littéraires. Design éditorial et raffiné : blanc, noir, rouge ou vert bouteille. Sections : notre catalogue, nos auteurs, soumettre un manuscrit, actualités & événements, la librairie en ligne.',
-        image: 'https://picsum.photos/seed/edition-librairie/1400/800'
-      },
-      'restaurant': {
-        mode: 'image',
-        prompt: 'Restaurant gastronomique et livre de recettes. Cuisine française moderne, produits locaux et de saison. Chef étoilé ou passionné. Design chaleureux et appétissant : tons chauds, photos de plats. Sections : notre philosophie culinaire, la carte & menus, le chef, réservation en ligne, boutique (livres de recettes, produits).',
-        image: 'https://picsum.photos/seed/gastronomie-chef/1400/800'
-      }
-    }
-
-    function applyNiche(nicheKey) {
-      var niche = _nichePrompts[nicheKey]
-      if (!niche) return
-
-      // Feedback visuel — carte sélectionnée
-      document.querySelectorAll('.tpl-card').forEach(function(c) { c.classList.remove('selected') })
-      document.querySelectorAll('.tpl-card').forEach(function(c) {
-        if (c.getAttribute('onclick') === "applyNiche('" + nicheKey + "')") c.classList.add('selected')
-      })
-
-      var promptText = niche.prompt
-      var imageUrl   = niche.image || ('https://picsum.photos/seed/' + nicheKey + '/1400/800')
-
-      // 1. Remplit le champ prompt
-      var input = document.getElementById('user-input')
-      if (input) input.value = promptText
-
-      // 2. Fetch l'image Picsum → base64 → simule un vrai upload
-      //    Generator.js lit imageBase64 depuis sa variable interne
-      //    On doit donc passer par un FileReader sur un Blob
-      var overlay = document.getElementById('nyxia-loading-overlay')
-      var msgEl   = document.getElementById('overlay-message')
-      var progEl  = document.getElementById('overlay-progress')
-      var lblEl   = document.getElementById('overlay-progress-label')
-      var btn     = document.getElementById('generate-btn')
-
-      if (overlay) overlay.classList.add('visible')
-      if (msgEl)   msgEl.textContent = 'NyXia prépare le template...'
-      if (progEl)  progEl.style.width = '10%'
-      if (btn)     btn.disabled = true
-
-      // Fetch l'image Picsum et la convertit en Blob puis DataURL
-      fetch(imageUrl)
-        .then(function(r) {
-          if (!r.ok) throw new Error('Image inaccessible')
-          return r.blob()
+        body: JSON.stringify({
+          message    : text,
+          history    : chatHistory.slice(-10),
+          userName   : clientName,
+          agent      : _currentAgent,
+          attachment : attachmentToSend
         })
-        .then(function(blob) {
-          if (msgEl) msgEl.textContent = 'Image chargée — génération en cours...'
-          if (progEl) progEl.style.width = '25%'
+      })
+      .then(r => r.json())
+      .then(data => {
+        removeTyping()
+        var reply = data.content || 'Erreur inattendue — réessaie dans un instant 💜'
+        addBotMessage(reply)
+        chatHistory.push({ role: 'assistant', content: reply })
+        if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20)
+        if (isSpeaking) speakText(reply)
+        btn.disabled = false
+      })
+      .catch(() => {
+        removeTyping()
+        addBotMessage('Petite interruption... réessaie dans un instant 💜')
+        btn.disabled = false
+      })
+    }
 
-          // Crée un File depuis le Blob pour simuler un vrai upload
-          var file = new File([blob], 'template-' + nicheKey + '.jpg', { type: 'image/jpeg' })
+    function addBotMessage(text) {
+      var msgs = document.getElementById('chat-messages')
+      var div  = document.createElement('div')
+      div.className = 'msg bot'
 
-          // Simule le changement de fichier dans l'input file de generator.js
-          // En créant un DataTransfer et en l'assignant au file input
-          var fileInput = document.getElementById('file-input')
-          if (fileInput) {
-            try {
-              var dt = new DataTransfer()
-              dt.items.add(file)
-              fileInput.files = dt.files
-              // Déclenche l'event change — generator.js va compresser et stocker imageBase64
-              fileInput.dispatchEvent(new Event('change', { bubbles: true }))
-              // Attend que generator.js finisse la compression (~500ms) puis clique générer
-              setTimeout(function() {
-                if (btn && !btn.disabled) {
-                  if (msgEl) msgEl.textContent = 'NyXia génère ton site premium...'
-                  btn.click()
-                } else {
-                  // generator.js encore en train de compresser — réessaie
-                  setTimeout(function() {
-                    if (btn) { btn.disabled = false; btn.click() }
-                  }, 800)
-                }
-              }, 600)
-            } catch(e) {
-              // DataTransfer non supporté (rare) → fallback API directe
-              _generateNicheDirectly(promptText, imageUrl, overlay, msgEl, progEl, lblEl, btn)
-            }
+      // Détecte et remplace [IMAGE: description] par une image générée via l'API
+      var imageMatch = text.match(/\[IMAGE:\s*(.*?)\]/i)
+      if (imageMatch) {
+        var imgDesc = imageMatch[1].trim()
+        var textWithout = text.replace(/\[IMAGE:\s*.*?\]/i, '').trim()
+        var formatted = textWithout ? escHtml(textWithout).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>') : ''
+        var avatar = document.createElement('img')
+        avatar.src='/NyXia.png'; avatar.className='msg-avatar'; avatar.alt='NyXia'
+        var wrapper = document.createElement('div')
+        wrapper.style.cssText='display:flex;flex-direction:column;gap:8px;max-width:100%'
+        var bubble = document.createElement('div')
+        bubble.className='msg-bubble'
+        if (formatted) bubble.innerHTML = formatted
+        // Conteneur image avec état de chargement
+        var imgWrap = document.createElement('div')
+        imgWrap.style.cssText='border-radius:12px;overflow:hidden;max-width:320px;background:rgba(123,92,255,0.08);border:1px solid rgba(123,92,255,0.2);padding:12px;text-align:center;color:var(--t3);font-size:13px'
+        imgWrap.textContent='⏳ Génération de l\'image...'
+        wrapper.appendChild(bubble)
+        wrapper.appendChild(imgWrap)
+        div.appendChild(avatar); div.appendChild(wrapper)
+        msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight
+        // Appel API image
+        fetch('/api/image', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ prompt: imgDesc })
+        })
+        .then(function(r){ return r.json() })
+        .then(function(data){
+          if (data && data.dataUrl) {
+            imgWrap.innerHTML=''
+            var img=document.createElement('img')
+            img.src=data.dataUrl
+            img.style.cssText='width:100%;border-radius:10px;display:block'
+            img.alt=imgDesc
+            imgWrap.style.padding='0'
+            imgWrap.appendChild(img)
+          } else if (data && data.url) {
+            imgWrap.innerHTML=''
+            var img=document.createElement('img')
+            img.src=data.url
+            img.style.cssText='width:100%;border-radius:10px;display:block'
+            img.alt=imgDesc
+            imgWrap.style.padding='0'
+            imgWrap.appendChild(img)
           } else {
-            // Pas de file-input trouvé → fallback API directe
-            _generateNicheDirectly(promptText, imageUrl, overlay, msgEl, progEl, lblEl, btn)
+            imgWrap.textContent='⚠️ Impossible de générer l\'image.'
           }
+          msgs.scrollTop=msgs.scrollHeight
         })
-        .catch(function() {
-          // Fetch Picsum échoué → fallback API directe sans image
-          _generateNicheDirectly(promptText, imageUrl, overlay, msgEl, progEl, lblEl, btn)
+        .catch(function(){
+          imgWrap.textContent='⚠️ Erreur lors de la génération de l\'image.'
         })
-    }
-
-    function _generateNicheDirectly(promptText, imageUrl, overlay, msgEl, progEl, lblEl, btn) {
-      // Fallback : appel direct /api/vision avec imageUrl (supporte par le worker patché)
-      if (msgEl) msgEl.textContent = 'NyXia génère ton site premium...'
-      if (progEl) progEl.style.width = '30%'
-
-      var prog = 30
-      var messages = [
-        'Extraction des couleurs et du style...',
-        'Architecture CSS en cours...',
-        'Génération HTML premium...',
-        'Intégration des images Pexels...',
-        'Finalisation de votre site...'
-      ]
-      var mIdx = 0
-      var interval = setInterval(function() {
-        prog = Math.min(prog + 12, 88)
-        mIdx = Math.min(mIdx + 1, messages.length - 1)
-        if (progEl) progEl.style.width = prog + '%'
-        if (msgEl)  msgEl.textContent  = messages[mIdx]
-        if (lblEl)  lblEl.textContent  = prog + '%'
-      }, 2800)
-
-      fetch('/api/vision', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: promptText, imageUrl: imageUrl })
-      })
-      .then(function(r) { return r.json() })
-      .then(function(data) {
-        clearInterval(interval)
-        var html = data.choices && data.choices[0] && data.choices[0].message
-          ? data.choices[0].message.content : null
-        if (!html) {
-          if (overlay) overlay.classList.remove('visible')
-          if (btn) { btn.disabled = false; btn.textContent = '✨ Créer mon site avec NyXia' }
-          alert('Erreur de génération — réessaie dans un instant.')
-          return
-        }
-        // Succès — affiche le preview via les mécanismes de generator.js
-        if (progEl) progEl.style.width = '100%'
-        if (msgEl)  msgEl.textContent  = '✦ Ton site est prêt ! ✦'
-        if (lblEl)  lblEl.textContent  = 'Terminé !'
-        setTimeout(function() {
-          if (overlay) overlay.classList.remove('visible')
-          if (btn) { btn.disabled = false; btn.textContent = 'Site généré ✓' }
-          // Affiche le preview
-          var panel = document.getElementById('preview-panel')
-          var frame = document.getElementById('preview-frame')
-          if (panel && frame) { frame.srcdoc = html; panel.style.display = 'block' }
-          // Stocke pour les fonctions éditeur
-          try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
-          try { sessionStorage.setItem('nyxia_edit_code', html) } catch(e) {}
-        }, 1400)
-      })
-      .catch(function(e) {
-        clearInterval(interval)
-        if (overlay) overlay.classList.remove('visible')
-        if (btn) { btn.disabled = false; btn.textContent = '✨ Créer mon site avec NyXia' }
-        alert('Erreur réseau : ' + e.message)
-      })
-    }
-    window.applyNiche = applyNiche
-    window._generateNicheDirectly = _generateNicheDirectly
-
-    function switchMode(mode) {
-      var tabImg  = document.getElementById('tab-image')
-      var tabUrl  = document.getElementById('tab-url')
-      var imgMode = document.getElementById('image-mode')
-      var urlMode = document.getElementById('url-mode')
-      if (!tabImg) return
-      if (mode === 'url') {
-        tabUrl.style.background = 'linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))'
-        tabUrl.style.borderColor = 'rgba(123,92,255,0.4)'
-        tabUrl.style.color = '#fff'
-        tabImg.style.background = 'rgba(123,92,255,0.05)'
-        tabImg.style.borderColor = 'rgba(123,92,255,0.15)'
-        tabImg.style.color = '#8891B8'
-        imgMode.style.display = 'none'
-        urlMode.style.display = 'flex'
-      } else {
-        tabImg.style.background = 'linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))'
-        tabImg.style.borderColor = 'rgba(123,92,255,0.4)'
-        tabImg.style.color = '#fff'
-        tabUrl.style.background = 'rgba(123,92,255,0.05)'
-        tabUrl.style.borderColor = 'rgba(123,92,255,0.15)'
-        tabUrl.style.color = '#8891B8'
-        imgMode.style.display = 'flex'
-        urlMode.style.display = 'none'
-      }
-      window._currentMode = mode
-    }
-
-    }) // fin DOMContentLoaded
-  </script>
-
-  <script src="/js/starry-bg.js" defer></script>
-
-
-
-
-
-  <script>
-    function toggleEditorPanel() {
-      var panel = document.getElementById('editor-panel')
-      var btn   = document.getElementById('btn-edit')
-      if (!panel) return
-      if (panel.classList.contains('open')) {
-        panel.classList.remove('open')
-        if (btn) btn.textContent = '✏️ Éditer'
-      } else {
-        panel.classList.add('open')
-        if (btn) btn.textContent = '✏️ Fermer éditeur'
-      }
-    }
-    window.toggleEditorPanel = toggleEditorPanel
-    window.toggleEditor      = toggleEditorPanel
-
-    function openPublishModal() {
-      var modal = document.getElementById('publish-modal')
-      if (!modal) return
-      var input = document.getElementById('user-input')
-      var defaultName = input && input.value
-        ? input.value.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().split(/\s+/).slice(0,4).join('-').substring(0,40) || 'mon-site-nyxia'
-        : 'mon-site-nyxia'
-      var nameEl = document.getElementById('publish-name')
-      if (nameEl) nameEl.value = defaultName
-      showPublishState('form')
-      updatePublishPreview()
-      modal.style.display = 'flex'
-    }
-    window.openPublishModal = openPublishModal
-
-    function closePublishModal() {
-      var modal = document.getElementById('publish-modal')
-      if (modal) modal.style.display = 'none'
-    }
-    window.closePublishModal = closePublishModal
-
-    function showPublishState(state) {
-      ['form','loading','success','error'].forEach(function(s) {
-        var el = document.getElementById('publish-' + s + '-state')
-        if (el) el.style.display = (s === state) ? 'block' : 'none'
-      })
-    }
-    window.showPublishState = showPublishState
-
-    function updatePublishPreview() {
-      var nameEl  = document.getElementById('publish-name')
-      var preview = document.getElementById('publish-preview-url')
-      if (!nameEl || !preview) return
-      var n = nameEl.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'')
-      preview.textContent = n ? '→ webmasteria.nyxiapublicationweb.com/site/' + n : ''
-    }
-    window.updatePublishPreview = updatePublishPreview
-
-    function copyPublishUrl() {
-      var el = document.getElementById('publish-result-url')
-      if (!el) return
-      navigator.clipboard.writeText(el.href || el.textContent).then(function() {
-        var btn = document.getElementById('btn-copy-publish-url')
-        if (btn) { var o=btn.textContent; btn.textContent='✓ Copié !'; setTimeout(function(){btn.textContent=o},2000) }
-      })
-    }
-    window.copyPublishUrl = copyPublishUrl
-
-    function doPublish() {
-      var nameEl    = document.getElementById('publish-name')
-      var cleanName = nameEl
-        ? nameEl.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'') || 'mon-site-nyxia'
-        : 'mon-site-nyxia'
-
-      var html = window._generatedHTML || window.generatedCode || ''
-      if (!html) {
-        try {
-          var frame = document.getElementById('preview-frame')
-          if (frame && frame.contentDocument) {
-            html = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
-          }
-        } catch(e) {}
-      }
-      if (!html || html.length < 100) {
-        showPublishState('error')
-        var errEl = document.getElementById('publish-error-msg')
-        if (errEl) errEl.textContent = "Génère un site en premier."
         return
       }
 
-      showPublishState('loading')
+      var formatted = escHtml(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
+      var avatar = document.createElement('img')
+      avatar.src='/NyXia.png'; avatar.className='msg-avatar'; avatar.alt='NyXia'
+      var wrapper = document.createElement('div')
+      wrapper.style.cssText='display:flex;flex-direction:column;gap:4px;max-width:100%'
+      var bubble = document.createElement('div')
+      bubble.className='msg-bubble'; bubble.innerHTML=formatted
+      var bs='padding:2px 9px;border-radius:50px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.04);color:var(--t4);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer'
+      var acts=document.createElement('div'); acts.style.cssText='display:flex;gap:4px;flex-wrap:wrap;margin-top:2px'
+      var spk=document.createElement('button'); spk.style.cssText=bs; spk.textContent='🔊 Écouter'
+      spk.addEventListener('click',function(){ speakMsg(spk,text) })
+      var cpy=document.createElement('button'); cpy.style.cssText=bs; cpy.textContent='📋 Copier'
+      cpy.addEventListener('click',function(){ navigator.clipboard.writeText(text).then(function(){ cpy.textContent='✓'; setTimeout(function(){cpy.textContent='📋 Copier'},2000) }) })
+      var ret=document.createElement('button'); ret.style.cssText=bs; ret.textContent='↺ Réessayer'
+      ret.addEventListener('click',function(){
+        var last=chatHistory.filter(function(m){return m.role==='user'}).pop()
+        if(last){if(chatHistory[chatHistory.length-1].role==='assistant')chatHistory.pop();div.remove();sendMessageText(last.content)}
+      })
+      var pdfBtn=document.createElement('button'); pdfBtn.style.cssText=bs; pdfBtn.textContent='⬇ PDF'
+      var capturedText=text
+      pdfBtn.addEventListener('click',function(){
+        var w=window.open('','_blank'); if(!w) return
+        var body='<h2 style="color:#7B5CFF">NyXia IA</h2>'+escHtml(capturedText).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
+        w.document.write('<!DOCTYPE html><html><head><title>NyXia</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85}</style></head><body>'+body+'</body></html>')
+        w.document.close(); setTimeout(function(){w.print()},300)
+      })
+      acts.appendChild(spk);acts.appendChild(cpy);acts.appendChild(ret);acts.appendChild(pdfBtn)
+      wrapper.appendChild(bubble);wrapper.appendChild(acts)
+      div.appendChild(avatar);div.appendChild(wrapper)
+      msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight
+    }
 
-      var token = sessionStorage.getItem('nyxia_token') || ''
-      if (token) {
-        fetch('/api/sites/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: token, html: html, name: cleanName })
-        }).catch(function(){})
+    function addUserMessage(text) {
+      var msgs = document.getElementById('chat-messages')
+      var div  = document.createElement('div')
+      div.className = 'msg user'
+      var initial = clientName.charAt(0).toUpperCase()
+      div.innerHTML = '<div class="msg-bubble">' + escHtml(text) + '</div><div class="msg-avatar" style="background:linear-gradient(135deg,#7B5CFF,#5A6CFF);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;border-radius:50%;width:32px;height:32px;flex-shrink:0">' + initial + '</div>'
+      msgs.appendChild(div)
+      msgs.scrollTop = msgs.scrollHeight
+    }
+
+    function addTyping() {
+      var msgs = document.getElementById('chat-messages')
+      var div  = document.createElement('div')
+      div.className = 'msg bot'; div.id = 'typing-indicator'
+      div.innerHTML = '<img src="/NyXia.png" class="msg-avatar" alt="NyXia"><div class="msg-bubble"><span class="nx-dots"><i></i><i></i><i></i></span></div>'
+      msgs.appendChild(div)
+      msgs.scrollTop = msgs.scrollHeight
+    }
+
+    function removeTyping() {
+      var t = document.getElementById('typing-indicator')
+      if (t) t.remove()
+    }
+
+    /* ══════════════════════════════════════
+       TEXT-TO-SPEECH (Google Web Speech)
+    ══════════════════════════════════════ */
+    function toggleSpeak() {
+      isSpeaking = !isSpeaking
+      var btn = document.getElementById('btn-speak')
+      if (isSpeaking) {
+        btn.textContent = '🔊 NyXia parle...'
+        btn.classList.add('speaking')
+      } else {
+        btn.textContent = '🔊 Écouter NyXia'
+        btn.classList.remove('speaking')
+        window.speechSynthesis.cancel()
+      }
+    }
+
+    function speakText(text) {
+      if (!window.speechSynthesis) return
+      window.speechSynthesis.cancel()
+      var clean = text
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/[✦💜🚀💎🌐📱⭐✓►▶]/g, '')
+        .replace(/<br>/g, ' ')
+        .trim()
+      if (!clean) return
+
+      var utt   = new SpeechSynthesisUtterance(clean)
+      utt.lang  = 'fr-FR'
+      utt.rate  = 0.92
+      utt.pitch = 1.1
+      utt.volume = 1
+
+      // Cherche la meilleure voix française féminine
+      function trySpeak() {
+        var voices  = window.speechSynthesis.getVoices()
+        var frVoice = voices.find(v => v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie|thomas/i.test(v.name))
+                   || voices.find(v => v.lang.startsWith('fr'))
+        if (frVoice) utt.voice = frVoice
+        window.speechSynthesis.speak(utt)
       }
 
-      fetch('/api/publish', {
+      // Certains navigateurs chargent les voix en async
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.onvoiceschanged = trySpeak
+      } else {
+        trySpeak()
+      }
+
+      utt.onend = function() {
+        var btn = document.getElementById('btn-speak')
+        if (btn) {
+          btn.textContent = '🔊 Écouter NyXia'
+          btn.classList.remove('speaking')
+        }
+        isSpeaking = false
+      }
+      utt.onerror = function() { isSpeaking = false }
+    }
+
+    // Charge les voix (asynchrone sur certains navigateurs)
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices()
+    }
+
+
+    /* ══════════════════════════════════════
+       MESSAGERIE CLIENT
+    ══════════════════════════════════════ */
+    var msgAttachments = []
+
+    function loadMessages() {
+      fetch('/api/message/list', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectName: cleanName, html: html })
+        body: JSON.stringify({ token: sessionToken })
       })
-      .then(function(r) { return r.json() })
-      .then(function(data) {
-        if (data.success && data.url) {
-          var urlEl = document.getElementById('publish-result-url')
-          if (urlEl) { urlEl.textContent = data.url; urlEl.href = data.url }
-          showPublishState('success')
-        } else {
-          showPublishState('error')
-          var errEl = document.getElementById('publish-error-msg')
-          if (errEl) errEl.textContent = data.error || 'Erreur inconnue.'
-        }
-      })
-      .catch(function(e) {
-        showPublishState('error')
-        var errEl = document.getElementById('publish-error-msg')
-        if (errEl) errEl.textContent = 'Erreur réseau : ' + e.message
-      })
-    }
-    window.doPublish = doPublish
-
-    function saveEdits() {
-      if (typeof window._saveEdits === 'function') { window._saveEdits(); return }
-      var frame = document.getElementById('preview-frame')
-      if (!frame) return
-      try {
-        window.generatedCode = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
-        window._generatedHTML = window.generatedCode
-      } catch(e) {}
-    }
-    window.saveEdits = saveEdits
-
-    function applyTextEdit() { if (typeof window._applyTextEdit === 'function') window._applyTextEdit() }
-    window.applyTextEdit = applyTextEdit
-
-    function copyEditedCode() { if (typeof window._copyEditedCode === 'function') window._copyEditedCode() }
-    window.copyEditedCode = copyEditedCode
-
-    function resetEdits() { if (typeof window._resetEdits === 'function') window._resetEdits() }
-    window.resetEdits = resetEdits
-
-    function searchEditorPexels() {
-      var query = document.getElementById('img-pexels-query')
-      var grid  = document.getElementById('img-pexels-grid')
-      if (!query || !grid) return
-      var q = query.value.trim()
-      if (!q) return
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#8891B8;font-size:11px;padding:8px">Recherche...</div>'
-      var promises = []
-      for (var i = 0; i < 4; i++) {
-        promises.push(fetch('/api/image', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ prompt: q })
-        }).then(function(r){return r.json()}).catch(function(){return null}))
-      }
-      Promise.all(promises).then(function(results) {
-        window._pexelsEditorImgs = results.filter(function(d){return d && d.success && d.dataUrl})
-        if (!window._pexelsEditorImgs.length) {
-          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#8891B8;font-size:11px;padding:8px">Aucun résultat</div>'
+      .then(r => r.json())
+      .then(data => {
+        var list = document.getElementById('msg-list')
+        if (!data.success || !data.messages.length) {
+          list.innerHTML = '<div style="text-align:center;color:var(--t3);padding:40px;font-size:14px">Aucun message pour le moment.<br><span style="opacity:.6">Envoie ton premier message à Diane !</span></div>'
           return
         }
-        grid.innerHTML = window._pexelsEditorImgs.map(function(d,i) {
-          return '<img src="' + d.dataUrl + '" onclick="replaceEditorImage(window._pexelsEditorImgs[' + i + '].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent" onmouseover="this.style.borderColor=\'#7B5CFF\'" onmouseout="this.style.borderColor=\'transparent\'">'
+        list.innerHTML = data.messages.map(function(m) {
+          var replyHtml = m.reply
+            ? '<div style="margin-top:10px;padding:10px 14px;background:rgba(123,92,255,0.1);border-left:3px solid #7B5CFF;border-radius:8px"><div style="font-size:11px;color:#a78bfa;margin-bottom:4px">💜 Diane a répondu :</div><div style="font-size:13px;color:#D6D9F0;white-space:pre-wrap">' + escHtml(m.reply) + '</div></div>'
+            : '<div style="margin-top:8px;font-size:12px;color:var(--t4)">⏳ En attente de réponse</div>'
+          var attachHtml = m.attachments && m.attachments.length
+            ? '<div style="margin-top:6px;font-size:12px;color:var(--t3)">📎 ' + m.attachments.map(function(a){return a.name}).join(', ') + '</div>'
+            : ''
+          return '<div style="background:rgba(26,37,84,0.5);border:1px solid rgba(123,92,255,0.12);border-radius:14px;padding:16px;transition:all .2s">'
+            + '<div style="display:flex;justify-content:space-between;margin-bottom:8px">'
+            + '<span style="font-size:12px;color:var(--t3)">📧 Toi</span>'
+            + '<span style="font-size:11px;color:var(--t4)">' + new Date(m.date).toLocaleString('fr-CA') + '</span>'
+            + '</div>'
+            + '<div style="font-size:14px;color:var(--t2);white-space:pre-wrap">' + escHtml(m.message) + '</div>'
+            + attachHtml
+            + replyHtml
+            + '</div>'
         }).join('')
       })
+      .catch(function() {
+        document.getElementById('msg-list').innerHTML = '<div style="text-align:center;color:var(--t3);padding:40px">Erreur de chargement</div>'
+      })
     }
-    window.searchEditorPexels = searchEditorPexels
 
-    function replaceEditorImage(src) {
-      if (typeof window._selectedImgIdx !== 'undefined' && window._selectedImgIdx >= 0) {
-        var frame = document.getElementById('preview-frame')
-        if (frame && frame.contentDocument) {
-          var imgs = frame.contentDocument.querySelectorAll('img')
-          if (imgs[window._selectedImgIdx]) {
-            imgs[window._selectedImgIdx].src = src
-            imgs[window._selectedImgIdx].style.outline = ''
-            var prev = document.getElementById('img-editor-preview')
-            if (prev) prev.src = src
-            saveEdits()
-          }
+    function previewAttachments() {
+      var files   = document.getElementById('msg-file').files
+      var preview = document.getElementById('attach-preview')
+      msgAttachments = []
+      preview.innerHTML = ''
+
+      Array.from(files).forEach(function(file) {
+        var reader = new FileReader()
+        reader.onload = function(e) {
+          msgAttachments.push({ name: file.name, type: file.type, data: e.target.result.split(',')[1] })
+          var tag = document.createElement('span')
+          tag.style.cssText = 'padding:4px 10px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.25);border-radius:50px;font-size:12px;color:var(--t3)'
+          tag.textContent = '📎 ' + file.name
+          preview.appendChild(tag)
         }
+        reader.readAsDataURL(file)
+      })
+    }
+
+    function sendClientMessage() {
+      var text    = document.getElementById('msg-input').value.trim()
+      var btn     = document.getElementById('btn-send-msg')
+      var status  = document.getElementById('msg-status')
+
+      if (!text && !msgAttachments.length) {
+        showMsgStatus('Écris un message avant d\'envoyer.', 'error')
+        return
+      }
+
+      btn.disabled    = true
+      btn.textContent = 'Envoi...'
+
+      fetch('/api/message/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: sessionToken, message: text, attachments: msgAttachments })
+      })
+      .then(r => r.json())
+      .then(data => {
+        btn.disabled    = false
+        btn.textContent = 'Envoyer ➤'
+        if (data.success) {
+          document.getElementById('msg-input').value = ''
+          document.getElementById('attach-preview').innerHTML = ''
+          document.getElementById('msg-file').value = ''
+          msgAttachments = []
+          showMsgStatus('✓ Message envoyé ! Diane recevra une notification.', 'success')
+          loadMessages()
+        } else {
+          showMsgStatus('Erreur : ' + (data.error || 'Réessaie'), 'error')
+        }
+      })
+      .catch(function() {
+        btn.disabled    = false
+        btn.textContent = 'Envoyer ➤'
+        showMsgStatus('Erreur réseau.', 'error')
+      })
+    }
+
+    function showMsgStatus(text, type) {
+      var el = document.getElementById('msg-status')
+      el.textContent  = text
+      el.style.display = 'block'
+      el.style.background = type === 'success' ? 'rgba(0,230,118,0.1)' : 'rgba(255,75,110,0.1)'
+      el.style.border = '1px solid ' + (type === 'success' ? 'rgba(0,230,118,0.3)' : 'rgba(255,75,110,0.3)')
+      el.style.color  = type === 'success' ? '#00E676' : '#ff8fab'
+      setTimeout(function() { el.style.display = 'none' }, 5000)
+    }
+
+
+
+
+    /* ══ PROJETS ══ */
+    var _projects=[], _currentProjectId=null, _currentAttachment=null, _currentAgent='general'
+    var _realProjects=[]  // Vrais projets (séparés des sauvegardes de conv)
+
+    /* ══ VRAIS PROJETS ══ */
+    var _projTypes = {
+      livre:      '📚 Écriture de livre',
+      formation:  '🎓 Création de formation',
+      site:       '🌐 Site web',
+      copywriting:'✍️ Copywriting',
+      seo:        '🔍 SEO & Contenu',
+      marketing:  '📱 Marketing réseaux sociaux',
+      autre:      '💼 Autre'
+    }
+
+    function _loadRealProjects() {
+      try { _realProjects = JSON.parse(localStorage.getItem('nyxia_realproj_'+(clientEmail||''))||'[]') } catch(e){ _realProjects=[] }
+      _renderProjectsGrid()
+    }
+
+    function _saveRealProjects() {
+      try { localStorage.setItem('nyxia_realproj_'+(clientEmail||''), JSON.stringify(_realProjects)) } catch(e){}
+    }
+
+    function openProjectModal() {
+      var modal = document.getElementById('project-modal')
+      if (modal) {
+        modal.style.display = 'flex'
+        document.getElementById('proj-name').focus()
+        document.getElementById('proj-name').value = ''
+        document.getElementById('proj-desc').value = ''
+        document.getElementById('proj-type').value = 'livre'
       }
     }
-    window.replaceEditorImage = replaceEditorImage
 
-    function switchMode(mode) {
-      var tabImg  = document.getElementById('tab-image')
-      var tabUrl  = document.getElementById('tab-url')
-      var imgMode = document.getElementById('image-mode')
-      var urlMode = document.getElementById('url-mode')
-      if (!tabImg) return
-      window._currentMode = mode
-      if (mode === 'url') {
-        tabUrl.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
-        tabImg.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
-        if (imgMode) imgMode.style.display = 'none'
-        if (urlMode) urlMode.style.display = 'flex'
+    function closeProjectModal() {
+      var modal = document.getElementById('project-modal')
+      if (modal) modal.style.display = 'none'
+    }
+
+    function createProject() {
+      var name = document.getElementById('proj-name').value.trim()
+      var desc = document.getElementById('proj-desc').value.trim()
+      var type = document.getElementById('proj-type').value
+      if (!name) {
+        document.getElementById('proj-name').style.borderColor = '#FF4B6E'
+        setTimeout(function(){ document.getElementById('proj-name').style.borderColor = 'rgba(123,92,255,0.2)' }, 2000)
+        return
+      }
+      var proj = {
+        id: 'rp' + Date.now(),
+        name: name,
+        desc: desc,
+        type: type,
+        date: new Date().toISOString(),
+        notes: []
+      }
+      _realProjects.unshift(proj)
+      _saveRealProjects()
+      _renderProjectsGrid()
+      closeProjectModal()
+      // Ouvre le projet dans le chat avec NyXia
+      showPanel('chat')
+      var welcome = '📁 **Projet "' + name + '"** ouvert !\\n\\n'
+      if (desc) welcome += desc + '\\n\\n'
+      welcome += 'Type : ' + (_projTypes[type] || type) + '\\n\\nComment puis-je t\'aider avec ce projet ?'
+      var msgs = document.getElementById('chat-messages')
+      if (msgs) msgs.innerHTML = ''
+      chatHistory = []
+      addBotMessage(welcome)
+    }
+
+    function deleteProject(id, e) {
+      e.stopPropagation()
+      if (!confirm('Supprimer ce projet ?')) return
+      _realProjects = _realProjects.filter(function(p){ return p.id !== id })
+      _saveRealProjects()
+      _renderProjectsGrid()
+    }
+
+    function openProject(id) {
+      var p = _realProjects.find(function(x){ return x.id === id })
+      if (!p) return
+      showPanel('chat')
+      var msgs = document.getElementById('chat-messages')
+      if (msgs) msgs.innerHTML = ''
+      chatHistory = []
+      var welcome = '📁 **Projet "' + p.name + '"** rechargé !\\n\\n'
+      if (p.desc) welcome += p.desc + '\\n\\n'
+      welcome += 'Type : ' + (_projTypes[p.type] || p.type) + '\\n\\nSur quoi travaillons-nous aujourd\'hui ?'
+      addBotMessage(welcome)
+    }
+
+    function _renderProjectsGrid() {
+      var grid = document.getElementById('projects-grid')
+      if (!grid) return
+      var createCard = '<div onclick="openProjectModal()" style="border:2px dashed rgba(123,92,255,0.3);border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;min-height:140px;background:rgba(123,92,255,0.03)" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.6)\';this.style.background=\'rgba(123,92,255,0.07)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.3)\';this.style.background=\'rgba(123,92,255,0.03)\'"><div style="font-size:28px;color:rgba(123,92,255,0.6)">✦</div><div style="font-size:13px;color:var(--t3);font-weight:500">Créer un nouveau projet</div></div>'
+      if (!_realProjects.length) {
+        grid.innerHTML = createCard
+        return
+      }
+      var cards = _realProjects.map(function(p) {
+        return '<div onclick="openProject(\'' + p.id + '\')" style="background:rgba(10,22,40,0.8);border:1px solid rgba(123,92,255,0.15);border-radius:16px;padding:20px;cursor:pointer;transition:all .2s;min-height:140px;display:flex;flex-direction:column;position:relative" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.4)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.15)\';this.style.transform=\'none\'">'
+          + '<div style="font-size:11px;color:#a78bfa;margin-bottom:8px;font-weight:600">' + (_projTypes[p.type] || p.type) + '</div>'
+          + '<div style="font-size:15px;font-weight:700;color:var(--t);margin-bottom:6px;line-height:1.3">' + p.name + '</div>'
+          + (p.desc ? '<div style="font-size:12px;color:var(--t3);flex:1;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">' + p.desc + '</div>' : '')
+          + '<div style="font-size:11px;color:var(--t4);margin-top:10px">' + new Date(p.date).toLocaleDateString('fr-CA') + '</div>'
+          + '<button onclick="deleteProject(\'' + p.id + '\',event)" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px;opacity:0;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">🗑</button>'
+          + '</div>'
+      }).join('')
+      grid.innerHTML = createCard + cards
+    }
+
+    // Ferme modal si clic à l'extérieur
+    document.addEventListener('click', function(e) {
+      var modal = document.getElementById('project-modal')
+      if (modal && modal.style.display === 'flex' && e.target === modal) closeProjectModal()
+    })
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeProjectModal()
+    })
+
+    function _loadProjects() {
+      try { _projects=JSON.parse(localStorage.getItem('nyxia_proj_'+(clientEmail||''))||'[]') } catch(e){ _projects=[] }
+      _renderProjects()
+    }
+
+    function _renderProjects() {
+      var list=document.getElementById('projects-list'); if(!list) return
+      if(!_projects.length){ list.innerHTML='<div style="font-size:11px;color:var(--t4)">Aucun projet</div>'; return }
+      list.innerHTML=_projects.map(function(p){
+        var a=p.id===_currentProjectId
+        return '<div data-pid="'+p.id+'" class="proj-item" style="padding:5px 8px;border-radius:6px;cursor:pointer;background:'+(a?'rgba(123,92,255,0.12)':'transparent')+';border:1px solid '+(a?'rgba(123,92,255,0.3)':'transparent')+';margin-bottom:2px"><div style="font-size:11px;color:'+(a?'#a78bfa':'var(--t3)')+';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div><div style="font-size:10px;color:var(--t4)">'+new Date(p.date).toLocaleDateString('fr-CA')+'</div></div>'
+      }).join('')
+    }
+
+    function _saveProject() {
+      if(!chatHistory||!chatHistory.length) return
+      if(_currentProjectId){
+        var p=_projects.find(function(x){return x.id===_currentProjectId})
+        if(p){p.history=chatHistory.slice();p.date=new Date().toISOString()}
       } else {
-        tabImg.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
-        tabUrl.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
-        if (imgMode) imgMode.style.display = 'flex'
-        if (urlMode) urlMode.style.display = 'none'
+        var proj={id:'p'+Date.now(),name:(clientName||'Conv')+' — '+new Date().toLocaleDateString('fr-CA'),agent:_currentAgent,history:chatHistory.slice(),date:new Date().toISOString()}
+        _projects.unshift(proj); if(_projects.length>20)_projects=_projects.slice(0,20)
+        _currentProjectId=proj.id
       }
+      try{localStorage.setItem('nyxia_proj_'+(clientEmail||''),JSON.stringify(_projects))}catch(e){}
+      _renderProjects()
     }
-    window.switchMode = switchMode
-  </script>
-</body>
 
+    function _loadProject(id) {
+      if(chatHistory&&chatHistory.length>1) _saveProject()
+      var p=_projects.find(function(x){return x.id===id}); if(!p) return
+      _currentProjectId=id; chatHistory=p.history.slice()
+      _currentAgent=p.agent||'general'
+      document.querySelectorAll('[id^="agent-"]').forEach(function(b){
+        b.style.background='transparent'; b.style.borderColor='rgba(123,92,255,0.1)'; b.style.color='var(--t3)'
+      })
+      var ab=document.getElementById('agent-'+_currentAgent)
+      if(ab){ab.style.background='rgba(123,92,255,0.15)';ab.style.borderColor='rgba(123,92,255,0.3)';ab.style.color='#fff'}
+      var msgs=document.getElementById('chat-messages'); if(msgs) msgs.innerHTML=''
+      chatHistory.forEach(function(m){if(m.role==='user')addUserMessage(m.content);else addBotMessage(m.content)})
+      if(msgs) msgs.scrollTop=msgs.scrollHeight
+      _renderProjects()
+    }
+
+    function _newConversation() {
+      if(chatHistory&&chatHistory.length>1) _saveProject()
+      _currentProjectId=null; chatHistory=[]
+      var msgs=document.getElementById('chat-messages'); if(msgs) msgs.innerHTML=''
+      var sugg=document.getElementById('suggestions'); if(sugg) sugg.style.display='flex'
+      sendWelcome()
+    }
+
+    function _setAgentStyle(agent) {
+      _currentAgent=agent
+      document.querySelectorAll('[id^="agent-"]').forEach(function(b){
+        b.style.background='transparent'; b.style.borderColor='rgba(123,92,255,0.1)'; b.style.color='var(--t3)'
+      })
+      var ab=document.getElementById('agent-'+agent)
+      if(ab){ab.style.background='rgba(123,92,255,0.15)';ab.style.borderColor='rgba(123,92,255,0.3)';ab.style.color='#fff'}
+    }
+
+    /* ══ INIT LISTENERS ══ */
+    document.addEventListener('DOMContentLoaded', function() {
+      // Project clicks via delegation
+      var plist=document.getElementById('projects-list')
+      if(plist) plist.addEventListener('click',function(e){
+        var item=e.target.closest('.proj-item')
+        if(item && item.dataset.pid) _loadProject(item.dataset.pid)
+      })
+      // File input
+      var fi=document.getElementById('chat-file')
+      if(fi) fi.addEventListener('change',function(){
+        var f=this.files[0]; if(!f) return
+        var size = f.size>1048576 ? (f.size/1048576).toFixed(1)+'MB' : Math.round(f.size/1024)+'KB'
+        _currentAttachment={name:f.name,type:f.type,data:null}
+        var bar=document.getElementById('attach-bar'), nm=document.getElementById('attach-name')
+        var sendBtn=document.getElementById('btn-send')
+        if(bar) bar.style.display='flex'
+        if(nm)  nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ⏳ Chargement...'
+        if(sendBtn) sendBtn.disabled=true  // bloque l'envoi pendant la lecture
+        var reader=new FileReader()
+        reader.onload=function(e){
+          _currentAttachment.data=e.target.result.split(',')[1]
+          if(nm) nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ✅ Prêt à envoyer'
+          if(sendBtn) sendBtn.disabled=false  // débloque quand c'est prêt
+        }
+        reader.onerror=function(){
+          _currentAttachment=null
+          if(nm) nm.innerHTML='❌ Erreur de lecture — réessaie'
+          if(sendBtn) sendBtn.disabled=false
+        }
+        reader.readAsDataURL(f)
+      })
+      // Clear attach
+      var ca=document.getElementById('btn-clear-attach')
+      if(ca) ca.addEventListener('click',function(){
+        _currentAttachment=null
+        var bar=document.getElementById('attach-bar'),fi2=document.getElementById('chat-file')
+        if(bar) bar.style.display='none'; if(fi2) fi2.value=''
+      })
+      // Fonction setAgent — change le mode et envoie un message contextuel
+      function setAgent(agent) {
+        _currentAgent = agent
+        // Ramène toujours au chat quand on change d'agent
+        showPanel('chat')
+        var msgs = document.getElementById('chat-messages')
+        if (msgs) msgs.innerHTML = ''
+        chatHistory = []
+        var sugg = document.getElementById('suggestions')
+        if (sugg) sugg.style.display = 'none'
+        var name = clientName || ''
+        var welcomes = {
+          general:    (name ? 'Salut ' + name + ' ! 💜' : 'Bonjour ! 💜') + ' Je suis NyXia, ton agente IA. Sur quoi travailles-tu ?',
+          copywriter: '✍️ Mode **Copywriter** activé !\n\nJe rédige : annonces pub, posts réseaux, emails de vente, chapitres de livre, VSL...\n\nQuel type de contenu et pour quelle plateforme ?',
+          formation:  '🎓 Mode **Créateur de Formation** activé !\n\nJe structure ta formation : modules, scripts vidéo, workbooks et page de vente.\n\nQuel est le sujet et qui est ton audience cible ?',
+          seo:        '🔍 Mode **Expert SEO** activé !\n\nJe combine référencement et Psychologie du Clic pour rankler ET convertir.\n\nTon site/business, ta niche et tes mots-clés actuels ?'
+        }
+        addBotMessage(welcomes[agent] || welcomes.general)
+      }
+
+      // Agent buttons
+      ['general','copywriter','formation','seo'].forEach(function(a){
+        var b=document.getElementById('agent-'+a)
+        if(b) b.addEventListener('click',function(){
+          _setAgentStyle(a)
+          setAgent(a)
+        })
+      })
+      // New conversation
+      var nc=document.getElementById('btn-new-conv')
+      if(nc) nc.addEventListener('click',function(){ _newConversation() })
+      // Load projects
+      _loadProjects()
+      _loadRealProjects()
+    })
+
+    /* ══════════════════════════════════════
+       MES SITES — Historique des sites générés
+    ══════════════════════════════════════ */
+    function loadMySites() {
+      var list = document.getElementById('sites-list')
+      var empty = document.getElementById('sites-empty')
+      if (!list) return
+      if (empty) empty.textContent = 'Chargement...'
+
+      fetch('/api/sites/list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: sessionToken })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        if (!data.success || !data.sites || !data.sites.length) {
+          list.innerHTML = '<div style="text-align:center;color:var(--t3);padding:60px;grid-column:1/-1;font-size:14px">Aucun site généré pour l'instant.<br><span style="font-size:12px;opacity:.6">Génère ton premier site dans "Créer mon site"</span></div>'
+          return
+        }
+        list.innerHTML = data.sites.map(function(site) {
+          var date = new Date(site.date).toLocaleDateString('fr-CA', { day:'2-digit', month:'short', year:'numeric' })
+          return '<div style="background:rgba(15,28,63,0.5);border:1px solid rgba(123,92,255,0.12);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;transition:all .2s;position:relative" onmouseover="this.style.borderColor='rgba(123,92,255,0.3)'" onmouseout="this.style.borderColor='rgba(123,92,255,0.12)'">'
+            + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'
+            + '<div style="font-size:15px;font-weight:700;color:var(--t);line-height:1.3;flex:1">' + escHtml(site.name) + '</div>'
+            + '<button onclick="deleteSite('' + site.id + '',this)" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:0;flex-shrink:0;transition:color .15s" onmouseover="this.style.color='#ff8fab'" onmouseout="this.style.color='var(--t4)'">🗑</button>'
+            + '</div>'
+            + '<div style="font-size:11px;color:var(--t4)">Créé le ' + date + '</div>'
+            + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+            + '<a href="' + site.url + '" target="_blank" style="flex:1;padding:9px 14px;border-radius:10px;background:rgba(123,92,255,0.1);border:1px solid rgba(123,92,255,0.2);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;text-decoration:none;text-align:center;transition:all .15s" onmouseover="this.style.background='rgba(123,92,255,0.2)'" onmouseout="this.style.background='rgba(123,92,255,0.1)'">🔗 Voir le site</a>'
+            + '<button onclick="republishSite('' + site.id + '','' + escHtml(site.name) + '')" style="flex:1;padding:9px 14px;border-radius:10px;background:rgba(0,200,100,0.08);border:1px solid rgba(0,200,100,0.2);color:#00E676;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s" onmouseover="this.style.background='rgba(0,200,100,0.15)'" onmouseout="this.style.background='rgba(0,200,100,0.08)'">🚀 Republier</button>'
+            + '</div>'
+            + '</div>'
+        }).join('')
+      })
+      .catch(function() {
+        list.innerHTML = '<div style="text-align:center;color:#ff8fab;padding:40px;grid-column:1/-1">Erreur de chargement.</div>'
+      })
+    }
+
+    function deleteSite(id, btn) {
+      if (!confirm('Supprimer ce site définitivement ?')) return
+      btn.textContent = '...'
+      fetch('/api/sites/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: sessionToken, id: id })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        if (data.success) loadMySites()
+        else btn.textContent = '🗑'
+      })
+      .catch(function() { btn.textContent = '🗑' })
+    }
+
+    function republishSite(id, name) {
+      var newName = prompt('Nouveau nom pour ce site :', name)
+      if (!newName) return
+      // Récupère le HTML depuis l'URL publique puis republie
+      fetch('https://webmasteria.nyxiapublicationweb.com/site/' + id)
+        .then(function(r) { return r.text() })
+        .then(function(html) {
+          return fetch('/api/sites/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: sessionToken, html: html, name: newName })
+          })
+        })
+        .then(function(r) { return r.json() })
+        .then(function(data) {
+          if (data.success) {
+            alert('Site republié ! URL : ' + data.url)
+            loadMySites()
+          }
+        })
+        .catch(function() { alert('Erreur de republication.') })
+    }
+
+    /* ══════════════════════════════════════
+       INPUT AUTO-RESIZE + ENTER
+    ══════════════════════════════════════ */
+    var chatInput = document.getElementById('chat-input')
+    chatInput.addEventListener('input', function() {
+      this.style.height = 'auto'
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px'
+    })
+    chatInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+        sendMessage()
+      }
+    })
+
+    /* ══════════════════════════════════════
+       UTILS
+    ══════════════════════════════════════ */
+    function escHtml(str) {
+      var d = document.createElement('div')
+      d.textContent = str
+      return d.innerHTML
+    }
+  </script>
+
+</body>
 </html>
