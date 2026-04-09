@@ -1527,6 +1527,16 @@
           if (panel && frame) { frame.srcdoc = html; panel.style.display = 'block' }
           try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
           try { sessionStorage.setItem('nyxia_edit_code', html) } catch(e) {}
+          // Auto-save dans l'historique client
+          var token = sessionStorage.getItem('nyxia_token') || ''
+          if (token) {
+            var siteName = (document.getElementById('user-input') || {}).value || 'Mon site'
+            fetch('/api/sites/save', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: token, html: html, name: siteName.substring(0, 50) })
+            }).catch(function(){})
+          }
         }, 1200)
       })
       .catch(function(e) {
