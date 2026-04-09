@@ -165,7 +165,7 @@
           <div class="color-grid">
             <div class="color-item"><label>Fond</label><input type="color" value="#ffffff" oninput="applyStyleRule('body','background-color',this.value)"></div>
             <div class="color-item"><label>Accent</label><input type="color" value="#7B5CFF" oninput="applyToElements(['a','.btn','button'],'color',this.value)"></div>
-            <div class="color-item"><label>Texte</label><input type="color" value="#000000" oninput="applyStyleRule('body','color',this.value)"></div>
+            <div class="color-item"><label>Texte</label><input type="color" value="#000000" oninput="applyStyleRule('body, body *','color',this.value)"></div>
             <div class="color-item"><label>Boutons</label><input type="color" value="#7B5CFF" oninput="applyToElements(['button','.btn'],'background-color',this.value)"></div>
           </div>
         </div>
@@ -247,7 +247,7 @@
   var originalCode   = ''
   var currentCode    = ''
   var editMode       = false
-  var selectedImgIdx = -1  // index de l'image ciblée dans l'iframe
+  var selectedImgIdx = -1
 
   /* ══════════════════════════════════════
      INIT
@@ -262,16 +262,23 @@
     originalCode = code
     currentCode  = code
     loadPreview(code)
-    // Active le mode édition automatiquement
     setTimeout(function() { if (!editMode) toggleEditMode() }, 800)
   })
 
   function loadPreview(html) {
     var frame = document.getElementById('preview-frame')
-    frame.srcdoc = html
-    frame.onload = function() {
+    // Détruit et recrée l'iframe pour garantir un rechargement complet
+    // (évite le bug où le navigateur ne déclenche pas onload si le contenu est similaire)
+    var parent = frame.parentElement
+    var newFrame = document.createElement('iframe')
+    newFrame.id = 'preview-frame'
+    newFrame.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups')
+    newFrame.style.cssText = 'flex:1;border:none;width:100%;'
+    parent.replaceChild(newFrame, frame)
+    newFrame.onload = function() {
       if (editMode) injectEditListeners()
     }
+    newFrame.srcdoc = html
   }
 
   /* ══════════════════════════════════════
@@ -306,6 +313,12 @@
     }
   }
 
+  /* ══════════════════════════════════════
+     INJECTION SCRIPT IFRAME
+     Tout se fait via postMessage :
+     l'iframe modifie son propre DOM et
+     renvoie le HTML mis à jour au parent.
+  ══════════════════════════════════════ */
   function injectEditListeners() {
     var frame = document.getElementById('preview-frame')
     try {
@@ -320,19 +333,18 @@
         'document.body.style.cursor="crosshair";',
         'document.body.addEventListener("mouseover",function(e){',
         '  if(_sel===e.target)return;',
-        '  if(_hov&&_hov!==_sel){_hov.style.outline="";_hov.removeAttribute("data-nyxia-selected");}',
+        '  if(_hov&&_hov!==_sel)_hov.style.outline="";',
         '  _hov=e.target;',
         '  if(_hov!==_sel)_hov.style.outline="1px dashed rgba(123,92,255,0.5)";',
         '},true);',
         'document.body.addEventListener("mouseout",function(e){',
-        '  if(e.target!==_sel&&e.target.style){e.target.style.outline="";e.target.removeAttribute("data-nyxia-selected");}',
+        '  if(e.target!==_sel&&e.target.style)e.target.style.outline="";',
         '},true);',
         'document.body.addEventListener("click",function(e){',
         '  e.preventDefault();e.stopPropagation();',
-        '  if(_sel&&_sel!==e.target){_sel.style.outline="";_sel.removeAttribute("data-nyxia-selected");}',
+        '  if(_sel&&_sel!==e.target)_sel.style.outline="";',
         '  _sel=e.target;',
         '  _sel.style.outline="2px solid #7B5CFF";',
-        '  _sel.setAttribute("data-nyxia-selected","1");',
         '  var isImg=_sel.tagName==="IMG";',
         '  var txt=isImg?"":((_sel.innerText||_sel.textContent||"").trim());',
         '  var src=isImg?_sel.src:"";',
@@ -340,32 +352,90 @@
         '  var imgIdx=-1;',
         '  if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===_sel){imgIdx=i;break;}}}',
         '  window.parent.postMessage({type:"nyxia-sel",isImg:isImg,txt:txt,src:src,tag:tag,imgIdx:imgIdx,x:e.clientX,y:e.clientY},"*");',
-        '},true);'
+        '},true);',
+        '',
+        'window.addEventListener("message",function(e){',
+        '  if(!e.data)return;',
+        '  var r={type:"nyxia-code-sync",html:"<!DOCTYPE html>\\n"+document.documentElement.outerHTML};',
+        '',
+        '  if(e.data.type==="nyxia-apply-text"){',
+        '    if(!_sel){window.parent.postMessage({type:"nyxia-error",msg:"no-selection"},"*");return;}',
+        '    if(_sel.children.length===0)_sel.textContent=e.data.text;',
+        '    else _sel.innerText=e.data.text;',
+        '    _sel.style.outline="";',
+        '    _sel=null;',
+        '    r.op="text";',
+        '    window.parent.postMessage(r,"*");',
+        '  }',
+        '',
+        '  else if(e.data.type==="nyxia-apply-style"){',
+        '    var els=document.querySelectorAll(e.data.selector);',
+        '    for(var i=0;i<els.length;i++){try{els[i].style[e.data.prop]=e.data.value;}catch(ex){}}',
+        '    r.op="style";',
+        '    window.parent.postMessage(r,"*");',
+        '  }',
+        '',
+        '  else if(e.data.type==="nyxia-apply-multi-style"){',
+        '    var sels=e.data.selectors;',
+        '    for(var si=0;si<sels.length;si++){',
+        '      var el2=document.querySelectorAll(sels[si]);',
+        '      for(var j=0;j<el2.length;j++){try{el2[j].style[e.data.prop]=e.data.value;}catch(ex2){}}',
+        '    }',
+        '    r.op="style";',
+        '    window.parent.postMessage(r,"*");',
+        '  }',
+        '',
+        '  else if(e.data.type==="nyxia-replace-img"){',
+        '    var imgs=document.querySelectorAll("img");',
+        '    if(!imgs[e.data.idx]){window.parent.postMessage({type:"nyxia-error",msg:"invalid-img"},"*");return;}',
+        '    imgs[e.data.idx].src=e.data.src;',
+        '    imgs[e.data.idx].style.outline="";',
+        '    r.op="img";',
+        '    window.parent.postMessage(r,"*");',
+        '  }',
+        '});'
       ].join('\n')
       doc.body.appendChild(s)
     } catch(e) { console.log('inject err:', e) }
   }
 
   /* ══════════════════════════════════════
-     RÉCEPTION SÉLECTION DEPUIS IFRAME
+     RÉCEPTION MESSAGES DE L'IFRAME
   ══════════════════════════════════════ */
   window.addEventListener('message', function(e) {
-    if (!e.data || e.data.type !== 'nyxia-sel') return
+    if (!e.data) return
 
-    if (!e.data.isImg) {
-      // ── TEXTE sélectionné ──
-      closeImgPopup()
-      document.getElementById('selected-info').classList.add('visible')
-      document.getElementById('selected-tag').textContent = '<' + e.data.tag + '>'
-      document.getElementById('selected-preview').textContent = e.data.txt.substring(0, 80) + (e.data.txt.length > 80 ? '...' : '')
-      document.getElementById('text-input').value = e.data.txt
-      // Switche vers onglet texte
-      switchTab('texte', document.querySelector('.tab-btn'))
+    /* ── Sélection d'un élément ── */
+    if (e.data.type === 'nyxia-sel') {
+      if (!e.data.isImg) {
+        closeImgPopup()
+        document.getElementById('selected-info').classList.add('visible')
+        document.getElementById('selected-tag').textContent = '<' + e.data.tag + '>'
+        document.getElementById('selected-preview').textContent = e.data.txt.substring(0, 80) + (e.data.txt.length > 80 ? '...' : '')
+        document.getElementById('text-input').value = e.data.txt
+        switchTab('texte', document.querySelector('.tab-btn'))
+      } else {
+        selectedImgIdx = e.data.imgIdx
+        showImgPopup(e.data.src, e.data.x, e.data.y)
+      }
+    }
 
-    } else {
-      // ── IMAGE sélectionnée — ouvre popup ──
-      selectedImgIdx = e.data.imgIdx
-      showImgPopup(e.data.src, e.data.x, e.data.y)
+    /* ── Code synchronisé après modification dans l'iframe ── */
+    if (e.data.type === 'nyxia-code-sync') {
+      currentCode = e.data.html
+      localStorage.setItem('nyxia_edit_code', currentCode)
+      if (e.data.op === 'text') toast('✓ Texte modifié !')
+      if (e.data.op === 'img') {
+        closeImgPopup()
+        toast('✓ Image remplacée !')
+      }
+    }
+
+    /* ── Erreur remontée depuis l'iframe ── */
+    if (e.data.type === 'nyxia-error') {
+      if (e.data.msg === 'no-selection') toast('⚠️ Clique d\'abord sur un texte dans le preview')
+      else if (e.data.msg === 'invalid-img') toast('⚠️ Image introuvable')
+      else toast('Erreur: ' + e.data.msg)
     }
   })
 
@@ -376,12 +446,10 @@
     var popup = document.getElementById('img-popup')
     document.getElementById('popup-preview').src = src
 
-    // Positionne la popup près du clic (décalée de la sidebar)
     var sidebarW = 280
     var absX = sidebarW + clickX
     var absY = clickY
 
-    // Évite que la popup sorte de l'écran
     var popW = 260, popH = 300
     var left = Math.min(absX + 10, window.innerWidth - popW - 10)
     var top  = Math.min(absY - 40, window.innerHeight - popH - 10)
@@ -391,7 +459,6 @@
     popup.style.top  = top + 'px'
     popup.classList.add('visible')
 
-    // Reset panel Pexels
     document.getElementById('pexels-panel').style.display = 'none'
   }
 
@@ -408,7 +475,6 @@
     }
   }
 
-  // Ferme popup si on clique ailleurs
   document.addEventListener('click', function(e) {
     var popup = document.getElementById('img-popup')
     if (popup.classList.contains('visible') && !popup.contains(e.target)) {
@@ -417,22 +483,52 @@
   })
 
   /* ══════════════════════════════════════
-     REMPLACEMENT IMAGE — par index (fiable)
+     MODIFIER TEXTE — via postMessage
+  ══════════════════════════════════════ */
+  function applyText() {
+    var newText = document.getElementById('text-input').value
+    var frame = document.getElementById('preview-frame')
+    if (frame.contentWindow) {
+      frame.contentWindow.postMessage({type: 'nyxia-apply-text', text: newText}, '*')
+    } else {
+      toast('⚠️ Aperçu non chargé')
+    }
+  }
+
+  /* ══════════════════════════════════════
+     COULEURS — via postMessage
+  ══════════════════════════════════════ */
+  function applyStyleRule(selector, prop, value) {
+    var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
+    var frame = document.getElementById('preview-frame')
+    if (frame.contentWindow) {
+      frame.contentWindow.postMessage({type: 'nyxia-apply-style', selector: selector, prop: camel, value: value}, '*')
+    }
+  }
+
+  function applyToElements(selectors, prop, value) {
+    var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
+    var frame = document.getElementById('preview-frame')
+    if (frame.contentWindow) {
+      frame.contentWindow.postMessage({type: 'nyxia-apply-multi-style', selectors: selectors, prop: camel, value: value}, '*')
+    }
+  }
+
+  function applyGradient() {
+    var c1 = document.getElementById('c-grad1').value
+    var c2 = document.getElementById('c-grad2').value
+    applyStyleRule('body', 'background', 'linear-gradient(135deg,' + c1 + ',' + c2 + ')')
+  }
+
+  /* ══════════════════════════════════════
+     REMPLACEMENT IMAGE — via postMessage
   ══════════════════════════════════════ */
   function replaceImageByIndex(newSrc) {
     if (selectedImgIdx < 0) { toast('⚠️ Aucune image sélectionnée'); return }
     var frame = document.getElementById('preview-frame')
-    try {
-      var doc  = frame.contentDocument || frame.contentWindow.document
-      var imgs = doc.querySelectorAll('img')
-      if (!imgs[selectedImgIdx]) { toast('⚠️ Image introuvable'); return }
-      imgs[selectedImgIdx].src = newSrc
-      imgs[selectedImgIdx].style.outline = ''
-      imgs[selectedImgIdx].removeAttribute('data-nyxia-selected')
-      syncCode()
-      closeImgPopup()
-      toast('✓ Image remplacée !')
-    } catch(e) { toast('Erreur: ' + e.message) }
+    if (frame.contentWindow) {
+      frame.contentWindow.postMessage({type: 'nyxia-replace-img', idx: selectedImgIdx, src: newSrc}, '*')
+    }
   }
 
   function uploadPopupImage(input) {
@@ -441,7 +537,6 @@
     var reader = new FileReader()
     reader.onload = function(ev) { replaceImageByIndex(ev.target.result) }
     reader.readAsDataURL(file)
-    // Reset input pour permettre re-upload du même fichier
     input.value = ''
   }
 
@@ -451,7 +546,6 @@
     var grid = document.getElementById('pexels-grid-popup')
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:10px">Recherche...</div>'
 
-    // 4 requêtes parallèles
     var promises = []
     for (var i = 0; i < 4; i++) {
       promises.push(
@@ -473,7 +567,6 @@
       grid.innerHTML = imgs.map(function(d, i) {
         return '<img class="pexels-thumb" src="' + d.dataUrl + '" title="' + (d.photographer || '') + '" onclick="selectPexelsImage(' + i + ')" data-idx="' + i + '">'
       }).join('')
-      // Stocke les dataUrls pour y accéder au clic
       window._pexelsResults = imgs
     }).catch(function() {
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#ff8fab;font-size:11px;padding:10px">Erreur — réessaie</div>'
@@ -487,65 +580,20 @@
   }
 
   /* ══════════════════════════════════════
-     MODIFIER TEXTE
-  ══════════════════════════════════════ */
-  function applyText() {
-    var newText = document.getElementById('text-input').value
-    var frame   = document.getElementById('preview-frame')
-    try {
-      var doc = frame.contentDocument || frame.contentWindow.document
-      var sel = doc.querySelector('[data-nyxia-selected="1"]')
-      if (!sel) { toast('⚠️ Clique d\'abord sur un texte dans le preview'); return }
-      if (sel.children.length === 0) sel.textContent = newText
-      else sel.innerText = newText
-      sel.style.outline = ''
-      sel.removeAttribute('data-nyxia-selected')
-      syncCode()
-      toast('✓ Texte modifié !')
-    } catch(e) { toast('Erreur: ' + e.message) }
-  }
-
-  /* ══════════════════════════════════════
-     COULEURS
-  ══════════════════════════════════════ */
-  function applyStyleRule(selector, prop, value) {
-    var frame = document.getElementById('preview-frame')
-    try {
-      var doc = frame.contentDocument || frame.contentWindow.document
-      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
-      doc.querySelectorAll(selector).forEach(function(el) { el.style[camel] = value })
-      syncCode()
-    } catch(e) {}
-  }
-
-  function applyToElements(selectors, prop, value) {
-    var frame = document.getElementById('preview-frame')
-    try {
-      var doc = frame.contentDocument || frame.contentWindow.document
-      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
-      selectors.forEach(function(sel) {
-        doc.querySelectorAll(sel).forEach(function(el) { el.style[camel] = value })
-      })
-      syncCode()
-    } catch(e) {}
-  }
-
-  function applyGradient() {
-    var c1 = document.getElementById('c-grad1').value
-    var c2 = document.getElementById('c-grad2').value
-    applyStyleRule('body', 'background', 'linear-gradient(135deg,' + c1 + ',' + c2 + ')')
-  }
-
-  /* ══════════════════════════════════════
      SYNC + SAVE
   ══════════════════════════════════════ */
   function syncCode() {
     var frame = document.getElementById('preview-frame')
     try {
       var doc = frame.contentDocument || frame.contentWindow.document
-      currentCode = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML
-      localStorage.setItem('nyxia_edit_code', currentCode)
-    } catch(e) {}
+      if (doc && doc.documentElement) {
+        currentCode = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML
+        localStorage.setItem('nyxia_edit_code', currentCode)
+      }
+    } catch(e) {
+      // currentCode est déjà maintenu à jour
+      // par les réponses nyxia-code-sync
+    }
   }
 
   function saveAndDownload() {
@@ -566,8 +614,11 @@
   function resetSite() {
     if (!confirm('Annuler toutes les modifications ?')) return
     currentCode = originalCode
+    localStorage.setItem('nyxia_edit_code', originalCode)
     loadPreview(originalCode)
     selectedImgIdx = -1
+    document.getElementById('selected-info').classList.remove('visible')
+    document.getElementById('text-input').value = ''
     toast('↺ Réinitialisé')
   }
 
