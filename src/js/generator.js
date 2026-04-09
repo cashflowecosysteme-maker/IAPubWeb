@@ -127,7 +127,7 @@
       previewThumb.src      = ''
       uploadPreview.style.display = 'none'
       fileInput.value       = ''
-      btn.textContent       = 'Générer mon Empire'
+      btn.textContent       = '✨ Créer mon site avec NyXia'
     })
   }
 
@@ -135,7 +135,9 @@
      BOUTON GÉNÉRER
   ═══════════════════════════════ */
   btn.addEventListener('click', function () {
-    if (imageBase64) {
+    if (window._currentMode === 'url' || currentMode === 'url') {
+      generateFromUrl()
+    } else if (imageBase64) {
       generateFromImage()
     } else {
       generateFromText()
@@ -175,7 +177,30 @@
      (Claude Sonnet 4.6 — vision + génération HTML)
   ───────────────────────────── */
   function generateFromImage() {
-    var userPrompt = input.value.trim() || 'Mon Empire Rentable'
+    var userPrompt = input.value.trim()
+    if (!userPrompt) {
+      input.focus()
+      input.style.border = '2px solid #FF4B6E'
+      input.placeholder = '👆 Décris ton projet ici — ex: Spa bien-être, Coach de vie, Naturopathe...'
+      // Message d'erreur visible
+      var errMsg = document.getElementById('input-error-msg')
+      if (!errMsg) {
+        errMsg = document.createElement('div')
+        errMsg.id = 'input-error-msg'
+        errMsg.style.cssText = 'color:#ff8fab;font-size:13px;margin-top:6px;text-align:center;animation:nxMsgIn .3s ease'
+        input.parentNode.insertAdjacentElement('afterend', errMsg)
+      }
+      errMsg.textContent = '✍️ Décris ton projet pour que NyXia crée ton site !'
+      setTimeout(function() {
+        input.style.border = ''
+        if (errMsg) errMsg.textContent = ''
+      }, 4000)
+      return
+    }
+    // Retire le message d'erreur si présent
+    var errMsg = document.getElementById('input-error-msg')
+    if (errMsg) errMsg.textContent = ''
+    input.style.border = 
     setLoading('NyXia analyse l\'image...')
 
     var payloadSize = Math.round(imageBase64.length / 1024)
@@ -232,13 +257,19 @@
      TRAITEMENT DE LA RÉPONSE HTML
   ═══════════════════════════════ */
   function handleGenerated(content) {
-    var html = extractHtml(content)
+    /* Nettoyage : supprime les backticks Markdown si présents */
+    var cleaned = content.replace(/^`{1,3}html\s*/i, '').replace(/`{1,3}\s*$/, '').trim()
+    var html = extractHtml(cleaned) || extractHtml(content)
     if (html) {
       generatedCode = html
       showPreview(html)
       resetBtn('Site généré ✓')
+    } else if (cleaned.indexOf('<!DOCTYPE') !== -1 || cleaned.indexOf('<html') !== -1) {
+      /* Fallback : le contenu EST du HTML, on l'utilise directement */
+      generatedCode = cleaned
+      showPreview(cleaned)
+      resetBtn('Site généré ✓')
     } else {
-      /* Pas de HTML détecté dans la réponse */
       console.warn('[NyXia] Pas de HTML trouvé dans la réponse. Contenu brut :')
       console.warn(content.substring(0, 500))
       generatedCode = content
@@ -298,6 +329,11 @@
   function showPreview(html) {
     previewFrame.srcdoc  = html
     previewPanel.style.display = 'block'
+    // Stocke via postMessage au parent (dashboard) ET en local
+    try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
+    try { sessionStorage.setItem('nyxia_edit_code', html) } catch(e) {}
+    // Envoie au parent dashboard pour qu'il le stocke
+    try { window.parent.postMessage({ type: 'nyxia_store_code', html: html }, '*') } catch(e) {}
   }
 
   /* ═══════════════════════════════
@@ -372,17 +408,295 @@
     resetBtn(msg)
   }
 
+  /* ═══ OVERLAY PREMIUM ═══ */
+  var overlayMessages = [
+    'NyXia analyse ton image... ✦',
+    'NyXia extrait ta palette de couleurs... 🎨',
+    'NyXia crée ton design premium... ✨',
+    'NyXia rédige tes textes... ✍️',
+    'NyXia intègre tes images HD... 🖼',
+    'NyXia peaufine chaque détail... 💎',
+    'Ton site prend vie... 🚀'
+  ]
+  var overlayInterval  = null
+  var progressInterval = null
+
+  function showOverlay(initialText) {
+    var overlay  = document.getElementById('nyxia-loading-overlay')
+    var msgEl    = document.getElementById('overlay-message')
+    var progress = document.getElementById('overlay-progress')
+    var label    = document.getElementById('overlay-progress-label')
+    var stars    = document.getElementById('overlay-stars')
+    if (!overlay) return
+
+    // Génère les étoiles une seule fois
+    if (stars && stars.children.length === 0) {
+      for (var i = 0; i < 80; i++) {
+        var star = document.createElement('div')
+        star.className = 'overlay-star'
+        star.style.left = Math.random() * 100 + '%'
+        star.style.top  = Math.random() * 100 + '%'
+        star.style.setProperty('--d', (Math.random() * 3 + 2) + 's')
+        star.style.setProperty('--o', (Math.random() * 0.6 + 0.2).toString())
+        star.style.animationDelay = (Math.random() * 3) + 's'
+        stars.appendChild(star)
+      }
+    }
+
+    overlay.classList.add('visible')
+    btn.disabled = true
+    msgEl.textContent = initialText || overlayMessages[0]
+    progress.style.width = '5%'
+    label.textContent = 'Démarrage...'
+
+    var msgIdx = 0
+    var prog   = 5
+    var stepLabels = ['Analyse visuelle...', 'Palette de couleurs...', 'Architecture CSS...', 'Génération HTML...', 'Images en cours...', 'Finalisation...']
+
+    overlayInterval = setInterval(function() {
+      msgIdx = (msgIdx + 1) % overlayMessages.length
+      msgEl.style.opacity = '0'
+      setTimeout(function() {
+        msgEl.textContent   = overlayMessages[msgIdx]
+        msgEl.style.opacity = '1'
+      }, 300)
+    }, 3500)
+
+    progressInterval = setInterval(function() {
+      if (prog < 88) {
+        prog += Math.random() * 3 + 1
+        progress.style.width    = Math.min(prog, 88) + '%'
+        label.textContent = stepLabels[Math.min(Math.floor(prog / 15), stepLabels.length - 1)]
+      }
+    }, 800)
+  }
+
+  function hideOverlay(success) {
+    clearInterval(overlayInterval)
+    clearInterval(progressInterval)
+    var overlay  = document.getElementById('nyxia-loading-overlay')
+    var progress = document.getElementById('overlay-progress')
+    var msgEl    = document.getElementById('overlay-message')
+    var label    = document.getElementById('overlay-progress-label')
+    if (!overlay) return
+
+    if (success) {
+      progress.style.width = '100%'
+      msgEl.textContent    = '✦ Ton site est prêt ! ✦'
+      label.textContent    = 'Terminé !'
+      setTimeout(function() { overlay.classList.remove('visible') }, 1400)
+    } else {
+      overlay.classList.remove('visible')
+    }
+  }
+
   function setLoading(text) {
-    btn.disabled    = true
-    btn.textContent = text
+    btn.disabled = true
+    showOverlay(text)
   }
 
   function resetBtn(text) {
+    var isSuccess = text && (text.indexOf('✓') !== -1 || text === 'Site généré ✓')
+    hideOverlay(isSuccess)
     btn.textContent = text
-    setTimeout(function () {
+    setTimeout(function() {
       btn.disabled    = false
-      btn.textContent = imageBase64 ? 'Générer depuis l\'image' : 'Générer mon Empire'
-    }, 4000)
+      btn.textContent = imageBase64 ? '✨ Générer depuis l\'image' : '✨ Créer mon site avec NyXia'
+    }, isSuccess ? 5000 : 2000)
   }
+
+  /* ═══════════════════════════════════════════
+     ÉDITEUR PLEINE PAGE
+  ═══════════════════════════════════════════ */
+  var editorOriginalCode = ''
+  var editorCurrentCode  = ''
+
+  function toggleEditor() {
+    if (!generatedCode) return
+    var editor = document.getElementById('fullpage-editor')
+    if (!editor) return
+    editorOriginalCode = generatedCode
+    editorCurrentCode  = generatedCode
+    editor.classList.add('open')
+    var frame = document.getElementById('editor-preview-frame')
+    if (frame) {
+      frame.srcdoc = generatedCode
+      frame.onload = function() {
+        injectEditorIntoFrame(frame)
+      }
+    }
+  }
+
+  function injectEditorIntoFrame(frame) {
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      if (!doc || !doc.body) return
+      var script = doc.createElement('script')
+      script.textContent =
+        'var _s=null;' +
+        'document.body.addEventListener("mouseover",function(e){if(_s!==e.target)e.target.style.outline="1px dashed rgba(123,92,255,0.4);"});' +
+        'document.body.addEventListener("mouseout",function(e){if(_s!==e.target)e.target.style.outline="";});' +
+        'document.body.addEventListener("click",function(e){' +
+        '  e.preventDefault();e.stopPropagation();' +
+        '  if(_s){_s.style.outline="";}' +
+        '  _s=e.target;_s.style.outline="2px solid #7B5CFF";' +
+        '  var t=(_s.innerText||_s.textContent||"").trim();' +
+        '  window.parent.postMessage({type:"nyxia-edit-select",text:t},"*");' +
+        '},true);'
+      doc.body.appendChild(script)
+    } catch(e) { console.log('Editor:', e) }
+  }
+
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'nyxia-edit-select') return
+    var sec   = document.getElementById('text-edit-section')
+    var input = document.getElementById('edit-text-input')
+    var info  = document.getElementById('editor-selected-info')
+    if (sec)   sec.style.display = 'block'
+    if (input) { input.value = e.data.text; input.focus() }
+    if (info)  { info.style.display = 'block'; setTimeout(function(){ info.style.display='none' }, 2000) }
+  })
+
+  function applyTextEdit() {
+    var input = document.getElementById('edit-text-input')
+    var frame = document.getElementById('editor-preview-frame')
+    if (!input || !frame) return
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      var sel = doc.querySelector('[style*="2px solid #7B5CFF"]')
+      if (sel) { sel.textContent = input.value; sel.style.outline = '' }
+      editorCurrentCode = '<!DOCTYPE html>' + doc.documentElement.outerHTML
+    } catch(e) {}
+  }
+
+  function applyColor(type, value) {
+    var frame = document.getElementById('editor-preview-frame')
+    if (!frame) return
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      if (type === 'bg')   doc.body.style.background = value
+      if (type === 'text') doc.body.style.color = value
+      if (type === 'accent') doc.querySelectorAll && doc.querySelectorAll('h1,h2,h3,a').forEach(function(el){ el.style.color = value })
+      if (type === 'btn')    doc.querySelectorAll && doc.querySelectorAll('button').forEach(function(el){ el.style.background = value })
+      editorCurrentCode = '<!DOCTYPE html>' + doc.documentElement.outerHTML
+    } catch(e) {}
+  }
+
+  function saveEdits() {
+    var frame = document.getElementById('editor-preview-frame')
+    if (!frame) return
+    try {
+      var doc = frame.contentDocument || frame.contentWindow.document
+      editorCurrentCode = '<!DOCTYPE html>' + doc.documentElement.outerHTML
+      generatedCode = editorCurrentCode
+      var b = document.getElementById('btn-save-edits')
+      if (b) { var o = b.textContent; b.textContent = '✓ Sauvegardé !'; setTimeout(function(){ b.textContent = o }, 2000) }
+    } catch(e) {}
+  }
+
+  function copyEditedCode() {
+    saveEdits()
+    navigator.clipboard.writeText(generatedCode).then(function() {
+      var b = document.getElementById('btn-copy-edits')
+      if (b) { var o = b.textContent; b.textContent = '✓ Copié !'; setTimeout(function(){ b.textContent = o }, 2000) }
+    })
+  }
+
+  function resetEdits() {
+    if (editorOriginalCode) {
+      generatedCode = editorOriginalCode
+      var frame = document.getElementById('editor-preview-frame')
+      if (frame) { frame.srcdoc = editorOriginalCode; frame.onload = function(){ injectEditorIntoFrame(frame) } }
+    }
+  }
+
+  // Boutons éditeur
+  document.addEventListener('DOMContentLoaded', function() {
+    var b1 = document.getElementById('btn-apply-text')
+    var b2 = document.getElementById('btn-save-edits')
+    var b3 = document.getElementById('btn-copy-edits')
+    var b4 = document.getElementById('btn-close-editor')
+    if (b1) b1.addEventListener('click', applyTextEdit)
+    if (b2) b2.addEventListener('click', saveEdits)
+    if (b3) b3.addEventListener('click', copyEditedCode)
+    if (b4) b4.addEventListener('click', function() {
+      document.getElementById('fullpage-editor').classList.remove('open')
+      if (editorCurrentCode) {
+        generatedCode = editorCurrentCode
+        document.getElementById('preview-frame').srcdoc = editorCurrentCode
+      }
+    })
+    var colorMap = { 'ec-bg':'bg', 'ec-accent':'accent', 'ec-text':'text', 'ec-btn':'btn' }
+    Object.keys(colorMap).forEach(function(id) {
+      var el = document.getElementById(id)
+      if (el) el.addEventListener('input', function(){ applyColor(colorMap[id], el.value) })
+    })
+  })
+
+
+  /* ═══ MODE URL ═══ */
+  var currentMode = 'image'
+
+  function switchMode(mode) {
+    currentMode = mode
+    var tabImg  = document.getElementById('tab-image')
+    var tabUrl  = document.getElementById('tab-url')
+    var imgMode = document.getElementById('image-mode')
+    var urlMode = document.getElementById('url-mode')
+    if (!tabImg) return
+
+    if (mode === 'url') {
+      tabUrl.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+      tabImg.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+      imgMode.style.display = 'none'
+      urlMode.style.display = 'flex'
+    } else {
+      tabImg.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+      tabUrl.style.cssText = 'flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer'
+      imgMode.style.display = 'flex'
+      urlMode.style.display = 'none'
+    }
+  }
+
+  function generateFromUrl() {
+    var urlInput = document.getElementById('url-input')
+    var prompt   = document.getElementById('user-input')
+    var urlVal   = urlInput ? urlInput.value.trim() : ''
+
+    if (!urlVal) {
+      urlInput.style.border = '2px solid #FF4B6E'
+      setTimeout(function(){ urlInput.style.border = '' }, 3000)
+      return
+    }
+    if (!urlVal.startsWith('http')) urlVal = 'https://' + urlVal
+
+    setLoading('NyXia analyse ton site...')
+
+    fetch('/api/from-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: urlVal, prompt: prompt ? prompt.value.trim() : '' })
+    })
+    .then(function(r) { return r.json() })
+    .then(function(data) {
+      if (data.success && data.html) {
+        showPreview(data.html)
+        resetBtn('Site généré ✓')
+      } else {
+        resetBtn('Erreur — ' + (data.error || 'Réessaie'))
+      }
+    })
+    .catch(function() { resetBtn('Erreur réseau') })
+  }
+
+  // Expose editor functions globally après chargement complet
+  window._toggleEditor   = toggleEditor
+  window._applyTextEdit  = applyTextEdit
+  window._applyColor     = applyColor
+  window._saveEdits      = saveEdits
+  window._copyEditedCode = copyEditedCode
+  window._resetEdits     = resetEdits
+  window._editorsReady   = true
+  window.dispatchEvent(new Event('nyxia-ready'))
 
 })()
