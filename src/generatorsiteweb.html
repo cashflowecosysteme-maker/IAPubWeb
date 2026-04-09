@@ -5,6 +5,7 @@
 <head>
 
   <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/FavIcon.png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -1508,386 +1509,82 @@
       <!-- ══ TEMPLATES PAR NICHE ══ -->
       <div id="niche-templates" style="margin-bottom:24px">
 
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4)">✦ Choisissez votre template</div>
-          <button onclick="toggleNiches()" id="btn-toggle-niches" style="background:none;border:none;color:var(--t4);font-size:11px;cursor:pointer;font-family:Outfit,sans-serif;transition:color .2s" onmouseover="this.style.color='var(--t3)'" onmouseout="this.style.color='var(--t4)'">Masquer ▴</button>
+        <!-- Titre avec toggle visible -->
+        <button onclick="toggleNiches()" id="btn-toggle-niches"
+          style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:12px;border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.07);cursor:pointer;margin-bottom:12px;transition:all .2s"
+          onmouseover="this.style.background='rgba(123,92,255,0.14)';this.style.borderColor='rgba(123,92,255,0.45)'"
+          onmouseout="this.style.background='rgba(123,92,255,0.07)';this.style.borderColor='rgba(123,92,255,0.25)'">
+          <div style="text-align:left">
+            <div style="font-size:14px;font-weight:700;color:#fff">✦ Démarrer depuis une niche</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:2px">Spa, Coach, Médium, Auteur... NyXia crée ton site en 60 sec</div>
+          </div>
+          <span id="niche-arrow" style="font-size:18px;color:#a78bfa;transition:transform .2s">▾</span>
+        </button>
+
+        <div id="niches-grid" style="display:none;grid-template-columns:repeat(3,1fr);gap:8px">
+
+          <!-- BIEN-ÊTRE -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:6px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🌿 Bien-être & Santé</div>
+          <div class="niche-card" onclick="applyNiche('spa')"><span class="niche-icon">💆</span><span class="niche-label">Spa & Massage</span></div>
+          <div class="niche-card" onclick="applyNiche('naturopathe')"><span class="niche-icon">🌱</span><span class="niche-label">Naturopathe</span></div>
+          <div class="niche-card" onclick="applyNiche('therapeute')"><span class="niche-icon">🧠</span><span class="niche-label">Thérapeute & Psy</span></div>
+          <div class="niche-card" onclick="applyNiche('holistique')"><span class="niche-icon">✨</span><span class="niche-label">Praticien Holistique</span></div>
+          <div class="niche-card" onclick="applyNiche('aromatherapie')"><span class="niche-icon">🌸</span><span class="niche-label">Aromatérapie</span></div>
+          <div class="niche-card" onclick="applyNiche('lithotherapie')"><span class="niche-icon">💎</span><span class="niche-label">Lithothérapie</span></div>
+
+          <!-- SPIRITUALITÉ -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🔮 Spiritualité & Ésotérisme</div>
+          <div class="niche-card" onclick="applyNiche('medium')"><span class="niche-icon">🔮</span><span class="niche-label">Médium & Voyance</span></div>
+          <div class="niche-card" onclick="applyNiche('astrologue')"><span class="niche-icon">⭐</span><span class="niche-label">Astrologue</span></div>
+          <div class="niche-card" onclick="applyNiche('tarologue')"><span class="niche-icon">🃏</span><span class="niche-label">Tarologue</span></div>
+          <div class="niche-card" onclick="applyNiche('numerologue')"><span class="niche-icon">🔢</span><span class="niche-label">Numérologue</span></div>
+          <div class="niche-card" onclick="applyNiche('neuro-alchimiste')"><span class="niche-icon">🧬</span><span class="niche-label">Neuro-Alchimiste</span></div>
+          <div class="niche-card" onclick="applyNiche('spiritualite')"><span class="niche-icon">🕊️</span><span class="niche-label">Spiritualité</span></div>
+
+          <!-- COACHING & BUSINESS -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">🚀 Coaching & Business</div>
+          <div class="niche-card" onclick="applyNiche('coach')"><span class="niche-icon">🎯</span><span class="niche-label">Coach de vie</span></div>
+          <div class="niche-card" onclick="applyNiche('agence-marketing')"><span class="niche-icon">📈</span><span class="niche-label">Agence Marketing</span></div>
+          <div class="niche-card" onclick="applyNiche('entrepreneur')"><span class="niche-icon">💼</span><span class="niche-label">Entrepreneur</span></div>
+          <div class="niche-card" onclick="applyNiche('formation-en-ligne')"><span class="niche-icon">🎓</span><span class="niche-label">Formation en ligne</span></div>
+
+          <!-- CRÉATION & CULTURE -->
+          <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t4);grid-column:1/-1;padding:10px 0 4px;border-bottom:1px solid rgba(123,92,255,0.12)">📚 Création & Culture</div>
+          <div class="niche-card" onclick="applyNiche('auteur')"><span class="niche-icon">✍️</span><span class="niche-label">Auteur·trice</span></div>
+          <div class="niche-card" onclick="applyNiche('maison-edition')"><span class="niche-icon">📖</span><span class="niche-label">Maison d'édition</span></div>
+          <div class="niche-card" onclick="applyNiche('restaurant')"><span class="niche-icon">🍽️</span><span class="niche-label">Restaurant & Cuisine</span></div>
+
         </div>
 
-        <style>
-          .tpl-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-          }
-          .tpl-cat {
-            font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-            color:var(--t4);grid-column:1/-1;margin-top:10px;padding-bottom:6px;
-            border-bottom:1px solid rgba(123,92,255,0.1);
-          }
-          .tpl-card {
-            border-radius:12px;
-            border:2px solid rgba(123,92,255,0.12);
-            overflow:hidden;
-            cursor:pointer;
-            transition:all .22s cubic-bezier(.4,0,.2,1);
-            background:#0a1228;
-            position:relative;
-          }
-          .tpl-card:hover {
-            border-color:rgba(123,92,255,0.6);
-            transform:translateY(-3px) scale(1.02);
-            box-shadow:0 12px 32px rgba(123,92,255,0.2);
-          }
-          .tpl-card.selected {
-            border-color:#7B5CFF;
-            box-shadow:0 0 0 3px rgba(123,92,255,0.25), 0 12px 32px rgba(123,92,255,0.25);
-          }
-          .tpl-card.selected::after {
-            content:"✓";
-            position:absolute;top:7px;right:7px;
-            width:20px;height:20px;border-radius:50%;
-            background:#7B5CFF;color:#fff;
-            font-size:11px;font-weight:700;
-            display:flex;align-items:center;justify-content:center;
-            line-height:20px;text-align:center;
-          }
-          /* Miniature visuelle */
-          .tpl-thumb {
-            height:110px;
-            position:relative;
-            overflow:hidden;
-            display:flex;flex-direction:column;
-            padding:10px;
-            gap:5px;
-          }
-          .tpl-thumb-bar {
-            height:3px;border-radius:2px;
-            width:60%;
-          }
-          .tpl-thumb-bar.w40 { width:40%; }
-          .tpl-thumb-bar.w80 { width:80%; }
-          .tpl-thumb-bar.w30 { width:30%; }
-          .tpl-thumb-title {
-            font-size:9px;font-weight:700;line-height:1.3;
-            margin-top:2px;
-          }
-          .tpl-thumb-sub {
-            font-size:7px;opacity:.7;line-height:1.4;
-          }
-          .tpl-thumb-btn {
-            margin-top:auto;align-self:flex-start;
-            padding:2px 8px;border-radius:10px;
-            font-size:7px;font-weight:700;
-          }
-          .tpl-thumb-img {
-            position:absolute;bottom:0;right:0;
-            width:36px;height:36px;border-radius:8px 0 0 0;
-            opacity:.25;
-            font-size:22px;
-            display:flex;align-items:center;justify-content:center;
-          }
-          .tpl-name {
-            padding:7px 10px;
-            font-size:11px;font-weight:700;
-            letter-spacing:.04em;text-transform:uppercase;
-            text-align:center;
-            border-top:1px solid rgba(255,255,255,0.06);
-          }
-          .tpl-sub {
-            font-size:10px;color:var(--t4);
-            text-align:center;padding:0 10px 7px;
-          }
-        </style>
-
-        <div id="niches-grid" class="tpl-grid">
-
-          <div class="tpl-cat">🌿 Bien-être & Santé</div>
-
-          <!-- SPA -->
-          <div class="tpl-card" onclick="applyNiche('spa')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a0e2e 0%,#2d1654 100%)">
-              <div class="tpl-thumb-bar" style="background:#c9a0dc"></div>
-              <div class="tpl-thumb-title" style="color:#e8d5f5">Spa & Bien-être</div>
-              <div class="tpl-thumb-sub" style="color:#c9a0dc">Soins · Massages · Rituels</div>
-              <div class="tpl-thumb-btn" style="background:rgba(201,160,220,.2);color:#e8d5f5;border:1px solid rgba(201,160,220,.4)">Réserver</div>
-              <div class="tpl-thumb-img">💆</div>
-            </div>
-            <div class="tpl-name" style="color:#e8d5f5">Spa & Massage</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- NATUROPATHE -->
-          <div class="tpl-card" onclick="applyNiche('naturopathe')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#0d1f0e 0%,#1a3a1c 100%)">
-              <div class="tpl-thumb-bar" style="background:#52b788"></div>
-              <div class="tpl-thumb-title" style="color:#d8f3dc">Naturopathe</div>
-              <div class="tpl-thumb-sub" style="color:#95d5b2">Nutrition · Phytothérapie</div>
-              <div class="tpl-thumb-btn" style="background:rgba(82,183,136,.2);color:#d8f3dc;border:1px solid rgba(82,183,136,.4)">Consulter</div>
-              <div class="tpl-thumb-img">🌱</div>
-            </div>
-            <div class="tpl-name" style="color:#95d5b2">Naturopathe</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- THERAPEUTE -->
-          <div class="tpl-card" onclick="applyNiche('therapeute')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#0e1a2e 0%,#162844 100%)">
-              <div class="tpl-thumb-bar" style="background:#4fa3d1"></div>
-              <div class="tpl-thumb-title" style="color:#cce8f4">Thérapeute</div>
-              <div class="tpl-thumb-sub" style="color:#90c9e8">TCC · EMDR · Hypnose</div>
-              <div class="tpl-thumb-btn" style="background:rgba(79,163,209,.2);color:#cce8f4;border:1px solid rgba(79,163,209,.4)">Rendez-vous</div>
-              <div class="tpl-thumb-img">🧠</div>
-            </div>
-            <div class="tpl-name" style="color:#90c9e8">Thérapeute & Psy</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- HOLISTIQUE -->
-          <div class="tpl-card" onclick="applyNiche('holistique')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a1030 0%,#2e1a50 100%)">
-              <div class="tpl-thumb-bar" style="background:#f4c842"></div>
-              <div class="tpl-thumb-title" style="color:#fef3c7">Praticien Holistique</div>
-              <div class="tpl-thumb-sub" style="color:#f4c842">Reiki · Magnétisme · Énergie</div>
-              <div class="tpl-thumb-btn" style="background:rgba(244,200,66,.15);color:#fef3c7;border:1px solid rgba(244,200,66,.35)">Soins</div>
-              <div class="tpl-thumb-img">✨</div>
-            </div>
-            <div class="tpl-name" style="color:#f4c842">Praticien Holistique</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- AROMATHERAPIE -->
-          <div class="tpl-card" onclick="applyNiche('aromatherapie')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a1505 0%,#2e2408 100%)">
-              <div class="tpl-thumb-bar" style="background:#a3b18a"></div>
-              <div class="tpl-thumb-title" style="color:#f0ead2">Aromathérapeute</div>
-              <div class="tpl-thumb-sub" style="color:#a3b18a">Huiles essentielles · Ateliers</div>
-              <div class="tpl-thumb-btn" style="background:rgba(163,177,138,.2);color:#f0ead2;border:1px solid rgba(163,177,138,.4)">Découvrir</div>
-              <div class="tpl-thumb-img">🌸</div>
-            </div>
-            <div class="tpl-name" style="color:#a3b18a">Aromatérapie</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- LITHOTHERAPIE -->
-          <div class="tpl-card" onclick="applyNiche('lithotherapie')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1c1030 0%,#2e1850 100%)">
-              <div class="tpl-thumb-bar" style="background:#9b72cf"></div>
-              <div class="tpl-thumb-title" style="color:#ede0ff">Lithothérapie</div>
-              <div class="tpl-thumb-sub" style="color:#c4a8e8">Cristaux · Pierres · Minéraux</div>
-              <div class="tpl-thumb-btn" style="background:rgba(155,114,207,.2);color:#ede0ff;border:1px solid rgba(155,114,207,.4)">Boutique</div>
-              <div class="tpl-thumb-img">💎</div>
-            </div>
-            <div class="tpl-name" style="color:#c4a8e8">Lithothérapie</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <div class="tpl-cat">🔮 Spiritualité & Ésotérisme</div>
-
-          <!-- MEDIUM -->
-          <div class="tpl-card" onclick="applyNiche('medium')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#08040f 0%,#150a28 100%)">
-              <div style="display:flex;gap:3px;margin-bottom:3px">
-                <div style="width:4px;height:4px;border-radius:50%;background:#f4c842;opacity:.8"></div>
-                <div style="width:4px;height:4px;border-radius:50%;background:#f4c842;opacity:.5"></div>
-                <div style="width:4px;height:4px;border-radius:50%;background:#f4c842;opacity:.3"></div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fef3c7;font-family:Georgia,serif;font-style:italic">Médium Professionnel</div>
-              <div class="tpl-thumb-sub" style="color:#f4c842">Médiumnité · Guidance · Révélations</div>
-              <div class="tpl-thumb-btn" style="background:rgba(244,200,66,.15);color:#fef3c7;border:1px solid rgba(244,200,66,.3)">Consulter</div>
-              <div class="tpl-thumb-img">🔮</div>
-            </div>
-            <div class="tpl-name" style="color:#f4c842">Médium & Voyance</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- ASTROLOGUE -->
-          <div class="tpl-card" onclick="applyNiche('astrologue')">
-            <div class="tpl-thumb" style="background:radial-gradient(ellipse at top,#0d0d2b 0%,#050514 100%)">
-              <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:3px">
-                <div style="width:3px;height:3px;border-radius:50%;background:#fff;opacity:.9"></div>
-                <div style="width:2px;height:2px;border-radius:50%;background:#fff;opacity:.5"></div>
-                <div style="width:3px;height:3px;border-radius:50%;background:#fff;opacity:.7"></div>
-                <div style="width:2px;height:2px;border-radius:50%;background:#fff;opacity:.4"></div>
-                <div style="width:4px;height:4px;border-radius:50%;background:#f4c842;opacity:.9"></div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fff;font-family:Georgia,serif">Astrologue</div>
-              <div class="tpl-thumb-sub" style="color:#a8b4d8">Thèmes nataux · Synastrie · Prévisions</div>
-              <div class="tpl-thumb-btn" style="background:rgba(168,180,216,.15);color:#fff;border:1px solid rgba(168,180,216,.3)">Commander</div>
-              <div class="tpl-thumb-img">⭐</div>
-            </div>
-            <div class="tpl-name" style="color:#a8b4d8">Astrologue</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- TAROLOGUE -->
-          <div class="tpl-card" onclick="applyNiche('tarologue')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a0808 0%,#2e1010 100%)">
-              <div class="tpl-thumb-bar" style="background:#c9a84c"></div>
-              <div class="tpl-thumb-title" style="color:#fef3c7;font-family:Georgia,serif;font-style:italic">Tarologue</div>
-              <div class="tpl-thumb-sub" style="color:#c9a84c">Tarot de Marseille · Tirages</div>
-              <div class="tpl-thumb-btn" style="background:rgba(201,168,76,.15);color:#fef3c7;border:1px solid rgba(201,168,76,.35)">Réserver</div>
-              <div class="tpl-thumb-img">🃏</div>
-            </div>
-            <div class="tpl-name" style="color:#c9a84c">Tarologue</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- NUMEROLOGUE -->
-          <div class="tpl-card" onclick="applyNiche('numerologue')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#0a0f1e 0%,#101828 100%)">
-              <div style="display:flex;gap:4px;margin-bottom:4px">
-                <div style="width:14px;height:14px;border-radius:4px;background:rgba(79,163,255,.25);border:1px solid rgba(79,163,255,.4);color:#4fa3ff;font-size:7px;display:flex;align-items:center;justify-content:center;font-weight:700">7</div>
-                <div style="width:14px;height:14px;border-radius:4px;background:rgba(79,163,255,.1);border:1px solid rgba(79,163,255,.2);color:#4fa3ff;font-size:7px;display:flex;align-items:center;justify-content:center">3</div>
-                <div style="width:14px;height:14px;border-radius:4px;background:rgba(79,163,255,.1);border:1px solid rgba(79,163,255,.2);color:#4fa3ff;font-size:7px;display:flex;align-items:center;justify-content:center">9</div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#e0f0ff">Numérologue</div>
-              <div class="tpl-thumb-sub" style="color:#7ab8e8">Chemin de vie · Analyse</div>
-              <div class="tpl-thumb-btn" style="background:rgba(79,163,255,.2);color:#e0f0ff;border:1px solid rgba(79,163,255,.4)">Analyse</div>
-            </div>
-            <div class="tpl-name" style="color:#7ab8e8">Numérologue</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- NEURO-ALCHIMISTE -->
-          <div class="tpl-card" onclick="applyNiche('neuro-alchimiste')">
-            <div class="tpl-thumb" style="background:linear-gradient(135deg,#08041a 0%,#0e0830 50%,#04101a 100%)">
-              <div class="tpl-thumb-bar" style="background:linear-gradient(90deg,#7B5CFF,#00e5ff);height:2px"></div>
-              <div class="tpl-thumb-bar w40" style="background:rgba(0,229,255,.4);height:1px;margin-top:2px"></div>
-              <div class="tpl-thumb-title" style="color:#e0f8ff;font-size:8px;letter-spacing:.5px">NEURO-ALCHIMISTE</div>
-              <div class="tpl-thumb-sub" style="color:#7B5CFF">Neurosciences · Transformation</div>
-              <div class="tpl-thumb-btn" style="background:linear-gradient(135deg,rgba(123,92,255,.3),rgba(0,229,255,.2));color:#e0f8ff;border:1px solid rgba(0,229,255,.3)">Programme</div>
-            </div>
-            <div class="tpl-name" style="color:#00e5ff">Neuro-Alchimiste</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- SPIRITUALITE -->
-          <div class="tpl-card" onclick="applyNiche('spiritualite')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a1228 0%,#2a1e44 100%)">
-              <div style="display:flex;justify-content:center;gap:8px;margin-bottom:4px">
-                <div style="width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,#fff8e1,#f4c842);opacity:.9"></div>
-                <div style="width:5px;height:5px;border-radius:50%;background:#f4c842;opacity:.5;margin-top:2px"></div>
-                <div style="width:6px;height:6px;border-radius:50%;background:#f4c842;opacity:.7;margin-top:1px"></div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fef9ee;text-align:center;font-family:Georgia,serif">Éveil & Spiritualité</div>
-              <div class="tpl-thumb-sub" style="color:#f4c842;text-align:center">Retraites · Cercles Sacrés</div>
-              <div style="margin-top:auto;text-align:center">
-                <span style="background:rgba(244,200,66,.15);color:#fef9ee;border:1px solid rgba(244,200,66,.3);padding:2px 8px;border-radius:10px;font-size:7px;font-weight:700">Rejoindre</span>
-              </div>
-            </div>
-            <div class="tpl-name" style="color:#f4c842">Spiritualité</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <div class="tpl-cat">🚀 Coaching & Business</div>
-
-          <!-- COACH -->
-          <div class="tpl-card" onclick="applyNiche('coach')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#050e1f 0%,#0c1a38 100%)">
-              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-                <div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#f97316,#ea580c);display:flex;align-items:center;justify-content:center;font-size:9px">🎯</div>
-                <div style="font-size:8px;font-weight:700;color:#fff;letter-spacing:.5px">COACH CERTIFIÉ ICF</div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fff;font-size:10px">Transformez votre vie</div>
-              <div class="tpl-thumb-sub" style="color:#94a3b8">Leadership · Confiance · Succès</div>
-              <div class="tpl-thumb-btn" style="background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none">Séance gratuite</div>
-            </div>
-            <div class="tpl-name" style="color:#fb923c">Coach de vie</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- AGENCE MARKETING -->
-          <div class="tpl-card" onclick="applyNiche('agence-marketing')">
-            <div class="tpl-thumb" style="background:#0a0a0a">
-              <div style="display:flex;gap:3px;margin-bottom:5px">
-                <div style="flex:1;height:4px;border-radius:2px;background:#7B5CFF"></div>
-                <div style="flex:2;height:4px;border-radius:2px;background:rgba(123,92,255,.3)"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:rgba(123,92,255,.15)"></div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fff;letter-spacing:.5px;font-size:8px;text-transform:uppercase">Agence Marketing Digital</div>
-              <div class="tpl-thumb-sub" style="color:#888">SEO · Meta Ads · Branding</div>
-              <div class="tpl-thumb-btn" style="background:#7B5CFF;color:#fff;border:none">Audit gratuit</div>
-              <div class="tpl-thumb-img">📈</div>
-            </div>
-            <div class="tpl-name" style="color:#a78bfa">Agence Marketing</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- ENTREPRENEUR -->
-          <div class="tpl-card" onclick="applyNiche('entrepreneur')">
-            <div class="tpl-thumb" style="background:#f8fafc">
-              <div style="height:3px;background:linear-gradient(90deg,#1e3a5f,#2d5a8e);margin-bottom:6px;border-radius:2px"></div>
-              <div class="tpl-thumb-title" style="color:#1e3a5f;font-size:9px;font-weight:800;letter-spacing:.3px">MON ENTREPRISE</div>
-              <div class="tpl-thumb-bar w80" style="background:#e2e8f0;height:3px;margin:3px 0"></div>
-              <div class="tpl-thumb-bar w40" style="background:#e2e8f0;height:3px"></div>
-              <div class="tpl-thumb-btn" style="background:#1e3a5f;color:#fff;border:none;margin-top:6px">Contact</div>
-            </div>
-            <div class="tpl-name" style="color:#7ab8e8">Entrepreneur</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- FORMATION EN LIGNE -->
-          <div class="tpl-card" onclick="applyNiche('formation-en-ligne')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#0f0a1e 0%,#1a0f35 100%)">
-              <div style="display:flex;gap:4px;margin-bottom:5px">
-                <div style="padding:2px 6px;border-radius:4px;background:rgba(249,115,22,.2);color:#fb923c;font-size:7px;font-weight:700;border:1px solid rgba(249,115,22,.3)">NOUVEAU</div>
-              </div>
-              <div class="tpl-thumb-title" style="color:#fff">Formation en ligne</div>
-              <div class="tpl-thumb-sub" style="color:#a78bfa">Vidéos · Modules · Accès à vie</div>
-              <div class="tpl-thumb-btn" style="background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;border:none">S'inscrire</div>
-            </div>
-            <div class="tpl-name" style="color:#a78bfa">Formation en ligne</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <div class="tpl-cat">📚 Création & Culture</div>
-
-          <!-- AUTEUR -->
-          <div class="tpl-card" onclick="applyNiche('auteur')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a1208 0%,#2e2010 100%)">
-              <div class="tpl-thumb-bar" style="background:#c9a84c"></div>
-              <div class="tpl-thumb-title" style="color:#fef3c7;font-family:Georgia,serif;font-style:italic">Mon univers littéraire</div>
-              <div class="tpl-thumb-sub" style="color:#c9a84c">Romans · Essais · Poésie</div>
-              <div class="tpl-thumb-btn" style="background:rgba(201,168,76,.15);color:#fef3c7;border:1px solid rgba(201,168,76,.3)">Mes livres</div>
-              <div class="tpl-thumb-img">✍️</div>
-            </div>
-            <div class="tpl-name" style="color:#c9a84c">Auteur·trice</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- MAISON EDITION -->
-          <div class="tpl-card" onclick="applyNiche('maison-edition')">
-            <div class="tpl-thumb" style="background:#fafaf8">
-              <div style="height:2px;background:#1a1a1a;margin-bottom:6px"></div>
-              <div class="tpl-thumb-title" style="color:#1a1a1a;font-family:Georgia,serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase">Maison d'Édition</div>
-              <div class="tpl-thumb-bar w60" style="background:#e5e5e5;height:2px;margin:4px 0"></div>
-              <div style="display:flex;gap:3px;margin-top:4px">
-                <div style="width:18px;height:24px;background:#2d6a2d;border-radius:2px"></div>
-                <div style="width:18px;height:24px;background:#6b2d2d;border-radius:2px"></div>
-                <div style="width:18px;height:24px;background:#2d3a6b;border-radius:2px"></div>
-              </div>
-            </div>
-            <div class="tpl-name" style="color:#888">Maison d'Édition</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
-          <!-- RESTAURANT -->
-          <div class="tpl-card" onclick="applyNiche('restaurant')">
-            <div class="tpl-thumb" style="background:linear-gradient(160deg,#1a0a06 0%,#2e1208 100%)">
-              <div class="tpl-thumb-bar" style="background:#d4845a"></div>
-              <div class="tpl-thumb-title" style="color:#fef0e8;font-family:Georgia,serif;font-style:italic">Restaurant Gastronomique</div>
-              <div class="tpl-thumb-sub" style="color:#d4845a">Cuisine française · Saison</div>
-              <div class="tpl-thumb-btn" style="background:rgba(212,132,90,.2);color:#fef0e8;border:1px solid rgba(212,132,90,.4)">Réserver</div>
-              <div class="tpl-thumb-img">🍽️</div>
-            </div>
-            <div class="tpl-name" style="color:#d4845a">Restaurant</div>
-            <div class="tpl-sub">Cliquez pour sélectionner</div>
-          </div>
-
+        <!-- Séparateur -->
+        <div style="display:flex;align-items:center;gap:12px;margin:20px 0 0">
+          <div style="flex:1;height:1px;background:rgba(123,92,255,0.15)"></div>
+          <div style="font-size:12px;color:var(--t4);white-space:nowrap">ou crée depuis une image / URL</div>
+          <div style="flex:1;height:1px;background:rgba(123,92,255,0.15)"></div>
         </div>
       </div>
 
-      <!-- Onglets Image / URL -->
+      <!-- Styles des cartes niche -->
+      <style>
+        .niche-card {
+          display:flex; flex-direction:column; align-items:center; gap:6px;
+          padding:12px 8px; border-radius:12px;
+          border:1px solid rgba(123,92,255,0.12);
+          background:rgba(123,92,255,0.04);
+          cursor:pointer; transition:all .2s; text-align:center;
+        }
+        .niche-card:hover {
+          border-color:rgba(123,92,255,0.45);
+          background:rgba(123,92,255,0.12);
+          transform:translateY(-2px);
+          box-shadow:0 8px 20px rgba(123,92,255,0.15);
+        }
+        .niche-icon { font-size:22px; }
+        .niche-label { font-size:11px; color:var(--t2); font-weight:500; line-height:1.3; }
+        .niche-card:hover .niche-label { color:#fff; }
+      </style>
+
+            <!-- Onglets Image / URL -->
 
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <button id="tab-image" onclick="switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
@@ -2235,7 +1932,7 @@
       <div id="publish-loading-state" style="display:none;text-align:center;padding:20px 0">
         <div style="width:56px;height:56px;border:3px solid rgba(0,230,118,0.2);border-top-color:#00E676;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px"></div>
         <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Publication en cours...</div>
-        <div style="font-size:13px;color:var(--t3,#8891B8)">NyXia déploie ton site sur Cloudflare ✨</div>
+        <div style="font-size:13px;color:var(--t3,#8891B8)">NyXia déploie ton site sur notre serveur ✨</div>
       </div>
 
       <!-- État : succès -->
@@ -2359,16 +2056,29 @@
     })
 
     function applyTextEdit() {
-      var input = document.querySelector('#text-editor-section textarea') ||
+      // Cherche le bon textarea selon l'éditeur actif
+      var input = document.getElementById('selected-text-input') ||
+                  document.getElementById('edit-text-input') ||
+                  document.querySelector('#text-editor-section textarea') ||
                   document.querySelector('.editor-section textarea')
-      var frame = document.getElementById('preview-frame')
-      if (!input || !frame || !frame.contentDocument) return
+      // Cherche la bonne iframe selon l'éditeur actif
+      var frame = document.getElementById('preview-frame') ||
+                  document.getElementById('editor-preview-frame')
+      if (!input || !frame) return
       try {
-        var sel = frame.contentDocument.querySelector('[style*="2px solid #7B5CFF"]')
+        var doc = frame.contentDocument || frame.contentWindow.document
+        if (!doc) return
+        var sel = doc.querySelector('[style*="2px solid #7B5CFF"]')
+        if (!sel) sel = doc.querySelector('[style*="#7B5CFF"]')
         if (!sel) return
-        sel.textContent = input.value
+        if (sel.children.length === 0) {
+          sel.textContent = input.value
+        } else {
+          sel.innerText = input.value
+        }
         sel.style.outline = ''
-      } catch(e) {}
+        if (typeof saveEdits === 'function') saveEdits()
+      } catch(e) { console.log('applyTextEdit:', e) }
     }
 
     function applyColor(type, value) {
@@ -2529,14 +2239,13 @@
         try {
           var frame = document.getElementById('preview-frame')
           if (frame && frame.contentDocument) {
-            html = '<!DOCTYPE html>
-' + frame.contentDocument.documentElement.outerHTML
+            html = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
           }
         } catch(e) {}
       }
       if (!html || html.length < 100) {
         showPublishState('error')
-        document.getElementById('publish-error-msg').textContent = 'Aucun site généré à publier. Génère d'abord un site.'
+        document.getElementById('publish-error-msg').textContent = "Aucun site généré à publier. Génère d'abord un site."
         return
       }
 
@@ -2572,11 +2281,11 @@
     })
 
     function toggleNiches() {
-      var grid = document.getElementById('niches-grid')
-      var btn  = document.getElementById('btn-toggle-niches')
-      var open = grid.style.display !== 'none' && grid.style.display !== ''
-      grid.style.display = open ? 'none' : 'grid'
-      btn.textContent = open ? 'Afficher ▾' : 'Masquer ▴'
+      var grid  = document.getElementById('niches-grid')
+      var arrow = document.getElementById('niche-arrow')
+      var open  = grid.style.display !== 'none' && grid.style.display !== ''
+      grid.style.display  = open ? 'none' : 'grid'
+      if (arrow) arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)'
     }
 
     var _nichePrompts = {
@@ -2681,142 +2390,35 @@
       var niche = _nichePrompts[nicheKey]
       if (!niche) return
 
-      // Feedback visuel — carte sélectionnée
-      document.querySelectorAll('.tpl-card').forEach(function(c) { c.classList.remove('selected') })
-      document.querySelectorAll('.tpl-card').forEach(function(c) {
-        if (c.getAttribute('onclick') === "applyNiche('" + nicheKey + "')") c.classList.add('selected')
-      })
+      // Ferme la grille
+      document.getElementById('niches-grid').style.display = 'none'
+      var arrow = document.getElementById('niche-arrow')
+      if (arrow) arrow.style.transform = 'rotate(0deg)'
 
-      var promptText = niche.prompt
-      var imageUrl   = niche.image || ('https://picsum.photos/seed/' + nicheKey + '/1400/800')
+      // Lance la génération directement — pas besoin de photo
+      if (typeof setLoading === 'function') {
+        setLoading('NyXia crée ton site ' + nicheKey + '...')
+      }
 
-      // 1. Remplit le champ prompt
-      var input = document.getElementById('user-input')
-      if (input) input.value = promptText
-
-      // 2. Fetch l'image Picsum → base64 → simule un vrai upload
-      //    Generator.js lit imageBase64 depuis sa variable interne
-      //    On doit donc passer par un FileReader sur un Blob
-      var overlay = document.getElementById('nyxia-loading-overlay')
-      var msgEl   = document.getElementById('overlay-message')
-      var progEl  = document.getElementById('overlay-progress')
-      var lblEl   = document.getElementById('overlay-progress-label')
-      var btn     = document.getElementById('generate-btn')
-
-      if (overlay) overlay.classList.add('visible')
-      if (msgEl)   msgEl.textContent = 'NyXia prépare le template...'
-      if (progEl)  progEl.style.width = '10%'
-      if (btn)     btn.disabled = true
-
-      // Fetch l'image Picsum et la convertit en Blob puis DataURL
-      fetch(imageUrl)
-        .then(function(r) {
-          if (!r.ok) throw new Error('Image inaccessible')
-          return r.blob()
-        })
-        .then(function(blob) {
-          if (msgEl) msgEl.textContent = 'Image chargée — génération en cours...'
-          if (progEl) progEl.style.width = '25%'
-
-          // Crée un File depuis le Blob pour simuler un vrai upload
-          var file = new File([blob], 'template-' + nicheKey + '.jpg', { type: 'image/jpeg' })
-
-          // Simule le changement de fichier dans l'input file de generator.js
-          // En créant un DataTransfer et en l'assignant au file input
-          var fileInput = document.getElementById('file-input')
-          if (fileInput) {
-            try {
-              var dt = new DataTransfer()
-              dt.items.add(file)
-              fileInput.files = dt.files
-              // Déclenche l'event change — generator.js va compresser et stocker imageBase64
-              fileInput.dispatchEvent(new Event('change', { bubbles: true }))
-              // Attend que generator.js finisse la compression (~500ms) puis clique générer
-              setTimeout(function() {
-                if (btn && !btn.disabled) {
-                  if (msgEl) msgEl.textContent = 'NyXia génère ton site premium...'
-                  btn.click()
-                } else {
-                  // generator.js encore en train de compresser — réessaie
-                  setTimeout(function() {
-                    if (btn) { btn.disabled = false; btn.click() }
-                  }, 800)
-                }
-              }, 600)
-            } catch(e) {
-              // DataTransfer non supporté (rare) → fallback API directe
-              _generateNicheDirectly(promptText, imageUrl, overlay, msgEl, progEl, lblEl, btn)
-            }
-          } else {
-            // Pas de file-input trouvé → fallback API directe
-            _generateNicheDirectly(promptText, imageUrl, overlay, msgEl, progEl, lblEl, btn)
-          }
-        })
-        .catch(function() {
-          // Fetch Picsum échoué → fallback API directe sans image
-          _generateNicheDirectly(promptText, imageUrl, overlay, msgEl, progEl, lblEl, btn)
-        })
-    }
-
-    function _generateNicheDirectly(promptText, imageUrl, overlay, msgEl, progEl, lblEl, btn) {
-      // Fallback : appel direct /api/vision avec imageUrl (supporte par le worker patché)
-      if (msgEl) msgEl.textContent = 'NyXia génère ton site premium...'
-      if (progEl) progEl.style.width = '30%'
-
-      var prog = 30
-      var messages = [
-        'Extraction des couleurs et du style...',
-        'Architecture CSS en cours...',
-        'Génération HTML premium...',
-        'Intégration des images Pexels...',
-        'Finalisation de votre site...'
-      ]
-      var mIdx = 0
-      var interval = setInterval(function() {
-        prog = Math.min(prog + 12, 88)
-        mIdx = Math.min(mIdx + 1, messages.length - 1)
-        if (progEl) progEl.style.width = prog + '%'
-        if (msgEl)  msgEl.textContent  = messages[mIdx]
-        if (lblEl)  lblEl.textContent  = prog + '%'
-      }, 2800)
-
-      fetch('/api/vision', {
+      fetch('/api/from-url', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: promptText, imageUrl: imageUrl })
+        body: JSON.stringify({
+          url: 'https://exemple.com',
+          prompt: niche.prompt
+        })
       })
       .then(function(r) { return r.json() })
       .then(function(data) {
-        clearInterval(interval)
-        var html = data.choices && data.choices[0] && data.choices[0].message
-          ? data.choices[0].message.content : null
-        if (!html) {
-          if (overlay) overlay.classList.remove('visible')
-          if (btn) { btn.disabled = false; btn.textContent = '✨ Créer mon site avec NyXia' }
-          alert('Erreur de génération — réessaie dans un instant.')
-          return
+        if (data.success && data.html) {
+          if (typeof showPreview === 'function') showPreview(data.html)
+          if (typeof resetBtn  === 'function') resetBtn('Site généré ✓')
+        } else {
+          if (typeof resetBtn === 'function') resetBtn('Erreur — ' + (data.error || 'Réessaie'))
         }
-        // Succès — affiche le preview via les mécanismes de generator.js
-        if (progEl) progEl.style.width = '100%'
-        if (msgEl)  msgEl.textContent  = '✦ Ton site est prêt ! ✦'
-        if (lblEl)  lblEl.textContent  = 'Terminé !'
-        setTimeout(function() {
-          if (overlay) overlay.classList.remove('visible')
-          if (btn) { btn.disabled = false; btn.textContent = 'Site généré ✓' }
-          // Affiche le preview
-          var panel = document.getElementById('preview-panel')
-          var frame = document.getElementById('preview-frame')
-          if (panel && frame) { frame.srcdoc = html; panel.style.display = 'block' }
-          // Stocke pour les fonctions éditeur
-          try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
-          try { sessionStorage.setItem('nyxia_edit_code', html) } catch(e) {}
-        }, 1400)
       })
-      .catch(function(e) {
-        clearInterval(interval)
-        if (overlay) overlay.classList.remove('visible')
-        if (btn) { btn.disabled = false; btn.textContent = '✨ Créer mon site avec NyXia' }
-        alert('Erreur réseau : ' + e.message)
+      .catch(function() {
+        if (typeof resetBtn === 'function') resetBtn('Erreur réseau')
       })
     }
 
