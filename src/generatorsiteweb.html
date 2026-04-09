@@ -1409,6 +1409,136 @@
 
 <body>
 
+  <script>
+    window.toggleNiches = function() {
+      var grid = document.getElementById('niches-grid')
+      var btn  = document.getElementById('btn-toggle-niches')
+      if (!grid || !btn) return
+      var open = grid.style.display !== 'none' && grid.style.display !== ''
+      grid.style.display = open ? 'none' : 'grid'
+      btn.textContent = open ? 'Afficher ▾' : 'Masquer ▴'
+    }
+    window.applyNiche = function(nicheKey) {
+      // Sera redéfini par le script principal — ce stub évite l'erreur au clic rapide
+      var btn = document.getElementById('generate-btn')
+      var input = document.getElementById('user-input')
+      var prompts = {
+        'spa': 'Spa luxueux et centre de bien-être haut de gamme. Ambiance zen, sérénité absolue, soins du corps et de l\'esprit. Services : massages suédois, soins du visage, hammam, jacuzzi, rituels orientaux. Clientèle féminine premium. Design épuré, couleurs douces (blanc, beige, or rose), typographie élégante.',
+        'naturopathe': 'Naturopathe et thérapeute en médecine naturelle. Cabinet professionnel et chaleureux. Approche holistique : nutrition, phytothérapie, hygiène de vie. Tons verts naturels, terre, blanc.',
+        'therapeute': 'Thérapeute en psychologie et développement personnel. Cabinet bienveillant et confidentiel. Spécialités : TCC, EMDR, hypnothérapie.',
+        'holistique': 'Praticien holistique et accompagnement énergétique. Soins : reiki, magnétisme, kinésiologie.',
+        'aromatherapie': 'Aromathérapeute et experte en huiles essentielles. Conseils personnalisés, ateliers, vente de produits naturels.',
+        'lithotherapie': 'Lithothérapeute et spécialiste des cristaux et pierres précieuses.',
+        'medium': 'Médium professionnel et voyance sérieuse. Consultations privées.',
+        'astrologue': 'Astrologue professionnel et thèmes nataux. Services : thème natal complet, synastrie amoureuse.',
+        'tarologue': 'Tarologue et cartomancienne professionnelle. Lectures de tarot de Marseille.',
+        'numerologue': 'Numérologue certifiée et analyse de chemin de vie.',
+        'neuro-alchimiste': 'Neuro-Alchimiste et coach en transformation profonde.',
+        'spiritualite': 'Entrepreneur en spiritualité et éveil de conscience.',
+        'coach': 'Coach de vie et business certifié ICF. Spécialités : confiance en soi, leadership, reconversion.',
+        'agence-marketing': 'Agence de marketing digital et stratégie de croissance.',
+        'entrepreneur': 'Entrepreneur et chef d\'entreprise — présentation corporate et professionnelle.',
+        'formation-en-ligne': 'Créateur de formations en ligne et e-learning.',
+        'auteur': 'Auteur·trice et écrivain·e — site vitrine littéraire.',
+        'maison-edition': 'Maison d\'édition indépendante et librairie.',
+        'restaurant': 'Restaurant gastronomique et livre de recettes. Cuisine française moderne.'
+      }
+      var images = {
+        'spa':'https://picsum.photos/seed/spa-luxe/1400/800',
+        'naturopathe':'https://picsum.photos/seed/nature-plantes/1400/800',
+        'therapeute':'https://picsum.photos/seed/bureau-psy/1400/800',
+        'holistique':'https://picsum.photos/seed/energie-lumiere/1400/800',
+        'aromatherapie':'https://picsum.photos/seed/huiles-essentielles/1400/800',
+        'lithotherapie':'https://picsum.photos/seed/crystals-gems/1400/800',
+        'medium':'https://picsum.photos/seed/mystique-etoiles/1400/800',
+        'astrologue':'https://picsum.photos/seed/cosmos-stars/1400/800',
+        'tarologue':'https://picsum.photos/seed/tarot-cards/1400/800',
+        'numerologue':'https://picsum.photos/seed/nombres-mystique/1400/800',
+        'neuro-alchimiste':'https://picsum.photos/seed/neuro-transformation/1400/800',
+        'spiritualite':'https://picsum.photos/seed/lumiere-eveil/1400/800',
+        'coach':'https://picsum.photos/seed/coaching-success/1400/800',
+        'agence-marketing':'https://picsum.photos/seed/marketing-digital/1400/800',
+        'entrepreneur':'https://picsum.photos/seed/entreprise-bureau/1400/800',
+        'formation-en-ligne':'https://picsum.photos/seed/formation-online/1400/800',
+        'auteur':'https://picsum.photos/seed/livres-litterature/1400/800',
+        'maison-edition':'https://picsum.photos/seed/edition-librairie/1400/800',
+        'restaurant':'https://picsum.photos/seed/gastronomie-chef/1400/800'
+      }
+
+      // Feedback visuel
+      document.querySelectorAll('.tpl-card').forEach(function(c) { c.classList.remove('selected') })
+      document.querySelectorAll('.tpl-card').forEach(function(c) {
+        if (c.getAttribute('onclick') === "window.applyNiche('" + nicheKey + "')") c.classList.add('selected')
+      })
+
+      var promptText = prompts[nicheKey] || nicheKey
+      var imageUrl   = images[nicheKey] || ('https://picsum.photos/seed/' + nicheKey + '/1400/800')
+
+      // Remplit le champ prompt
+      if (input) input.value = promptText
+
+      // Lance la génération directement
+      window._generateNicheDirectly(promptText, imageUrl)
+    }
+
+    window._generateNicheDirectly = function(promptText, imageUrl) {
+      var overlay = document.getElementById('nyxia-loading-overlay')
+      var msgEl   = document.getElementById('overlay-message')
+      var progEl  = document.getElementById('overlay-progress')
+      var lblEl   = document.getElementById('overlay-progress-label')
+      var btn     = document.getElementById('generate-btn')
+
+      if (overlay) overlay.classList.add('visible')
+      if (btn) btn.disabled = true
+
+      var messages = ['NyXia analyse le template...','Extraction des couleurs...','Génération HTML premium...','Intégration des images...','Finalisation...']
+      var mIdx = 0, prog = 15
+      var interval = setInterval(function() {
+        prog = Math.min(prog + 14, 88)
+        mIdx = Math.min(mIdx + 1, messages.length - 1)
+        if (progEl) progEl.style.width = prog + '%'
+        if (msgEl)  msgEl.textContent  = messages[mIdx]
+        if (lblEl)  lblEl.textContent  = prog + '%'
+      }, 2500)
+
+      fetch('/api/vision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: promptText, imageUrl: imageUrl })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        clearInterval(interval)
+        var html = data.choices && data.choices[0] && data.choices[0].message
+          ? data.choices[0].message.content : null
+        if (!html) {
+          if (overlay) overlay.classList.remove('visible')
+          if (btn) { btn.disabled = false }
+          alert('Erreur de génération — réessaie.')
+          return
+        }
+        if (progEl) progEl.style.width = '100%'
+        if (msgEl)  msgEl.textContent  = '❆ Ton site est prêt ! ❆'
+        setTimeout(function() {
+          if (overlay) overlay.classList.remove('visible')
+          if (btn) { btn.disabled = false; btn.textContent = 'Site généré ✓' }
+          var panel = document.getElementById('preview-panel')
+          var frame = document.getElementById('preview-frame')
+          if (panel && frame) { frame.srcdoc = html; panel.style.display = 'block' }
+          try { localStorage.setItem('nyxia_edit_code', html) } catch(e) {}
+          try { sessionStorage.setItem('nyxia_edit_code', html) } catch(e) {}
+        }, 1200)
+      })
+      .catch(function(e) {
+        clearInterval(interval)
+        if (overlay) overlay.classList.remove('visible')
+        if (btn) btn.disabled = false
+        alert('Erreur réseau : ' + e.message)
+      })
+    }
+  </script>
+
+
 
 
   <!-- Canvas étoilé -->
@@ -2272,7 +2402,7 @@
   <!-- Scripts non-bloquants -->
 
 
-  <script src="/js/generator.js" defer></script>
+  <script src="/js/generator.js"></script>
   <script>
     /* ═══════════════════════════════════════
        ÉDITEUR INLINE — 100% dans index.html
@@ -2850,6 +2980,8 @@
       }
       window._currentMode = mode
     }
+
+    }) // fin DOMContentLoaded
   </script>
 
   <script src="/js/starry-bg.js" defer></script>
