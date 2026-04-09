@@ -165,7 +165,7 @@
           <div class="color-grid">
             <div class="color-item"><label>Fond</label><input type="color" value="#ffffff" oninput="applyStyleRule('body','background-color',this.value)"></div>
             <div class="color-item"><label>Accent</label><input type="color" value="#7B5CFF" oninput="applyToElements(['a','.btn','button'],'color',this.value)"></div>
-            <div class="color-item"><label>Texte</label><input type="color" value="#000000" oninput="applyStyleRule('body, body *','color',this.value)"></div>
+            <div class="color-item"><label>Texte</label><input type="color" value="#000000" oninput="applyTextColor(this.value)"></div>
             <div class="color-item"><label>Boutons</label><input type="color" value="#7B5CFF" oninput="applyToElements(['button','.btn'],'background-color',this.value)"></div>
           </div>
         </div>
@@ -183,7 +183,6 @@
         <div class="section-label">Actions</div>
         <button class="btn btn-primary" onclick="saveAndDownload()">💾 Sauvegarder les modifications</button>
         <button class="btn btn-secondary" onclick="copyCode()">📋 Copier le code</button>
-        <button class="btn btn-secondary" onclick="resetSite()">↺ Réinitialiser</button>
         <a href="javascript:history.back()" class="btn-back" style="display:flex;margin-top:8px">← Retour au générateur</a>
       </div>
 
@@ -212,18 +211,15 @@
   <div class="popup-title">🖼 Remplacer l'image</div>
   <img id="popup-preview" class="popup-preview" src="" alt="Image sélectionnée">
 
-  <!-- Bouton upload -->
   <button class="popup-btn popup-btn-upload" onclick="document.getElementById('img-upload-popup').click()">
     📁 <span>Télécharger depuis mon ordi</span>
   </button>
   <input type="file" id="img-upload-popup" accept="image/*" style="display:none" onchange="uploadPopupImage(this)">
 
-  <!-- Bouton Pexels -->
   <button class="popup-btn popup-btn-pexels" onclick="togglePexelsPanel()">
     🔍 <span>Chercher sur Pexels</span>
   </button>
 
-  <!-- Panel Pexels inline -->
   <div id="pexels-panel">
     <div class="pexels-search">
       <input type="text" id="pexels-query-popup" placeholder="Ex: nature, spa, business..." onkeydown="if(event.key==='Enter') searchPexelsPopup()">
@@ -250,6 +246,18 @@
   var selectedImgIdx = -1
 
   /* ══════════════════════════════════════
+     HELPER : accès au document de l'iframe
+  ══════════════════════════════════════ */
+  function getDoc() {
+    try {
+      var frame = document.getElementById('preview-frame')
+      return frame.contentDocument || frame.contentWindow.document
+    } catch(e) {
+      return null
+    }
+  }
+
+  /* ══════════════════════════════════════
      INIT
   ══════════════════════════════════════ */
   window.addEventListener('load', function() {
@@ -265,10 +273,17 @@
     setTimeout(function() { if (!editMode) toggleEditMode() }, 800)
   })
 
+  /* ══════════════════════════════════════
+     LOAD PREVIEW
+     - Supprime les CSP du site généré
+       (ils bloqueraient notre script injecté)
+     - Recrée l'iframe pour un chargement propre
+  ══════════════════════════════════════ */
   function loadPreview(html) {
+    // Supprime les meta CSP qui bloqueraient les scripts inline
+    html = html.replace(/<meta[^>]*http-equiv\s*=\s*["']Content-Security-Policy["'][^>]*\/?>/gi, '')
+
     var frame = document.getElementById('preview-frame')
-    // Détruit et recrée l'iframe pour garantir un rechargement complet
-    // (évite le bug où le navigateur ne déclenche pas onload si le contenu est similaire)
     var parent = frame.parentElement
     var newFrame = document.createElement('iframe')
     newFrame.id = 'preview-frame'
@@ -314,130 +329,160 @@
   }
 
   /* ══════════════════════════════════════
-     INJECTION SCRIPT IFRAME
-     Tout se fait via postMessage :
-     l'iframe modifie son propre DOM et
-     renvoie le HTML mis à jour au parent.
+     INJECTION DANS L'IFRAME
+     Script ULTRA SIMPLE :
+     - Sur clic : pose un attribut data-nyxia-sel
+       et envoie la sélection au parent via postMessage
+     - RIEN D'AUTRE (pas de listener de messages)
+     Les modifications se font par accès direct
+     au DOM depuis le parent.
   ══════════════════════════════════════ */
   function injectEditListeners() {
-    var frame = document.getElementById('preview-frame')
     try {
-      var doc = frame.contentDocument || frame.contentWindow.document
+      var doc = getDoc()
       if (!doc || !doc.body) return
       var old = doc.getElementById('_nyxia_ed')
       if (old) old.remove()
       var s = doc.createElement('script')
       s.id = '_nyxia_ed'
       s.textContent = [
-        'var _hov=null,_sel=null;',
         'document.body.style.cursor="crosshair";',
         'document.body.addEventListener("mouseover",function(e){',
-        '  if(_sel===e.target)return;',
-        '  if(_hov&&_hov!==_sel)_hov.style.outline="";',
-        '  _hov=e.target;',
-        '  if(_hov!==_sel)_hov.style.outline="1px dashed rgba(123,92,255,0.5)";',
+        '  if(e.target.getAttribute("data-nyxia-sel")!=="1")e.target.style.outline="1px dashed rgba(123,92,255,0.5)";',
         '},true);',
         'document.body.addEventListener("mouseout",function(e){',
-        '  if(e.target!==_sel&&e.target.style)e.target.style.outline="";',
+        '  if(e.target.getAttribute("data-nyxia-sel")!=="1"&&e.target.style)e.target.style.outline="";',
         '},true);',
         'document.body.addEventListener("click",function(e){',
-        '  e.preventDefault();e.stopPropagation();',
-        '  if(_sel&&_sel!==e.target)_sel.style.outline="";',
-        '  _sel=e.target;',
-        '  _sel.style.outline="2px solid #7B5CFF";',
-        '  var isImg=_sel.tagName==="IMG";',
-        '  var txt=isImg?"":((_sel.innerText||_sel.textContent||"").trim());',
-        '  var src=isImg?_sel.src:"";',
-        '  var tag=_sel.tagName.toLowerCase();',
+        '  e.preventDefault();',
+        '  e.stopPropagation();',
+        '  var prev=document.querySelector("[data-nyxia-sel=1]");',
+        '  if(prev){prev.style.outline="";prev.removeAttribute("data-nyxia-sel");}',
+        '  var el=e.target;',
+        '  el.style.outline="2px solid #7B5CFF";',
+        '  el.setAttribute("data-nyxia-sel","1");',
+        '  var isImg=el.tagName==="IMG";',
+        '  var txt=isImg?"":(el.innerText||el.textContent||"").trim();',
+        '  var src=isImg?el.src:"";',
+        '  var tag=el.tagName.toLowerCase();',
         '  var imgIdx=-1;',
-        '  if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===_sel){imgIdx=i;break;}}}',
+        '  if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===el){imgIdx=i;break;}}}',
         '  window.parent.postMessage({type:"nyxia-sel",isImg:isImg,txt:txt,src:src,tag:tag,imgIdx:imgIdx,x:e.clientX,y:e.clientY},"*");',
-        '},true);',
-        '',
-        'window.addEventListener("message",function(e){',
-        '  if(!e.data)return;',
-        '  var r={type:"nyxia-code-sync",html:"<!DOCTYPE html>\\n"+document.documentElement.outerHTML};',
-        '',
-        '  if(e.data.type==="nyxia-apply-text"){',
-        '    if(!_sel){window.parent.postMessage({type:"nyxia-error",msg:"no-selection"},"*");return;}',
-        '    if(_sel.children.length===0)_sel.textContent=e.data.text;',
-        '    else _sel.innerText=e.data.text;',
-        '    _sel.style.outline="";',
-        '    _sel=null;',
-        '    r.op="text";',
-        '    window.parent.postMessage(r,"*");',
-        '  }',
-        '',
-        '  else if(e.data.type==="nyxia-apply-style"){',
-        '    var els=document.querySelectorAll(e.data.selector);',
-        '    for(var i=0;i<els.length;i++){try{els[i].style[e.data.prop]=e.data.value;}catch(ex){}}',
-        '    r.op="style";',
-        '    window.parent.postMessage(r,"*");',
-        '  }',
-        '',
-        '  else if(e.data.type==="nyxia-apply-multi-style"){',
-        '    var sels=e.data.selectors;',
-        '    for(var si=0;si<sels.length;si++){',
-        '      var el2=document.querySelectorAll(sels[si]);',
-        '      for(var j=0;j<el2.length;j++){try{el2[j].style[e.data.prop]=e.data.value;}catch(ex2){}}',
-        '    }',
-        '    r.op="style";',
-        '    window.parent.postMessage(r,"*");',
-        '  }',
-        '',
-        '  else if(e.data.type==="nyxia-replace-img"){',
-        '    var imgs=document.querySelectorAll("img");',
-        '    if(!imgs[e.data.idx]){window.parent.postMessage({type:"nyxia-error",msg:"invalid-img"},"*");return;}',
-        '    imgs[e.data.idx].src=e.data.src;',
-        '    imgs[e.data.idx].style.outline="";',
-        '    r.op="img";',
-        '    window.parent.postMessage(r,"*");',
-        '  }',
-        '});'
+        '},true);'
       ].join('\n')
       doc.body.appendChild(s)
     } catch(e) { console.log('inject err:', e) }
   }
 
   /* ══════════════════════════════════════
-     RÉCEPTION MESSAGES DE L'IFRAME
+     RÉCEPTION DE LA SÉLECTION (depuis iframe)
   ══════════════════════════════════════ */
   window.addEventListener('message', function(e) {
-    if (!e.data) return
+    if (!e.data || e.data.type !== 'nyxia-sel') return
 
-    /* ── Sélection d'un élément ── */
-    if (e.data.type === 'nyxia-sel') {
-      if (!e.data.isImg) {
-        closeImgPopup()
-        document.getElementById('selected-info').classList.add('visible')
-        document.getElementById('selected-tag').textContent = '<' + e.data.tag + '>'
-        document.getElementById('selected-preview').textContent = e.data.txt.substring(0, 80) + (e.data.txt.length > 80 ? '...' : '')
-        document.getElementById('text-input').value = e.data.txt
-        switchTab('texte', document.querySelector('.tab-btn'))
-      } else {
-        selectedImgIdx = e.data.imgIdx
-        showImgPopup(e.data.src, e.data.x, e.data.y)
-      }
-    }
-
-    /* ── Code synchronisé après modification dans l'iframe ── */
-    if (e.data.type === 'nyxia-code-sync') {
-      currentCode = e.data.html
-      localStorage.setItem('nyxia_edit_code', currentCode)
-      if (e.data.op === 'text') toast('✓ Texte modifié !')
-      if (e.data.op === 'img') {
-        closeImgPopup()
-        toast('✓ Image remplacée !')
-      }
-    }
-
-    /* ── Erreur remontée depuis l'iframe ── */
-    if (e.data.type === 'nyxia-error') {
-      if (e.data.msg === 'no-selection') toast('⚠️ Clique d\'abord sur un texte dans le preview')
-      else if (e.data.msg === 'invalid-img') toast('⚠️ Image introuvable')
-      else toast('Erreur: ' + e.data.msg)
+    if (!e.data.isImg) {
+      closeImgPopup()
+      document.getElementById('selected-info').classList.add('visible')
+      document.getElementById('selected-tag').textContent = '<' + e.data.tag + '>'
+      document.getElementById('selected-preview').textContent = e.data.txt.substring(0, 80) + (e.data.txt.length > 80 ? '...' : '')
+      document.getElementById('text-input').value = e.data.txt
+      switchTab('texte', document.querySelector('.tab-btn'))
+    } else {
+      selectedImgIdx = e.data.imgIdx
+      showImgPopup(e.data.src, e.data.x, e.data.y)
     }
   })
+
+  /* ══════════════════════════════════════
+     MODIFIER TEXTE
+     Accès DIRECT au DOM de l'iframe,
+     cherche l'élément par data-nyxia-sel
+  ══════════════════════════════════════ */
+  function applyText() {
+    var newText = document.getElementById('text-input').value
+    try {
+      var doc = getDoc()
+      if (!doc) { toast('⚠️ Aperçu non chargé'); return }
+
+      var sel = doc.querySelector('[data-nyxia-sel="1"]')
+      if (!sel) { toast('⚠️ Clique d\'abord sur un texte dans le preview'); return }
+
+      if (sel.children.length === 0) {
+        sel.textContent = newText
+      } else {
+        sel.innerText = newText
+      }
+
+      sel.style.outline = ''
+      sel.removeAttribute('data-nyxia-sel')
+      syncCode()
+      toast('✓ Texte modifié !')
+    } catch(err) {
+      toast('⚠️ Erreur : ' + err.message)
+    }
+  }
+
+  /* ══════════════════════════════════════
+     COULEUR DU TEXTE
+     Injecte un <style> avec !important
+     pour forcer TOUS les éléments
+  ══════════════════════════════════════ */
+  function applyTextColor(value) {
+    try {
+      var doc = getDoc()
+      if (!doc) { toast('⚠️ Aperçu non chargé'); return }
+
+      var st = doc.getElementById('_nyxia_cs')
+      if (!st) {
+        st = doc.createElement('style')
+        st.id = '_nyxia_cs'
+        var head = doc.head || doc.documentElement
+        head.appendChild(st)
+      }
+      st.textContent = 'body, body * { color: ' + value + ' !important; }'
+      syncCode()
+      toast('✓ Couleur de texte appliquée !')
+    } catch(err) {
+      toast('⚠️ Erreur : ' + err.message)
+    }
+  }
+
+  /* ══════════════════════════════════════
+     COULEURS — style inline direct
+  ══════════════════════════════════════ */
+  function applyStyleRule(selector, prop, value) {
+    try {
+      var doc = getDoc()
+      if (!doc) return
+      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
+      var els = doc.querySelectorAll(selector)
+      for (var i = 0; i < els.length; i++) {
+        els[i].style[camel] = value
+      }
+      syncCode()
+    } catch(err) {}
+  }
+
+  function applyToElements(selectors, prop, value) {
+    try {
+      var doc = getDoc()
+      if (!doc) return
+      var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
+      for (var si = 0; si < selectors.length; si++) {
+        var els = doc.querySelectorAll(selectors[si])
+        for (var i = 0; i < els.length; i++) {
+          els[i].style[camel] = value
+        }
+      }
+      syncCode()
+    } catch(err) {}
+  }
+
+  function applyGradient() {
+    var c1 = document.getElementById('c-grad1').value
+    var c2 = document.getElementById('c-grad2').value
+    applyStyleRule('body', 'background', 'linear-gradient(135deg,' + c1 + ',' + c2 + ')')
+  }
 
   /* ══════════════════════════════════════
      POPUP IMAGE
@@ -483,51 +528,23 @@
   })
 
   /* ══════════════════════════════════════
-     MODIFIER TEXTE — via postMessage
-  ══════════════════════════════════════ */
-  function applyText() {
-    var newText = document.getElementById('text-input').value
-    var frame = document.getElementById('preview-frame')
-    if (frame.contentWindow) {
-      frame.contentWindow.postMessage({type: 'nyxia-apply-text', text: newText}, '*')
-    } else {
-      toast('⚠️ Aperçu non chargé')
-    }
-  }
-
-  /* ══════════════════════════════════════
-     COULEURS — via postMessage
-  ══════════════════════════════════════ */
-  function applyStyleRule(selector, prop, value) {
-    var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
-    var frame = document.getElementById('preview-frame')
-    if (frame.contentWindow) {
-      frame.contentWindow.postMessage({type: 'nyxia-apply-style', selector: selector, prop: camel, value: value}, '*')
-    }
-  }
-
-  function applyToElements(selectors, prop, value) {
-    var camel = prop.replace(/-([a-z])/g, function(m,c){ return c.toUpperCase() })
-    var frame = document.getElementById('preview-frame')
-    if (frame.contentWindow) {
-      frame.contentWindow.postMessage({type: 'nyxia-apply-multi-style', selectors: selectors, prop: camel, value: value}, '*')
-    }
-  }
-
-  function applyGradient() {
-    var c1 = document.getElementById('c-grad1').value
-    var c2 = document.getElementById('c-grad2').value
-    applyStyleRule('body', 'background', 'linear-gradient(135deg,' + c1 + ',' + c2 + ')')
-  }
-
-  /* ══════════════════════════════════════
-     REMPLACEMENT IMAGE — via postMessage
+     REMPLACEMENT IMAGE — accès direct
   ══════════════════════════════════════ */
   function replaceImageByIndex(newSrc) {
     if (selectedImgIdx < 0) { toast('⚠️ Aucune image sélectionnée'); return }
-    var frame = document.getElementById('preview-frame')
-    if (frame.contentWindow) {
-      frame.contentWindow.postMessage({type: 'nyxia-replace-img', idx: selectedImgIdx, src: newSrc}, '*')
+    try {
+      var doc = getDoc()
+      if (!doc) { toast('⚠️ Aperçu non chargé'); return }
+      var imgs = doc.querySelectorAll('img')
+      if (!imgs[selectedImgIdx]) { toast('⚠️ Image introuvable'); return }
+      imgs[selectedImgIdx].src = newSrc
+      imgs[selectedImgIdx].style.outline = ''
+      imgs[selectedImgIdx].removeAttribute('data-nyxia-sel')
+      syncCode()
+      closeImgPopup()
+      toast('✓ Image remplacée !')
+    } catch(err) {
+      toast('⚠️ Erreur : ' + err.message)
     }
   }
 
@@ -583,17 +600,13 @@
      SYNC + SAVE
   ══════════════════════════════════════ */
   function syncCode() {
-    var frame = document.getElementById('preview-frame')
     try {
-      var doc = frame.contentDocument || frame.contentWindow.document
+      var doc = getDoc()
       if (doc && doc.documentElement) {
         currentCode = '<!DOCTYPE html>\n' + doc.documentElement.outerHTML
         localStorage.setItem('nyxia_edit_code', currentCode)
       }
-    } catch(e) {
-      // currentCode est déjà maintenu à jour
-      // par les réponses nyxia-code-sync
-    }
+    } catch(e) {}
   }
 
   function saveAndDownload() {
@@ -609,17 +622,6 @@
   function copyCode() {
     syncCode()
     navigator.clipboard.writeText(currentCode).then(function() { toast('✓ Code copié !') })
-  }
-
-  function resetSite() {
-    if (!confirm('Annuler toutes les modifications ?')) return
-    currentCode = originalCode
-    localStorage.setItem('nyxia_edit_code', originalCode)
-    loadPreview(originalCode)
-    selectedImgIdx = -1
-    document.getElementById('selected-info').classList.remove('visible')
-    document.getElementById('text-input').value = ''
-    toast('↺ Réinitialisé')
   }
 
   /* ══════════════════════════════════════
