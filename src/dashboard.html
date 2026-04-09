@@ -528,7 +528,9 @@
       </div>
 
       <!-- ── PANEL GÉNÉRATEUR ── -->
-      <div class="panel" id="panel-generator"></div>
+      <div class="panel" id="panel-generator">
+        <iframe src="/generatorsiteweb.html" class="tool-embed" id="generator-frame"></iframe>
+      </div>
 
       <!-- ── PANEL MÉDIAS ── -->
       <div class="panel" id="panel-medias">
@@ -714,7 +716,6 @@
       if (navEl) navEl.classList.add('active')
     }
     function showPanel(name) {
-      if (name === 'generator') { window.location.href = '/generatorsiteweb.html'; return }
       _showPanelBase(name)
       if (name === 'messages') loadMessages()
       if (name === 'projects') _renderProjectsGrid()
