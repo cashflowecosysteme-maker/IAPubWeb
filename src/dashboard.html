@@ -856,7 +856,7 @@
         if (fmtImg) bubble2.innerHTML = fmtImg
         var imgWrap = document.createElement('div')
         imgWrap.style.cssText='margin-top:8px;border-radius:10px;overflow:hidden;background:rgba(123,92,255,0.08);border:1px solid rgba(123,92,255,0.2);padding:10px;text-align:center;color:var(--t3);font-size:13px'
-        imgWrap.textContent="⏳ Génération de l'image..."
+        imgWrap.textContent='⏳ Génération de l\'image...'
         wrapper2.appendChild(bubble2); wrapper2.appendChild(imgWrap)
         div.appendChild(avatar2); div.appendChild(wrapper2)
         msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight
@@ -873,7 +873,7 @@
             img.src=src; img.alt=imgDesc
             img.style.cssText='width:100%;border-radius:10px;display:block'
             imgWrap.appendChild(img)
-          } else { imgWrap.textContent="⚠️ Impossible de générer l'image." }
+          } else { imgWrap.textContent='⚠️ Impossible de générer l\'image.' }
           msgs.scrollTop=msgs.scrollHeight
         })
         .catch(function(){ imgWrap.textContent='⚠️ Erreur lors de la génération.' })
