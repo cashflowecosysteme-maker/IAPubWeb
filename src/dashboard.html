@@ -840,6 +840,46 @@
       var msgs = document.getElementById('chat-messages')
       var div  = document.createElement('div')
       div.className = 'msg bot'
+
+      // Détecte [IMAGE: description] et génère une vraie image via /api/image
+      var imageMatch = text.match(/\[IMAGE:\s*(.*?)\]/i)
+      if (imageMatch) {
+        var imgDesc     = imageMatch[1].trim()
+        var textWithout = text.replace(/\[IMAGE:\s*.*?\]/i, '').trim()
+        var fmtImg = textWithout ? escHtml(textWithout).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>') : ''
+        var avatar2 = document.createElement('img')
+        avatar2.src='/NyXia.png'; avatar2.className='msg-avatar'; avatar2.alt='NyXia'
+        var wrapper2 = document.createElement('div')
+        wrapper2.style.cssText='display:flex;flex-direction:column;gap:4px;max-width:100%'
+        var bubble2 = document.createElement('div')
+        bubble2.className='msg-bubble'
+        if (fmtImg) bubble2.innerHTML = fmtImg
+        var imgWrap = document.createElement('div')
+        imgWrap.style.cssText='margin-top:8px;border-radius:10px;overflow:hidden;background:rgba(123,92,255,0.08);border:1px solid rgba(123,92,255,0.2);padding:10px;text-align:center;color:var(--t3);font-size:13px'
+        imgWrap.textContent='⏳ Génération de l\'image...'
+        wrapper2.appendChild(bubble2); wrapper2.appendChild(imgWrap)
+        div.appendChild(avatar2); div.appendChild(wrapper2)
+        msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight
+        fetch('/api/image', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ prompt: imgDesc })
+        })
+        .then(function(r){ return r.json() })
+        .then(function(data){
+          var src = (data && data.dataUrl) ? data.dataUrl : (data && data.url) ? data.url : null
+          if (src) {
+            imgWrap.innerHTML=''; imgWrap.style.padding='0'
+            var img=document.createElement('img')
+            img.src=src; img.alt=imgDesc
+            img.style.cssText='width:100%;border-radius:10px;display:block'
+            imgWrap.appendChild(img)
+          } else { imgWrap.textContent='⚠️ Impossible de générer l\'image.' }
+          msgs.scrollTop=msgs.scrollHeight
+        })
+        .catch(function(){ imgWrap.textContent='⚠️ Erreur lors de la génération.' })
+        return
+      }
+
       var formatted = escHtml(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
       var avatar = document.createElement('img')
       avatar.src='/NyXia.png'; avatar.className='msg-avatar'; avatar.alt='NyXia'
