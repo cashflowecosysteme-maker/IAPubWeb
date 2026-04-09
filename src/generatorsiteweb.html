@@ -2675,7 +2675,7 @@
       }
       if (!html || html.length < 100) {
         showPublishState('error')
-        document.getElementById('publish-error-msg').textContent = 'Aucun site généré à publier. Génère d'abord un site.'
+        document.getElementById('publish-error-msg').textContent = "Aucun site généré à publier. Génère d'abord un site."
         return
       }
 
@@ -2998,6 +2998,193 @@
 
 
 
+
+  <script>
+    function toggleEditorPanel() {
+      var panel = document.getElementById('editor-panel')
+      var btn   = document.getElementById('btn-edit')
+      if (!panel) return
+      if (panel.classList.contains('open')) {
+        panel.classList.remove('open')
+        if (btn) btn.textContent = '✏️ Éditer'
+      } else {
+        panel.classList.add('open')
+        if (btn) btn.textContent = '✏️ Fermer éditeur'
+      }
+    }
+    window.toggleEditorPanel = toggleEditorPanel
+    window.toggleEditor      = toggleEditorPanel
+
+    function openPublishModal() {
+      var modal = document.getElementById('publish-modal')
+      if (!modal) return
+      var input = document.getElementById('user-input')
+      var defaultName = input && input.value
+        ? input.value.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().split(/\s+/).slice(0,4).join('-').substring(0,40) || 'mon-site-nyxia'
+        : 'mon-site-nyxia'
+      var nameEl = document.getElementById('publish-name')
+      if (nameEl) nameEl.value = defaultName
+      showPublishState('form')
+      updatePublishPreview()
+      modal.style.display = 'flex'
+    }
+    window.openPublishModal = openPublishModal
+
+    function closePublishModal() {
+      var modal = document.getElementById('publish-modal')
+      if (modal) modal.style.display = 'none'
+    }
+    window.closePublishModal = closePublishModal
+
+    function showPublishState(state) {
+      ['form','loading','success','error'].forEach(function(s) {
+        var el = document.getElementById('publish-' + s + '-state')
+        if (el) el.style.display = (s === state) ? 'block' : 'none'
+      })
+    }
+    window.showPublishState = showPublishState
+
+    function updatePublishPreview() {
+      var nameEl  = document.getElementById('publish-name')
+      var preview = document.getElementById('publish-preview-url')
+      if (!nameEl || !preview) return
+      var n = nameEl.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'')
+      preview.textContent = n ? '→ webmasteria.nyxiapublicationweb.com/site/' + n : ''
+    }
+    window.updatePublishPreview = updatePublishPreview
+
+    function copyPublishUrl() {
+      var el = document.getElementById('publish-result-url')
+      if (!el) return
+      navigator.clipboard.writeText(el.href || el.textContent).then(function() {
+        var btn = document.getElementById('btn-copy-publish-url')
+        if (btn) { var o=btn.textContent; btn.textContent='✓ Copié !'; setTimeout(function(){btn.textContent=o},2000) }
+      })
+    }
+    window.copyPublishUrl = copyPublishUrl
+
+    function doPublish() {
+      var nameEl    = document.getElementById('publish-name')
+      var cleanName = nameEl
+        ? nameEl.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'') || 'mon-site-nyxia'
+        : 'mon-site-nyxia'
+
+      var html = window._generatedHTML || window.generatedCode || ''
+      if (!html) {
+        try {
+          var frame = document.getElementById('preview-frame')
+          if (frame && frame.contentDocument) {
+            html = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
+          }
+        } catch(e) {}
+      }
+      if (!html || html.length < 100) {
+        showPublishState('error')
+        var errEl = document.getElementById('publish-error-msg')
+        if (errEl) errEl.textContent = "Génère d'abord un site avant de publier."
+        return
+      }
+
+      showPublishState('loading')
+
+      var token = sessionStorage.getItem('nyxia_token') || ''
+      if (token) {
+        fetch('/api/sites/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: token, html: html, name: cleanName })
+        }).catch(function(){})
+      }
+
+      fetch('/api/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectName: cleanName, html: html })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        if (data.success && data.url) {
+          var urlEl = document.getElementById('publish-result-url')
+          if (urlEl) { urlEl.textContent = data.url; urlEl.href = data.url }
+          showPublishState('success')
+        } else {
+          showPublishState('error')
+          var errEl = document.getElementById('publish-error-msg')
+          if (errEl) errEl.textContent = data.error || 'Erreur inconnue.'
+        }
+      })
+      .catch(function(e) {
+        showPublishState('error')
+        var errEl = document.getElementById('publish-error-msg')
+        if (errEl) errEl.textContent = 'Erreur réseau : ' + e.message
+      })
+    }
+    window.doPublish = doPublish
+
+    function saveEdits() {
+      if (typeof window._saveEdits === 'function') { window._saveEdits(); return }
+      var frame = document.getElementById('preview-frame')
+      if (!frame) return
+      try {
+        window.generatedCode = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
+        window._generatedHTML = window.generatedCode
+      } catch(e) {}
+    }
+    window.saveEdits = saveEdits
+
+    function applyTextEdit() { if (typeof window._applyTextEdit === 'function') window._applyTextEdit() }
+    window.applyTextEdit = applyTextEdit
+
+    function copyEditedCode() { if (typeof window._copyEditedCode === 'function') window._copyEditedCode() }
+    window.copyEditedCode = copyEditedCode
+
+    function resetEdits() { if (typeof window._resetEdits === 'function') window._resetEdits() }
+    window.resetEdits = resetEdits
+
+    function searchEditorPexels() {
+      var query = document.getElementById('img-pexels-query')
+      var grid  = document.getElementById('img-pexels-grid')
+      if (!query || !grid) return
+      var q = query.value.trim()
+      if (!q) return
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#8891B8;font-size:11px;padding:8px">Recherche...</div>'
+      var promises = []
+      for (var i = 0; i < 4; i++) {
+        promises.push(fetch('/api/image', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ prompt: q })
+        }).then(function(r){return r.json()}).catch(function(){return null}))
+      }
+      Promise.all(promises).then(function(results) {
+        window._pexelsEditorImgs = results.filter(function(d){return d && d.success && d.dataUrl})
+        if (!window._pexelsEditorImgs.length) {
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#8891B8;font-size:11px;padding:8px">Aucun résultat</div>'
+          return
+        }
+        grid.innerHTML = window._pexelsEditorImgs.map(function(d,i) {
+          return '<img src="' + d.dataUrl + '" onclick="replaceEditorImage(window._pexelsEditorImgs[' + i + '].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent" onmouseover="this.style.borderColor='#7B5CFF'" onmouseout="this.style.borderColor='transparent'">'
+        }).join('')
+      })
+    }
+    window.searchEditorPexels = searchEditorPexels
+
+    function replaceEditorImage(src) {
+      if (typeof window._selectedImgIdx !== 'undefined' && window._selectedImgIdx >= 0) {
+        var frame = document.getElementById('preview-frame')
+        if (frame && frame.contentDocument) {
+          var imgs = frame.contentDocument.querySelectorAll('img')
+          if (imgs[window._selectedImgIdx]) {
+            imgs[window._selectedImgIdx].src = src
+            imgs[window._selectedImgIdx].style.outline = ''
+            var prev = document.getElementById('img-editor-preview')
+            if (prev) prev.src = src
+            saveEdits()
+          }
+        }
+      }
+    }
+    window.replaceEditorImage = replaceEditorImage
+  </script>
 </body>
 
 </html>
