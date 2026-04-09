@@ -2669,8 +2669,7 @@
         try {
           var frame = document.getElementById('preview-frame')
           if (frame && frame.contentDocument) {
-            html = '<!DOCTYPE html>
-' + frame.contentDocument.documentElement.outerHTML
+            html = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
           }
         } catch(e) {}
       }
