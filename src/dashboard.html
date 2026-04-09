@@ -722,22 +722,6 @@
       if (name === 'sites') loadMySites()
     }
 
-    window.showPanel       = showPanel
-    window.sendSuggestion  = typeof sendSuggestion  !== 'undefined' ? sendSuggestion  : function(t){ sendMessageText(t) }
-    window.sendMessage     = typeof sendMessage     !== 'undefined' ? sendMessage     : function(){}
-    window.toggleSpeak     = typeof toggleSpeak     !== 'undefined' ? toggleSpeak     : function(){}
-    window.openProject     = typeof openProject     !== 'undefined' ? openProject     : function(){}
-    window.logout = logout
-    window.openProjectModal = openProjectModal
-    window.closeProjectModal = closeProjectModal
-    window.createProject = createProject
-    window.deleteProject = deleteProject
-    window.loadMySites = loadMySites
-    window.deleteSite = deleteSite
-    window.republishSite = republishSite
-    window.sendClientMessage = sendClientMessage
-    window.previewAttachments = previewAttachments
-
     /* ══════════════════════════════════════
        CHAT
     ══════════════════════════════════════ */
@@ -1350,26 +1334,22 @@
       .then(function(r) { return r.json() })
       .then(function(data) {
         if (!data.success || !data.sites || !data.sites.length) {
-          list.innerHTML = '<div style="text-align:center;color:var(--t3);padding:60px;grid-column:1/-1;font-size:14px">Aucun site généré pour l\'instant.<br><span style="font-size:12px;opacity:.6">Génère ton premier site dans \'Créer mon site\'</span></div>'
+          list.innerHTML = '<div style="text-align:center;color:var(--t3);padding:60px;grid-column:1/-1;font-size:14px">Aucun site généré pour l'instant.<br><span style="font-size:12px;opacity:.6">Génère ton premier site dans "Créer mon site"</span></div>'
           return
         }
         list.innerHTML = data.sites.map(function(site) {
           var date = new Date(site.date).toLocaleDateString('fr-CA', { day:'2-digit', month:'short', year:'numeric' })
-          var sid  = site.id
-          var sname = escHtml(site.name)
-          var surl  = site.url
-          var card = '<div style="background:rgba(15,28,63,0.5);border:1px solid rgba(123,92,255,0.12);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;position:relative">'
-          card += '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'
-          card += '<div style="font-size:15px;font-weight:700;color:var(--t);line-height:1.3;flex:1">' + sname + '</div>'
-          card += '<button onclick="deleteSite(this.dataset.id,this)" data-id="' + sid + '" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:0;flex-shrink:0">🗑</button>'
-          card += '</div>'
-          card += '<div style="font-size:11px;color:var(--t4)">Créé le ' + date + '</div>'
-          card += '<div style="display:flex;gap:8px;flex-wrap:wrap">'
-          card += '<a href="' + surl + '" target="_blank" style="flex:1;padding:9px 14px;border-radius:10px;background:rgba(123,92,255,0.1);border:1px solid rgba(123,92,255,0.2);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;text-decoration:none;text-align:center">🔗 Voir le site</a>'
-          card += '<button onclick="republishSite(this.dataset.id,this.dataset.name)" data-id="' + sid + '" data-name="' + sname + '" style="flex:1;padding:9px 14px;border-radius:10px;background:rgba(0,200,100,0.08);border:1px solid rgba(0,200,100,0.2);color:#00E676;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer">🚀 Republier</button>'
-          card += '</div>'
-          card += '</div>'
-          return card
+          return '<div style="background:rgba(15,28,63,0.5);border:1px solid rgba(123,92,255,0.12);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;transition:all .2s;position:relative" onmouseover="this.style.borderColor='rgba(123,92,255,0.3)'" onmouseout="this.style.borderColor='rgba(123,92,255,0.12)'">'
+            + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'
+            + '<div style="font-size:15px;font-weight:700;color:var(--t);line-height:1.3;flex:1">' + escHtml(site.name) + '</div>'
+            + '<button onclick="deleteSite('' + site.id + '',this)" style="background:none;border:none;color:var(--t4);cursor:pointer;font-size:16px;padding:0;flex-shrink:0;transition:color .15s" onmouseover="this.style.color='#ff8fab'" onmouseout="this.style.color='var(--t4)'">🗑</button>'
+            + '</div>'
+            + '<div style="font-size:11px;color:var(--t4)">Créé le ' + date + '</div>'
+            + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+            + '<a href="' + site.url + '" target="_blank" style="flex:1;padding:9px 14px;border-radius:10px;background:rgba(123,92,255,0.1);border:1px solid rgba(123,92,255,0.2);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;text-decoration:none;text-align:center;transition:all .15s" onmouseover="this.style.background='rgba(123,92,255,0.2)'" onmouseout="this.style.background='rgba(123,92,255,0.1)'">🔗 Voir le site</a>'
+            + '<button onclick="republishSite('' + site.id + '','' + escHtml(site.name) + '')" style="flex:1;padding:9px 14px;border-radius:10px;background:rgba(0,200,100,0.08);border:1px solid rgba(0,200,100,0.2);color:#00E676;font-family:Outfit,sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s" onmouseover="this.style.background='rgba(0,200,100,0.15)'" onmouseout="this.style.background='rgba(0,200,100,0.08)'">🚀 Republier</button>'
+            + '</div>'
+            + '</div>'
         }).join('')
       })
       .catch(function() {
@@ -1378,7 +1358,7 @@
     }
 
     function deleteSite(id, btn) {
-      if (!confirm('Supprimer ce site ?')) return
+      if (!confirm('Supprimer ce site définitivement ?')) return
       btn.textContent = '...'
       fetch('/api/sites/delete', {
         method: 'POST',
@@ -1394,7 +1374,7 @@
     }
 
     function republishSite(id, name) {
-      var newName = prompt('Nouveau nom pour ce site :', name || 'Mon site')
+      var newName = prompt('Nouveau nom pour ce site :', name)
       if (!newName) return
       // Récupère le HTML depuis l'URL publique puis republie
       fetch('https://webmasteria.nyxiapublicationweb.com/site/' + id)
