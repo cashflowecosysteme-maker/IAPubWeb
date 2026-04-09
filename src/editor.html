@@ -320,18 +320,19 @@
         'document.body.style.cursor="crosshair";',
         'document.body.addEventListener("mouseover",function(e){',
         '  if(_sel===e.target)return;',
-        '  if(_hov&&_hov!==_sel)_hov.style.outline="";',
+        '  if(_hov&&_hov!==_sel){_hov.style.outline="";_hov.removeAttribute("data-nyxia-selected");}',
         '  _hov=e.target;',
         '  if(_hov!==_sel)_hov.style.outline="1px dashed rgba(123,92,255,0.5)";',
         '},true);',
         'document.body.addEventListener("mouseout",function(e){',
-        '  if(e.target!==_sel&&e.target.style)e.target.style.outline="";',
+        '  if(e.target!==_sel&&e.target.style){e.target.style.outline="";e.target.removeAttribute("data-nyxia-selected");}',
         '},true);',
         'document.body.addEventListener("click",function(e){',
         '  e.preventDefault();e.stopPropagation();',
-        '  if(_sel&&_sel!==e.target)_sel.style.outline="";',
+        '  if(_sel&&_sel!==e.target){_sel.style.outline="";_sel.removeAttribute("data-nyxia-selected");}',
         '  _sel=e.target;',
         '  _sel.style.outline="2px solid #7B5CFF";',
+        '  _sel.setAttribute("data-nyxia-selected","1");',
         '  var isImg=_sel.tagName==="IMG";',
         '  var txt=isImg?"":((_sel.innerText||_sel.textContent||"").trim());',
         '  var src=isImg?_sel.src:"";',
@@ -427,6 +428,7 @@
       if (!imgs[selectedImgIdx]) { toast('⚠️ Image introuvable'); return }
       imgs[selectedImgIdx].src = newSrc
       imgs[selectedImgIdx].style.outline = ''
+      imgs[selectedImgIdx].removeAttribute('data-nyxia-selected')
       syncCode()
       closeImgPopup()
       toast('✓ Image remplacée !')
@@ -492,11 +494,12 @@
     var frame   = document.getElementById('preview-frame')
     try {
       var doc = frame.contentDocument || frame.contentWindow.document
-      var sel = doc.querySelector('[style*="2px solid #7B5CFF"]')
+      var sel = doc.querySelector('[data-nyxia-selected="1"]')
       if (!sel) { toast('⚠️ Clique d\'abord sur un texte dans le preview'); return }
       if (sel.children.length === 0) sel.textContent = newText
       else sel.innerText = newText
       sel.style.outline = ''
+      sel.removeAttribute('data-nyxia-selected')
       syncCode()
       toast('✓ Texte modifié !')
     } catch(e) { toast('Erreur: ' + e.message) }
