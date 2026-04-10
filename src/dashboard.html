@@ -39,14 +39,10 @@
       flex-direction: column;
     }
 
-    /* ── CANVAS ÉTOILES ── */
     #starry-canvas {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
     }
 
-    /* ══════════════════════════════════════
-       HEADER
-    ══════════════════════════════════════ */
     header {
       position: relative; z-index: 100;
       height: 56px;
@@ -111,17 +107,11 @@
     }
     .btn-logout:hover { background: rgba(255,75,110,0.2); }
 
-    /* ══════════════════════════════════════
-       BODY LAYOUT
-    ══════════════════════════════════════ */
     .app-body {
       display: flex; flex: 1; overflow: hidden;
       position: relative; z-index: 1;
     }
 
-    /* ══════════════════════════════════════
-       SIDEBAR
-    ══════════════════════════════════════ */
     aside {
       width: 240px; flex-shrink: 0;
       background: rgba(8,15,34,0.97);
@@ -178,21 +168,14 @@
     .user-name { font-size: 13px; font-weight: 600; color: var(--t2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .user-plan { font-size: 11px; color: var(--gold); }
 
-    /* ══════════════════════════════════════
-       MAIN CONTENT
-    ══════════════════════════════════════ */
     .main-content {
       flex: 1; display: flex; flex-direction: column;
       overflow: hidden; position: relative;
     }
 
-    /* ══════════════════════════════════════
-       PANELS
-    ══════════════════════════════════════ */
     .panel { display: none; flex: 1; overflow: hidden; }
     .panel.active { display: flex; flex-direction: column; }
 
-    /* ── PANEL CHAT ── */
     #panel-chat {
       flex-direction: row;
     }
@@ -267,7 +250,38 @@
       color: #fff; border-top-right-radius: 4px;
     }
 
-    /* Suggestions rapides */
+    /* Image générée dans le chat */
+    .msg-img-wrap {
+      margin-top: 8px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(123,92,255,0.08), rgba(0,230,118,0.04));
+      border: 1px solid rgba(123,92,255,0.15);
+    }
+    .msg-img-wrap img {
+      width: 100%;
+      display: block;
+      border-radius: 11px;
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
+    .msg-img-wrap img.loaded { opacity: 1; }
+    .msg-img-loader {
+      padding: 30px 20px;
+      text-align: center;
+      color: var(--t3);
+      font-size: 12px;
+    }
+    .msg-img-spinner {
+      width: 26px; height: 26px;
+      border: 3px solid rgba(123,92,255,0.2);
+      border-top-color: var(--p);
+      border-radius: 50%;
+      animation: nxSpin .7s linear infinite;
+      margin: 0 auto 8px;
+    }
+    @keyframes nxSpin { to { transform: rotate(360deg); } }
+
     .suggestions {
       display: flex; flex-wrap: wrap; gap: 8px;
       padding: 0 24px 16px;
@@ -280,7 +294,6 @@
     }
     .sugg-btn:hover { border-color: var(--p); color: var(--t2); background: rgba(123,92,255,0.14); transform: translateY(-1px); }
 
-    /* Typing dots */
     .nx-dots { display: inline-flex; gap: 4px; align-items: center; }
     .nx-dots i {
       width: 6px; height: 6px; border-radius: 50%;
@@ -291,7 +304,6 @@
     .nx-dots i:nth-child(3) { animation-delay: .3s; }
     @keyframes dotBounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } }
 
-    /* Chat input */
     .chat-input-wrap {
       padding: 16px 24px;
       border-top: 1px solid rgba(123,92,255,0.1);
@@ -324,7 +336,6 @@
       padding: 6px 0 0;
     }
 
-    /* ── PANEL GÉNÉRATEUR ── */
     #panel-generator {
       flex-direction: column; overflow-y: auto;
     }
@@ -346,11 +357,9 @@
       background: transparent;
     }
 
-    /* ── PANEL MÉDIAS ── */
     #panel-medias { overflow: hidden; }
     #panel-medias iframe { width: 100%; height: 100%; border: none; }
 
-    /* ── PANEL MESSAGERIE ── */
     #panel-messages {
       align-items: center; justify-content: center; flex-direction: column;
     }
@@ -366,9 +375,6 @@
     }
     .coming-soon p { color: var(--t3); font-size: 15px; max-width: 400px; line-height: 1.7; }
 
-    /* ══════════════════════════════════════
-       RESPONSIVE MOBILE
-    ══════════════════════════════════════ */
     @media (max-width: 768px) {
       aside { width: 200px; }
       .header-brand { width: 200px; }
@@ -387,7 +393,6 @@
 
   <canvas id="starry-canvas"></canvas>
 
-  <!-- Audio NyXia -->
   <audio id="nyxia-audio" src="/NyXiaVoix-RobotParfait1.mp3" preload="auto"></audio>
 
   <!-- ══ HEADER ══ -->
@@ -411,7 +416,6 @@
   <!-- ══ BODY ══ -->
   <div class="app-body">
 
-    <!-- SIDEBAR -->
     <aside>
       <div class="sidebar-section">
         <div class="sidebar-label">Navigation</div>
@@ -477,7 +481,6 @@
       </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <div class="main-content">
 
       <!-- ── PANEL CHAT ── -->
@@ -542,7 +545,6 @@
           </div>
 
           <div id="projects-grid" style="flex:1;overflow-y:auto;padding:24px 28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;align-content:start">
-            <!-- Carte créer un projet -->
             <div onclick="openProjectModal()" style="border:2px dashed rgba(123,92,255,0.3);border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;min-height:140px;background:rgba(123,92,255,0.03)" onmouseover="this.style.borderColor='rgba(123,92,255,0.6)';this.style.background='rgba(123,92,255,0.07)'" onmouseout="this.style.borderColor='rgba(123,92,255,0.3)';this.style.background='rgba(123,92,255,0.03)'">
               <div style="font-size:28px;color:rgba(123,92,255,0.6)">✦</div>
               <div style="font-size:13px;color:var(--t3);font-weight:500">Créer un nouveau projet</div>
@@ -557,17 +559,14 @@
         <div style="background:var(--bg2);border:1px solid rgba(123,92,255,0.25);border-radius:20px;padding:32px;width:100%;max-width:480px;margin:20px;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
           <div style="font-size:18px;font-weight:700;color:var(--t);margin-bottom:6px">📁 Nouveau Projet</div>
           <div style="font-size:13px;color:var(--t3);margin-bottom:24px">Crée un projet à travailler avec NyXia</div>
-
           <div style="margin-bottom:16px">
             <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Nom du projet</label>
             <input id="proj-name" type="text" placeholder="Mon super projet" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(123,92,255,0.5)'" onblur="this.style.borderColor='rgba(123,92,255,0.2)'">
           </div>
-
           <div style="margin-bottom:16px">
             <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Description</label>
             <textarea id="proj-desc" placeholder="Décris ton projet..." rows="3" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='rgba(123,92,255,0.5)'" onblur="this.style.borderColor='rgba(123,92,255,0.2)'"></textarea>
           </div>
-
           <div style="margin-bottom:24px">
             <label style="display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px">Type</label>
             <select id="proj-type" style="width:100%;background:rgba(15,28,63,0.8);border:1px solid rgba(123,92,255,0.2);border-radius:10px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:11px 14px;outline:none;cursor:pointer">
@@ -580,7 +579,6 @@
               <option value="autre">💼 Autre</option>
             </select>
           </div>
-
           <div style="display:flex;gap:10px;justify-content:flex-end">
             <button onclick="closeProjectModal()" style="padding:10px 22px;border-radius:50px;border:1px solid rgba(123,92,255,0.2);background:transparent;color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
             <button onclick="createProject()" style="padding:10px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 20px rgba(123,92,255,0.4)">Créer</button>
@@ -591,19 +589,13 @@
       <!-- ── PANEL MESSAGERIE ── -->
       <div class="panel" id="panel-messages">
         <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
-
-          <!-- Header -->
           <div style="padding:20px 28px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.6);flex-shrink:0">
             <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;background:linear-gradient(135deg,#a78bfa,#4FA3FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">✉️ Messagerie</div>
             <div style="color:var(--t3);font-size:13px">Échange directement avec Diane Boyer</div>
           </div>
-
-          <!-- Liste messages -->
           <div id="msg-list" style="flex:1;overflow-y:auto;padding:20px 28px;display:flex;flex-direction:column;gap:12px">
             <div style="text-align:center;color:var(--t3);padding:40px;font-size:14px" id="msg-empty">Chargement...</div>
           </div>
-
-          <!-- Formulaire envoi -->
           <div style="padding:16px 28px;border-top:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.8);flex-shrink:0">
             <div style="margin-bottom:10px">
               <textarea id="msg-input" placeholder="Écris ton message à Diane..." style="width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:14px;color:var(--t);font-family:Outfit,sans-serif;font-size:14px;padding:12px 16px;outline:none;resize:none;height:80px;transition:border-color .2s"></textarea>
@@ -628,7 +620,7 @@
 
   <script>
     /* ══════════════════════════════════════
-       AUTH — vérification session
+       AUTH
     ══════════════════════════════════════ */
     var sessionToken = sessionStorage.getItem('nyxia_token') || ''
     var clientEmail  = ''
@@ -645,21 +637,18 @@
       .then(data => {
         if (!data.valid) { window.location.href = '/login.html'; return }
         clientEmail = data.email || ''
-        // Utilise le prénom mémorisé par NyXia si disponible
         var stored = localStorage.getItem('nyxia_username')
-        clientName = stored || ''  // vide = NyXia va demander le prénom
-
+        clientName = stored || ''
         initUI()
       })
       .catch(() => { window.location.href = '/login.html' })
     })()
 
     function initUI() {
-      // Joue la voix NyXia à l'accueil
       var audio = document.getElementById('nyxia-audio')
       if (audio) {
         audio.volume = 0.7
-        audio.play().catch(function(){}) // catch si autoplay bloqué
+        audio.play().catch(function(){})
       }
       document.getElementById('header-username').textContent = clientName
       document.getElementById('sidebar-username').textContent = clientName
@@ -680,7 +669,7 @@
     }
 
     /* ══════════════════════════════════════
-       NAVIGATION PANELS
+       NAVIGATION
     ══════════════════════════════════════ */
     function _showPanelBase(name) {
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'))
@@ -717,7 +706,6 @@
     function sendMessage() {
       var input = document.getElementById('chat-input')
       var text  = input.value.trim()
-      // Autorise l'envoi si pièce jointe présente même sans texte
       if (!text && !_currentAttachment) return
       input.value = ''
       input.style.height = 'auto'
@@ -726,7 +714,6 @@
     }
 
     function sendMessageText(text) {
-      // Si NyXia vient de demander le prénom et qu'on ne le connaît pas encore
       if (!clientName) {
         var lastMsg = document.querySelector('#chat-messages .msg.bot:last-child .msg-bubble')
         if (lastMsg && (lastMsg.textContent.includes('appelles') || lastMsg.textContent.includes('prénom'))) {
@@ -738,7 +725,6 @@
           document.getElementById('sidebar-avatar').textContent = clientName.charAt(0).toUpperCase()
         }
       }
-      // Construit le message utilisateur avec pièce jointe éventuelle
       var attachmentToSend = _currentAttachment ? JSON.parse(JSON.stringify(_currentAttachment)) : null
       var displayText = text
       if (attachmentToSend) {
@@ -746,14 +732,12 @@
       }
       addUserMessage(displayText)
 
-      // Message pour l'historique (sans le base64 pour économiser les tokens)
       var historyContent = text
       if (attachmentToSend) {
         historyContent = (text ? text + '\n' : '') + '[Fichier joint: ' + attachmentToSend.name + ' (' + attachmentToSend.type + ')]'
       }
       chatHistory.push({ role: 'user', content: historyContent })
 
-      // Reset pièce jointe après envoi
       if (_currentAttachment) {
         _currentAttachment = null
         var bar = document.getElementById('attach-bar')
@@ -794,41 +778,133 @@
       })
     }
 
+
+    /* ══════════════════════════════════════════════════════════════
+       ██████  addBotMessage  — CORRIGÉ : IMAGES + SPEAKER  ██████
+    ══════════════════════════════════════════════════════════════ */
     function addBotMessage(text) {
       var msgs = document.getElementById('chat-messages')
       var div  = document.createElement('div')
       div.className = 'msg bot'
-      var formatted = escHtml(text).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
+
       var avatar = document.createElement('img')
-      avatar.src='/NyXia.png'; avatar.className='msg-avatar'; avatar.alt='NyXia'
+      avatar.src = '/NyXia.png'
+      avatar.className = 'msg-avatar'
+      avatar.alt = 'NyXia'
+
       var wrapper = document.createElement('div')
-      wrapper.style.cssText='display:flex;flex-direction:column;gap:4px;max-width:100%'
+      wrapper.style.cssText = 'display:flex;flex-direction:column;gap:4px;max-width:100%'
+
+      /* ── DÉTECTION IMAGE ── */
+      var imgRegex = /\[IMAGE\s*:\s*([\s\S]*?)\]/i
+      var imgMatch = text.match(imgRegex)
+      var textWithoutImg = text.replace(imgRegex, '').trim()
+      var imgDesc = imgMatch ? imgMatch[1].trim() : null
+
+      /* ── Bulle de texte ── */
       var bubble = document.createElement('div')
-      bubble.className='msg-bubble'; bubble.innerHTML=formatted
-      var bs='padding:2px 9px;border-radius:50px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.04);color:var(--t4);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer'
-      var acts=document.createElement('div'); acts.style.cssText='display:flex;gap:4px;flex-wrap:wrap;margin-top:2px'
-      var spk=document.createElement('button'); spk.style.cssText=bs; spk.textContent='🔊 Écouter'
-      spk.addEventListener('click',function(){ speakMsg(spk,text) })
-      var cpy=document.createElement('button'); cpy.style.cssText=bs; cpy.textContent='📋 Copier'
-      cpy.addEventListener('click',function(){ navigator.clipboard.writeText(text).then(function(){ cpy.textContent='✓'; setTimeout(function(){cpy.textContent='📋 Copier'},2000) }) })
-      var ret=document.createElement('button'); ret.style.cssText=bs; ret.textContent='↺ Réessayer'
-      ret.addEventListener('click',function(){
-        var last=chatHistory.filter(function(m){return m.role==='user'}).pop()
-        if(last){if(chatHistory[chatHistory.length-1].role==='assistant')chatHistory.pop();div.remove();sendMessageText(last.content)}
+      bubble.className = 'msg-bubble'
+      if (textWithoutImg) {
+        bubble.innerHTML = escHtml(textWithoutImg).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
+      } else if (!imgDesc) {
+        bubble.innerHTML = escHtml(text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
+      }
+      wrapper.appendChild(bubble)
+
+      /* ── Zone image si détectée ── */
+      if (imgDesc) {
+        var imgWrap = document.createElement('div')
+        imgWrap.className = 'msg-img-wrap'
+        var loader = document.createElement('div')
+        loader.className = 'msg-img-loader'
+        loader.innerHTML = '<div class="msg-img-spinner"></div>🎨 Génération en cours...'
+        imgWrap.appendChild(loader)
+        wrapper.appendChild(imgWrap)
+
+        var prompt = encodeURIComponent(imgDesc + ', high quality, detailed, 4k')
+        var seed = Math.floor(Math.random() * 999999)
+        var imgUrl = 'https://image.pollinations.ai/prompt/' + prompt + '?width=512&height=512&nologo=true&seed=' + seed
+
+        var img = document.createElement('img')
+        img.alt = imgDesc
+        img.onload = function() {
+          loader.remove()
+          imgWrap.style.background = 'none'
+          imgWrap.style.border = 'none'
+          imgWrap.appendChild(img)
+          requestAnimationFrame(function() { img.classList.add('loaded') })
+          msgs.scrollTop = msgs.scrollHeight
+        }
+        img.onerror = function() {
+          loader.innerHTML = '⚠️ Erreur de génération — réessaie'
+        }
+        img.src = imgUrl
+      }
+
+      /* ── Boutons d'action ── */
+      var bs = 'padding:2px 9px;border-radius:50px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.04);color:var(--t4);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer;transition:all .15s'
+      var acts = document.createElement('div')
+      acts.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap;margin-top:2px'
+
+      var textForSpeak = textWithoutImg || text
+
+      /* Bouton Écouter */
+      var spk = document.createElement('button')
+      spk.style.cssText = bs
+      spk.textContent = '🔊 Écouter'
+      spk.addEventListener('click', function() {
+        speakMsg(spk, textForSpeak)
       })
-      var pdfBtn=document.createElement('button'); pdfBtn.style.cssText=bs; pdfBtn.textContent='⬇ PDF'
-      var capturedText=text
-      pdfBtn.addEventListener('click',function(){
-        var w=window.open('','_blank'); if(!w) return
-        var body='<h2 style="color:#7B5CFF">NyXia IA</h2>'+escHtml(capturedText).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')
-        w.document.write('<!DOCTYPE html><html><head><title>NyXia</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85}</style></head><body>'+body+'</body></html>')
-        w.document.close(); setTimeout(function(){w.print()},300)
+      acts.appendChild(spk)
+
+      /* Bouton Copier */
+      var cpy = document.createElement('button')
+      cpy.style.cssText = bs
+      cpy.textContent = '📋 Copier'
+      cpy.addEventListener('click', function() {
+        navigator.clipboard.writeText(text).then(function() {
+          cpy.textContent = '✓'
+          setTimeout(function() { cpy.textContent = '📋 Copier' }, 2000)
+        })
       })
-      acts.appendChild(spk);acts.appendChild(cpy);acts.appendChild(ret);acts.appendChild(pdfBtn)
-      wrapper.appendChild(bubble);wrapper.appendChild(acts)
-      div.appendChild(avatar);div.appendChild(wrapper)
-      msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight
+      acts.appendChild(cpy)
+
+      /* Bouton Réessayer */
+      var ret = document.createElement('button')
+      ret.style.cssText = bs
+      ret.textContent = '↺ Réessayer'
+      ret.addEventListener('click', function() {
+        var last = chatHistory.filter(function(m) { return m.role === 'user' }).pop()
+        if (last) {
+          if (chatHistory[chatHistory.length - 1].role === 'assistant') chatHistory.pop()
+          div.remove()
+          sendMessageText(last.content)
+        }
+      })
+      acts.appendChild(ret)
+
+      /* Bouton PDF */
+      var pdfBtn = document.createElement('button')
+      pdfBtn.style.cssText = bs
+      pdfBtn.textContent = '⬇ PDF'
+      var capturedText = text
+      pdfBtn.addEventListener('click', function() {
+        var w = window.open('', '_blank')
+        if (!w) return
+        var body = '<h2 style="color:#7B5CFF">NyXia IA</h2>' + escHtml(capturedText).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
+        w.document.write('<!DOCTYPE html><html><head><title>NyXia</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85}</style></head><body>' + body + '</body></html>')
+        w.document.close()
+        setTimeout(function() { w.print() }, 300)
+      })
+      acts.appendChild(pdfBtn)
+
+      wrapper.appendChild(acts)
+      div.appendChild(avatar)
+      div.appendChild(wrapper)
+      msgs.appendChild(div)
+      msgs.scrollTop = msgs.scrollHeight
     }
+
 
     function addUserMessage(text) {
       var msgs = document.getElementById('chat-messages')
@@ -843,7 +919,8 @@
     function addTyping() {
       var msgs = document.getElementById('chat-messages')
       var div  = document.createElement('div')
-      div.className = 'msg bot'; div.id = 'typing-indicator'
+      div.className = 'msg bot'
+      div.id = 'typing-indicator'
       div.innerHTML = '<img src="/NyXia.png" class="msg-avatar" alt="NyXia"><div class="msg-bubble"><span class="nx-dots"><i></i><i></i><i></i></span></div>'
       msgs.appendChild(div)
       msgs.scrollTop = msgs.scrollHeight
@@ -854,9 +931,90 @@
       if (t) t.remove()
     }
 
-    /* ══════════════════════════════════════
-       TEXT-TO-SPEECH (Google Web Speech)
-    ══════════════════════════════════════ */
+    /* ══════════════════════════════════════════════════════════════
+       ██████  TTS  — CORRIGÉ : speakMsg existe maintenant  ██████
+    ══════════════════════════════════════════════════════════════ */
+
+    /* speakMsg : appelée par le bouton "🔊 Écouter" sous chaque message */
+    function speakMsg(btn, text) {
+      if (!window.speechSynthesis) return
+
+      /* Si ce bouton est déjà en train de parler → arrêter */
+      if (btn._nxSpeaking) {
+        window.speechSynthesis.cancel()
+        btn._nxSpeaking = false
+        btn.textContent = '🔊 Écouter'
+        btn.style.borderColor = 'rgba(123,92,255,0.15)'
+        btn.style.color = 'var(--t4)'
+        btn.style.background = 'rgba(123,92,255,0.04)'
+        return
+      }
+
+      /* Arrêter toute lecture en cours et reset tous les autres boutons */
+      window.speechSynthesis.cancel()
+      document.querySelectorAll('.msg button').forEach(function(b) {
+        if (b._nxSpeaking) {
+          b._nxSpeaking = false
+          b.textContent = '🔊 Écouter'
+          b.style.borderColor = 'rgba(123,92,255,0.15)'
+          b.style.color = 'var(--t4)'
+          b.style.background = 'rgba(123,92,255,0.04)'
+        }
+      })
+
+      /* Nettoyer le texte */
+      var clean = text
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\[IMAGE[\s\S]*?\]/gi, '')
+        .replace(/[✦💜🚀💎🌐📱⭐✓►▶]/g, '')
+        .replace(/<br>/g, ' ')
+        .replace(/<[^>]+>/g, '')
+        .trim()
+      if (!clean) return
+
+      btn._nxSpeaking = true
+      btn.textContent = '⏹ Arrêter'
+      btn.style.borderColor = 'rgba(0,230,118,0.4)'
+      btn.style.color = '#00E676'
+      btn.style.background = 'rgba(0,230,118,0.08)'
+
+      var utt = new SpeechSynthesisUtterance(clean)
+      utt.lang = 'fr-FR'
+      utt.rate = 0.92
+      utt.pitch = 1.1
+      utt.volume = 1
+
+      function doSpeak() {
+        var voices = window.speechSynthesis.getVoices()
+        var frVoice = voices.find(function(v) {
+          return v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie/i.test(v.name)
+        }) || voices.find(function(v) {
+          return v.lang && v.lang.startsWith('fr')
+        })
+        if (frVoice) utt.voice = frVoice
+        window.speechSynthesis.speak(utt)
+      }
+
+      utt.onend = function() {
+        btn._nxSpeaking = false
+        btn.textContent = '🔊 Écouter'
+        btn.style.borderColor = 'rgba(123,92,255,0.15)'
+        btn.style.color = 'var(--t4)'
+        btn.style.background = 'rgba(123,92,255,0.04)'
+      }
+      utt.onerror = function() {
+        btn._nxSpeaking = false
+        btn.textContent = '🔊 Écouter'
+        btn.style.borderColor = 'rgba(123,92,255,0.15)'
+        btn.style.color = 'var(--t4)'
+        btn.style.background = 'rgba(123,92,255,0.04)'
+      }
+
+      /* Fix Chrome : délai obligatoire après cancel() */
+      setTimeout(doSpeak, 200)
+    }
+
+    /* toggleSpeak : bouton header "Écouter NyXia" (lecture auto) */
     function toggleSpeak() {
       isSpeaking = !isSpeaking
       var btn = document.getElementById('btn-speak')
@@ -870,36 +1028,30 @@
       }
     }
 
+    /* speakText : lecture auto après chaque réponse */
     function speakText(text) {
       if (!window.speechSynthesis) return
       window.speechSynthesis.cancel()
       var clean = text
         .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\[IMAGE[\s\S]*?\]/gi, '')
         .replace(/[✦💜🚀💎🌐📱⭐✓►▶]/g, '')
         .replace(/<br>/g, ' ')
         .trim()
       if (!clean) return
 
-      var utt   = new SpeechSynthesisUtterance(clean)
-      utt.lang  = 'fr-FR'
-      utt.rate  = 0.92
+      var utt = new SpeechSynthesisUtterance(clean)
+      utt.lang = 'fr-FR'
+      utt.rate = 0.92
       utt.pitch = 1.1
       utt.volume = 1
 
-      // Cherche la meilleure voix française féminine
       function trySpeak() {
-        var voices  = window.speechSynthesis.getVoices()
+        var voices = window.speechSynthesis.getVoices()
         var frVoice = voices.find(v => v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie|thomas/i.test(v.name))
                    || voices.find(v => v.lang.startsWith('fr'))
         if (frVoice) utt.voice = frVoice
         window.speechSynthesis.speak(utt)
-      }
-
-      // Certains navigateurs chargent les voix en async
-      if (window.speechSynthesis.getVoices().length === 0) {
-        window.speechSynthesis.onvoiceschanged = trySpeak
-      } else {
-        trySpeak()
       }
 
       utt.onend = function() {
@@ -911,11 +1063,15 @@
         isSpeaking = false
       }
       utt.onerror = function() { isSpeaking = false }
+
+      setTimeout(trySpeak, 200)
     }
 
-    // Charge les voix (asynchrone sur certains navigateurs)
+    /* Préchargement des voix */
     if (window.speechSynthesis) {
-      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices()
+      window.speechSynthesis.onvoiceschanged = function() {
+        window.speechSynthesis.getVoices()
+      }
     }
 
 
@@ -965,7 +1121,6 @@
       var preview = document.getElementById('attach-preview')
       msgAttachments = []
       preview.innerHTML = ''
-
       Array.from(files).forEach(function(file) {
         var reader = new FileReader()
         reader.onload = function(e) {
@@ -983,15 +1138,12 @@
       var text    = document.getElementById('msg-input').value.trim()
       var btn     = document.getElementById('btn-send-msg')
       var status  = document.getElementById('msg-status')
-
       if (!text && !msgAttachments.length) {
         showMsgStatus('Écris un message avant d\'envoyer.', 'error')
         return
       }
-
       btn.disabled    = true
       btn.textContent = 'Envoi...'
-
       fetch('/api/message/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1034,9 +1186,7 @@
 
     /* ══ PROJETS ══ */
     var _projects=[], _currentProjectId=null, _currentAttachment=null, _currentAgent='general'
-    var _realProjects=[]  // Vrais projets (séparés des sauvegardes de conv)
-
-    /* ══ VRAIS PROJETS ══ */
+    var _realProjects=[]
     var _projTypes = {
       livre:      '📚 Écriture de livre',
       formation:  '🎓 Création de formation',
@@ -1051,11 +1201,9 @@
       try { _realProjects = JSON.parse(localStorage.getItem('nyxia_realproj_'+(clientEmail||''))||'[]') } catch(e){ _realProjects=[] }
       _renderProjectsGrid()
     }
-
     function _saveRealProjects() {
       try { localStorage.setItem('nyxia_realproj_'+(clientEmail||''), JSON.stringify(_realProjects)) } catch(e){}
     }
-
     function openProjectModal() {
       var modal = document.getElementById('project-modal')
       if (modal) {
@@ -1066,12 +1214,10 @@
         document.getElementById('proj-type').value = 'livre'
       }
     }
-
     function closeProjectModal() {
       var modal = document.getElementById('project-modal')
       if (modal) modal.style.display = 'none'
     }
-
     function createProject() {
       var name = document.getElementById('proj-name').value.trim()
       var desc = document.getElementById('proj-desc').value.trim()
@@ -1081,29 +1227,20 @@
         setTimeout(function(){ document.getElementById('proj-name').style.borderColor = 'rgba(123,92,255,0.2)' }, 2000)
         return
       }
-      var proj = {
-        id: 'rp' + Date.now(),
-        name: name,
-        desc: desc,
-        type: type,
-        date: new Date().toISOString(),
-        notes: []
-      }
+      var proj = { id: 'rp' + Date.now(), name: name, desc: desc, type: type, date: new Date().toISOString(), notes: [] }
       _realProjects.unshift(proj)
       _saveRealProjects()
       _renderProjectsGrid()
       closeProjectModal()
-      // Ouvre le projet dans le chat avec NyXia
       showPanel('chat')
-      var welcome = '📁 **Projet "' + name + '"** ouvert !\\n\\n'
-      if (desc) welcome += desc + '\\n\\n'
-      welcome += 'Type : ' + (_projTypes[type] || type) + '\\n\\nComment puis-je t\'aider avec ce projet ?'
+      var welcome = '📁 **Projet "' + name + '"** ouvert !\n\n'
+      if (desc) welcome += desc + '\n\n'
+      welcome += 'Type : ' + (_projTypes[type] || type) + '\n\nComment puis-je t\'aider avec ce projet ?'
       var msgs = document.getElementById('chat-messages')
       if (msgs) msgs.innerHTML = ''
       chatHistory = []
       addBotMessage(welcome)
     }
-
     function deleteProject(id, e) {
       e.stopPropagation()
       if (!confirm('Supprimer ce projet ?')) return
@@ -1111,7 +1248,6 @@
       _saveRealProjects()
       _renderProjectsGrid()
     }
-
     function openProject(id) {
       var p = _realProjects.find(function(x){ return x.id === id })
       if (!p) return
@@ -1119,20 +1255,16 @@
       var msgs = document.getElementById('chat-messages')
       if (msgs) msgs.innerHTML = ''
       chatHistory = []
-      var welcome = '📁 **Projet "' + p.name + '"** rechargé !\\n\\n'
-      if (p.desc) welcome += p.desc + '\\n\\n'
-      welcome += 'Type : ' + (_projTypes[p.type] || p.type) + '\\n\\nSur quoi travaillons-nous aujourd\'hui ?'
+      var welcome = '📁 **Projet "' + p.name + '"** rechargé !\n\n'
+      if (p.desc) welcome += p.desc + '\n\n'
+      welcome += 'Type : ' + (_projTypes[p.type] || p.type) + '\n\nSur quoi travaillons-nous aujourd\'hui ?'
       addBotMessage(welcome)
     }
-
     function _renderProjectsGrid() {
       var grid = document.getElementById('projects-grid')
       if (!grid) return
       var createCard = '<div onclick="openProjectModal()" style="border:2px dashed rgba(123,92,255,0.3);border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;min-height:140px;background:rgba(123,92,255,0.03)" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.6)\';this.style.background=\'rgba(123,92,255,0.07)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.3)\';this.style.background=\'rgba(123,92,255,0.03)\'"><div style="font-size:28px;color:rgba(123,92,255,0.6)">✦</div><div style="font-size:13px;color:var(--t3);font-weight:500">Créer un nouveau projet</div></div>'
-      if (!_realProjects.length) {
-        grid.innerHTML = createCard
-        return
-      }
+      if (!_realProjects.length) { grid.innerHTML = createCard; return }
       var cards = _realProjects.map(function(p) {
         return '<div onclick="openProject(\'' + p.id + '\')" style="background:rgba(10,22,40,0.8);border:1px solid rgba(123,92,255,0.15);border-radius:16px;padding:20px;cursor:pointer;transition:all .2s;min-height:140px;display:flex;flex-direction:column;position:relative" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.4)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.15)\';this.style.transform=\'none\'">'
           + '<div style="font-size:11px;color:#a78bfa;margin-bottom:8px;font-weight:600">' + (_projTypes[p.type] || p.type) + '</div>'
@@ -1145,7 +1277,6 @@
       grid.innerHTML = createCard + cards
     }
 
-    // Ferme modal si clic à l'extérieur
     document.addEventListener('click', function(e) {
       var modal = document.getElementById('project-modal')
       if (modal && modal.style.display === 'flex' && e.target === modal) closeProjectModal()
@@ -1158,7 +1289,6 @@
       try { _projects=JSON.parse(localStorage.getItem('nyxia_proj_'+(clientEmail||''))||'[]') } catch(e){ _projects=[] }
       _renderProjects()
     }
-
     function _renderProjects() {
       var list=document.getElementById('projects-list'); if(!list) return
       if(!_projects.length){ list.innerHTML='<div style="font-size:11px;color:var(--t4)">Aucun projet</div>'; return }
@@ -1167,7 +1297,6 @@
         return '<div data-pid="'+p.id+'" class="proj-item" style="padding:5px 8px;border-radius:6px;cursor:pointer;background:'+(a?'rgba(123,92,255,0.12)':'transparent')+';border:1px solid '+(a?'rgba(123,92,255,0.3)':'transparent')+';margin-bottom:2px"><div style="font-size:11px;color:'+(a?'#a78bfa':'var(--t3)')+';font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div><div style="font-size:10px;color:var(--t4)">'+new Date(p.date).toLocaleDateString('fr-CA')+'</div></div>'
       }).join('')
     }
-
     function _saveProject() {
       if(!chatHistory||!chatHistory.length) return
       if(_currentProjectId){
@@ -1181,7 +1310,6 @@
       try{localStorage.setItem('nyxia_proj_'+(clientEmail||''),JSON.stringify(_projects))}catch(e){}
       _renderProjects()
     }
-
     function _loadProject(id) {
       if(chatHistory&&chatHistory.length>1) _saveProject()
       var p=_projects.find(function(x){return x.id===id}); if(!p) return
@@ -1197,7 +1325,6 @@
       if(msgs) msgs.scrollTop=msgs.scrollHeight
       _renderProjects()
     }
-
     function _newConversation() {
       if(chatHistory&&chatHistory.length>1) _saveProject()
       _currentProjectId=null; chatHistory=[]
@@ -1205,7 +1332,6 @@
       var sugg=document.getElementById('suggestions'); if(sugg) sugg.style.display='flex'
       sendWelcome()
     }
-
     function _setAgentStyle(agent) {
       _currentAgent=agent
       document.querySelectorAll('[id^="agent-"]').forEach(function(b){
@@ -1215,15 +1341,12 @@
       if(ab){ab.style.background='rgba(123,92,255,0.15)';ab.style.borderColor='rgba(123,92,255,0.3)';ab.style.color='#fff'}
     }
 
-    /* ══ INIT LISTENERS ══ */
     document.addEventListener('DOMContentLoaded', function() {
-      // Project clicks via delegation
       var plist=document.getElementById('projects-list')
       if(plist) plist.addEventListener('click',function(e){
         var item=e.target.closest('.proj-item')
         if(item && item.dataset.pid) _loadProject(item.dataset.pid)
       })
-      // File input
       var fi=document.getElementById('chat-file')
       if(fi) fi.addEventListener('change',function(){
         var f=this.files[0]; if(!f) return
@@ -1233,12 +1356,12 @@
         var sendBtn=document.getElementById('btn-send')
         if(bar) bar.style.display='flex'
         if(nm)  nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ⏳ Chargement...'
-        if(sendBtn) sendBtn.disabled=true  // bloque l'envoi pendant la lecture
+        if(sendBtn) sendBtn.disabled=true
         var reader=new FileReader()
         reader.onload=function(e){
           _currentAttachment.data=e.target.result.split(',')[1]
           if(nm) nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ✅ Prêt à envoyer'
-          if(sendBtn) sendBtn.disabled=false  // débloque quand c'est prêt
+          if(sendBtn) sendBtn.disabled=false
         }
         reader.onerror=function(){
           _currentAttachment=null
@@ -1247,17 +1370,14 @@
         }
         reader.readAsDataURL(f)
       })
-      // Clear attach
       var ca=document.getElementById('btn-clear-attach')
       if(ca) ca.addEventListener('click',function(){
         _currentAttachment=null
         var bar=document.getElementById('attach-bar'),fi2=document.getElementById('chat-file')
         if(bar) bar.style.display='none'; if(fi2) fi2.value=''
       })
-      // Fonction setAgent — change le mode et envoie un message contextuel
       function setAgent(agent) {
         _currentAgent = agent
-        // Ramène toujours au chat quand on change d'agent
         showPanel('chat')
         var msgs = document.getElementById('chat-messages')
         if (msgs) msgs.innerHTML = ''
@@ -1273,8 +1393,6 @@
         }
         addBotMessage(welcomes[agent] || welcomes.general)
       }
-
-      // Agent buttons
       ['general','copywriter','formation','seo'].forEach(function(a){
         var b=document.getElementById('agent-'+a)
         if(b) b.addEventListener('click',function(){
@@ -1282,17 +1400,12 @@
           setAgent(a)
         })
       })
-      // New conversation
       var nc=document.getElementById('btn-new-conv')
       if(nc) nc.addEventListener('click',function(){ _newConversation() })
-      // Load projects
       _loadProjects()
       _loadRealProjects()
     })
 
-    /* ══════════════════════════════════════
-       INPUT AUTO-RESIZE + ENTER
-    ══════════════════════════════════════ */
     var chatInput = document.getElementById('chat-input')
     chatInput.addEventListener('input', function() {
       this.style.height = 'auto'
@@ -1305,9 +1418,6 @@
       }
     })
 
-    /* ══════════════════════════════════════
-       UTILS
-    ══════════════════════════════════════ */
     function escHtml(str) {
       var d = document.createElement('div')
       d.textContent = str
