@@ -176,14 +176,9 @@
     .panel { display: none; flex: 1; overflow: hidden; }
     .panel.active { display: flex; flex-direction: column; }
 
-    #panel-chat {
-      flex-direction: row;
-    }
+    #panel-chat { flex-direction: row; }
 
-    .chat-area {
-      flex: 1; display: flex; flex-direction: column;
-      overflow: hidden;
-    }
+    .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
     .chat-header {
       padding: 16px 24px;
@@ -250,42 +245,22 @@
       color: #fff; border-top-right-radius: 4px;
     }
 
-    /* Image générée dans le chat */
     .msg-img-wrap {
-      margin-top: 8px;
-      border-radius: 12px;
-      overflow: hidden;
+      margin-top: 8px; border-radius: 12px; overflow: hidden;
       background: linear-gradient(135deg, rgba(123,92,255,0.08), rgba(0,230,118,0.04));
       border: 1px solid rgba(123,92,255,0.15);
     }
-    .msg-img-wrap img {
-      width: 100%;
-      display: block;
-      border-radius: 11px;
-      opacity: 0;
-      transition: opacity .5s ease;
-    }
+    .msg-img-wrap img { width: 100%; display: block; border-radius: 11px; opacity: 0; transition: opacity .5s ease; }
     .msg-img-wrap img.loaded { opacity: 1; }
-    .msg-img-loader {
-      padding: 30px 20px;
-      text-align: center;
-      color: var(--t3);
-      font-size: 12px;
-    }
+    .msg-img-loader { padding: 30px 20px; text-align: center; color: var(--t3); font-size: 12px; }
     .msg-img-spinner {
-      width: 26px; height: 26px;
-      border: 3px solid rgba(123,92,255,0.2);
-      border-top-color: var(--p);
-      border-radius: 50%;
-      animation: nxSpin .7s linear infinite;
-      margin: 0 auto 8px;
+      width: 26px; height: 26px; border: 3px solid rgba(123,92,255,0.2);
+      border-top-color: var(--p); border-radius: 50%;
+      animation: nxSpin .7s linear infinite; margin: 0 auto 8px;
     }
     @keyframes nxSpin { to { transform: rotate(360deg); } }
 
-    .suggestions {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      padding: 0 24px 16px;
-    }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 24px 16px; }
     .sugg-btn {
       padding: 8px 16px; border-radius: 50px;
       border: 1px solid rgba(123,92,255,0.25); background: rgba(123,92,255,0.07);
@@ -305,8 +280,7 @@
     @keyframes dotBounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } }
 
     .chat-input-wrap {
-      padding: 16px 24px;
-      border-top: 1px solid rgba(123,92,255,0.1);
+      padding: 16px 24px; border-top: 1px solid rgba(123,92,255,0.1);
       background: rgba(10,22,40,0.8); backdrop-filter: blur(10px);
       display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0;
     }
@@ -315,8 +289,7 @@
       border: 1px solid rgba(123,92,255,0.2); border-radius: 14px;
       color: var(--t); font-family: 'Outfit', sans-serif; font-size: 14px;
       padding: 12px 16px; outline: none; resize: none;
-      transition: border-color .2s; min-height: 46px; max-height: 120px;
-      line-height: 1.5;
+      transition: border-color .2s; min-height: 46px; max-height: 120px; line-height: 1.5;
     }
     .chat-input:focus { border-color: rgba(123,92,255,0.5); }
     .chat-input::placeholder { color: var(--t4); }
@@ -331,41 +304,24 @@
     .btn-send:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 32px rgba(123,92,255,0.6); }
     .btn-send:disabled { opacity: .5; cursor: not-allowed; }
 
-    .chat-hint {
-      text-align: center; font-size: 11px; color: var(--t4);
-      padding: 6px 0 0;
-    }
+    .chat-hint { text-align: center; font-size: 11px; color: var(--t4); padding: 6px 0 0; }
 
-    #panel-generator {
-      flex-direction: column; overflow-y: auto;
-    }
-    .panel-header {
-      padding: 24px 32px 0;
-      flex-shrink: 0;
-    }
+    #panel-generator { flex-direction: column; overflow-y: auto; }
+    .panel-header { padding: 24px 32px 0; flex-shrink: 0; }
     .panel-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px; font-weight: 600;
+      font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600;
       background: linear-gradient(135deg, #a78bfa, var(--p3));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       margin-bottom: 4px;
     }
     .panel-sub { color: var(--t3); font-size: 14px; margin-bottom: 24px; }
-
-    .tool-embed {
-      flex: 1; border: none; width: 100%; height: 100%;
-      background: transparent;
-    }
+    .tool-embed { flex: 1; border: none; width: 100%; height: 100%; background: transparent; }
 
     #panel-medias { overflow: hidden; }
     #panel-medias iframe { width: 100%; height: 100%; border: none; }
 
-    #panel-messages {
-      align-items: center; justify-content: center; flex-direction: column;
-    }
-    .coming-soon {
-      text-align: center; padding: 60px 40px;
-    }
+    #panel-messages { align-items: center; justify-content: center; flex-direction: column; }
+    .coming-soon { text-align: center; padding: 60px 40px; }
     .coming-soon-icon { font-size: 64px; margin-bottom: 20px; }
     .coming-soon h2 {
       font-family: 'Cormorant Garamond', serif; font-size: 32px;
@@ -395,7 +351,6 @@
 
   <audio id="nyxia-audio" src="/NyXiaVoix-RobotParfait1.mp3" preload="auto"></audio>
 
-  <!-- ══ HEADER ══ -->
   <header>
     <div class="header-brand">
       <img src="/NyXia.png" alt="NyXia">
@@ -413,7 +368,6 @@
     </div>
   </header>
 
-  <!-- ══ BODY ══ -->
   <div class="app-body">
 
     <aside>
@@ -434,7 +388,6 @@
           <button id="agent-seo" style="width:100%;text-align:left;margin-bottom:8px;font-size:12px;padding:6px 10px;background:transparent;border:1px solid rgba(123,92,255,0.1);color:var(--t3);border-radius:8px;cursor:pointer;font-family:Outfit,sans-serif">🔍 SEO</button>
           <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--t4);text-transform:uppercase;margin-bottom:5px">💾 Sauvegardes</div>
           <div id="projects-list" style="margin-bottom:8px"><div style="font-size:11px;color:var(--t4)">Aucune sauvegarde</div></div>
-
         </div>
 
         <div class="nav-item" id="nav-generator" onclick="showPanel('generator')">
@@ -483,7 +436,6 @@
 
     <div class="main-content">
 
-      <!-- ── PANEL CHAT ── -->
       <div class="panel active" id="panel-chat">
         <div class="chat-area">
 
@@ -523,38 +475,31 @@
         </div>
       </div>
 
-      <!-- ── PANEL GÉNÉRATEUR ── -->
       <div class="panel" id="panel-generator">
         <iframe src="/generatorsiteweb.html" class="tool-embed" id="generator-frame"></iframe>
       </div>
 
-      <!-- ── PANEL MÉDIAS ── -->
       <div class="panel" id="panel-medias">
         <iframe src="/medias.html" class="tool-embed" id="medias-frame"></iframe>
       </div>
 
-      <!-- ── PANEL PROJETS ── -->
       <div class="panel" id="panel-projects">
         <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
-
           <div style="padding:20px 28px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.6);flex-shrink:0;display:flex;align-items:center;justify-content:space-between">
             <div>
               <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;background:linear-gradient(135deg,#a78bfa,#4FA3FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">📁 Mes Projets</div>
               <div style="color:var(--t3);font-size:13px">Organise et retrouve tes projets NyXia</div>
             </div>
           </div>
-
           <div id="projects-grid" style="flex:1;overflow-y:auto;padding:24px 28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;align-content:start">
             <div onclick="openProjectModal()" style="border:2px dashed rgba(123,92,255,0.3);border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;min-height:140px;background:rgba(123,92,255,0.03)" onmouseover="this.style.borderColor='rgba(123,92,255,0.6)';this.style.background='rgba(123,92,255,0.07)'" onmouseout="this.style.borderColor='rgba(123,92,255,0.3)';this.style.background='rgba(123,92,255,0.03)'">
               <div style="font-size:28px;color:rgba(123,92,255,0.6)">✦</div>
               <div style="font-size:13px;color:var(--t3);font-weight:500">Créer un nouveau projet</div>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- MODAL NOUVEAU PROJET -->
       <div id="project-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);align-items:center;justify-content:center">
         <div style="background:var(--bg2);border:1px solid rgba(123,92,255,0.25);border-radius:20px;padding:32px;width:100%;max-width:480px;margin:20px;box-shadow:0 24px 64px rgba(0,0,0,0.5)">
           <div style="font-size:18px;font-weight:700;color:var(--t);margin-bottom:6px">📁 Nouveau Projet</div>
@@ -586,7 +531,6 @@
         </div>
       </div>
 
-      <!-- ── PANEL MESSAGERIE ── -->
       <div class="panel" id="panel-messages">
         <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
           <div style="padding:20px 28px;border-bottom:1px solid rgba(123,92,255,0.1);background:rgba(10,22,40,0.6);flex-shrink:0">
@@ -620,6 +564,41 @@
 
   <script>
     /* ══════════════════════════════════════
+       CONFIG VOIX NYXIA
+       Priorité : Hortense (Edge) > Google FR (Chrome) > Amélie > toute voix FR féminine > toute voix FR
+    ══════════════════════════════════════ */
+    var NYXIA_VOICE_PRIORITY = [
+      'Microsoft Hortense',
+      'Google français',
+      'Amélie',
+      'Audrey',
+      'Microsoft Denise',
+      'Virginie',
+      'Sophie',
+      'Marie',
+      'Alice'
+    ];
+
+    function pickBestFrenchVoice(voices) {
+      if (!voices || !voices.length) return null;
+      /* 1er passage : cherche une voix exacte dans la liste de priorité */
+      for (var i = 0; i < NYXIA_VOICE_PRIORITY.length; i++) {
+        var found = voices.find(function(v) { return v.name.indexOf(NYXIA_VOICE_PRIORITY[i]) !== -1 && v.lang.indexOf('fr') === 0 })
+        if (found) return found;
+      }
+      /* 2e passage : cherche une voix fr-FR avec un nom féminin */
+      var feminine = voices.find(function(v) { return v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie|virginie|sophie|alice|denise|helene|isabelle|celine|julie|leila/i.test(v.name) })
+      if (feminine) return feminine;
+      /* 3e passage : toute voix fr-FR */
+      var frFR = voices.find(function(v) { return v.lang === 'fr-FR' })
+      if (frFR) return frFR;
+      /* 4e passage : toute voix fr */
+      var anyFr = voices.find(function(v) { return v.lang && v.lang.indexOf('fr') === 0 })
+      return anyFr || null;
+    }
+
+
+    /* ══════════════════════════════════════
        AUTH
     ══════════════════════════════════════ */
     var sessionToken = sessionStorage.getItem('nyxia_token') || ''
@@ -646,10 +625,7 @@
 
     function initUI() {
       var audio = document.getElementById('nyxia-audio')
-      if (audio) {
-        audio.volume = 0.7
-        audio.play().catch(function(){})
-      }
+      if (audio) { audio.volume = 0.7; audio.play().catch(function(){}) }
       document.getElementById('header-username').textContent = clientName
       document.getElementById('sidebar-username').textContent = clientName
       document.getElementById('sidebar-avatar').textContent = clientName.charAt(0).toUpperCase()
@@ -689,7 +665,6 @@
     ══════════════════════════════════════ */
     var chatHistory  = []
     var isSpeaking   = false
-    var speechQueue  = []
 
     function sendWelcome() {
       var welcome = clientName
@@ -727,23 +702,18 @@
       }
       var attachmentToSend = _currentAttachment ? JSON.parse(JSON.stringify(_currentAttachment)) : null
       var displayText = text
-      if (attachmentToSend) {
-        displayText = text ? text + '\n📎 ' + attachmentToSend.name : '📎 ' + attachmentToSend.name
-      }
+      if (attachmentToSend) { displayText = text ? text + '\n📎 ' + attachmentToSend.name : '📎 ' + attachmentToSend.name }
       addUserMessage(displayText)
 
       var historyContent = text
-      if (attachmentToSend) {
-        historyContent = (text ? text + '\n' : '') + '[Fichier joint: ' + attachmentToSend.name + ' (' + attachmentToSend.type + ')]'
-      }
+      if (attachmentToSend) { historyContent = (text ? text + '\n' : '') + '[Fichier joint: ' + attachmentToSend.name + ' (' + attachmentToSend.type + ')]' }
       chatHistory.push({ role: 'user', content: historyContent })
 
       if (_currentAttachment) {
         _currentAttachment = null
-        var bar = document.getElementById('attach-bar')
-        var fi  = document.getElementById('chat-file')
+        var bar = document.getElementById('attach-bar'), fi = document.getElementById('chat-file')
         if (bar) bar.style.display = 'none'
-        if (fi)  fi.value = ''
+        if (fi) fi.value = ''
       }
 
       var btn = document.getElementById('btn-send')
@@ -753,13 +723,7 @@
       fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message    : text,
-          history    : chatHistory.slice(-10),
-          userName   : clientName,
-          agent      : _currentAgent,
-          attachment : attachmentToSend
-        })
+        body: JSON.stringify({ message: text, history: chatHistory.slice(-10), userName: clientName, agent: _currentAgent, attachment: attachmentToSend })
       })
       .then(r => r.json())
       .then(data => {
@@ -778,30 +742,27 @@
       })
     }
 
-
-    /* ══════════════════════════════════════════════════════════════
-       ██████  addBotMessage  — CORRIGÉ : IMAGES + SPEAKER  ██████
-    ══════════════════════════════════════════════════════════════ */
+    /* ══════════════════════════════════════════════════
+       addBotMessage — IMAGES + SPEAKER
+    ══════════════════════════════════════════════════ */
     function addBotMessage(text) {
       var msgs = document.getElementById('chat-messages')
       var div  = document.createElement('div')
       div.className = 'msg bot'
 
       var avatar = document.createElement('img')
-      avatar.src = '/NyXia.png'
-      avatar.className = 'msg-avatar'
-      avatar.alt = 'NyXia'
+      avatar.src = '/NyXia.png'; avatar.className = 'msg-avatar'; avatar.alt = 'NyXia'
 
       var wrapper = document.createElement('div')
       wrapper.style.cssText = 'display:flex;flex-direction:column;gap:4px;max-width:100%'
 
-      /* ── DÉTECTION IMAGE ── */
+      /* Détection image */
       var imgRegex = /\[IMAGE\s*:\s*([\s\S]*?)\]/i
       var imgMatch = text.match(imgRegex)
       var textWithoutImg = text.replace(imgRegex, '').trim()
       var imgDesc = imgMatch ? imgMatch[1].trim() : null
 
-      /* ── Bulle de texte ── */
+      /* Bulle */
       var bubble = document.createElement('div')
       bubble.className = 'msg-bubble'
       if (textWithoutImg) {
@@ -811,7 +772,7 @@
       }
       wrapper.appendChild(bubble)
 
-      /* ── Zone image si détectée ── */
+      /* Image */
       if (imgDesc) {
         var imgWrap = document.createElement('div')
         imgWrap.className = 'msg-img-wrap'
@@ -835,66 +796,49 @@
           requestAnimationFrame(function() { img.classList.add('loaded') })
           msgs.scrollTop = msgs.scrollHeight
         }
-        img.onerror = function() {
-          loader.innerHTML = '⚠️ Erreur de génération — réessaie'
-        }
+        img.onerror = function() { loader.innerHTML = '⚠️ Erreur de génération — réessaie' }
         img.src = imgUrl
       }
 
-      /* ── Boutons d'action ── */
+      /* Boutons d'action */
       var bs = 'padding:2px 9px;border-radius:50px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.04);color:var(--t4);font-family:Outfit,sans-serif;font-size:11px;cursor:pointer;transition:all .15s'
       var acts = document.createElement('div')
       acts.style.cssText = 'display:flex;gap:4px;flex-wrap:wrap;margin-top:2px'
 
       var textForSpeak = textWithoutImg || text
 
-      /* Bouton Écouter */
       var spk = document.createElement('button')
       spk.style.cssText = bs
       spk.textContent = '🔊 Écouter'
-      spk.addEventListener('click', function() {
-        speakMsg(spk, textForSpeak)
-      })
+      spk.addEventListener('click', function() { speakMsg(spk, textForSpeak) })
       acts.appendChild(spk)
 
-      /* Bouton Copier */
       var cpy = document.createElement('button')
       cpy.style.cssText = bs
       cpy.textContent = '📋 Copier'
       cpy.addEventListener('click', function() {
-        navigator.clipboard.writeText(text).then(function() {
-          cpy.textContent = '✓'
-          setTimeout(function() { cpy.textContent = '📋 Copier' }, 2000)
-        })
+        navigator.clipboard.writeText(text).then(function() { cpy.textContent = '✓'; setTimeout(function() { cpy.textContent = '📋 Copier' }, 2000) })
       })
       acts.appendChild(cpy)
 
-      /* Bouton Réessayer */
       var ret = document.createElement('button')
       ret.style.cssText = bs
       ret.textContent = '↺ Réessayer'
       ret.addEventListener('click', function() {
         var last = chatHistory.filter(function(m) { return m.role === 'user' }).pop()
-        if (last) {
-          if (chatHistory[chatHistory.length - 1].role === 'assistant') chatHistory.pop()
-          div.remove()
-          sendMessageText(last.content)
-        }
+        if (last) { if (chatHistory[chatHistory.length - 1].role === 'assistant') chatHistory.pop(); div.remove(); sendMessageText(last.content) }
       })
       acts.appendChild(ret)
 
-      /* Bouton PDF */
       var pdfBtn = document.createElement('button')
       pdfBtn.style.cssText = bs
       pdfBtn.textContent = '⬇ PDF'
       var capturedText = text
       pdfBtn.addEventListener('click', function() {
-        var w = window.open('', '_blank')
-        if (!w) return
+        var w = window.open('', '_blank'); if (!w) return
         var body = '<h2 style="color:#7B5CFF">NyXia IA</h2>' + escHtml(capturedText).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')
         w.document.write('<!DOCTYPE html><html><head><title>NyXia</title><style>body{font-family:Georgia,serif;max-width:760px;margin:48px auto;line-height:1.85}</style></head><body>' + body + '</body></html>')
-        w.document.close()
-        setTimeout(function() { w.print() }, 300)
+        w.document.close(); setTimeout(function() { w.print() }, 300)
       })
       acts.appendChild(pdfBtn)
 
@@ -904,7 +848,6 @@
       msgs.appendChild(div)
       msgs.scrollTop = msgs.scrollHeight
     }
-
 
     function addUserMessage(text) {
       var msgs = document.getElementById('chat-messages')
@@ -919,8 +862,7 @@
     function addTyping() {
       var msgs = document.getElementById('chat-messages')
       var div  = document.createElement('div')
-      div.className = 'msg bot'
-      div.id = 'typing-indicator'
+      div.className = 'msg bot'; div.id = 'typing-indicator'
       div.innerHTML = '<img src="/NyXia.png" class="msg-avatar" alt="NyXia"><div class="msg-bubble"><span class="nx-dots"><i></i><i></i><i></i></span></div>'
       msgs.appendChild(div)
       msgs.scrollTop = msgs.scrollHeight
@@ -931,15 +873,13 @@
       if (t) t.remove()
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       ██████  TTS  — CORRIGÉ : speakMsg existe maintenant  ██████
-    ══════════════════════════════════════════════════════════════ */
+    /* ══════════════════════════════════════════════════
+       TTS — Voix française féminine priorisée
+    ══════════════════════════════════════════════════ */
 
-    /* speakMsg : appelée par le bouton "🔊 Écouter" sous chaque message */
     function speakMsg(btn, text) {
       if (!window.speechSynthesis) return
 
-      /* Si ce bouton est déjà en train de parler → arrêter */
       if (btn._nxSpeaking) {
         window.speechSynthesis.cancel()
         btn._nxSpeaking = false
@@ -950,7 +890,6 @@
         return
       }
 
-      /* Arrêter toute lecture en cours et reset tous les autres boutons */
       window.speechSynthesis.cancel()
       document.querySelectorAll('.msg button').forEach(function(b) {
         if (b._nxSpeaking) {
@@ -962,7 +901,6 @@
         }
       })
 
-      /* Nettoyer le texte */
       var clean = text
         .replace(/\*\*(.*?)\*\*/g, '$1')
         .replace(/\[IMAGE[\s\S]*?\]/gi, '')
@@ -985,13 +923,8 @@
       utt.volume = 1
 
       function doSpeak() {
-        var voices = window.speechSynthesis.getVoices()
-        var frVoice = voices.find(function(v) {
-          return v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie/i.test(v.name)
-        }) || voices.find(function(v) {
-          return v.lang && v.lang.startsWith('fr')
-        })
-        if (frVoice) utt.voice = frVoice
+        var voice = pickBestFrenchVoice(window.speechSynthesis.getVoices())
+        if (voice) utt.voice = voice
         window.speechSynthesis.speak(utt)
       }
 
@@ -1010,11 +943,9 @@
         btn.style.background = 'rgba(123,92,255,0.04)'
       }
 
-      /* Fix Chrome : délai obligatoire après cancel() */
       setTimeout(doSpeak, 200)
     }
 
-    /* toggleSpeak : bouton header "Écouter NyXia" (lecture auto) */
     function toggleSpeak() {
       isSpeaking = !isSpeaking
       var btn = document.getElementById('btn-speak')
@@ -1028,7 +959,6 @@
       }
     }
 
-    /* speakText : lecture auto après chaque réponse */
     function speakText(text) {
       if (!window.speechSynthesis) return
       window.speechSynthesis.cancel()
@@ -1047,19 +977,14 @@
       utt.volume = 1
 
       function trySpeak() {
-        var voices = window.speechSynthesis.getVoices()
-        var frVoice = voices.find(v => v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie|thomas/i.test(v.name))
-                   || voices.find(v => v.lang.startsWith('fr'))
-        if (frVoice) utt.voice = frVoice
+        var voice = pickBestFrenchVoice(window.speechSynthesis.getVoices())
+        if (voice) utt.voice = voice
         window.speechSynthesis.speak(utt)
       }
 
       utt.onend = function() {
         var btn = document.getElementById('btn-speak')
-        if (btn) {
-          btn.textContent = '🔊 Écouter NyXia'
-          btn.classList.remove('speaking')
-        }
+        if (btn) { btn.textContent = '🔊 Écouter NyXia'; btn.classList.remove('speaking') }
         isSpeaking = false
       }
       utt.onerror = function() { isSpeaking = false }
@@ -1067,11 +992,8 @@
       setTimeout(trySpeak, 200)
     }
 
-    /* Préchargement des voix */
     if (window.speechSynthesis) {
-      window.speechSynthesis.onvoiceschanged = function() {
-        window.speechSynthesis.getVoices()
-      }
+      window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices() }
     }
 
 
@@ -1106,9 +1028,7 @@
             + '<span style="font-size:11px;color:var(--t4)">' + new Date(m.date).toLocaleString('fr-CA') + '</span>'
             + '</div>'
             + '<div style="font-size:14px;color:var(--t2);white-space:pre-wrap">' + escHtml(m.message) + '</div>'
-            + attachHtml
-            + replyHtml
-            + '</div>'
+            + attachHtml + replyHtml + '</div>'
         }).join('')
       })
       .catch(function() {
@@ -1117,10 +1037,9 @@
     }
 
     function previewAttachments() {
-      var files   = document.getElementById('msg-file').files
+      var files = document.getElementById('msg-file').files
       var preview = document.getElementById('attach-preview')
-      msgAttachments = []
-      preview.innerHTML = ''
+      msgAttachments = []; preview.innerHTML = ''
       Array.from(files).forEach(function(file) {
         var reader = new FileReader()
         reader.onload = function(e) {
@@ -1135,15 +1054,11 @@
     }
 
     function sendClientMessage() {
-      var text    = document.getElementById('msg-input').value.trim()
-      var btn     = document.getElementById('btn-send-msg')
-      var status  = document.getElementById('msg-status')
-      if (!text && !msgAttachments.length) {
-        showMsgStatus('Écris un message avant d\'envoyer.', 'error')
-        return
-      }
-      btn.disabled    = true
-      btn.textContent = 'Envoi...'
+      var text = document.getElementById('msg-input').value.trim()
+      var btn = document.getElementById('btn-send-msg')
+      var status = document.getElementById('msg-status')
+      if (!text && !msgAttachments.length) { showMsgStatus('Écris un message avant d\'envoyer.', 'error'); return }
+      btn.disabled = true; btn.textContent = 'Envoi...'
       fetch('/api/message/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1151,8 +1066,7 @@
       })
       .then(r => r.json())
       .then(data => {
-        btn.disabled    = false
-        btn.textContent = 'Envoyer ➤'
+        btn.disabled = false; btn.textContent = 'Envoyer ➤'
         if (data.success) {
           document.getElementById('msg-input').value = ''
           document.getElementById('attach-preview').innerHTML = ''
@@ -1160,24 +1074,20 @@
           msgAttachments = []
           showMsgStatus('✓ Message envoyé ! Diane recevra une notification.', 'success')
           loadMessages()
-        } else {
-          showMsgStatus('Erreur : ' + (data.error || 'Réessaie'), 'error')
-        }
+        } else { showMsgStatus('Erreur : ' + (data.error || 'Réessaie'), 'error') }
       })
       .catch(function() {
-        btn.disabled    = false
-        btn.textContent = 'Envoyer ➤'
+        btn.disabled = false; btn.textContent = 'Envoyer ➤'
         showMsgStatus('Erreur réseau.', 'error')
       })
     }
 
     function showMsgStatus(text, type) {
       var el = document.getElementById('msg-status')
-      el.textContent  = text
-      el.style.display = 'block'
+      el.textContent = text; el.style.display = 'block'
       el.style.background = type === 'success' ? 'rgba(0,230,118,0.1)' : 'rgba(255,75,110,0.1)'
       el.style.border = '1px solid ' + (type === 'success' ? 'rgba(0,230,118,0.3)' : 'rgba(255,75,110,0.3)')
-      el.style.color  = type === 'success' ? '#00E676' : '#ff8fab'
+      el.style.color = type === 'success' ? '#00E676' : '#ff8fab'
       setTimeout(function() { el.style.display = 'none' }, 5000)
     }
 
@@ -1188,13 +1098,8 @@
     var _projects=[], _currentProjectId=null, _currentAttachment=null, _currentAgent='general'
     var _realProjects=[]
     var _projTypes = {
-      livre:      '📚 Écriture de livre',
-      formation:  '🎓 Création de formation',
-      site:       '🌐 Site web',
-      copywriting:'✍️ Copywriting',
-      seo:        '🔍 SEO & Contenu',
-      marketing:  '📱 Marketing réseaux sociaux',
-      autre:      '💼 Autre'
+      livre:'📚 Écriture de livre', formation:'🎓 Création de formation', site:'🌐 Site web',
+      copywriting:'✍️ Copywriting', seo:'🔍 SEO & Contenu', marketing:'📱 Marketing réseaux sociaux', autre:'💼 Autre'
     }
 
     function _loadRealProjects() {
@@ -1206,84 +1111,55 @@
     }
     function openProjectModal() {
       var modal = document.getElementById('project-modal')
-      if (modal) {
-        modal.style.display = 'flex'
-        document.getElementById('proj-name').focus()
-        document.getElementById('proj-name').value = ''
-        document.getElementById('proj-desc').value = ''
-        document.getElementById('proj-type').value = 'livre'
-      }
+      if (modal) { modal.style.display='flex'; document.getElementById('proj-name').focus(); document.getElementById('proj-name').value=''; document.getElementById('proj-desc').value=''; document.getElementById('proj-type').value='livre' }
     }
-    function closeProjectModal() {
-      var modal = document.getElementById('project-modal')
-      if (modal) modal.style.display = 'none'
-    }
+    function closeProjectModal() { var m = document.getElementById('project-modal'); if (m) m.style.display='none' }
     function createProject() {
       var name = document.getElementById('proj-name').value.trim()
       var desc = document.getElementById('proj-desc').value.trim()
       var type = document.getElementById('proj-type').value
-      if (!name) {
-        document.getElementById('proj-name').style.borderColor = '#FF4B6E'
-        setTimeout(function(){ document.getElementById('proj-name').style.borderColor = 'rgba(123,92,255,0.2)' }, 2000)
-        return
-      }
-      var proj = { id: 'rp' + Date.now(), name: name, desc: desc, type: type, date: new Date().toISOString(), notes: [] }
-      _realProjects.unshift(proj)
-      _saveRealProjects()
-      _renderProjectsGrid()
-      closeProjectModal()
+      if (!name) { document.getElementById('proj-name').style.borderColor='#FF4B6E'; setTimeout(function(){ document.getElementById('proj-name').style.borderColor='rgba(123,92,255,0.2)' }, 2000); return }
+      var proj = { id:'rp'+Date.now(), name:name, desc:desc, type:type, date:new Date().toISOString(), notes:[] }
+      _realProjects.unshift(proj); _saveRealProjects(); _renderProjectsGrid(); closeProjectModal()
       showPanel('chat')
-      var welcome = '📁 **Projet "' + name + '"** ouvert !\n\n'
-      if (desc) welcome += desc + '\n\n'
-      welcome += 'Type : ' + (_projTypes[type] || type) + '\n\nComment puis-je t\'aider avec ce projet ?'
-      var msgs = document.getElementById('chat-messages')
-      if (msgs) msgs.innerHTML = ''
-      chatHistory = []
-      addBotMessage(welcome)
+      var welcome = '📁 **Projet "'+name+'"** ouvert !\n\n'
+      if (desc) welcome += desc+'\n\n'
+      welcome += 'Type : '+(_projTypes[type]||type)+'\n\nComment puis-je t\'aider avec ce projet ?'
+      var msgs = document.getElementById('chat-messages'); if (msgs) msgs.innerHTML=''
+      chatHistory = []; addBotMessage(welcome)
     }
     function deleteProject(id, e) {
-      e.stopPropagation()
-      if (!confirm('Supprimer ce projet ?')) return
-      _realProjects = _realProjects.filter(function(p){ return p.id !== id })
-      _saveRealProjects()
-      _renderProjectsGrid()
+      e.stopPropagation(); if (!confirm('Supprimer ce projet ?')) return
+      _realProjects = _realProjects.filter(function(p){ return p.id !== id }); _saveRealProjects(); _renderProjectsGrid()
     }
     function openProject(id) {
-      var p = _realProjects.find(function(x){ return x.id === id })
-      if (!p) return
+      var p = _realProjects.find(function(x){ return x.id === id }); if (!p) return
       showPanel('chat')
-      var msgs = document.getElementById('chat-messages')
-      if (msgs) msgs.innerHTML = ''
+      var msgs = document.getElementById('chat-messages'); if (msgs) msgs.innerHTML=''
       chatHistory = []
-      var welcome = '📁 **Projet "' + p.name + '"** rechargé !\n\n'
-      if (p.desc) welcome += p.desc + '\n\n'
-      welcome += 'Type : ' + (_projTypes[p.type] || p.type) + '\n\nSur quoi travaillons-nous aujourd\'hui ?'
+      var welcome = '📁 **Projet "'+p.name+'"** rechargé !\n\n'
+      if (p.desc) welcome += p.desc+'\n\n'
+      welcome += 'Type : '+(_projTypes[p.type]||p.type)+'\n\nSur quoi travaillons-nous aujourd\'hui ?'
       addBotMessage(welcome)
     }
     function _renderProjectsGrid() {
-      var grid = document.getElementById('projects-grid')
-      if (!grid) return
+      var grid = document.getElementById('projects-grid'); if (!grid) return
       var createCard = '<div onclick="openProjectModal()" style="border:2px dashed rgba(123,92,255,0.3);border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all .2s;min-height:140px;background:rgba(123,92,255,0.03)" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.6)\';this.style.background=\'rgba(123,92,255,0.07)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.3)\';this.style.background=\'rgba(123,92,255,0.03)\'"><div style="font-size:28px;color:rgba(123,92,255,0.6)">✦</div><div style="font-size:13px;color:var(--t3);font-weight:500">Créer un nouveau projet</div></div>'
       if (!_realProjects.length) { grid.innerHTML = createCard; return }
       var cards = _realProjects.map(function(p) {
-        return '<div onclick="openProject(\'' + p.id + '\')" style="background:rgba(10,22,40,0.8);border:1px solid rgba(123,92,255,0.15);border-radius:16px;padding:20px;cursor:pointer;transition:all .2s;min-height:140px;display:flex;flex-direction:column;position:relative" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.4)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.15)\';this.style.transform=\'none\'">'
-          + '<div style="font-size:11px;color:#a78bfa;margin-bottom:8px;font-weight:600">' + (_projTypes[p.type] || p.type) + '</div>'
-          + '<div style="font-size:15px;font-weight:700;color:var(--t);margin-bottom:6px;line-height:1.3">' + p.name + '</div>'
-          + (p.desc ? '<div style="font-size:12px;color:var(--t3);flex:1;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">' + p.desc + '</div>' : '')
-          + '<div style="font-size:11px;color:var(--t4);margin-top:10px">' + new Date(p.date).toLocaleDateString('fr-CA') + '</div>'
-          + '<button onclick="deleteProject(\'' + p.id + '\',event)" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px;opacity:0;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">🗑</button>'
-          + '</div>'
+        return '<div onclick="openProject(\''+p.id+'\')" style="background:rgba(10,22,40,0.8);border:1px solid rgba(123,92,255,0.15);border-radius:16px;padding:20px;cursor:pointer;transition:all .2s;min-height:140px;display:flex;flex-direction:column;position:relative" onmouseover="this.style.borderColor=\'rgba(123,92,255,0.4)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'rgba(123,92,255,0.15)\';this.style.transform=\'none\'">'
+          +'<div style="font-size:11px;color:#a78bfa;margin-bottom:8px;font-weight:600">'+(_projTypes[p.type]||p.type)+'</div>'
+          +'<div style="font-size:15px;font-weight:700;color:var(--t);margin-bottom:6px;line-height:1.3">'+p.name+'</div>'
+          +(p.desc?'<div style="font-size:12px;color:var(--t3);flex:1;line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">'+p.desc+'</div>':'')
+          +'<div style="font-size:11px;color:var(--t4);margin-top:10px">'+new Date(p.date).toLocaleDateString('fr-CA')+'</div>'
+          +'<button onclick="deleteProject(\''+p.id+'\',event)" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--t4);cursor:pointer;font-size:14px;opacity:0;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">🗑</button>'
+          +'</div>'
       }).join('')
       grid.innerHTML = createCard + cards
     }
 
-    document.addEventListener('click', function(e) {
-      var modal = document.getElementById('project-modal')
-      if (modal && modal.style.display === 'flex' && e.target === modal) closeProjectModal()
-    })
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeProjectModal()
-    })
+    document.addEventListener('click', function(e) { var m = document.getElementById('project-modal'); if (m && m.style.display==='flex' && e.target===m) closeProjectModal() })
+    document.addEventListener('keydown', function(e) { if (e.key==='Escape') closeProjectModal() })
 
     function _loadProjects() {
       try { _projects=JSON.parse(localStorage.getItem('nyxia_proj_'+(clientEmail||''))||'[]') } catch(e){ _projects=[] }
@@ -1299,31 +1175,21 @@
     }
     function _saveProject() {
       if(!chatHistory||!chatHistory.length) return
-      if(_currentProjectId){
-        var p=_projects.find(function(x){return x.id===_currentProjectId})
-        if(p){p.history=chatHistory.slice();p.date=new Date().toISOString()}
-      } else {
-        var proj={id:'p'+Date.now(),name:(clientName||'Conv')+' — '+new Date().toLocaleDateString('fr-CA'),agent:_currentAgent,history:chatHistory.slice(),date:new Date().toISOString()}
-        _projects.unshift(proj); if(_projects.length>20)_projects=_projects.slice(0,20)
-        _currentProjectId=proj.id
-      }
+      if(_currentProjectId){ var p=_projects.find(function(x){return x.id===_currentProjectId}); if(p){p.history=chatHistory.slice();p.date=new Date().toISOString()} }
+      else { var proj={id:'p'+Date.now(),name:(clientName||'Conv')+' — '+new Date().toLocaleDateString('fr-CA'),agent:_currentAgent,history:chatHistory.slice(),date:new Date().toISOString()}; _projects.unshift(proj); if(_projects.length>20)_projects=_projects.slice(0,20); _currentProjectId=proj.id }
       try{localStorage.setItem('nyxia_proj_'+(clientEmail||''),JSON.stringify(_projects))}catch(e){}
       _renderProjects()
     }
     function _loadProject(id) {
       if(chatHistory&&chatHistory.length>1) _saveProject()
       var p=_projects.find(function(x){return x.id===id}); if(!p) return
-      _currentProjectId=id; chatHistory=p.history.slice()
-      _currentAgent=p.agent||'general'
-      document.querySelectorAll('[id^="agent-"]').forEach(function(b){
-        b.style.background='transparent'; b.style.borderColor='rgba(123,92,255,0.1)'; b.style.color='var(--t3)'
-      })
+      _currentProjectId=id; chatHistory=p.history.slice(); _currentAgent=p.agent||'general'
+      document.querySelectorAll('[id^="agent-"]').forEach(function(b){ b.style.background='transparent'; b.style.borderColor='rgba(123,92,255,0.1)'; b.style.color='var(--t3)' })
       var ab=document.getElementById('agent-'+_currentAgent)
       if(ab){ab.style.background='rgba(123,92,255,0.15)';ab.style.borderColor='rgba(123,92,255,0.3)';ab.style.color='#fff'}
       var msgs=document.getElementById('chat-messages'); if(msgs) msgs.innerHTML=''
       chatHistory.forEach(function(m){if(m.role==='user')addUserMessage(m.content);else addBotMessage(m.content)})
-      if(msgs) msgs.scrollTop=msgs.scrollHeight
-      _renderProjects()
+      if(msgs) msgs.scrollTop=msgs.scrollHeight; _renderProjects()
     }
     function _newConversation() {
       if(chatHistory&&chatHistory.length>1) _saveProject()
@@ -1334,95 +1200,57 @@
     }
     function _setAgentStyle(agent) {
       _currentAgent=agent
-      document.querySelectorAll('[id^="agent-"]').forEach(function(b){
-        b.style.background='transparent'; b.style.borderColor='rgba(123,92,255,0.1)'; b.style.color='var(--t3)'
-      })
+      document.querySelectorAll('[id^="agent-"]').forEach(function(b){ b.style.background='transparent'; b.style.borderColor='rgba(123,92,255,0.1)'; b.style.color='var(--t3)' })
       var ab=document.getElementById('agent-'+agent)
       if(ab){ab.style.background='rgba(123,92,255,0.15)';ab.style.borderColor='rgba(123,92,255,0.3)';ab.style.color='#fff'}
     }
 
     document.addEventListener('DOMContentLoaded', function() {
       var plist=document.getElementById('projects-list')
-      if(plist) plist.addEventListener('click',function(e){
-        var item=e.target.closest('.proj-item')
-        if(item && item.dataset.pid) _loadProject(item.dataset.pid)
-      })
+      if(plist) plist.addEventListener('click',function(e){ var item=e.target.closest('.proj-item'); if(item && item.dataset.pid) _loadProject(item.dataset.pid) })
       var fi=document.getElementById('chat-file')
       if(fi) fi.addEventListener('change',function(){
         var f=this.files[0]; if(!f) return
         var size = f.size>1048576 ? (f.size/1048576).toFixed(1)+'MB' : Math.round(f.size/1024)+'KB'
         _currentAttachment={name:f.name,type:f.type,data:null}
-        var bar=document.getElementById('attach-bar'), nm=document.getElementById('attach-name')
-        var sendBtn=document.getElementById('btn-send')
+        var bar=document.getElementById('attach-bar'), nm=document.getElementById('attach-name'), sendBtn=document.getElementById('btn-send')
         if(bar) bar.style.display='flex'
-        if(nm)  nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ⏳ Chargement...'
+        if(nm) nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ⏳ Chargement...'
         if(sendBtn) sendBtn.disabled=true
         var reader=new FileReader()
-        reader.onload=function(e){
-          _currentAttachment.data=e.target.result.split(',')[1]
-          if(nm) nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ✅ Prêt à envoyer'
-          if(sendBtn) sendBtn.disabled=false
-        }
-        reader.onerror=function(){
-          _currentAttachment=null
-          if(nm) nm.innerHTML='❌ Erreur de lecture — réessaie'
-          if(sendBtn) sendBtn.disabled=false
-        }
+        reader.onload=function(e){ _currentAttachment.data=e.target.result.split(',')[1]; if(nm) nm.innerHTML='<strong>'+f.name+'</strong> ('+size+') — ✅ Prêt'; if(sendBtn) sendBtn.disabled=false }
+        reader.onerror=function(){ _currentAttachment=null; if(nm) nm.innerHTML='❌ Erreur'; if(sendBtn) sendBtn.disabled=false }
         reader.readAsDataURL(f)
       })
       var ca=document.getElementById('btn-clear-attach')
-      if(ca) ca.addEventListener('click',function(){
-        _currentAttachment=null
-        var bar=document.getElementById('attach-bar'),fi2=document.getElementById('chat-file')
-        if(bar) bar.style.display='none'; if(fi2) fi2.value=''
-      })
+      if(ca) ca.addEventListener('click',function(){ _currentAttachment=null; var bar=document.getElementById('attach-bar'),fi2=document.getElementById('chat-file'); if(bar) bar.style.display='none'; if(fi2) fi2.value='' })
       function setAgent(agent) {
-        _currentAgent = agent
-        showPanel('chat')
-        var msgs = document.getElementById('chat-messages')
-        if (msgs) msgs.innerHTML = ''
-        chatHistory = []
-        var sugg = document.getElementById('suggestions')
-        if (sugg) sugg.style.display = 'none'
-        var name = clientName || ''
+        _currentAgent=agent; showPanel('chat')
+        var msgs=document.getElementById('chat-messages'); if(msgs) msgs.innerHTML=''
+        chatHistory=[]; var sugg=document.getElementById('suggestions'); if(sugg) sugg.style.display='none'
+        var name=clientName||''
         var welcomes = {
-          general:    (name ? 'Salut ' + name + ' ! 💜' : 'Bonjour ! 💜') + ' Je suis NyXia, ton agente IA. Sur quoi travailles-tu ?',
+          general: (name?'Salut '+name+' ! 💜':'Bonjour ! 💜')+' Je suis NyXia, ton agente IA. Sur quoi travailles-tu ?',
           copywriter: '✍️ Mode **Copywriter** activé !\n\nJe rédige : annonces pub, posts réseaux, emails de vente, chapitres de livre, VSL...\n\nQuel type de contenu et pour quelle plateforme ?',
-          formation:  '🎓 Mode **Créateur de Formation** activé !\n\nJe structure ta formation : modules, scripts vidéo, workbooks et page de vente.\n\nQuel est le sujet et qui est ton audience cible ?',
-          seo:        '🔍 Mode **Expert SEO** activé !\n\nJe combine référencement et Psychologie du Clic pour rankler ET convertir.\n\nTon site/business, ta niche et tes mots-clés actuels ?'
+          formation: '🎓 Mode **Créateur de Formation** activé !\n\nJe structure ta formation : modules, scripts vidéo, workbooks et page de vente.\n\nQuel est le sujet et qui est ton audience cible ?',
+          seo: '🔍 Mode **Expert SEO** activé !\n\nJe combine référencement et Psychologie du Clic pour rankler ET convertir.\n\nTon site/business, ta niche et tes mots-clés actuels ?'
         }
-        addBotMessage(welcomes[agent] || welcomes.general)
+        addBotMessage(welcomes[agent]||welcomes.general)
       }
       ['general','copywriter','formation','seo'].forEach(function(a){
         var b=document.getElementById('agent-'+a)
-        if(b) b.addEventListener('click',function(){
-          _setAgentStyle(a)
-          setAgent(a)
-        })
+        if(b) b.addEventListener('click',function(){ _setAgentStyle(a); setAgent(a) })
       })
       var nc=document.getElementById('btn-new-conv')
       if(nc) nc.addEventListener('click',function(){ _newConversation() })
-      _loadProjects()
-      _loadRealProjects()
+      _loadProjects(); _loadRealProjects()
     })
 
     var chatInput = document.getElementById('chat-input')
-    chatInput.addEventListener('input', function() {
-      this.style.height = 'auto'
-      this.style.height = Math.min(this.scrollHeight, 120) + 'px'
-    })
-    chatInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault()
-        sendMessage()
-      }
-    })
+    chatInput.addEventListener('input', function() { this.style.height='auto'; this.style.height=Math.min(this.scrollHeight,120)+'px' })
+    chatInput.addEventListener('keydown', function(e) { if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMessage() } })
 
-    function escHtml(str) {
-      var d = document.createElement('div')
-      d.textContent = str
-      return d.innerHTML
-    }
+    function escHtml(str) { var d=document.createElement('div'); d.textContent=str; return d.innerHTML }
   </script>
 
 </body>
