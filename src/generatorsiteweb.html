@@ -1,301 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyXia IA — Votre site d'affiliation prêt en 60 secondes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg1:#0F1C3F;--bg2:#1A2554;--bg3:#2A3A6E;--p:#7B5CFF;--p2:#5A6CFF;--p3:#4FA3FF;--g1:#3E2D7A;--g2:#2B245C;--glow:rgba(123,92,255,0.4);--t:#FFFFFF;--t2:#D6D9F0;--t3:#8891B8;--t4:#4a5278;--green:#00E676;--r:14px}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg1);color:var(--t2);font-family:'Outfit',sans-serif}
+    .h1-glow{background:linear-gradient(135deg,#a78bfa,var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(123,92,255,0.5))}
+    .btn-primary{padding:18px 40px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 0 32px rgba(123,92,255,0.45),0 4px 20px rgba(0,0,0,0.3);transition:all .25s}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 0 52px rgba(123,92,255,0.7),0 8px 32px rgba(0,0,0,0.4)}
+    .btn-secondary{padding:17px 36px;border-radius:50px;border:1px solid rgba(123,92,255,0.4);background:rgba(123,92,255,0.08);color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;cursor:pointer;backdrop-filter:blur(10px);transition:all .2s;text-decoration:none;display:inline-block}
+    .btn-secondary:hover{border-color:var(--p);color:var(--t)}
+    #nyxia-loading-overlay{display:none;position:fixed;inset:0;z-index:9000;background:radial-gradient(ellipse at center,#0d1535 0%,#060c1f 100%);flex-direction:column;align-items:center;justify-content:center;animation:overlayIn .4s ease}
+    #nyxia-loading-overlay.visible{display:flex}
+    @keyframes overlayIn{from{opacity:0}to{opacity:1}}
+    .overlay-nyxia-img{width:320px;max-width:70vw;object-fit:contain;filter:drop-shadow(0 0 40px rgba(123,92,255,0.6));animation:nyxiaFloat 3s ease-in-out infinite;margin-bottom:32px}
+    @keyframes nyxiaFloat{0%,100%{transform:translateY(0);filter:drop-shadow(0 0 40px rgba(123,92,255,0.6))}50%{transform:translateY(-12px);filter:drop-shadow(0 0 60px rgba(123,92,255,0.9))}}
+    .overlay-message{font-family:'Cormorant Garamond','Space Grotesk',serif;font-size:clamp(18px,3vw,26px);font-weight:600;color:#a78bfa;text-align:center;margin-bottom:24px;letter-spacing:.5px;filter:drop-shadow(0 0 16px rgba(123,92,255,0.5));min-height:36px;transition:opacity .3s}
+    .overlay-progress-wrap{width:320px;max-width:70vw}
+    .overlay-progress-bar{height:3px;background:rgba(123,92,255,0.15);border-radius:2px;overflow:hidden;margin-bottom:10px}
+    .overlay-progress-fill{height:100%;background:linear-gradient(90deg,#7B5CFF,#4FA3FF,#7B5CFF);background-size:200% 100%;border-radius:2px;width:0%;transition:width .4s ease;animation:shimmerBar 2s linear infinite}
+    @keyframes shimmerBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .overlay-progress-label{font-size:12px;color:rgba(136,145,184,0.6);text-align:center;letter-spacing:.8px;text-transform:uppercase}
+    .overlay-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .overlay-star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:starTwinkle var(--d,3s) ease-in-out infinite;opacity:var(--o,0.5)}
+    @keyframes starTwinkle{0%,100%{opacity:var(--o,0.5);transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+    #generate-btn{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(8,15,40,0.95) 0%,rgba(15,25,60,0.95) 50%,rgba(8,15,40,0.95) 100%)!important;border:1px solid rgba(212,175,80,0.45)!important;border-radius:50px!important;color:#fff!important;font-family:'Space Grotesk',sans-serif!important;font-size:14px!important;font-weight:600!important;letter-spacing:1px!important;padding:13px 40px!important;backdrop-filter:blur(12px)!important;width:auto!important;box-shadow:0 0 0 1px rgba(212,175,80,0.15),inset 0 1px 0 rgba(255,255,255,0.05),0 4px 24px rgba(0,0,0,0.4)!important;transition:all .3s ease!important;cursor:pointer!important}
+    #generate-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(212,175,80,0.06) 50%,transparent 70%);transform:translateX(-100%);animation:btnShimmer 3s ease-in-out infinite}
+    #generate-btn::after{content:'';position:absolute;inset:-1px;border-radius:50px;background:linear-gradient(135deg,rgba(212,175,80,0.3),transparent 40%,transparent 60%,rgba(212,175,80,0.15));z-index:-1;opacity:0;transition:opacity .3s}
+    @keyframes btnShimmer{0%{transform:translateX(-100%)}60%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+    #generate-btn:not(:disabled):hover{background:linear-gradient(135deg,rgba(12,22,55,0.98) 0%,rgba(20,35,80,0.98) 50%,rgba(12,22,55,0.98) 100%)!important;border-color:rgba(212,175,80,0.75)!important;box-shadow:0 0 0 1px rgba(212,175,80,0.3),0 0 30px rgba(212,175,80,0.12),0 0 60px rgba(212,175,80,0.06),inset 0 1px 0 rgba(255,255,255,0.08),0 6px 32px rgba(0,0,0,0.5)!important;transform:translateY(-2px)!important;letter-spacing:1.5px!important}
+    #generate-btn:not(:disabled):hover::after{opacity:1}
+    #generate-btn:disabled{opacity:.5!important;cursor:not-allowed!important}
+    .hero-glow{position:absolute;bottom:10%;right:5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(123,92,255,0.15) 0%,transparent 70%);animation:glowPulse 4s ease-in-out infinite;pointer-events:none}
+    @keyframes glowPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.1)}}
+    .pillar-card{background:rgba(26,37,84,0.5);border:1px solid rgba(123,92,255,0.12);border-radius:var(--r);padding:28px 24px;backdrop-filter:blur(10px);transition:all .3s}
+    .pillar-card:hover{border-color:rgba(123,92,255,0.3);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+    #fullpage-editor{display:none;position:fixed;inset:0;z-index:9500;background:var(--bg1,#0F1C3F);flex-direction:row}
+    #fullpage-editor.open{display:flex}
+    #editor-sidebar{width:260px;flex-shrink:0;background:rgba(8,15,34,0.98);border-right:1px solid rgba(123,92,255,0.15);display:flex;flex-direction:column;overflow-y:auto}
+    #editor-sidebar h2{padding:16px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#a78bfa;border-bottom:1px solid rgba(123,92,255,0.1)}
+    .edit-section{padding:14px 16px;border-bottom:1px solid rgba(123,92,255,0.07)}
+    .edit-section-title{font-size:11px;font-weight:700;color:#8891B8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+    .edit-textarea{width:100%;min-height:80px;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:8px;color:#fff;font-family:'Outfit',sans-serif;font-size:13px;padding:8px 10px;outline:none;resize:vertical;transition:border-color .2s}
+    .edit-textarea:focus{border-color:rgba(123,92,255,0.5)}
+    .color-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .color-lbl{font-size:11px;color:#8891B8;display:block;margin-bottom:4px}
+    .color-pick{width:100%;height:30px;border-radius:6px;border:1px solid rgba(123,92,255,0.2);cursor:pointer;background:none;padding:2px}
+    .btn-edit-action{width:100%;padding:9px 14px;border-radius:8px;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin-bottom:6px}
+    .btn-save-edit{background:linear-gradient(135deg,#7B5CFF,#5A6CFF);color:#fff;box-shadow:0 0 16px rgba(123,92,255,0.35)}
+    .btn-copy-edit{background:rgba(123,92,255,0.08);border:1px solid rgba(123,92,255,0.2);color:#D6D9F0}
+    .btn-close-edit{background:rgba(255,75,110,0.1);border:1px solid rgba(255,75,110,0.25);color:#ff8fab}
+    .edit-hint{font-size:11px;color:#4a5278;padding:10px 16px;text-align:center;line-height:1.6}
+    #editor-preview-wrap{flex:1;overflow:hidden;position:relative}
+    #editor-preview-frame{width:100%;height:100%;border:none}
+    #editor-selected-info{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(123,92,255,0.9);color:#fff;font-size:12px;padding:6px 16px;border-radius:50px;display:none;backdrop-filter:blur(8px);white-space:nowrap}
+    #editor-panel{position:absolute;right:0;top:0;bottom:0;width:280px;background:rgba(10,18,40,0.97);border-left:1px solid rgba(123,92,255,0.2);display:none;flex-direction:column;z-index:10;backdrop-filter:blur(20px);animation:slideInRight .2s ease}
+    @keyframes slideInRight{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+    #editor-panel.open{display:flex}
+    .editor-header{padding:14px 16px;border-bottom:1px solid rgba(123,92,255,0.15);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--p3);display:flex;align-items:center;justify-content:space-between}
+    .editor-section{padding:14px 16px;border-bottom:1px solid rgba(123,92,255,0.08)}
+    .editor-section-title{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+    .editor-input{width:100%;background:rgba(15,28,63,0.7);border:1px solid rgba(123,92,255,0.2);border-radius:8px;color:var(--t);font-family:'Outfit',sans-serif;font-size:13px;padding:8px 10px;outline:none;resize:vertical;min-height:60px;transition:border-color .2s}
+    .editor-input:focus{border-color:rgba(123,92,255,0.5)}
+    .color-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .color-item label{font-size:11px;color:var(--t3);display:block;margin-bottom:4px}
+    .color-item input[type="color"]{width:100%;height:32px;border-radius:6px;border:1px solid rgba(123,92,255,0.2);cursor:pointer;background:none;padding:2px}
+    .btn-editor{margin:4px 0;padding:8px 14px;border-radius:8px;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;width:100%;text-align:left}
+    .btn-editor-primary{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;box-shadow:0 0 16px rgba(123,92,255,0.3)}
+    .btn-editor-primary:hover{box-shadow:0 0 24px rgba(123,92,255,0.5)}
+    .btn-editor-secondary{background:rgba(123,92,255,0.08);border:1px solid rgba(123,92,255,0.2);color:var(--t2)}
+    .btn-editor-secondary:hover{border-color:var(--p);color:var(--t)}
+    .editor-hint{font-size:11px;color:var(--t4);padding:10px 16px;text-align:center;line-height:1.6}
+    .edit-mode-active #preview-frame{cursor:crosshair}
+    #nyxia-toggle{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;border:2px solid rgba(123,92,255,0.5);background:rgba(15,28,63,0.9);backdrop-filter:blur(12px);cursor:pointer;z-index:9999;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(123,92,255,0.3);transition:all .25s;padding:0;animation:nyxiaBreath 3s ease-in-out infinite}
+    #nyxia-toggle:hover{transform:scale(1.1);box-shadow:0 0 50px rgba(123,92,255,0.5)}
+    #nyxia-toggle img{width:42px;height:42px;border-radius:50%;object-fit:cover}
+    @keyframes nyxiaBreath{0%,100%{box-shadow:0 0 30px rgba(123,92,255,0.3)}50%{box-shadow:0 0 45px rgba(123,92,255,0.55),0 0 60px rgba(123,92,255,0.2)}}
+    .nyxia-online{position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;background:var(--green);border:2px solid var(--bg1)}
+    #nyxia-chat{position:fixed;bottom:96px;right:24px;width:380px;max-width:calc(100vw - 48px);height:520px;max-height:calc(100vh - 140px);background:rgba(15,28,63,0.97);border:1px solid rgba(123,92,255,0.3);border-radius:20px;z-index:9999;display:none;flex-direction:column;backdrop-filter:blur(20px);box-shadow:0 20px 60px rgba(0,0,0,0.5),0 0 40px rgba(123,92,255,0.15);overflow:hidden}
+    @keyframes nxSlideIn{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+    #nyxia-chat.open{display:flex;animation:nxSlideIn .3s ease}
+    #nyxia-header{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid rgba(123,92,255,0.15);background:rgba(10,18,40,0.6)}
+    #nyxia-header img{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(123,92,255,0.4)}
+    #nyxia-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+    @keyframes nxMsgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .nx-msg{max-width:85%;animation:nxMsgIn .2s ease}
+    .nx-msg.bot{align-self:flex-start}
+    .nx-msg.user{align-self:flex-end}
+    .nx-msg.bot .nx-bubble{background:rgba(26,37,84,0.7);color:#d6d9f0;padding:12px 16px;border-radius:var(--r);border-top-left-radius:4px;border:1px solid rgba(123,92,255,0.1);font-size:13px;line-height:1.6}
+    .nx-msg.user .nx-bubble{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:12px 16px;border-radius:var(--r);border-top-right-radius:4px;font-size:13px;line-height:1.6}
+    .nx-dots{display:inline-flex;gap:3px}
+    .nx-dots i{width:4px;height:4px;border-radius:50%;background:var(--t3);animation:nxPulse 1.4s infinite}
+    .nx-dots i:nth-child(2){animation-delay:.2s}
+    .nx-dots i:nth-child(3){animation-delay:.4s}
+    @keyframes nxPulse{0%,80%,100%{opacity:.3;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+    #nyxia-input-row{display:flex;gap:8px;padding:10px 14px 14px;border-top:1px solid rgba(123,92,255,0.1)}
+    #nyxia-input{flex:1;padding:10px 14px;border-radius:12px;background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.15);color:#fff;font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+    #nyxia-input:focus{border-color:rgba(123,92,255,0.4)}
+    #nyxia-input::placeholder{color:rgba(136,145,184,0.4)}
+    #nyxia-send{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--p),var(--p2));border:none;color:#fff;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    #nyxia-send:hover{transform:scale(1.05)}
+    #nyxia-close{margin-left:auto;color:var(--t3);font-size:20px;cursor:pointer;opacity:.6;transition:opacity .2s;background:none;border:none;line-height:1}
+    #nyxia-close:hover{opacity:1}
+    .input-row{display:flex;gap:10px;align-items:center}
+    .input-row input{flex:1}
+    .upload-btn{width:52px;height:52px;border-radius:var(--r);border:1px solid rgba(123,92,255,0.25);background:rgba(123,92,255,0.08);color:var(--p);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+    .upload-btn:hover{border-color:var(--p);background:rgba(123,92,255,0.18);transform:translateY(-2px);box-shadow:0 4px 20px rgba(123,92,255,0.3)}
+    .upload-btn svg{width:22px;height:22px;fill:currentColor}
+    #upload-preview{display:none;position:relative;border-radius:var(--r);overflow:hidden;border:1px solid rgba(123,92,255,0.2);max-height:180px}
+    #upload-preview img{width:100%;height:180px;object-fit:cover}
+    #upload-preview .remove-img{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,0.7);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    #upload-preview .remove-img:hover{background:rgba(255,60,60,0.8)}
+    #preview-panel{display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);animation:nxFadeIn .3s ease}
+    @keyframes nxFadeIn{from{opacity:0}to{opacity:1}}
+    #preview-container{width:100%;height:100%;display:flex;flex-direction:column}
+    #preview-toolbar{display:flex;align-items:center;gap:12px;padding:12px 20px;background:rgba(15,28,63,0.95);border-bottom:1px solid rgba(123,92,255,0.2);flex-shrink:0}
+    #preview-toolbar h3{color:var(--p);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;flex:1}
+    .toolbar-btn{padding:8px 18px;border-radius:10px;border:1px solid rgba(123,92,255,0.3);background:rgba(123,92,255,0.1);color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+    .toolbar-btn:hover{border-color:var(--p);color:var(--t)}
+    .toolbar-btn.close-preview{background:rgba(255,60,60,0.15);border-color:rgba(255,60,60,0.3);color:#ff6b6b}
+    .toolbar-btn.close-preview:hover{background:rgba(255,60,60,0.3)}
+    #preview-frame{flex:1;border:none;background:#fff}
+    #code-modal{display:none;position:fixed;inset:0;z-index:8500;background:rgba(0,0,0,0.9);animation:nxFadeIn .2s ease}
+    #code-modal pre{width:100%;height:100%;overflow:auto;padding:24px;color:#a78bfa;font-family:'Courier New',monospace;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+    #code-modal .code-toolbar{display:flex;align-items:center;gap:12px;padding:12px 20px;background:rgba(15,28,63,0.95);border-bottom:1px solid rgba(123,92,255,0.2)}
+    #code-modal .code-toolbar h3{color:var(--green);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;flex:1}
+    @media(max-width:480px){#nyxia-chat{width:calc(100vw - 16px);right:8px;bottom:88px;height:calc(100vh - 110px)}}
+  </style>
   <script>
-    /* ═══════════════════════════════════════
-       ÉDITEUR INLINE — CORRIGÉ
-    ═══════════════════════════════════════ */
-
-    var editorOpen = false
-
-    function toggleEditorPanel() {
-      var panel = document.getElementById('editor-panel')
-      var btn   = document.getElementById('btn-edit')
-      if (!panel) return
-      editorOpen = !editorOpen
-      if (editorOpen) {
-        panel.classList.add('open')
-        btn.textContent = '✏️ Fermer éditeur'
-        injectEditorListeners()
-      } else {
-        panel.classList.remove('open')
-        btn.textContent = '✏️ Éditer'
-      }
-    }
-
-    function toggleEditor() { toggleEditorPanel() }
-
-    function injectEditorListeners() {
-      var frame = document.getElementById('preview-frame')
-      if (!frame || !frame.contentDocument) return
-      try {
-        var doc = frame.contentDocument
-        var old = doc.getElementById('_nyxia_edit_script')
-        if (old) old.remove()
-        var s = doc.createElement('script')
-        s.id = '_nyxia_edit_script'
-        s.textContent =
-          'var _sel=null;' +
-          'document.body.addEventListener("mouseover",function(e){' +
-          '  var t=e.target;' +
-          '  if(t===document.body) return;' +
-          '  if(_sel!==t){t.style.outline="1px dashed rgba(123,92,255,0.4)";}' +
-          '},true);' +
-          'document.body.addEventListener("mouseout",function(e){' +
-          '  var t=e.target;' +
-          '  if(t===document.body) return;' +
-          '  if(_sel!==t){t.style.outline="";}' +
-          '},true);' +
-          'document.body.addEventListener("click",function(e){' +
-          '  e.preventDefault();e.stopPropagation();' +
-          '  if(_sel){_sel.style.outline="";_sel.removeAttribute("data-nyxia-sel");}' +
-          '  _sel=e.target;' +
-          '  if(_sel===document.body) return;' +
-          '  _sel.style.outline="2px solid #7B5CFF";' +
-          '  _sel.setAttribute("data-nyxia-sel","1");' +
-          '  var isImg=(_sel.tagName==="IMG");' +
-          '  var txt="";' +
-          '  if(!isImg){' +
-          '    if(_sel.children.length>0){txt=_sel.innerHTML}else{txt=(_sel.innerText||_sel.textContent||"").trim()}' +
-          '  }' +
-          '  var imgIdx=-1;if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===_sel){imgIdx=i;break;}}}' +
-          '  window.parent.postMessage({type:"nyxia_click",isImg:isImg,text:txt,html:txt,tag:_sel.tagName.toLowerCase(),src:isImg?_sel.src:"",imgIdx:imgIdx},"*");' +
-          '},true);'
-        doc.body.appendChild(s)
-      } catch(e) { console.log('editor inject:', e) }
-    }
-
-    var _selectedImgIdx = -1
-
-    window.addEventListener('message', function(e) {
-      if (!e.data || e.data.type !== 'nyxia_click') return
-      if (!e.data.isImg) {
-        var sec   = document.getElementById('text-editor-section')
-        var imgSec = document.getElementById('img-editor-section')
-        var input = document.getElementById('selected-text-input')
-        if (imgSec) imgSec.style.display = 'none'
-        if (sec)   sec.style.display = 'block'
-        if (input) { input.value = e.data.text; input.focus() }
-      } else {
-        _selectedImgIdx = e.data.imgIdx
-        var sec   = document.getElementById('text-editor-section')
-        var imgSec = document.getElementById('img-editor-section')
-        if (sec)    sec.style.display = 'none'
-        if (imgSec) imgSec.style.display = 'block'
-        var prev = document.getElementById('img-editor-preview')
-        if (prev) prev.src = e.data.src
-        var grid = document.getElementById('img-pexels-grid')
-        if (grid) grid.innerHTML = ''
-      }
-    })
-
-    function applyTextEdit() {
-      var input = document.querySelector('#text-editor-section textarea')
-      var frame = document.getElementById('preview-frame')
-      if (!input || !frame || !frame.contentDocument) return
-      try {
-        var doc = frame.contentDocument
-        var sel = doc.querySelector('[data-nyxia-sel="1"]')
-        if (!sel) {
-          var all = doc.querySelectorAll('*')
-          for (var i = all.length - 1; i >= 0; i--) {
-            if (all[i].style.outline && all[i].style.outline.indexOf('2px solid') !== -1) { sel = all[i]; break }
-          }
-        }
-        if (!sel) return
-        var newVal = input.value
-        if (sel.children.length > 0 && sel.innerHTML !== sel.textContent) {
-          sel.innerHTML = newVal
-        } else {
-          sel.textContent = newVal
-        }
-        sel.style.outline = ''
-        sel.removeAttribute('data-nyxia-sel')
-        var btn = document.querySelector('[onclick="applyTextEdit()"]')
-        if (btn) {
-          var orig = btn.textContent
-          btn.textContent = '✓ Appliqué !'
-          btn.style.background = 'linear-gradient(135deg, #00C864, #00A050)'
-          setTimeout(function() { btn.textContent = orig; btn.style.background = '' }, 1500)
-        }
-      } catch(e) {}
-    }
-
-    function applyColor(type, value) {
-      var frame = document.getElementById('preview-frame')
-      if (!frame || !frame.contentDocument) return
-      try {
-        var doc = frame.contentDocument
-        switch(type) {
-          case 'bg':
-            doc.body.style.background = value
-            doc.querySelectorAll('header,footer,nav,section,[class*="hero"],[class*="section"],[class*="container"],[class*="wrapper"],[class*="card"],[class*="box"]').forEach(function(el) {
-              var c = getComputedStyle(el)
-              if (c.backgroundColor !== 'rgba(0, 0, 0, 0)' && c.backgroundColor !== 'transparent') el.style.setProperty('background', value, 'important')
-            })
-            break
-          case 'accent':
-            doc.querySelectorAll('h1,h2,h3,h4,h5,h6,a,[class*="title"],[class*="heading"],[class*="accent"],[class*="highlight"],[class*="glow"],[class*="gradient"]').forEach(function(el) {
-              el.style.setProperty('color', value, 'important')
-            })
-            break
-          case 'text':
-            doc.querySelectorAll('p,span,li,td,th,label,blockquote,figcaption,dd,dt,small,strong,em,b,i,div,section,article,[class*="text"],[class*="desc"],[class*="content"],[class*="info"],[class*="detail"]').forEach(function(el) {
-              el.style.setProperty('color', value, 'important')
-            })
-            doc.body.style.setProperty('color', value, 'important')
-            break
-          case 'btn':
-            doc.querySelectorAll('button,input[type="submit"],input[type="button"],a[class*="btn"],a[class*="button"],[class*="cta"],[role="button"]').forEach(function(el) {
-              el.style.setProperty('background', value, 'important')
-              el.style.setProperty('border-color', value, 'important')
-            })
-            break
-        }
-      } catch(e) {}
-    }
-
-    function saveEdits() {
-      var frame = document.getElementById('preview-frame')
-      if (!frame || !frame.contentDocument) return
-      try {
-        window.generatedCode = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML
-        var b = document.querySelector('[onclick="saveEdits()"]')
-        if (b) { var o=b.textContent; b.textContent='✓ Sauvegardé!'; setTimeout(function(){b.textContent=o},2000) }
-      } catch(e) {}
-    }
-
-    function copyEditedCode() {
-      saveEdits()
-      if (window.generatedCode) {
-        navigator.clipboard.writeText(window.generatedCode).then(function() {
-          var b = document.querySelector('[onclick="copyEditedCode()"]')
-          if (b) { var o=b.textContent; b.textContent='✓ Copié!'; setTimeout(function(){b.textContent=o},2000) }
-        })
-      }
-    }
-
-    function resetEdits() {
-      var frame = document.getElementById('preview-frame')
-      if (frame && window.generatedCode) frame.srcdoc = window.generatedCode
-    }
-
-    function uploadEditorImage(input) {
-      var file = input.files[0]; if (!file) return
-      var reader = new FileReader()
-      reader.onload = function(ev) { replaceEditorImage(ev.target.result) }
-      reader.readAsDataURL(file); input.value = ''
-    }
-
-    function replaceEditorImage(newSrc) {
-      if (_selectedImgIdx < 0) { alert('Clique d\'abord sur une image dans le preview'); return }
-      var frame = document.getElementById('preview-frame')
-      if (!frame || !frame.contentDocument) return
-      try {
-        var imgs = frame.contentDocument.querySelectorAll('img')
-        if (imgs[_selectedImgIdx]) {
-          imgs[_selectedImgIdx].src = newSrc
-          imgs[_selectedImgIdx].style.outline = ''
-          imgs[_selectedImgIdx].removeAttribute('data-nyxia-sel')
-          document.getElementById('img-editor-preview').src = newSrc
-          saveEdits()
-        }
-      } catch(e) {}
-    }
-
-    function searchEditorPexels() {
-      var query = document.getElementById('img-pexels-query').value.trim(); if (!query) return
-      var grid = document.getElementById('img-pexels-grid')
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Recherche...</div>'
-      var promises = []
-      for (var i = 0; i < 4; i++) {
-        promises.push(fetch('/api/image', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({prompt:query}) }).then(function(r){return r.json()}).catch(function(){return null}))
-      }
-      Promise.all(promises).then(function(results) {
-        window._pexelsEditorImgs = results.filter(function(d){return d && d.success && d.dataUrl})
-        if (!window._pexelsEditorImgs.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Aucun résultat</div>'; return }
-        grid.innerHTML = window._pexelsEditorImgs.map(function(d, i) {
-          return '<img src="'+d.dataUrl+'" onclick="replaceEditorImage(window._pexelsEditorImgs['+i+'].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .2s" onmouseover="this.style.borderColor=\'#7B5CFF\'" onmouseout="this.style.borderColor=\'transparent\'">'
-        }).join('')
-      })
-    }
-
-    var _publishedUrl = ''
-
-    function openPublishModal() {
-      var modal = document.getElementById('publish-modal'); if (!modal) return
-      var input = document.getElementById('user-input')
-      var defaultName = 'mon-site-nyxia'
-      if (input && input.value) { defaultName = input.value.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().split(/\s+/).slice(0,4).join('-').substring(0,40) || 'mon-site-nyxia' }
-      document.getElementById('publish-name').value = defaultName
-      updatePublishPreview(); showPublishState('form'); modal.style.display = 'flex'
-    }
-
-    function closePublishModal() { var m = document.getElementById('publish-modal'); if (m) m.style.display = 'none' }
-
-    function updatePublishPreview() {
-      var name = document.getElementById('publish-name').value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'')
-      var p = document.getElementById('publish-preview-url'); if (p) p.textContent = name ? '→ ' + name + '.pages.dev' : ''
-    }
-
-    function showPublishState(state) {
-      ['form','loading','success','error'].forEach(function(s) { var el = document.getElementById('publish-'+s+'-state'); if (el) el.style.display = s===state ? 'block' : 'none' })
-    }
-
-    function copyPublishUrl() {
-      if (_publishedUrl) { navigator.clipboard.writeText(_publishedUrl).then(function() { var b = document.getElementById('btn-copy-publish-url'); if (b) { b.textContent='✓ Copié !'; setTimeout(function(){b.textContent='📋 Copier le lien'},2000) } }) }
-    }
-
-    function doPublish() {
-      var rawName = document.getElementById('publish-name').value.trim()
-      if (!rawName) { document.getElementById('publish-name').style.borderColor = 'rgba(255,75,110,0.6)'; return }
-      var cleanName = rawName.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'').substring(0,50)
-      var html = window.generatedCode || ''
-      if (!html) { try { var frame = document.getElementById('preview-frame'); if (frame && frame.contentDocument) html = '<!DOCTYPE html>' + frame.contentDocument.documentElement.outerHTML } catch(e){} }
-      if (!html || html.length < 100) { showPublishState('error'); document.getElementById('publish-error-msg').textContent = "Aucun site généré. Génère d'abord un site."; return }
-      showPublishState('loading')
-      fetch('/api/publish', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({projectName:cleanName, html:html}) })
+    ;(function() {
+      var token = sessionStorage.getItem('nyxia_token')
+      if (!token) { window.location.href = '/login.html'; return }
+      fetch('/api/check-auth', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:token}) })
       .then(function(r){return r.json()})
-      .then(function(data) {
-        if (data.success && data.url) { _publishedUrl = data.url; var u = document.getElementById('publish-result-url'); if (u) { u.textContent=data.url; u.href=data.url } showPublishState('success') }
-        else { showPublishState('error'); document.getElementById('publish-error-msg').textContent = data.error || 'Erreur inconnue.' }
-      })
-      .catch(function(e) { showPublishState('error'); document.getElementById('publish-error-msg').textContent = 'Erreur réseau : ' + e.message })
-    }
-
-    document.addEventListener('click', function(e) { var m = document.getElementById('publish-modal'); if (m && m.style.display==='flex' && e.target===m) closePublishModal() })
-
-    function toggleNiches() {
-      var grid = document.getElementById('niches-grid'); var arrow = document.getElementById('niche-arrow')
-      var open = grid.style.display !== 'none' && grid.style.display !== ''
-      grid.style.display = open ? 'none' : 'grid'
-      if (arrow) arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)'
-    }
-
-    var _nichePrompts = {
-      'spa': { mode:'image', prompt:'Spa luxueux et centre de bien-être haut de gamme...', image:'https://picsum.photos/seed/spa-luxe/1400/800' },
-      'naturopathe': { mode:'image', prompt:'Naturopathe et thérapeute en médecine naturelle...', image:'https://picsum.photos/seed/nature-plantes/1400/800' },
-      'coach': { mode:'image', prompt:'Coach de vie et business certifié ICF...', image:'https://picsum.photos/seed/coaching-success/1400/800' },
-      'restaurant': { mode:'image', prompt:'Restaurant gastronomique...', image:'https://picsum.photos/seed/gastronomie-chef/1400/800' }
-    }
-
-    function applyNiche(nicheKey) {
-      var niche = _nichePrompts[nicheKey]; if (!niche) return
-      switchMode('image')
-      var input = document.getElementById('user-input'); if (input) { input.value = niche.prompt; input.focus() }
-      var grid = document.getElementById('niches-grid'); if (grid) grid.style.display = 'none'
-    }
-
-    function switchMode(mode) {
-      var tabImg = document.getElementById('tab-image'), tabUrl = document.getElementById('tab-url')
-      var imgMode = document.getElementById('image-mode'), urlMode = document.getElementById('url-mode')
-      if (!tabImg) return
-      if (mode === 'url') {
-        tabUrl.style.background='linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))'; tabUrl.style.borderColor='rgba(123,92,255,0.4)'; tabUrl.style.color='#fff'
-        tabImg.style.background='rgba(123,92,255,0.05)'; tabImg.style.borderColor='rgba(123,92,255,0.15)'; tabImg.style.color='#8891B8'
-        imgMode.style.display='none'; urlMode.style.display='flex'
-      } else {
-        tabImg.style.background='linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))'; tabImg.style.borderColor='rgba(123,92,255,0.4)'; tabImg.style.color='#fff'
-        tabUrl.style.background='rgba(123,92,255,0.05)'; tabUrl.style.borderColor='rgba(123,92,255,0.15)'; tabUrl.style.color='#8891B8'
-        imgMode.style.display='flex'; urlMode.style.display='none'
-      }
-      window._currentMode = mode
-    }
+      .then(function(data){if(!data.valid)window.location.href='/login.html'})
+      .catch(function(){window.location.href='/login.html'})
+    })()
   </script>
+</head>
+<body>
+  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none"></canvas>
+  <div class="hero-glow"></div>
+
+  <main style="position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px 16px">
+    <div style="max-width:720px;width:100%;text-align:center;display:flex;flex-direction:column;gap:40px">
+      <h1 class="h1-glow" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;line-height:1.2">NyXia <span style="background:linear-gradient(135deg,var(--p),var(--p3));-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA</span></h1>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(1.3rem,3.5vw,2rem);color:var(--t2);font-weight:600;line-height:1.4">Votre site Web réalisé par NyXia IA en <br><span style="color:var(--p)">moins de 10 minutes</span></h2>
+      <p style="color:var(--t3);font-size:clamp(0.95rem,2vw,1.1rem);max-width:560px;margin:0 auto;line-height:1.7">NyXia travaille pour vous <span style="color:var(--p);font-weight:600">24h/24, 7j/7</span>. Elle crée, publie et optimise votre Empire pendant que vous dormez.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;text-align:left">
+        <div class="pillar-card"><p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Visibilité permanente sur Google</p><p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Votre site trouvé par des milliers de personnes chaque jour, sans effort</p></div>
+        <div class="pillar-card"><p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Mots qui vendent pour vous</p><p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Chaque phrase est conçue pour transformer un visiteur en acheteur</p></div>
+        <div class="pillar-card"><p style="font-family:'Space Grotesk',sans-serif;color:var(--p);font-weight:700;font-size:1.05rem;margin-bottom:8px">Commissions en automatique</p><p style="color:var(--t3);font-size:0.85rem;line-height:1.6">Gagnez des revenus sans intervenir, grâce à l'intelligence artificielle</p></div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button id="tab-image" onclick="switchMode('image')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.4);background:linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📸 Depuis une image</button>
+        <button id="tab-url" onclick="switchMode('url')" style="flex:1;padding:10px;border-radius:10px;border:1px solid rgba(123,92,255,0.15);background:rgba(123,92,255,0.05);color:#8891B8;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">🔗 Depuis une URL</button>
+      </div>
+
+      <div id="url-mode" style="display:none;flex-direction:column;gap:12px;margin-bottom:14px">
+        <input id="url-input" type="url" placeholder="https://monsite.com — NyXia va l'analyser et le réinventer ✨" style="width:100%;padding:16px 20px;border-radius:12px;background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.2);color:#fff;font-family:Outfit,sans-serif;font-size:15px;outline:none">
+        <div style="font-size:12px;color:#8891B8;text-align:center">NyXia analyse le contenu de la page et génère un site modernisé 🚀</div>
+      </div>
+
+      <div id="image-mode" style="display:flex;flex-direction:column;gap:14px">
+        <div class="input-row">
+          <input id="user-input" type="text" placeholder="✍️ Ex: Spa bien-être, Coach de vie, Naturopathe, Boutique bijoux..." style="width:100%;padding:16px 20px;border-radius:var(--r);background:rgba(10,18,40,0.8);border:1px solid rgba(123,92,255,0.15);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;outline:none;transition:border-color .2s">
+          <button class="upload-btn" id="upload-btn" title="Uploader une image"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <input type="file" id="file-input" accept="image/*" style="display:none">
+        </div>
+        <div id="upload-preview"><img id="preview-thumb" src="" alt="Aperçu"><button class="remove-img" id="remove-img">&times;</button></div>
+      </div>
+
+      <button id="generate-btn" class="btn-primary" style="margin-top:14px;display:block;margin-left:auto;margin-right:auto">✨ Créer mon site avec NyXia</button>
+      <p style="color:var(--t3);font-size:0.75rem;opacity:0.5"><br>Une technologie <a href="https://www.publication-web.com" target="_blank" rel="noopener" style="color:var(--p);opacity:0.7;text-decoration:none">Publication-Web.com</a> — Visionnaire depuis 1997</p>
+    </div>
+  </main>
+
+  <!-- Éditeur pleine page -->
+  <div id="fullpage-editor">
+    <div id="editor-sidebar">
+      <h2>✏️ Éditeur NyXia</h2>
+      <div class="edit-section" id="text-edit-section" style="display:none">
+        <div class="edit-section-title">✏️ Texte sélectionné</div>
+        <textarea class="edit-textarea" id="edit-text-input"></textarea>
+        <button class="btn-edit-action btn-save-edit" id="btn-apply-text" style="margin-top:8px">✓ Appliquer</button>
+      </div>
+      <div class="edit-section">
+        <div class="edit-section-title">🎨 Couleurs</div>
+        <div class="color-row">
+          <div><label class="color-lbl">Fond</label><input type="color" class="color-pick" id="ec-bg" value="#ffffff"></div>
+          <div><label class="color-lbl">Accent</label><input type="color" class="color-pick" id="ec-accent" value="#7B5CFF"></div>
+          <div><label class="color-lbl">Texte</label><input type="color" class="color-pick" id="ec-text" value="#000000"></div>
+          <div><label class="color-lbl">Boutons</label><input type="color" class="color-pick" id="ec-btn" value="#5A6CFF"></div>
+        </div>
+      </div>
+      <div class="edit-section">
+        <div class="edit-section-title">⚡ Actions</div>
+        <button class="btn-edit-action btn-save-edit" id="btn-save-edits">💾 Sauvegarder</button>
+        <button class="btn-edit-action btn-copy-edit" id="btn-copy-edits">📋 Copier le code</button>
+        <button class="btn-edit-action btn-close-edit" id="btn-close-editor">✕ Fermer l'éditeur</button>
+      </div>
+      <div class="edit-hint">💡 Clique sur un texte dans le preview pour le modifier</div>
+    </div>
+    <div id="editor-preview-wrap">
+      <div id="editor-selected-info">✏️ Élément sélectionné — modifie le texte à gauche</div>
+      <iframe id="editor-preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+  </div>
+
+  <!-- Overlay génération -->
+  <div id="nyxia-loading-overlay">
+    <div class="overlay-stars" id="overlay-stars"></div>
+    <img src="/TravailDureNyxia.png" alt="NyXia travaille..." class="overlay-nyxia-img">
+    <div class="overlay-message" id="overlay-message">NyXia prépare ton univers...</div>
+    <div class="overlay-progress-wrap">
+      <div class="overlay-progress-bar"><div class="overlay-progress-fill" id="overlay-progress"></div></div>
+      <div class="overlay-progress-label" id="overlay-progress-label">Initialisation</div>
+    </div>
+  </div>
+
+  <!-- Widget NyXia -->
+  <div id="nyxia-toggle"><img src="/NyXia.png" alt="NyXia"><span class="nyxia-online"></span></div>
+  <div id="nyxia-chat">
+    <div id="nyxia-header"><img src="/NyXia.png" alt="NyXia"><div><div style="color:var(--p);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px">NyXia IA</div><div style="color:var(--green);font-size:11px">En ligne</div></div><button id="nyxia-close">&times;</button></div>
+    <div id="nyxia-messages"></div>
+    <div id="nyxia-input-row"><input id="nyxia-input" type="text" placeholder="Écris à NyXia..."><button id="nyxia-send">&#10148;</button></div>
+  </div>
+
+  <!-- Preview panel -->
+  <div id="preview-panel">
+    <div id="preview-container">
+      <div id="preview-toolbar">
+        <h3>NyXia Preview</h3>
+        <button class="toolbar-btn" id="btn-edit" onclick="toggleEditorPanel()" style="background:linear-gradient(135deg,rgba(123,92,255,0.3),rgba(90,108,255,0.3));border-color:rgba(123,92,255,0.5)">✏️ Éditer</button>
+        <button class="toolbar-btn" id="btn-view-code">View Code</button>
+        <button class="toolbar-btn" id="btn-copy-code">Copy Code</button>
+        <button class="toolbar-btn" id="btn-publish" onclick="openPublishModal()" style="background:linear-gradient(135deg,rgba(0,200,100,0.25),rgba(0,150,80,0.2));border-color:rgba(0,200,100,0.4);color:#00E676;font-weight:700">🚀 Publier</button>
+        <button class="toolbar-btn close-preview" id="btn-close-preview">Fermer</button>
+      </div>
+      <div style="position:relative;flex:1;display:flex;overflow:hidden">
+        <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-popups" style="flex:1;border:none;height:100%"></iframe>
+        <div id="editor-panel">
+          <div class="editor-header">✏️ Éditeur<button onclick="toggleEditor()" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px">✕</button></div>
+          <div class="editor-section" id="text-editor-section" style="display:none">
+            <div class="editor-section-title">✏️ Modifier le texte</div>
+            <textarea class="editor-input" id="selected-text-input" rows="4"></textarea>
+            <button class="btn-editor btn-editor-primary" onclick="applyTextEdit()" style="margin-top:8px">✓ Appliquer</button>
+          </div>
+          <div class="editor-section" id="img-editor-section" style="display:none">
+            <div class="editor-section-title">🖼 Remplacer l'image</div>
+            <img id="img-editor-preview" style="width:100%;height:70px;object-fit:cover;border-radius:6px;margin-bottom:8px;border:1px solid rgba(123,92,255,0.2)">
+            <button class="btn-editor btn-editor-primary" onclick="document.getElementById('img-editor-upload').click()" style="margin-bottom:6px">📁 Télécharger depuis mon ordi</button>
+            <input type="file" id="img-editor-upload" accept="image/*" style="display:none" onchange="uploadEditorImage(this)">
+            <div style="display:flex;gap:6px;margin-bottom:6px">
+              <input class="editor-input" type="text" id="img-pexels-query" placeholder="Chercher sur Pexels..." style="min-height:unset;height:36px;padding:6px 10px;font-size:12px" onkeydown="if(event.key==='Enter')searchEditorPexels()">
+              <button class="btn-editor btn-editor-secondary" onclick="searchEditorPexels()" style="width:auto;padding:6px 10px;font-size:13px">🔍</button>
+            </div>
+            <div id="img-pexels-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:5px"></div>
+          </div>
+          <div class="editor-section">
+            <div class="editor-section-title">🎨 Couleurs</div>
+            <div class="color-grid">
+              <div class="color-item"><label>Fond</label><input type="color" id="color-bg" value="#0F1C3F" oninput="applyColor('bg',this.value)"></div>
+              <div class="color-item"><label>Accent</label><input type="color" id="color-accent" value="#7B5CFF" oninput="applyColor('accent',this.value)"></div>
+              <div class="color-item"><label>Texte</label><input type="color" id="color-text" value="#FFFFFF" oninput="applyColor('text',this.value)"></div>
+              <div class="color-item"><label>Boutons</label><input type="color" id="color-btn" value="#5A6CFF" oninput="applyColor('btn',this.value)"></div>
+            </div>
+          </div>
+          <div class="editor-section">
+            <div class="editor-section-title">⚡ Actions</div>
+            <button class="btn-editor btn-editor-primary" onclick="saveEdits()" style="margin-bottom:6px">💾 Sauvegarder les modifications</button>
+            <button class="btn-editor btn-editor-secondary" onclick="copyEditedCode()">📋 Copier le code</button>
+            <button class="btn-editor btn-editor-secondary" onclick="resetEdits()" style="margin-top:6px">↺ Réinitialiser</button>
+          </div>
+          <div class="editor-hint">💡 Clique sur n'importe quel texte dans le preview pour le modifier directement</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code modal -->
+  <div id="code-modal">
+    <div class="code-toolbar"><h3>Code HTML généré</h3><button class="toolbar-btn" id="btn-copy-modal">Copier</button><button class="toolbar-btn close-preview" id="btn-close-code">Fermer</button></div>
+    <pre id="code-output"></pre>
+  </div>
+
+  <!-- Modal publication -->
+  <div id="publish-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);align-items:center;justify-content:center">
+    <div style="background:var(--bg2,#0F1C3F);border:1px solid rgba(0,230,118,0.25);border-radius:24px;padding:36px;width:100%;max-width:500px;margin:20px;box-shadow:0 24px 64px rgba(0,0,0,0.6),0 0 60px rgba(0,230,118,0.08)">
+      <div id="publish-form-state">
+        <div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:6px">🚀 Publier mon site</div>
+        <div style="font-size:13px;color:var(--t3,#8891B8);margin-bottom:24px">Ton site sera en ligne en quelques secondes sur un sous-domaine gratuit.</div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:12px;font-weight:600;color:var(--t2,#D6D9F0);margin-bottom:6px">Nom de ton site</label>
+          <div style="display:flex;align-items:center;gap:0;background:rgba(15,28,63,0.8);border:1px solid rgba(0,230,118,0.2);border-radius:10px;overflow:hidden">
+            <input id="publish-name" type="text" placeholder="mon-site-spa" maxlength="50" style="flex:1;background:transparent;border:none;color:#fff;font-family:Outfit,sans-serif;font-size:14px;padding:12px 14px;outline:none" oninput="updatePublishPreview()">
+            <span style="padding:12px 14px;color:var(--t3,#8891B8);font-size:13px;white-space:nowrap">.pages.dev</span>
+          </div>
+          <div id="publish-preview-url" style="font-size:11px;color:#00E676;margin-top:6px;opacity:0.8"></div>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:24px">
+          <button onclick="closePublishModal()" style="padding:11px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--t2,#D6D9F0);font-family:Outfit,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Annuler</button>
+          <button onclick="doPublish()" id="btn-do-publish" style="padding:11px 28px;border-radius:50px;border:none;background:linear-gradient(135deg,#00C864,#00A050);color:#fff;font-family:Outfit,sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 24px rgba(0,200,100,0.4);transition:all .2s">🚀 Publier maintenant</button>
+        </div>
+      </div>
+      <div id="publish-loading-state" style="display:none;text-align:center;padding:20px 0">
+        <div style="width:56px;height:56px;border:3px solid rgba(0,230,118,0.2);border-top-color:#00E676;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px"></div>
+        <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Publication en cours...</div>
+        <div style="font-size:13px;color:var(--t3,#8891B8)">NyXia déploie ton site sur notre serveur ✨</div>
+      </div>
+      <div id="publish-success-state" style="display:none;text-align:center;padding:10px 0">
+        <div style="font-size:48px;margin-bottom:16px">🎉</div>
+        <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">Ton site est en ligne !</div>
+        <div style="font-size:13px;color:var(--t3,#8891B8);margin-bottom:20px">Accessible dans quelques secondes sur :</div>
+        <a id="publish-result-url" href="#" target="_blank" style="display:block;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);border-radius:12px;padding:14px 20px;color:#00E676;font-family:monospace;font-size:14px;text-decoration:none;word-break:break-all;transition:all .2s" onmouseover="this.style.background='rgba(0,230,118,0.18)'" onmouseout="this.style.background='rgba(0,230,118,0.1)'"></a>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+          <button id="btn-copy-publish-url" onclick="copyPublishUrl()" style="padding:10px 20px;border-radius:50px;border:1px solid rgba(0,230,118,0.3);background:transparent;color:#00E676;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📋 Copier le lien</button>
+          <button onclick="closePublishModal()" style="padding:10px 20px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--p,#7B5CFF),var(--p2,#5A6CFF));color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Fermer</button>
+        </div>
+      </div>
+      <div id="publish-error-state" style="display:none;text-align:center;padding:10px 0">
+        <div style="font-size:40px;margin-bottom:14px">⚠️</div>
+        <div style="font-size:16px;font-weight:600;color:#fff;margin-bottom:8px">Erreur de publication</div>
+        <div id="publish-error-msg" style="font-size:13px;color:#ff8fab;margin-bottom:20px;line-height:1.5"></div>
+        <div style="display:flex;gap:10px;justify-content:center">
+          <button onclick="showPublishState('form')" style="padding:10px 20px;border-radius:50px;border:1px solid rgba(123,92,255,0.3);background:transparent;color:var(--t2,#D6D9F0);font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">↺ Réessayer</button>
+          <button onclick="closePublishModal()" style="padding:10px 20px;border-radius:50px;border:none;background:rgba(255,75,110,0.15);border:1px solid rgba(255,75,110,0.3);color:#ff8fab;font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+  <script src="/js/generator.js" defer></script>
+
+  <script>
+    var editorOpen = false
+    function toggleEditorPanel(){var p=document.getElementById('editor-panel'),b=document.getElementById('btn-edit');if(!p)return;editorOpen=!editorOpen;if(editorOpen){p.classList.add('open');b.textContent='✏️ Fermer éditeur';injectEditorListeners()}else{p.classList.remove('open');b.textContent='✏️ Éditer'}}
+    function toggleEditor(){toggleEditorPanel()}
+    function injectEditorListeners(){var f=document.getElementById('preview-frame');if(!f||!f.contentDocument)return;try{var d=f.contentDocument,o=d.getElementById('_nyxia_edit_script');if(o)o.remove();var s=d.createElement('script');s.id='_nyxia_edit_script';s.textContent='var _sel=null;document.body.addEventListener("mouseover",function(e){var t=e.target;if(t===document.body)return;if(_sel!==t)t.style.outline="1px dashed rgba(123,92,255,0.4)"},true);document.body.addEventListener("mouseout",function(e){var t=e.target;if(t===document.body)return;if(_sel!==t)t.style.outline=""},true);document.body.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();if(_sel){_sel.style.outline="";_sel.removeAttribute("data-nyxia-sel")}_sel=e.target;if(_sel===document.body)return;_sel.style.outline="2px solid #7B5CFF";_sel.setAttribute("data-nyxia-sel","1");var isImg=(_sel.tagName==="IMG");var txt="";if(!isImg){if(_sel.children.length>0)txt=_sel.innerHTML;else txt=(_sel.innerText||_sel.textContent||"").trim()}var imgIdx=-1;if(isImg){var imgs=document.querySelectorAll("img");for(var i=0;i<imgs.length;i++){if(imgs[i]===_sel){imgIdx=i;break}}}window.parent.postMessage({type:"nyxia_click",isImg:isImg,text:txt,tag:_sel.tagName.toLowerCase(),src:isImg?_sel.src:"",imgIdx:imgIdx},"*")},true)';d.body.appendChild(s)}catch(e){}}
+    var _selectedImgIdx=-1
+    window.addEventListener('message',function(e){if(!e.data||e.data.type!=='nyxia_click')return;if(!e.data.isImg){var s=document.getElementById('text-editor-section'),i=document.getElementById('img-editor-section'),t=document.getElementById('selected-text-input');if(i)i.style.display='none';if(s)s.style.display='block';if(t){t.value=e.data.text;t.focus()}}else{_selectedImgIdx=e.data.imgIdx;var s=document.getElementById('text-editor-section'),i=document.getElementById('img-editor-section');if(s)s.style.display='none';if(i)i.style.display='block';var p=document.getElementById('img-editor-preview');if(p)p.src=e.data.src;var g=document.getElementById('img-pexels-grid');if(g)g.innerHTML=''}})
+    function applyTextEdit(){var i=document.querySelector('#text-editor-section textarea'),f=document.getElementById('preview-frame');if(!i||!f||!f.contentDocument)return;try{var d=f.contentDocument,s=d.querySelector('[data-nyxia-sel="1"]');if(!s){var a=d.querySelectorAll('*');for(var j=a.length-1;j>=0;j--){if(a[j].style.outline&&a[j].style.outline.indexOf('2px solid')!==-1){s=a[j];break}}}if(!s)return;var v=i.value;if(s.children.length>0&&s.innerHTML!==s.textContent)s.innerHTML=v;else s.textContent=v;s.style.outline='';s.removeAttribute('data-nyxia-sel');var b=document.querySelector('[onclick="applyTextEdit()"]');if(b){var o=b.textContent;b.textContent='✓ Appliqué !';b.style.background='linear-gradient(135deg,#00C864,#00A050)';setTimeout(function(){b.textContent=o;b.style.background=''},1500)}}catch(e){}}
+    function applyColor(t,v){var f=document.getElementById('preview-frame');if(!f||!f.contentDocument)return;try{var d=f.contentDocument;switch(t){case'bg':d.body.style.background=v;d.querySelectorAll('header,footer,nav,section,[class*="hero"],[class*="section"],[class*="container"],[class*="wrapper"],[class*="card"],[class*="box"]').forEach(function(e){var c=getComputedStyle(e);if(c.backgroundColor!=='rgba(0, 0, 0, 0)'&&c.backgroundColor!=='transparent')e.style.setProperty('background',v,'important')});break;case'accent':d.querySelectorAll('h1,h2,h3,h4,h5,h6,a,[class*="title"],[class*="heading"],[class*="accent"],[class*="highlight"],[class*="glow"],[class*="gradient"]').forEach(function(e){e.style.setProperty('color',v,'important')});break;case'text':d.querySelectorAll('p,span,li,td,th,label,blockquote,figcaption,dd,dt,small,strong,em,b,i,div,section,article,[class*="text"],[class*="desc"],[class*="content"],[class*="info"],[class*="detail"]').forEach(function(e){e.style.setProperty('color',v,'important')});d.body.style.setProperty('color',v,'important');break;case'btn':d.querySelectorAll('button,input[type="submit"],input[type="button"],a[class*="btn"],a[class*="button"],[class*="cta"],[role="button"]').forEach(function(e){e.style.setProperty('background',v,'important');e.style.setProperty('border-color',v,'important')});break}}catch(e){}}
+    function saveEdits(){var f=document.getElementById('preview-frame');if(!f||!f.contentDocument)return;try{window.generatedCode='<!DOCTYPE html>'+f.contentDocument.documentElement.outerHTML;var b=document.querySelector('[onclick="saveEdits()"]');if(b){var o=b.textContent;b.textContent='✓ Sauvegardé!';setTimeout(function(){b.textContent=o},2000)}}catch(e){}}
+    function copyEditedCode(){saveEdits();if(window.generatedCode){navigator.clipboard.writeText(window.generatedCode).then(function(){var b=document.querySelector('[onclick="copyEditedCode()"]');if(b){var o=b.textContent;b.textContent='✓ Copié!';setTimeout(function(){b.textContent=o},2000)}})}}
+    function resetEdits(){var f=document.getElementById('preview-frame');if(f&&window.generatedCode)f.srcdoc=window.generatedCode}
+    function uploadEditorImage(i){var f=i.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){replaceEditorImage(e.target.result)};r.readAsDataURL(f);i.value=''}
+    function replaceEditorImage(s){if(_selectedImgIdx<0){alert('Clique d\'abord sur une image dans le preview');return}var f=document.getElementById('preview-frame');if(!f||!f.contentDocument)return;try{var imgs=f.contentDocument.querySelectorAll('img');if(imgs[_selectedImgIdx]){imgs[_selectedImgIdx].src=s;imgs[_selectedImgIdx].style.outline='';imgs[_selectedImgIdx].removeAttribute('data-nyxia-sel');document.getElementById('img-editor-preview').src=s;saveEdits()}}catch(e){}}
+    function searchEditorPexels(){var q=document.getElementById('img-pexels-query').value.trim();if(!q)return;var g=document.getElementById('img-pexels-grid');g.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Recherche...</div>';var p=[];for(var i=0;i<4;i++){p.push(fetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:q})}).then(function(r){return r.json()}).catch(function(){return null}))}Promise.all(p).then(function(r){window._pexelsEditorImgs=r.filter(function(d){return d&&d.success&&d.dataUrl});if(!window._pexelsEditorImgs.length){g.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--t4);font-size:11px;padding:8px">Aucun résultat</div>';return}g.innerHTML=window._pexelsEditorImgs.map(function(d,i){return'<img src="'+d.dataUrl+'" onclick="replaceEditorImage(window._pexelsEditorImgs['+i+'].dataUrl)" style="width:100%;height:55px;object-fit:cover;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:all .2s" onmouseover="this.style.borderColor=\'#7B5CFF\'" onmouseout="this.style.borderColor=\'transparent\'">'}).join('')})}
+    var _publishedUrl=''
+    function openPublishModal(){var m=document.getElementById('publish-modal');if(!m)return;var i=document.getElementById('user-input'),n='mon-site-nyxia';if(i&&i.value){n=i.value.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().split(/\s+/).slice(0,4).join('-').substring(0,40)||'mon-site-nyxia'}document.getElementById('publish-name').value=n;updatePublishPreview();showPublishState('form');m.style.display='flex'}
+    function closePublishModal(){var m=document.getElementById('publish-modal');if(m)m.style.display='none'}
+    function updatePublishPreview(){var n=document.getElementById('publish-name').value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,''),p=document.getElementById('publish-preview-url');if(p)p.textContent=n?'→ '+n+'.pages.dev':''}
+    function showPublishState(s){['form','loading','success','error'].forEach(function(t){var e=document.getElementById('publish-'+t+'-state');if(e)e.style.display=t===s?'block':'none'})}
+    function copyPublishUrl(){if(_publishedUrl){navigator.clipboard.writeText(_publishedUrl).then(function(){var b=document.getElementById('btn-copy-publish-url');if(b){b.textContent='✓ Copié !';setTimeout(function(){b.textContent='📋 Copier le lien'},2000)}})}}
+    function doPublish(){var r=document.getElementById('publish-name').value.trim();if(!r){document.getElementById('publish-name').style.borderColor='rgba(255,75,110,0.6)';return}var c=r.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/--+/g,'-').replace(/^-|-$/g,'').substring(0,50),h=window.generatedCode||'';if(!h){try{var f=document.getElementById('preview-frame');if(f&&f.contentDocument)h='<!DOCTYPE html>'+f.contentDocument.documentElement.outerHTML}catch(e){}}if(!h||h.length<100){showPublishState('error');document.getElementById('publish-error-msg').textContent="Aucun site généré. Génère d'abord un site.";return}showPublishState('loading');fetch('/api/publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({projectName:c,html:h})}).then(function(r){return r.json()}).then(function(d){if(d.success&&d.url){_publishedUrl=d.url;var u=document.getElementById('publish-result-url');if(u){u.textContent=d.url;u.href=d.url}showPublishState('success')}else{showPublishState('error');document.getElementById('publish-error-msg').textContent=d.error||'Erreur inconnue.'}}).catch(function(e){showPublishState('error');document.getElementById('publish-error-msg').textContent='Erreur réseau : '+e.message})}
+    document.addEventListener('click',function(e){var m=document.getElementById('publish-modal');if(m&&m.style.display==='flex'&&e.target===m)closePublishModal()})
+    function toggleNiches(){var g=document.getElementById('niches-grid'),a=document.getElementById('niche-arrow'),o=g.style.display!=='none'&&g.style.display!=='';g.style.display=o?'none':'grid';if(a)a.style.transform=o?'rotate(0deg)':'rotate(180deg)'}
+    var _nichePrompts={spa:{mode:'image',prompt:'Spa luxueux et centre de bien-être haut de gamme...',image:'https://picsum.photos/seed/spa-luxe/1400/800'},naturopathe:{mode:'image',prompt:'Naturopathe et thérapeute en médecine naturelle...',image:'https://picsum.photos/seed/nature-plantes/1400/800'},coach:{mode:'image',prompt:'Coach de vie et business certifié ICF...',image:'https://picsum.photos/seed/coaching-success/1400/800'},restaurant:{mode:'image',prompt:'Restaurant gastronomique...',image:'https://picsum.photos/seed/gastronomie-chef/1400/800'}}
+    function applyNiche(k){var n=_nichePrompts[k];if(!n)return;switchMode('image');var i=document.getElementById('user-input');if(i){i.value=n.prompt;i.focus()}var g=document.getElementById('niches-grid');if(g)g.style.display='none'}
+    function switchMode(m){var ti=document.getElementById('tab-image'),tu=document.getElementById('tab-url'),im=document.getElementById('image-mode'),um=document.getElementById('url-mode');if(!ti)return;if(m==='url'){tu.style.background='linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))';tu.style.borderColor='rgba(123,92,255,0.4)';tu.style.color='#fff';ti.style.background='rgba(123,92,255,0.05)';ti.style.borderColor='rgba(123,92,255,0.15)';ti.style.color='#8891B8';im.style.display='none';um.style.display='flex'}else{ti.style.background='linear-gradient(135deg,rgba(123,92,255,0.2),rgba(90,108,255,0.2))';ti.style.borderColor='rgba(123,92,255,0.4)';ti.style.color='#fff';tu.style.background='rgba(123,92,255,0.05)';tu.style.borderColor='rgba(123,92,255,0.15)';tu.style.color='#8891B8';im.style.display='flex';um.style.display='none'}window._currentMode=m}
+  </script>
+
+  <script src="/js/starry-bg.js" defer></script>
+</body>
+</html>
