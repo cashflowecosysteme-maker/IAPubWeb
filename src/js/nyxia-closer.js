@@ -1,11 +1,11 @@
 /**
- * nyxia-closer.js — NyXia Setter|Closer Widget
- * Cerveau : Gemini Flash Free via /api/chat
- * Basé sur La Psychologie du Clic — Diane Boyer
- * Présente sur toutes les pages NyXia
+ * nyxia-closer.js — NyXia v2.1 CORRIGÉ
+ * === VÉRIFIE QUE CE CODE EST BIEN CHARGÉ ===
  */
 ;(function () {
   'use strict'
+
+  console.log('%c✅ NYXIA v2.1 CHARGÉE', 'color:#7B5CFF;font-size:16px;font-weight:bold')
 
   var state = {
     open     : false,
@@ -15,6 +15,42 @@
   }
 
   var chatPanel, messagesEl, inputEl, sendBtn, toggleBtn, closeBtn
+  var ttsEnabled = false
+
+  // Préchargement des voices
+  var voicesLoaded = false
+  var frVoice = null
+
+  function loadVoices() {
+    if (!window.speechSynthesis) {
+      console.warn('❌ speechSynthesis non disponible')
+      return
+    }
+    var voices = window.speechSynthesis.getVoices()
+    console.log('🎤 Voices disponibles:', voices.length)
+    if (voices.length > 0) {
+      voicesLoaded = true
+      frVoice = voices.find(function(v) { return v.lang === 'fr-FR' })
+        || voices.find(function(v) { return v.lang && v.lang.startsWith('fr') })
+      if (frVoice) {
+        console.log('✅ Voice française trouvée:', frVoice.name)
+      } else {
+        console.warn('⚠️ Pas de voice française, voix par défaut utilisée')
+      }
+    }
+  }
+
+  // Essayer de charger les voices plusieurs fois
+  if (window.speechSynthesis) {
+    loadVoices()
+    if (!voicesLoaded) {
+      window.speechSynthesis.onvoiceschanged = function() {
+        loadVoices()
+      }
+      // Fallback: réessayer après 1 seconde
+      setTimeout(loadVoices, 1000)
+    }
+  }
 
   function init() {
     chatPanel  = document.getElementById('nyxia-chat')
@@ -30,6 +66,7 @@
     inputEl.addEventListener('keypress', function (e) {
       if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
     })
+    console.log('✅ NyXia initialisée')
   }
 
   function toggleChat() {
@@ -51,18 +88,30 @@
   function addTtsButton() {
     var header = document.getElementById('nyxia-header')
     if (!header || document.getElementById('nyxia-tts-btn')) return
+    
     var btn = document.createElement('button')
     btn.id = 'nyxia-tts-btn'
-    btn.title = 'Activer/désactiver la lecture vocale automatique'
-    btn.textContent = '🔊'
-    btn.style.cssText = 'background:none;border:1px solid rgba(123,92,255,0.3);border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:13px;color:#8891B8;margin-left:auto;transition:all .2s;flex-shrink:0'
+    btn.title = 'Lecture vocale automatique'
+    btn.textContent = '🔇'
+    btn.style.cssText = 'background:none;border:1px solid rgba(123,92,255,0.3);border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;color:#8891B8;margin-left:auto;transition:all .2s;flex-shrink:0'
+    
     btn.addEventListener('click', function(e) {
       e.stopPropagation()
       ttsEnabled = !ttsEnabled
-      btn.style.borderColor = ttsEnabled ? 'var(--green, #00E676)' : 'rgba(123,92,255,0.3)'
-      btn.style.color = ttsEnabled ? '#00E676' : '#8891B8'
-      btn.textContent = ttsEnabled ? '发声' : '🔊'
-      if (!ttsEnabled) window.speechSynthesis && window.speechSynthesis.cancel()
+      console.log('🔊 TTS auto:', ttsEnabled ? 'ACTIVÉ' : 'DÉSACTIVÉ')
+      
+      if (ttsEnabled) {
+        btn.textContent = '🔊'
+        btn.style.borderColor = '#00E676'
+        btn.style.color = '#00E676'
+        btn.style.background = 'rgba(0,230,118,0.1)'
+      } else {
+        btn.textContent = '🔇'
+        btn.style.borderColor = 'rgba(123,92,255,0.3)'
+        btn.style.color = '#8891B8'
+        btn.style.background = 'none'
+        window.speechSynthesis.cancel()
+      }
     })
     header.appendChild(btn)
   }
@@ -70,8 +119,8 @@
   function sendWelcome() {
     addTtsButton()
     var welcome = state.userName
-      ? 'Bonjour ' + state.userName + ' ! 💜 Ravie de te retrouver. Sur quoi travailles-tu aujourd\'hui ?'
-      : 'Bonjour ! Je suis NyXia, ton assistante IA. ✨ Pour commencer, comment tu t\'appelles ?'
+      ? 'Bonjour ' + state.userName + ' ! Ravie de te retrouver. Sur quoi travailles-tu aujourd\'hui ?'
+      : 'Bonjour ! Je suis NyXia, ton assistante IA. Pour commencer, comment tu t\'appelles ?'
     addBotMessage(welcome)
   }
 
@@ -107,15 +156,18 @@
     .then(function (r) { return r.json() })
     .then(function (data) {
       hideTyping()
-      var reply = (data.success && data.content) ? data.content : 'Je suis là pour toi ! Dis-moi comment je peux t\'aider. 💜'
+      var reply = (data.success && data.content) ? data.content : 'Je suis là pour toi ! Dis-moi comment je peux t\'aider.'
+      console.log('📩 Réponse reçue, longueur:', reply.length)
+      console.log('📩 Contient [IMAGE:]', reply.indexOf('[IMAGE:') !== -1)
       addBotMessage(reply)
       speakNyxia(reply)
       state.history.push({ role: 'assistant', content: reply })
       if (state.history.length > 20) state.history = state.history.slice(-20)
     })
-    .catch(function () {
+    .catch(function (err) {
+      console.error('❌ Erreur API:', err)
       hideTyping()
-      addBotMessage('Petite pause de ma part... Réessaie dans un instant ! 💜')
+      addBotMessage('Petite pause de ma part... Réessaie dans un instant !')
     })
     .finally(function () {
       sendBtn.disabled = false
@@ -124,217 +176,220 @@
   }
 
   /* ══════════════════════════════════════
-     BOUTON TTS PAR MESSAGE
+     BOUTON TTS INDIVIDUEL PAR MESSAGE
   ══════════════════════════════════════ */
-  function createTtsMsgButton(textToRead) {
+  function createSpeakButton(textToRead) {
     var btn = document.createElement('button')
-    btn.className = 'nx-tts-msg-btn'
-    btn.title = 'Écouter ce message'
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>'
-    btn.style.cssText = 'background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.25);border-radius:50%;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#7B5CFF;transition:all .2s;flex-shrink:0'
+    btn.type = 'button'
+    btn.className = 'nx-speak-btn'
+    btn.title = 'Cliquez pour écouter'
+    btn.setAttribute('aria-label', 'Écouter ce message')
+    btn.innerHTML = '🔊'
+    btn.style.cssText = 'background:rgba(123,92,255,0.12);border:1px solid rgba(123,92,255,0.25);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:14px;color:#7B5CFF;transition:all .15s;flex-shrink:0;white-space:nowrap;line-height:1'
     
-    var isSpeaking = false
+    var speaking = false
     
-    btn.addEventListener('mouseenter', function() {
-      btn.style.background = 'rgba(123,92,255,0.3)'
-      btn.style.borderColor = 'rgba(123,92,255,0.5)'
-    })
-    btn.addEventListener('mouseleave', function() {
-      if (!isSpeaking) {
-        btn.style.background = 'rgba(123,92,255,0.15)'
-        btn.style.borderColor = 'rgba(123,92,255,0.25)'
-      }
-    })
-    
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation()
+    btn.addEventListener('click', function() {
+      console.log('🎤 Clic sur bouton speaker')
       
       if (!window.speechSynthesis) {
-        console.warn('SpeechSynthesis non supporté')
+        alert('La synthèse vocale n\'est pas supportée par votre navigateur.')
         return
       }
       
-      if (isSpeaking) {
+      // Si déjà en train de parler, arrêter
+      if (speaking) {
+        console.log('⏹️ Arrêt de la lecture')
         window.speechSynthesis.cancel()
-        isSpeaking = false
-        btn.style.background = 'rgba(123,92,255,0.15)'
-        btn.style.borderColor = 'rgba(123,92,255,0.25)'
+        speaking = false
+        btn.innerHTML = '🔊'
+        btn.style.background = 'rgba(123,92,255,0.12)'
         btn.style.color = '#7B5CFF'
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>'
         return
       }
       
+      // Annuler toute lecture en cours
       window.speechSynthesis.cancel()
       
+      // Nettoyer le texte
       var clean = textToRead
         .replace(/\*\*(.*?)\*\*/g, '$1')
-        .replace(/\[IMAGE:\s*.*?\]/gi, '')
+        .replace(/\[IMAGE:[\s\S]*?\]/gi, 'Image générée.')
         .replace(/[✦💜🚀💎✓►▶⏳⚠️]/g, '')
-        .replace(/\s+/g, ' ')
         .trim()
       
-      if (!clean) return
+      if (!clean) {
+        console.warn('⚠️ Texte vide après nettoyage')
+        return
+      }
+      
+      console.log('🗣️ Lecture de:', clean.substring(0, 50) + '...')
       
       var utt = new SpeechSynthesisUtterance(clean)
       utt.lang = 'fr-FR'
-      utt.rate = 0.92
-      utt.pitch = 1.1
+      utt.rate = 0.9
+      utt.pitch = 1.05
       utt.volume = 1
       
+      // Assigner la voix française si disponible
+      if (frVoice) {
+        utt.voice = frVoice
+        console.log('🎤 Utilisation voice:', frVoice.name)
+      }
+      
       utt.onstart = function() {
-        isSpeaking = true
-        btn.style.background = 'rgba(123,92,255,0.5)'
-        btn.style.borderColor = '#7B5CFF'
+        console.log('▶️ Début de la lecture')
+        speaking = true
+        btn.innerHTML = '⏹️'
+        btn.style.background = 'rgba(123,92,255,0.4)'
         btn.style.color = '#fff'
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>'
       }
       
       utt.onend = function() {
-        isSpeaking = false
-        btn.style.background = 'rgba(123,92,255,0.15)'
-        btn.style.borderColor = 'rgba(123,92,255,0.25)'
+        console.log('✅ Fin de la lecture')
+        speaking = false
+        btn.innerHTML = '🔊'
+        btn.style.background = 'rgba(123,92,255,0.12)'
         btn.style.color = '#7B5CFF'
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>'
       }
       
-      utt.onerror = function() {
-        isSpeaking = false
-        btn.style.background = 'rgba(123,92,255,0.15)'
-        btn.style.borderColor = 'rgba(123,92,255,0.25)'
+      utt.onerror = function(e) {
+        console.error('❌ Erreur TTS:', e)
+        speaking = false
+        btn.innerHTML = '🔊'
+        btn.style.background = 'rgba(123,92,255,0.12)'
         btn.style.color = '#7B5CFF'
-        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>'
       }
       
-      function speakNow() {
-        var voices = window.speechSynthesis.getVoices()
-        var frVoice = voices.find(function(v) { return v.lang === 'fr-FR' })
-          || voices.find(function(v) { return v.lang.startsWith('fr') })
-        if (frVoice) utt.voice = frVoice
-        window.speechSynthesis.speak(utt)
-      }
+      // Parler immédiatement
+      window.speechSynthesis.speak(utt)
       
-      if (window.speechSynthesis.getVoices().length === 0) {
-        window.speechSynthesis.onvoiceschanged = function() {
-          speakNow()
-          window.speechSynthesis.onvoiceschanged = null
+      // Vérification après 500ms si ça parle bien
+      setTimeout(function() {
+        if (window.speechSynthesis.speaking) {
+          console.log('✅ En cours de lecture...')
+        } else if (speaking) {
+          console.warn('⚠️ Pas de lecture détectée, retry...')
+          speaking = false
+          window.speechSynthesis.speak(utt)
         }
-      } else {
-        speakNow()
-      }
+      }, 500)
     })
     
     return btn
   }
 
   /* ══════════════════════════════════════
-     AJOUT MESSAGE BOT (AVEC IMAGE POLLINATIONS)
+     ADD BOT MESSAGE - VERSION CORRIGÉE
   ══════════════════════════════════════ */
   function addBotMessage(text) {
     var msg = document.createElement('div')
     msg.className = 'nx-msg bot'
 
-    var imageMatch = text.match(/\[IMAGE:\s*(.*?)\]/i)
+    // === DÉTECTION IMAGE - REGEX PLUS PERMISSIF ===
+    var imageRegex = /\[IMAGE:[\s\S]*?\]/i
+    var imageMatch = text.match(imageRegex)
+    
+    console.log('🔍 Detection image:', imageMatch ? 'OUI' : 'NON')
     
     if (imageMatch) {
-      var imgDesc     = imageMatch[1].trim()
-      var textWithout = text.replace(/\[IMAGE:\s*.*?\]/i, '').trim()
+      console.log('🖼️ Image détectée, description:', imageMatch[0].substring(0, 60) + '...')
       
-      // Conteneur de la bulle + bouton TTS
-      var bubbleWrap = document.createElement('div')
-      bubbleWrap.style.cssText = 'display:flex;align-items:flex-start;gap:6px;max-width:100%'
+      var fullImageTag = imageMatch[0]
+      var imgDesc = fullImageTag
+        .replace(/\[IMAGE:\s*/i, '')
+        .replace(/\s*\]$/, '')
+        .trim()
       
-      var bubble = document.createElement('div')
-      bubble.className = 'nx-bubble'
-      bubble.style.cssText = 'flex:1;min-width:0'
+      var textWithout = text.replace(imageRegex, '').trim()
       
+      console.log('📝 Description image:', imgDesc.substring(0, 50) + '...')
+      console.log('📝 Texte restant:', textWithout.substring(0, 50) + '...')
+      
+      // Structure: bulle texte + bouton speaker si texte
       if (textWithout) {
-        var formatted = escapeHtml(textWithout)
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\n/g, '<br>')
-        bubble.innerHTML = formatted
-        bubbleWrap.appendChild(bubble)
-        bubbleWrap.appendChild(createTtsMsgButton(textWithout))
+        var row = document.createElement('div')
+        row.style.cssText = 'display:flex;align-items:flex-start;gap:8px'
+        
+        var bubble = document.createElement('div')
+        bubble.className = 'nx-bubble'
+        bubble.style.flex = '1'
+        bubble.innerHTML = formatText(textWithout)
+        
+        row.appendChild(bubble)
+        row.appendChild(createSpeakButton(textWithout))
+        msg.appendChild(row)
       }
       
-      msg.appendChild(bubbleWrap)
-      
-      // Conteneur image avec Pollinations.ai
-      var imgWrap = document.createElement('div')
-      imgWrap.style.cssText = 'margin-top:8px;border-radius:12px;overflow:hidden;background:rgba(123,92,255,0.06);border:1px solid rgba(123,92,255,0.15);position:relative'
+      // Zone image
+      var imgContainer = document.createElement('div')
+      imgContainer.style.cssText = 'margin-top:10px;border-radius:12px;overflow:hidden;position:relative;background:linear-gradient(135deg,rgba(123,92,255,0.08),rgba(0,230,118,0.05));border:1px solid rgba(123,92,255,0.15)'
       
       var loader = document.createElement('div')
-      loader.style.cssText = 'padding:40px 20px;text-align:center;color:#8891B8;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:10px'
-      loader.innerHTML = '<div class="nx-img-loader" style="width:32px;height:32px;border:3px solid rgba(123,92,255,0.2);border-top-color:#7B5CFF;border-radius:50%;animation:nxSpin 0.8s linear infinite"></div><span>🎨 Génération de l\'image...</span>'
-      imgWrap.appendChild(loader)
+      loader.style.cssText = 'padding:35px 20px;text-align:center;color:#8891B8;font-size:13px'
+      loader.innerHTML = '<div style="display:inline-block;width:30px;height:30px;border:3px solid rgba(123,92,255,0.2);border-top-color:#7B5CFF;border-radius:50%;animation:nxSpin .7s linear infinite;margin-bottom:10px"></div><br>🎨 Génération en cours...'
+      imgContainer.appendChild(loader)
       
-      msg.appendChild(imgWrap)
+      msg.appendChild(imgContainer)
       messagesEl.appendChild(msg)
-      messagesEl.scrollTop = messagesEl.scrollHeight
+      scrollToBottom()
       
-      // Ajout du style d'animation si pas encore présent
-      if (!document.getElementById('nx-img-loader-style')) {
-        var style = document.createElement('style')
-        style.id = 'nx-img-loader-style'
-        style.textContent = '@keyframes nxSpin{to{transform:rotate(360deg)}}'
-        document.head.appendChild(style)
-      }
+      // Injection CSS animation
+      injectSpinnerStyle()
       
-      // Génération via Pollinations.ai (gratuit, sans API key)
-      var encodedPrompt = encodeURIComponent(imgDesc)
-      var imgUrl = 'https://image.pollinations.ai/prompt/' + encodedPrompt + '?width=512&height=512&nologo=true&seed=' + Math.floor(Math.random() * 1000000)
+      // === GÉNÉRATION IMAGE POLLINATIONS ===
+      var prompt = encodeURIComponent(imgDesc + ', high quality, detailed, 4k')
+      var seed = Math.floor(Math.random() * 999999)
+      var imageUrl = 'https://image.pollinations.ai/prompt/' + prompt + '?width=512&height=512&nologo=true&seed=' + seed
       
-      var img = new Image()
+      console.log('🔗 URL image:', imageUrl.substring(0, 80) + '...')
+      
+      var img = document.createElement('img')
       img.alt = imgDesc
-      img.style.cssText = 'width:100%;display:block;border-radius:12px;opacity:0;transition:opacity 0.4s ease'
-      
+      img.style.cssText = 'width:100%;display:block;border-radius:11px;opacity:0;transition:opacity .5s ease'
       img.onload = function() {
+        console.log('✅ Image chargée avec succès')
         loader.remove()
-        imgWrap.style.padding = '0'
-        imgWrap.style.background = 'none'
-        imgWrap.style.border = 'none'
-        imgWrap.appendChild(img)
-        // Force le reflow pour l'animation
-        img.offsetHeight
-        img.style.opacity = '1'
-        messagesEl.scrollTop = messagesEl.scrollHeight
+        imgContainer.style.background = 'none'
+        imgContainer.style.border = 'none'
+        imgContainer.style.padding = '0'
+        imgContainer.appendChild(img)
+        requestAnimationFrame(function() {
+          img.style.opacity = '1'
+        })
+        scrollToBottom()
       }
-      
       img.onerror = function() {
-        loader.innerHTML = '<span>⚠️ Erreur lors de la génération.<br><small style="opacity:0.7">Réessaie dans un instant.</small></span>'
-        loader.style.padding = '20px'
+        console.error('❌ Erreur chargement image')
+        loader.innerHTML = '⚠️ Erreur de génération<br><small style="opacity:.6">Réessaie dans un instant</small>'
       }
+      img.src = imageUrl
       
-      img.src = imgUrl
-      
-      // Timeout de sécurité (30 secondes)
+      // Timeout 45s
       setTimeout(function() {
         if (loader.parentNode) {
-          loader.innerHTML = '<span>⏱️ La génération prend plus de temps que prévu...</span>'
+          loader.innerHTML = '⏱️ Génération longue... Patientez encore un peu'
         }
-      }, 30000)
+      }, 45000)
       
       return
     }
 
-    // Message normal avec bouton TTS
-    var bubbleWrap = document.createElement('div')
-    bubbleWrap.style.cssText = 'display:flex;align-items:flex-start;gap:6px;max-width:100%'
+    // === MESSAGE NORMAL AVEC BOUTON SPEAKER ===
+    var row = document.createElement('div')
+    row.style.cssText = 'display:flex;align-items:flex-start;gap:8px'
     
     var bubble = document.createElement('div')
     bubble.className = 'nx-bubble'
-    bubble.style.cssText = 'flex:1;min-width:0'
+    bubble.style.flex = '1'
+    bubble.innerHTML = formatText(text)
     
-    var formatted = escapeHtml(text)
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n/g, '<br>')
-    bubble.innerHTML = formatted
+    row.appendChild(bubble)
+    row.appendChild(createSpeakButton(text))
+    msg.appendChild(row)
     
-    bubbleWrap.appendChild(bubble)
-    bubbleWrap.appendChild(createTtsMsgButton(text))
-    
-    msg.appendChild(bubbleWrap)
     messagesEl.appendChild(msg)
-    messagesEl.scrollTop = messagesEl.scrollHeight
+    scrollToBottom()
   }
 
   function addUserMessage(text) {
@@ -342,7 +397,7 @@
     msg.className = 'nx-msg user'
     msg.innerHTML = '<div class="nx-bubble">' + escapeHtml(text) + '</div>'
     messagesEl.appendChild(msg)
-    messagesEl.scrollTop = messagesEl.scrollHeight
+    scrollToBottom()
   }
 
   function showTyping() {
@@ -352,7 +407,7 @@
     msg.id = 'nx-typing'
     msg.innerHTML = '<div class="nx-bubble"><span class="nx-dots"><i></i><i></i><i></i></span></div>'
     messagesEl.appendChild(msg)
-    messagesEl.scrollTop = messagesEl.scrollHeight
+    scrollToBottom()
   }
 
   function hideTyping() {
@@ -360,46 +415,14 @@
     if (t) t.remove()
   }
 
-  /* ══════════════════════════════════════
-     TEXT-TO-SPEECH GLOBAL (auto si activé)
-  ══════════════════════════════════════ */
-  var ttsEnabled = false
+  function scrollToBottom() {
+    messagesEl.scrollTop = messagesEl.scrollHeight
+  }
 
-  function speakNyxia(text) {
-    if (!ttsEnabled || !window.speechSynthesis) return
-    window.speechSynthesis.cancel()
-    
-    var clean = text
-      .replace(/\*\*(.*?)\*\*/g, '$1')
-      .replace(/\[IMAGE:\s*.*?\]/gi, '')
-      .replace(/[✦💜🚀💎✓►▶⏳⚠️]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim()
-    
-    if (!clean) return
-    
-    var utt = new SpeechSynthesisUtterance(clean)
-    utt.lang = 'fr-FR'
-    utt.rate = 0.92
-    utt.pitch = 1.1
-    utt.volume = 1
-    
-    function go() {
-      var voices = window.speechSynthesis.getVoices()
-      var frVoice = voices.find(function(v) { return v.lang === 'fr-FR' })
-        || voices.find(function(v) { return v.lang.startsWith('fr') })
-      if (frVoice) utt.voice = frVoice
-      window.speechSynthesis.speak(utt)
-    }
-    
-    if (window.speechSynthesis.getVoices().length === 0) {
-      window.speechSynthesis.onvoiceschanged = function() {
-        go()
-        window.speechSynthesis.onvoiceschanged = null
-      }
-    } else {
-      go()
-    }
+  function formatText(text) {
+    return escapeHtml(text)
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>')
   }
 
   function escapeHtml(text) {
@@ -408,6 +431,48 @@
     return div.innerHTML
   }
 
+  var spinnerInjected = false
+  function injectSpinnerStyle() {
+    if (spinnerInjected) return
+    spinnerInjected = true
+    var s = document.createElement('style')
+    s.textContent = '@keyframes nxSpin{to{transform:rotate(360deg)}}'
+    document.head.appendChild(s)
+  }
+
+  /* ══════════════════════════════════════
+     TTS AUTOMATIQUE (si activé via header)
+  ══════════════════════════════════════ */
+  function speakNyxia(text) {
+    if (!ttsEnabled) return
+    if (!window.speechSynthesis) return
+    
+    console.log('🔊 TTS auto activé, lecture...')
+    
+    window.speechSynthesis.cancel()
+    
+    var clean = text
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\[IMAGE:[\s\S]*?\]/gi, 'Image.')
+      .replace(/[✦💜🚀💎✓►▶⏳⚠️]/g, '')
+      .trim()
+    
+    if (!clean) return
+    
+    var utt = new SpeechSynthesisUtterance(clean)
+    utt.lang = 'fr-FR'
+    utt.rate = 0.9
+    utt.pitch = 1.05
+    utt.volume = 1
+    
+    if (frVoice) utt.voice = frVoice
+    
+    window.speechSynthesis.speak(utt)
+  }
+
+  /* ══════════════════════════════════════
+     INIT
+  ══════════════════════════════════════ */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init)
   } else {
