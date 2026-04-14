@@ -1596,15 +1596,16 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
         if (mode === "i2v") {
           // ═══ IMAGE → VIDÉO ═══
+          // I2V utilise img_url et resolution (pas size)
           endpoint = `${DASHSCOPE_BASE}/services/aigc/video-generation/video-synthesis`
           payload = {
             model: model || "wan2.6-i2v",
             input: {
               prompt: prompt,
-              image_url: imageB64
+              img_url: imageB64
             },
             parameters: {
-              size: size,
+              resolution: resolution.toUpperCase(),
               prompt_extend: true,
               watermark: false,
               duration: duration
@@ -1612,6 +1613,7 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
           }
         } else {
           // ═══ TEXTE → VIDÉO ═══
+          // T2V utilise size au format "1280*720"
           endpoint = `${DASHSCOPE_BASE}/services/aigc/video-generation/video-synthesis`
           payload = {
             model: model || "wan2.6-t2v",
@@ -1703,6 +1705,7 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
         const status   = pollData.output.task_status
         let videoUrl   = null
+        let errorMsg   = null
 
         if (status === "SUCCEEDED") {
           videoUrl = pollData.output.video_url
@@ -1711,10 +1714,16 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
           console.log("[WAN] Vidéo prête:", taskId, "→", videoUrl ? videoUrl.substring(0, 80) : "URL non trouvée")
         }
 
+        if (status === "FAILED") {
+          errorMsg = pollData.output.message || pollData.output.task_metrics?.error || "Génération échouée"
+          console.error("[WAN] Tâche échouée:", taskId, "|", errorMsg, "|", JSON.stringify(pollData.output))
+        }
+
         return new Response(JSON.stringify({
           success: true,
           status: status,
           videoUrl: videoUrl,
+          errorMsg: errorMsg,
           taskId: taskId
         }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
 
