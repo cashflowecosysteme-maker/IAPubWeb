@@ -120,6 +120,8 @@
     .tool-embed { flex: 1; border: none; width: 100%; height: 100%; background: transparent; }
     #panel-medias { overflow: hidden; }
     #panel-medias iframe { width: 100%; height: 100%; border: none; }
+    #panel-wan { overflow: hidden; }
+    #panel-wan iframe { width: 100%; height: 100%; border: none; }
     #panel-messages { align-items: center; justify-content: center; flex-direction: column; }
     .coming-soon { text-align: center; padding: 60px 40px; }
     .coming-soon-icon { font-size: 64px; margin-bottom: 20px; }
@@ -178,6 +180,9 @@
         <div class="nav-item" id="nav-medias" onclick="showPanel('medias')">
           <span class="nav-icon">🎬</span> Photos &amp; Vidéos <span class="nav-arrow">›</span>
         </div>
+        <div class="nav-item" id="nav-wan" onclick="showPanel('wan')">
+          <span class="nav-icon">✨</span> Studio Vidéo IA <span class="nav-arrow">›</span>
+        </div>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section">
@@ -235,6 +240,7 @@
 
       <div class="panel" id="panel-generator"><iframe src="/generatorsiteweb.html" class="tool-embed" id="generator-frame"></iframe></div>
       <div class="panel" id="panel-medias"><iframe src="/medias.html" class="tool-embed" id="medias-frame"></iframe></div>
+      <div class="panel" id="panel-wan"><iframe src="/wan-video.html" class="tool-embed" id="wan-frame"></iframe></div>
 
       <div class="panel" id="panel-projects">
         <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
