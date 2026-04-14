@@ -912,14 +912,20 @@
 
       // Adapter les modèles selon le mode
       var modelSel = document.getElementById('opt-model')
+      var resSel   = document.getElementById('opt-resolution')
       if (tab === 't2v') {
         modelSel.innerHTML = '<option value="wan2.7-t2v">Wan 2.7 (dernier)</option>'
                            + '<option value="wan2.6-t2v">Wan 2.6 (HD)</option>'
                            + '<option value="wan2.5-t2v-preview">Wan 2.5 (audio sync)</option>'
+        resSel.innerHTML   = '<option value="720p">720p</option>'
+                           + '<option value="1080p">1080p</option>'
+                           + '<option value="480p">480p (rapide)</option>'
       } else {
-        modelSel.innerHTML = '<option value="wan2.7-i2v">Wan 2.7 I2V (dernier)</option>'
+        modelSel.innerHTML = '<option value="wan2.6-i2v-flash">Wan 2.6 Flash (rapide)</option>'
                            + '<option value="wan2.6-i2v">Wan 2.6 I2V (HD)</option>'
-                           + '<option value="wan2.6-i2v-flash">Wan 2.6 Flash (rapide)</option>'
+                           + '<option value="wan2.5-i2v-preview">Wan 2.5 I2V (audio sync)</option>'
+        resSel.innerHTML   = '<option value="720p">720p</option>'
+                           + '<option value="1080p">1080p</option>'
       }
 
       document.getElementById('result-section').classList.remove('visible')
@@ -932,13 +938,32 @@
     function handleImageUpload(e) {
       var file = e.target.files[0]
       if (!file) return
+
+      // Compresser l'image à max 2048px et qualité 0.85 pour rester sous 10MB
       var reader = new FileReader()
       reader.onload = function(ev) {
-        uploadedImageB64 = ev.target.result
-        var preview = document.getElementById('image-preview')
-        preview.src = ev.target.result
-        preview.style.display = 'block'
-        document.getElementById('image-upload').classList.add('has-image')
+        var img = new Image()
+        img.onload = function() {
+          var canvas = document.createElement('canvas')
+          var maxDim = 2048
+          var w = img.width, h = img.height
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim }
+            else       { w = Math.round(w * maxDim / h); h = maxDim }
+          }
+          canvas.width = w
+          canvas.height = h
+          var ctx = canvas.getContext('2d')
+          ctx.drawImage(img, 0, 0, w, h)
+          uploadedImageB64 = canvas.toDataURL('image/jpeg', 0.85)
+          console.log('[I2V] Image compressée:', w + 'x' + h, '|', Math.round(uploadedImageB64.length / 1024) + 'KB')
+
+          var preview = document.getElementById('image-preview')
+          preview.src = uploadedImageB64
+          preview.style.display = 'block'
+          document.getElementById('image-upload').classList.add('has-image')
+        }
+        img.src = ev.target.result
       }
       reader.readAsDataURL(file)
     }
