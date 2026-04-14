@@ -6,12 +6,15 @@
  *   POST /api/image   — Pexels Photos → base64
  *   POST /api/video   — Pexels Videos → URLs MP4
  *   POST /api/publish — Publication 1 clic (Cloudflare Pages)
+ *   POST /api/wan-video        — Génération Vidéo IA (Wan AI / DashScope)
+ *   POST /api/wan-video/status — Polling statut vidéo Wan AI
  *
  * Variables d'environnement requises :
  *   OPENROUTER_KEY  — clé OpenRouter
  *   PEXELS_KEY      — clé Pexels API
  *   CF_ACCOUNT_ID   — ID du compte Cloudflare
  *   CF_API_TOKEN    — Token API Cloudflare (droits Pages:Edit)
+ *   DASHSCOPE_KEY   — clé API Alibaba DashScope (Wan AI)
  */
 // ── ZIP Natif — Zero Dependency (validé, format PKZIP Store) ──
 const makeCRCTable = () => {
@@ -1445,6 +1448,167 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
       } catch(e) {
         return new Response(JSON.stringify({ error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/wan-video — Génération Vidéo IA (Wan AI / DashScope)
+       Soumission asynchrone : retourne un taskId
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/wan-video" && request.method === "POST") {
+      try {
+        const DASHSCOPE_KEY = env.DASHSCOPE_KEY || ""
+        if (!DASHSCOPE_KEY) {
+          return new Response(JSON.stringify({ success: false, error: "Clé API DashScope non configurée." }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const body       = await request.json()
+        const prompt     = body.prompt     || ""
+        const model      = body.model      || "wan2.6-t2v"
+        const resolution = body.resolution || "720p"
+        const duration   = body.duration   || 5
+        const mode       = body.mode       || "t2v"
+        const imageB64   = body.image_base64 || ""
+
+        if (!prompt) {
+          return new Response(JSON.stringify({ success: false, error: "Prompt requis." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // URL de base DashScope — région internationale (Singapour)
+        const DASHSCOPE_BASE = "https://dashscope-intl.aliyuncs.com/api/v1"
+
+        let endpoint, payload
+
+        if (mode === "i2v") {
+          // ═══ IMAGE → VIDÉO ═══
+          endpoint = `${DASHSCOPE_BASE}/services/aigc/image2video/video-synthesis`
+          payload = {
+            model: model || "wan2.6-i2v",
+            input: {
+              prompt: prompt,
+              image_url: imageB64  // DashScope accepte les data URI base64
+            },
+            parameters: {
+              resolution: resolution.toUpperCase(),
+              prompt_extend: true,
+              watermark: false
+            }
+          }
+          if (duration) payload.parameters.duration = String(duration)
+        } else {
+          // ═══ TEXTE → VIDÉO ═══
+          endpoint = `${DASHSCOPE_BASE}/services/aigc/text2video/video-synthesis`
+          payload = {
+            model: model || "wan2.6-t2v",
+            input: {
+              prompt: prompt
+            },
+            parameters: {
+              resolution: resolution.toUpperCase(),
+              prompt_extend: true,
+              watermark: false
+            }
+          }
+          if (duration) payload.parameters.duration = String(duration)
+        }
+
+        console.log("[WAN] Soumission:", model, "|", prompt.substring(0, 60))
+
+        const wanRes = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${DASHSCOPE_KEY}`,
+            "Content-Type": "application/json",
+            "X-DashScope-Async": "enable"
+          },
+          body: JSON.stringify(payload)
+        })
+
+        const wanData = await wanRes.json()
+
+        if (!wanRes.ok || !wanData.output || !wanData.output.task_id) {
+          console.error("[WAN] Erreur:", JSON.stringify(wanData))
+          return new Response(JSON.stringify({
+            success: false,
+            error: wanData.message || wanData.output?.message || "Erreur lors de la soumission à Wan AI"
+          }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        console.log("[WAN] Tâche créée:", wanData.output.task_id)
+
+        return new Response(JSON.stringify({
+          success: true,
+          taskId: wanData.output.task_id,
+          status: wanData.output.task_status
+        }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+      } catch(e) {
+        console.error("[WAN] Erreur serveur:", e.message)
+        return new Response(JSON.stringify({ success: false, error: "Erreur serveur : " + e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/wan-video/status — Polling statut Wan AI
+       Vérifie l'état d'une tâche et retourne l'URL vidéo
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/wan-video/status" && request.method === "POST") {
+      try {
+        const DASHSCOPE_KEY = env.DASHSCOPE_KEY || ""
+        if (!DASHSCOPE_KEY) {
+          return new Response(JSON.stringify({ success: false, error: "Clé API DashScope non configurée." }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const body   = await request.json()
+        const taskId = body.taskId || ""
+
+        if (!taskId) {
+          return new Response(JSON.stringify({ success: false, error: "taskId requis." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const DASHSCOPE_BASE = "https://dashscope-intl.aliyuncs.com/api/v1"
+
+        const pollRes = await fetch(`${DASHSCOPE_BASE}/tasks/${taskId}`, {
+          method: "GET",
+          headers: { "Authorization": `Bearer ${DASHSCOPE_KEY}` }
+        })
+
+        const pollData = await pollRes.json()
+
+        if (!pollRes.ok || !pollData.output) {
+          console.error("[WAN] Erreur polling:", JSON.stringify(pollData))
+          return new Response(JSON.stringify({
+            success: false,
+            error: pollData.message || "Erreur lors du polling"
+          }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const status   = pollData.output.task_status
+        let videoUrl   = null
+
+        if (status === "SUCCEEDED") {
+          videoUrl = pollData.output.video_url
+            || (pollData.output.results && pollData.output.results[0] && pollData.output.results[0].url)
+            || null
+          console.log("[WAN] Vidéo prête:", taskId, "→", videoUrl ? videoUrl.substring(0, 80) : "URL non trouvée")
+        }
+
+        return new Response(JSON.stringify({
+          success: true,
+          status: status,
+          videoUrl: videoUrl,
+          taskId: taskId
+        }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+      } catch(e) {
+        console.error("[WAN] Erreur polling:", e.message)
+        return new Response(JSON.stringify({ success: false, error: "Erreur serveur : " + e.message }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
       }
     }
