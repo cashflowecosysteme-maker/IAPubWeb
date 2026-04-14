@@ -704,7 +704,7 @@
         <h1>Studio Vidéo IA</h1>
         <p>
           Génère des <strong>vidéos cinématiques par IA</strong> à partir d'un simple texte
-          ou d'une image de départ — Génération de vidéo avec son illimitée propulsée par <strong>NyXia AI</strong>.
+          ou d'une image de départ — propulsé par <strong>NyXia AI</strong>.
         </p>
       </div>
     </div>
@@ -1061,7 +1061,8 @@
 
           if (status === 'FAILED' || status === 'failed') {
             setLoading(false)
-            showError('La génération a échoué — réessaie avec un autre prompt')
+            var errDetail = data.errorMsg || 'Réessaie avec un autre prompt ou une autre image'
+            showError('Génération échouée : ' + errDetail)
             updateHistoryItem(taskId, 'failed', null)
             return
           }
