@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/FavIcon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyXia IA — Studio Vidéo IA</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg1: #0F1C3F;
+      --bg2: #1A2554;
+      --bg3: #2A3A6E;
+      --p:   #7B5CFF;
+      --p2:  #5A6CFF;
+      --p3:  #4FA3FF;
+      --g1:  #3E2D7A;
+      --g2:  #2B245C;
+      --glow: rgba(123,92,255,0.4);
+      --t:   #FFFFFF;
+      --t2:  #D6D9F0;
+      --t3:  #8891B8;
+      --green: #00E676;
+      --gold: #F4C842;
+      --r: 14px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg1);
+      color: var(--t2);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── AMBIENT GLOW ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 45% at 15% 5%,  rgba(123,92,255,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 35% at 85% 85%, rgba(79,163,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(62,45,122,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(15,28,63,0.92);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(123,92,255,0.1);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid rgba(123,92,255,0.5);
+    }
+    .nav-logo span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-link {
+      color: var(--t3);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 50px;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--t); background: rgba(123,92,255,0.1); }
+    .nav-link.active {
+      color: var(--t);
+      background: rgba(123,92,255,0.15);
+      border: 1px solid rgba(123,92,255,0.3);
+    }
+
+    /* ── MAIN ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 24px 100px;
+    }
+
+    /* ── HERO HEADER ── */
+    .page-hero {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      margin-bottom: 52px;
+    }
+    .nyxia-avatar {
+      flex-shrink: 0;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(123,92,255,0.5);
+      box-shadow: 0 0 40px rgba(123,92,255,0.35), 0 0 80px rgba(123,92,255,0.12);
+      animation: avatarFloat 4s ease-in-out infinite;
+    }
+    @keyframes avatarFloat {
+      0%, 100% { transform: translateY(0);   box-shadow: 0 0 40px rgba(123,92,255,0.35), 0 0 80px rgba(123,92,255,0.12); }
+      50%       { transform: translateY(-8px); box-shadow: 0 0 60px rgba(123,92,255,0.55), 0 0 100px rgba(123,92,255,0.2); }
+    }
+    .page-hero-text h1 {
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 800;
+      background: linear-gradient(135deg, #a78bfa, var(--p3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 18px rgba(123,92,255,0.4));
+      margin-bottom: 10px;
+      line-height: 1.15;
+    }
+    .page-hero-text p {
+      color: var(--t3);
+      font-size: 16px;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+    .page-hero-text p strong { color: var(--p3); font-weight: 600; }
+
+    /* ── TABS ── */
+    .tabs-wrap {
+      display: flex;
+      gap: 4px;
+      background: rgba(26,37,84,0.4);
+      border: 1px solid rgba(123,92,255,0.12);
+      border-radius: 50px;
+      padding: 4px;
+      width: fit-content;
+      margin-bottom: 36px;
+    }
+    .tab-btn {
+      padding: 10px 28px;
+      border-radius: 50px;
+      border: none;
+      background: transparent;
+      color: var(--t3);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .25s;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .tab-btn:hover { color: var(--t2); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--p), var(--p2));
+      color: #fff;
+      box-shadow: 0 0 20px rgba(123,92,255,0.4);
+    }
+
+    /* ── SEARCH CARD ── */
+    .search-card {
+      background: rgba(26,37,84,0.45);
+      border: 1px solid rgba(123,92,255,0.14);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 28px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .search-input-wrap {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--t3);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    #prompt-input {
+      width: 100%;
+      background: rgba(15,28,63,0.65);
+      border: 1px solid rgba(123,92,255,0.2);
+      border-radius: 50px;
+      color: var(--t);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      padding: 13px 20px 13px 44px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    #prompt-input:focus {
+      border-color: rgba(123,92,255,0.5);
+      box-shadow: 0 0 0 3px rgba(123,92,255,0.1);
+    }
+    #prompt-input::placeholder { color: var(--t3); }
+
+    .btn-generate {
+      padding: 13px 32px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, var(--p), var(--p2));
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 24px rgba(123,92,255,0.4);
+      transition: all .25s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-generate:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(123,92,255,0.65);
+    }
+    .btn-generate:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* Options row */
+    .options-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      align-items: center;
+    }
+    .option-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .option-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--t3);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .option-select {
+      background: rgba(15,28,63,0.65);
+      border: 1px solid rgba(123,92,255,0.2);
+      border-radius: 50px;
+      color: var(--t2);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      padding: 7px 14px;
+      outline: none;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .option-select:focus { border-color: rgba(123,92,255,0.5); }
+
+    /* Image upload */
+    .image-upload-area {
+      display: none;
+      margin-top: 16px;
+      padding: 20px;
+      border: 2px dashed rgba(123,92,255,0.25);
+      border-radius: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: rgba(123,92,255,0.03);
+    }
+    .image-upload-area:hover { border-color: rgba(123,92,255,0.5); background: rgba(123,92,255,0.06); }
+    .image-upload-area.has-image { border-style: solid; border-color: rgba(0,230,118,0.3); background: rgba(0,230,118,0.03); }
+    .image-upload-area p { color: var(--t3); font-size: 13px; }
+    .image-upload-area .upload-icon { font-size: 28px; margin-bottom: 8px; }
+    #image-preview { max-height: 200px; border-radius: 12px; display: none; margin: 0 auto; }
+
+    /* Suggestions */
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 14px;
+    }
+    .sugg-btn {
+      padding: 5px 14px;
+      border-radius: 50px;
+      border: 1px solid rgba(123,92,255,0.18);
+      background: rgba(123,92,255,0.06);
+      color: var(--t3);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .sugg-btn:hover { border-color: var(--p); color: var(--t2); background: rgba(123,92,255,0.12); }
+
+    /* ── LOADING / PROGRESS ── */
+    .loading-state {
+      display: none;
+      text-align: center;
+      padding: 60px 0;
+    }
+    .loading-state.visible { display: block; }
+
+    .progress-container {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .progress-ring {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+    .progress-ring svg {
+      width: 80px;
+      height: 80px;
+      transform: rotate(-90deg);
+    }
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 4;
+    }
+    .progress-ring .bg { stroke: rgba(123,92,255,0.15); }
+    .progress-ring .fg {
+      stroke: url(#progress-gradient);
+      stroke-linecap: round;
+      stroke-dasharray: 226;
+      stroke-dashoffset: 226;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+    .progress-pct {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--p3);
+    }
+
+    .progress-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--t3);
+      transition: all .3s;
+    }
+    .step-item.active { color: var(--t2); background: rgba(123,92,255,0.08); }
+    .step-item.done { color: var(--green); }
+    .step-icon { font-size: 16px; width: 22px; text-align: center; }
+
+    .loading-text {
+      color: var(--t3);
+      font-size: 14px;
+      margin-top: 16px;
+    }
+    .loading-sub {
+      color: var(--t3);
+      font-size: 12px;
+      opacity: 0.7;
+      margin-top: 6px;
+    }
+
+    /* ── RÉSULTAT ── */
+    .result-section { display: none; margin-bottom: 36px; animation: fadeUp .4s ease; }
+    .result-section.visible { display: block; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+
+    .result-card {
+      background: rgba(26,37,84,0.45);
+      border: 1px solid rgba(123,92,255,0.18);
+      border-radius: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+    .result-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(123,92,255,0.1);
+      background: rgba(15,28,63,0.4);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .result-meta { font-size: 13px; color: var(--t3); display: flex; align-items: center; gap: 8px; }
+    .result-meta .wan-badge {
+      background: linear-gradient(135deg, rgba(123,92,255,0.2), rgba(79,163,255,0.2));
+      border: 1px solid rgba(123,92,255,0.3);
+      padding: 3px 10px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--p3);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .toolbar-actions { display: flex; gap: 8px; }
+
+    .btn-sm {
+      padding: 7px 16px;
+      border-radius: 50px;
+      border: 1px solid rgba(123,92,255,0.28);
+      background: rgba(123,92,255,0.08);
+      color: var(--t2);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+    .btn-sm:hover { border-color: var(--p); color: var(--t); background: rgba(123,92,255,0.18); }
+    .btn-sm.accent {
+      background: linear-gradient(135deg, var(--p), var(--p2));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 0 16px rgba(123,92,255,0.35);
+    }
+    .btn-sm.accent:hover { box-shadow: 0 0 28px rgba(123,92,255,0.6); transform: translateY(-1px); }
+
+    .video-player-wrap {
+      position: relative;
+      background: #000;
+    }
+    #result-video {
+      width: 100%;
+      max-height: 560px;
+      display: block;
+      background: #000;
+    }
+    .video-info-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(10,14,30,0.8);
+      font-size: 12px;
+      color: var(--t3);
+    }
+
+    /* ── GRILLE HISTORIQUE ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--t2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      background: rgba(123,92,255,0.2);
+      border: 1px solid rgba(123,92,255,0.3);
+      border-radius: 50px;
+      font-size: 12px;
+      padding: 2px 10px;
+      color: var(--p3);
+      font-family: 'Outfit', sans-serif;
+    }
+    #btn-clear {
+      font-size: 12px;
+      color: var(--t3);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: color .2s;
+    }
+    #btn-clear:hover { color: #ff6b6b; }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .media-item {
+      background: rgba(26,37,84,0.4);
+      border: 1px solid rgba(123,92,255,0.1);
+      border-radius: var(--r);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .25s;
+      position: relative;
+    }
+    .media-item:hover {
+      border-color: rgba(123,92,255,0.38);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 36px rgba(0,0,0,0.35);
+    }
+    .media-item video {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+    .media-item-info { padding: 10px 12px; }
+    .media-item-query {
+      font-size: 12px;
+      color: var(--t3);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .media-item-type {
+      font-size: 11px;
+      color: var(--p3);
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .media-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15,28,63,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .2s;
+      gap: 10px;
+    }
+    .media-item:hover .media-item-overlay { opacity: 1; }
+    .overlay-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(123,92,255,0.85);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 15px;
+      transition: transform .15s;
+      text-decoration: none;
+      color: #fff;
+    }
+    .overlay-btn:hover { transform: scale(1.15); }
+
+    .status-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .status-badge.pending { color: var(--gold); }
+
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 56px 0;
+      color: var(--t3);
+    }
+
+    /* ── SPINNER BTN ── */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      background: rgba(79,163,255,0.06);
+      border: 1px solid rgba(79,163,255,0.15);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .info-box .info-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .info-box p { font-size: 13px; color: var(--t3); line-height: 1.6; }
+    .info-box strong { color: var(--p3); font-weight: 600; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      main { padding: 28px 14px 80px; }
+      .page-hero { flex-direction: column; gap: 20px; text-align: center; }
+      .nyxia-avatar { width: 80px; height: 80px; }
+      .search-row { flex-direction: column; }
+      .btn-generate { width: 100%; justify-content: center; }
+      .search-input-wrap { width: 100%; }
+      .tabs-wrap { width: 100%; justify-content: center; }
+      .options-row { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+
+  <script>
+    /* Protection NyXia — vérifie la session */
+    ;(function() {
+      var token = sessionStorage.getItem('nyxia_token')
+      if (!token) { window.location.href = '/login.html'; return }
+      fetch('/api/check-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) { if (!data.valid) window.location.href = '/login.html' })
+      .catch(function() { window.location.href = '/login.html' })
+    })()
+  </script>
+</head>
+<body>
+
+  <!-- FOND ÉTOILÉ -->
+  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></canvas>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="/NyXia.png" alt="NyXia">
+      <span>NyXia IA</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html"      class="nav-link">🏗 Générateur de sites</a>
+      <a href="medias.html"     class="nav-link">🎬 Médias</a>
+      <a href="wan-video.html"  class="nav-link active">✨ Studio Vidéo IA</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <div class="page-hero">
+      <img src="/NyXia.png" alt="NyXia IA" class="nyxia-avatar">
+      <div class="page-hero-text">
+        <h1>Studio Vidéo IA</h1>
+        <p>
+          Génère des <strong>vidéos cinématiques par IA</strong> à partir d'un simple texte
+          ou d'une image de départ — propulsé par <strong>Wan AI</strong> d'Alibaba Cloud.
+        </p>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="info-box">
+      <span class="info-icon">⚡</span>
+      <p>
+        La génération prend <strong>1 à 5 minutes</strong> selon la résolution.
+        Tu peux lancer une vidéo puis continuer à naviguer — l'historique se met à jour automatiquement.
+      </p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs-wrap">
+      <button class="tab-btn active" id="tab-t2v" onclick="switchTab('t2v')">
+        ✍️ Texte → Vidéo
+      </button>
+      <button class="tab-btn" id="tab-i2v" onclick="switchTab('i2v')">
+        🖼️ Image → Vidéo
+      </button>
+    </div>
+
+    <!-- SEARCH / PROMPT -->
+    <div class="search-card">
+      <div class="search-row">
+        <div class="search-input-wrap">
+          <span class="search-icon">✨</span>
+          <input type="text" id="prompt-input" placeholder="Décris ta scène : un renard détective sous la pluie, style cinématique...">
+        </div>
+        <button class="btn-generate" id="btn-generate" onclick="doGenerate()">
+          <div class="spinner" id="gen-spinner"></div>
+          <span id="gen-label">🎬 Générer</span>
+        </button>
+      </div>
+
+      <!-- Options -->
+      <div class="options-row">
+        <div class="option-group">
+          <span class="option-label">Modèle</span>
+          <select class="option-select" id="opt-model">
+            <option value="wan2.6-t2v">Wan 2.6 (HD)</option>
+            <option value="wan2.6-t2v-turbo">Wan 2.6 Turbo (rapide)</option>
+          </select>
+        </div>
+        <div class="option-group">
+          <span class="option-label">Résolution</span>
+          <select class="option-select" id="opt-resolution">
+            <option value="720p">720p</option>
+            <option value="1080p">1080p</option>
+            <option value="480p">480p (rapide)</option>
+          </select>
+        </div>
+        <div class="option-group">
+          <span class="option-label">Durée</span>
+          <select class="option-select" id="opt-duration">
+            <option value="5">5 secondes</option>
+            <option value="10">10 secondes</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Image upload (mode I2V) -->
+      <div class="image-upload-area" id="image-upload" onclick="document.getElementById('file-input').click()">
+        <div class="upload-icon">🖼️</div>
+        <p>Clique ou glisse une image ici — elle servira de <strong>première frame</strong> de ta vidéo</p>
+        <img id="image-preview" alt="Aperçu">
+        <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+      </div>
+
+      <!-- Suggestions -->
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <!-- LOADING / PROGRESS -->
+    <div class="loading-state" id="loading">
+      <div class="progress-container">
+        <div class="progress-ring">
+          <svg viewBox="0 0 80 80">
+            <defs>
+              <linearGradient id="progress-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#7B5CFF"/>
+                <stop offset="100%" stop-color="#4FA3FF"/>
+              </linearGradient>
+            </defs>
+            <circle class="bg" cx="40" cy="40" r="36"/>
+            <circle class="fg" id="progress-circle" cx="40" cy="40" r="36"/>
+          </svg>
+          <div class="progress-pct" id="progress-pct">0%</div>
+        </div>
+
+        <div class="progress-steps">
+          <div class="step-item active" id="step-1">
+            <span class="step-icon">📤</span> Envoi du prompt à Wan AI...
+          </div>
+          <div class="step-item" id="step-2">
+            <span class="step-icon">🧠</span> Analyse et préparation de la scène...
+          </div>
+          <div class="step-item" id="step-3">
+            <span class="step-icon">🎬</span> Génération des frames vidéo...
+          </div>
+          <div class="step-item" id="step-4">
+            <span class="step-icon">✅</span> Finalisation et encodage...
+          </div>
+        </div>
+
+        <p class="loading-text" id="loading-text">Génération en cours...</p>
+        <p class="loading-sub">Tu peux naviguer ailleurs — la vidéo sera dans l'historique</p>
+      </div>
+    </div>
+
+    <!-- RÉSULTAT -->
+    <div class="result-section" id="result-section">
+      <div class="result-card">
+        <div class="result-toolbar">
+          <div class="result-meta">
+            <span class="wan-badge">WAN AI</span>
+            <span id="result-info">Vidéo IA générée</span>
+          </div>
+          <div class="toolbar-actions">
+            <button class="btn-sm" onclick="doGenerate()">🔄 Nouvelle vidéo</button>
+            <a class="btn-sm accent" id="btn-dl-video" href="#" target="_blank" download>⬇️ Télécharger</a>
+          </div>
+        </div>
+        <div class="video-player-wrap">
+          <video id="result-video" controls autoplay muted loop playsinline></video>
+          <div class="video-info-bar">
+            <span id="video-model">—</span>
+            <span id="video-resolution">—</span>
+            <span id="video-duration">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div>
+      <div class="section-header">
+        <div class="section-title">
+          Mes Vidéos IA
+          <span class="badge" id="hist-count">0</span>
+        </div>
+        <button id="btn-clear" onclick="clearHistory()">🗑 Effacer</button>
+      </div>
+      <div class="media-grid" id="history-grid"></div>
+    </div>
+
+  </main>
+
+  <script>
+    /* ══════════════════════════════════════
+       ÉTAT
+    ══════════════════════════════════════ */
+    var currentTab      = 't2v'
+    var currentVideoUrl = ''
+    var uploadedImageB64 = ''
+    var videoHistory    = JSON.parse(localStorage.getItem('nyxia_wan_history') || '[]')
+    var pollTimers      = {}
+
+    /* ══════════════════════════════════════
+       SUGGESTIONS PAR MODE
+    ══════════════════════════════════════ */
+    var SUGGESTIONS = {
+      t2v: [
+        'Un renard détective dans son bureau sous la pluie',
+        'Aurore boréale au-dessus d\'un lac de montagne',
+        'Café parisien animé au coucher du soleil',
+        'Astronaute marchant sur une planète alien colorée',
+        'Cascade dans une forêt enchantée avec lumière dorée',
+        'Chat noir traversant une ruelle de Tokyo la nuit'
+      ],
+      i2v: [
+        'Le personnage se tourne et commence à marcher',
+        'Le paysage s\'anime avec le vent dans les arbres',
+        'Zoom lent vers l\'avant avec parallaxe',
+        'La scène s\'illumine avec un lever de soleil'
+      ]
+    }
+
+    function renderSuggestions() {
+      var wrap = document.getElementById('suggestions')
+      wrap.innerHTML = SUGGESTIONS[currentTab].map(function(s) {
+        return '<button class="sugg-btn" onclick="useSuggestion(\'' + esc(s).replace(/'/g, "\\'") + '\')">' + esc(s) + '</button>'
+      }).join('')
+    }
+
+    function useSuggestion(s) {
+      document.getElementById('prompt-input').value = s
+      document.getElementById('prompt-input').focus()
+    }
+
+    /* ══════════════════════════════════════
+       TABS
+    ══════════════════════════════════════ */
+    function switchTab(tab) {
+      currentTab = tab
+      document.getElementById('tab-t2v').classList.toggle('active', tab === 't2v')
+      document.getElementById('tab-i2v').classList.toggle('active', tab === 'i2v')
+      document.getElementById('image-upload').style.display = tab === 'i2v' ? 'block' : 'none'
+      document.getElementById('prompt-input').placeholder =
+        tab === 't2v'
+          ? 'Décris ta scène : un renard détective sous la pluie, style cinématique...'
+          : 'Décris le mouvement souhaité : le personnage se tourne et sourit...'
+
+      // Adapter les modèles selon le mode
+      var modelSel = document.getElementById('opt-model')
+      if (tab === 't2v') {
+        modelSel.innerHTML = '<option value="wan2.6-t2v">Wan 2.6 (HD)</option>'
+                           + '<option value="wan2.6-t2v-turbo">Wan 2.6 Turbo (rapide)</option>'
+      } else {
+        modelSel.innerHTML = '<option value="wan2.6-i2v">Wan 2.6 I2V (HD)</option>'
+                           + '<option value="wan2.6-i2v-flash">Wan 2.6 Flash (rapide)</option>'
+      }
+
+      document.getElementById('result-section').classList.remove('visible')
+      renderSuggestions()
+    }
+
+    /* ══════════════════════════════════════
+       IMAGE UPLOAD (mode I2V)
+    ══════════════════════════════════════ */
+    function handleImageUpload(e) {
+      var file = e.target.files[0]
+      if (!file) return
+      var reader = new FileReader()
+      reader.onload = function(ev) {
+        uploadedImageB64 = ev.target.result
+        var preview = document.getElementById('image-preview')
+        preview.src = ev.target.result
+        preview.style.display = 'block'
+        document.getElementById('image-upload').classList.add('has-image')
+      }
+      reader.readAsDataURL(file)
+    }
+
+    // Drag & drop
+    var uploadArea = null
+    document.addEventListener('DOMContentLoaded', function() {
+      uploadArea = document.getElementById('image-upload')
+      uploadArea.addEventListener('dragover', function(e) { e.preventDefault(); this.style.borderColor = 'rgba(123,92,255,0.6)' })
+      uploadArea.addEventListener('dragleave', function() { this.style.borderColor = '' })
+      uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault()
+        this.style.borderColor = ''
+        var file = e.dataTransfer.files[0]
+        if (file && file.type.startsWith('image/')) {
+          document.getElementById('file-input').files = e.dataTransfer.files
+          handleImageUpload({ target: { files: [file] } })
+        }
+      })
+    })
+
+    /* ══════════════════════════════════════
+       GÉNÉRATION
+    ══════════════════════════════════════ */
+    function doGenerate() {
+      var prompt = document.getElementById('prompt-input').value.trim()
+      if (!prompt) { document.getElementById('prompt-input').focus(); return }
+
+      if (currentTab === 'i2v' && !uploadedImageB64) {
+        showError('Upload une image d\'abord pour le mode Image → Vidéo')
+        return
+      }
+
+      var model      = document.getElementById('opt-model').value
+      var resolution = document.getElementById('opt-resolution').value
+      var duration   = document.getElementById('opt-duration').value
+
+      setLoading(true)
+      updateProgress(0, 1)
+
+      var payload = {
+        prompt: prompt,
+        model: model,
+        resolution: resolution,
+        duration: parseInt(duration),
+        mode: currentTab
+      }
+
+      if (currentTab === 'i2v' && uploadedImageB64) {
+        payload.image_base64 = uploadedImageB64
+      }
+
+      fetch('/api/wan-video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        if (!data.success || !data.taskId) {
+          throw new Error(data.error || 'Erreur lors de la soumission')
+        }
+
+        updateProgress(15, 2)
+
+        // Ajouter à l'historique comme "en cours"
+        var histItem = {
+          id: data.taskId,
+          prompt: prompt,
+          model: model,
+          resolution: resolution,
+          duration: duration,
+          mode: currentTab,
+          status: 'pending',
+          date: new Date().toISOString(),
+          videoUrl: null
+        }
+        addHistory(histItem)
+
+        // Démarrer le polling
+        pollTaskStatus(data.taskId)
+      })
+      .catch(function(err) {
+        setLoading(false)
+        showError(err.message || 'Erreur de connexion au serveur')
+      })
+    }
+
+    /* ══════════════════════════════════════
+       POLLING
+    ══════════════════════════════════════ */
+    function pollTaskStatus(taskId) {
+      var attempts = 0
+      var maxAttempts = 60  // 5 min max (toutes les 5s)
+
+      function check() {
+        attempts++
+
+        fetch('/api/wan-video/status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ taskId: taskId })
+        })
+        .then(function(r) { return r.json() })
+        .then(function(data) {
+          if (!data.success) throw new Error(data.error || 'Erreur polling')
+
+          var status = data.status
+
+          if (status === 'SUCCEEDED' || status === 'completed') {
+            // Terminé !
+            updateProgress(100, 4)
+            setTimeout(function() {
+              setLoading(false)
+              showResult(data.videoUrl, taskId)
+              updateHistoryItem(taskId, 'done', data.videoUrl)
+            }, 600)
+            return
+          }
+
+          if (status === 'FAILED' || status === 'failed') {
+            setLoading(false)
+            showError('La génération a échoué — réessaie avec un autre prompt')
+            updateHistoryItem(taskId, 'failed', null)
+            return
+          }
+
+          // Toujours en cours
+          var pct = Math.min(15 + (attempts / maxAttempts) * 75, 90)
+          var step = attempts < 5 ? 2 : (attempts < 20 ? 3 : 4)
+          updateProgress(pct, step)
+
+          if (attempts < maxAttempts) {
+            pollTimers[taskId] = setTimeout(check, 5000)
+          } else {
+            setLoading(false)
+            showError('Timeout — la vidéo est peut-être encore en cours. Vérifie l\'historique plus tard.')
+          }
+        })
+        .catch(function(err) {
+          if (attempts < maxAttempts) {
+            pollTimers[taskId] = setTimeout(check, 8000)
+          } else {
+            setLoading(false)
+            showError('Connexion perdue — vérifie l\'historique plus tard')
+          }
+        })
+      }
+
+      check()
+    }
+
+    /* ══════════════════════════════════════
+       UI — PROGRESS
+    ══════════════════════════════════════ */
+    function setLoading(on) {
+      document.getElementById('loading').classList.toggle('visible', on)
+      document.getElementById('btn-generate').disabled = on
+      document.getElementById('gen-spinner').style.display = on ? 'block' : 'none'
+      document.getElementById('gen-label').textContent = on ? '' : '🎬 Générer'
+      if (!on) {
+        document.getElementById('result-section').classList.remove('visible')
+      }
+    }
+
+    function updateProgress(pct, step) {
+      // Cercle
+      var circle = document.getElementById('progress-circle')
+      var offset = 226 - (226 * pct / 100)
+      circle.style.strokeDashoffset = offset
+      document.getElementById('progress-pct').textContent = Math.round(pct) + '%'
+
+      // Steps
+      for (var i = 1; i <= 4; i++) {
+        var el = document.getElementById('step-' + i)
+        el.classList.remove('active', 'done')
+        if (i < step) el.classList.add('done')
+        else if (i === step) el.classList.add('active')
+      }
+
+      // Texte
+      var texts = {
+        1: 'Envoi du prompt...',
+        2: 'Wan AI prépare la scène...',
+        3: 'Génération des frames — patience ✨',
+        4: 'Finalisation en cours...'
+      }
+      document.getElementById('loading-text').textContent = texts[step] || 'Génération...'
+    }
+
+    /* ══════════════════════════════════════
+       AFFICHAGE RÉSULTAT
+    ══════════════════════════════════════ */
+    function showResult(videoUrl, taskId) {
+      currentVideoUrl = videoUrl
+
+      var video = document.getElementById('result-video')
+      video.src = videoUrl
+      video.load()
+      video.play().catch(function(){})
+
+      document.getElementById('btn-dl-video').href = videoUrl
+      document.getElementById('result-section').classList.add('visible')
+      document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+      // Trouver l'item dans l'historique pour les infos
+      var item = videoHistory.find(function(h) { return h.id === taskId })
+      if (item) {
+        document.getElementById('video-model').textContent = '🤖 ' + item.model
+        document.getElementById('video-resolution').textContent = '📐 ' + item.resolution
+        document.getElementById('video-duration').textContent = '⏱️ ' + item.duration + 's'
+        document.getElementById('result-info').textContent = item.prompt.substring(0, 60) + (item.prompt.length > 60 ? '...' : '')
+      }
+    }
+
+    /* ══════════════════════════════════════
+       ERREUR
+    ══════════════════════════════════════ */
+    function showError(msg) {
+      var existing = document.getElementById('nyxia-toast')
+      if (existing) existing.remove()
+      var toast = document.createElement('div')
+      toast.id = 'nyxia-toast'
+      toast.textContent = '⚠️ ' + msg
+      toast.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(26,37,84,0.95);border:1px solid rgba(123,92,255,0.3);color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;padding:12px 24px;border-radius:50px;z-index:9999;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:fadeUp .3s ease;max-width:90vw;text-align:center'
+      document.body.appendChild(toast)
+      setTimeout(function() { if (toast.parentNode) toast.remove() }, 5000)
+    }
+
+    /* ══════════════════════════════════════
+       HISTORIQUE
+    ══════════════════════════════════════ */
+    function addHistory(item) {
+      videoHistory.unshift(item)
+      if (videoHistory.length > 20) videoHistory = videoHistory.slice(0, 20)
+      try { localStorage.setItem('nyxia_wan_history', JSON.stringify(videoHistory)) } catch(e){}
+      renderHistory()
+    }
+
+    function updateHistoryItem(taskId, status, videoUrl) {
+      for (var i = 0; i < videoHistory.length; i++) {
+        if (videoHistory[i].id === taskId) {
+          videoHistory[i].status = status
+          if (videoUrl) videoHistory[i].videoUrl = videoUrl
+          break
+        }
+      }
+      try { localStorage.setItem('nyxia_wan_history', JSON.stringify(videoHistory)) } catch(e){}
+      renderHistory()
+    }
+
+    function renderHistory() {
+      var grid = document.getElementById('history-grid')
+      document.getElementById('hist-count').textContent = videoHistory.length
+
+      if (!videoHistory.length) {
+        grid.innerHTML = '<div class="empty-state">'
+          + '<img src="/NyXia.png" alt="NyXia" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(123,92,255,0.4);box-shadow:0 0 30px rgba(123,92,255,0.3);margin:0 auto 16px;display:block;opacity:0.7">'
+          + '<p style="color:var(--t2);font-family:\'Space Grotesk\',sans-serif;font-size:15px;font-weight:600;margin-bottom:6px">Aucune vidéo IA pour le moment</p>'
+          + '<p style="color:var(--t3);font-size:13px">Décris une scène et laisse Wan AI créer la magie ✨</p>'
+          + '</div>'
+        return
+      }
+
+      grid.innerHTML = videoHistory.map(function(item, i) {
+        var statusBadge = ''
+        if (item.status === 'pending') {
+          statusBadge = '<span class="status-badge pending">⏳ En cours</span>'
+        } else if (item.status === 'failed') {
+          statusBadge = '<span class="status-badge" style="color:#ff6b6b">❌ Échoué</span>'
+        } else {
+          statusBadge = '<span class="status-badge">✅ Prêt</span>'
+        }
+
+        var videoEl = item.videoUrl
+          ? '<video src="' + esc(item.videoUrl) + '" muted preload="none" style="pointer-events:none"></video>'
+          : '<div style="height:160px;display:flex;align-items:center;justify-content:center;background:rgba(15,28,63,0.5);font-size:32px">' + (item.status === 'pending' ? '⏳' : '❌') + '</div>'
+
+        return '<div class="media-item" onclick="loadHistoryItem(' + i + ')">'
+          + videoEl
+          + statusBadge
+          + (item.videoUrl ? '<div class="media-item-overlay">'
+            + '<button class="overlay-btn" title="Charger">▶</button>'
+            + '<a class="overlay-btn" href="' + esc(item.videoUrl) + '" download target="_blank" onclick="event.stopPropagation()" title="Télécharger">⬇</a>'
+            + '</div>' : '')
+          + '<div class="media-item-info">'
+          + '<div class="media-item-query">' + esc(item.prompt) + '</div>'
+          + '<div class="media-item-type">🤖 ' + esc(item.model) + ' · ' + esc(item.resolution) + '</div>'
+          + '</div>'
+          + '</div>'
+      }).join('')
+    }
+
+    function loadHistoryItem(i) {
+      var item = videoHistory[i]
+      if (!item) return
+
+      if (item.status === 'pending') {
+        showError('Cette vidéo est encore en cours de génération...')
+        return
+      }
+      if (!item.videoUrl) {
+        showError('Cette vidéo a échoué — relance une génération')
+        return
+      }
+
+      document.getElementById('prompt-input').value = item.prompt
+      showResult(item.videoUrl, item.id)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    function clearHistory() {
+      if (!videoHistory.length) return
+      if (confirm('Effacer tout l\'historique des vidéos IA ?')) {
+        // Arrêter les pollings en cours
+        Object.keys(pollTimers).forEach(function(k) { clearTimeout(pollTimers[k]) })
+        pollTimers = {}
+        videoHistory = []
+        localStorage.removeItem('nyxia_wan_history')
+        renderHistory()
+      }
+    }
+
+    /* ══════════════════════════════════════
+       UTILS
+    ══════════════════════════════════════ */
+    function esc(str) {
+      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    }
+
+    /* ══════════════════════════════════════
+       INIT
+    ══════════════════════════════════════ */
+    renderSuggestions()
+    renderHistory()
+
+    // Reprendre le polling des tâches en cours
+    videoHistory.forEach(function(item) {
+      if (item.status === 'pending') {
+        pollTaskStatus(item.id)
+      }
+    })
+
+    document.getElementById('prompt-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doGenerate()
+    })
+  </script>
+
+  <script src="/js/starry-bg.js" defer></script>
+
+</body>
+</html>
