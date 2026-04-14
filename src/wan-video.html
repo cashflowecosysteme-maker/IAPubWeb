@@ -433,7 +433,7 @@
       gap: 10px;
     }
     .result-meta { font-size: 13px; color: var(--t3); display: flex; align-items: center; gap: 8px; }
-    .result-meta .wan-badge {
+    .result-meta .nyxia-badge {
       background: linear-gradient(135deg, rgba(123,92,255,0.2), rgba(79,163,255,0.2));
       border: 1px solid rgba(123,92,255,0.3);
       padding: 3px 10px;
@@ -704,7 +704,7 @@
         <h1>Studio Vidéo IA</h1>
         <p>
           Génère des <strong>vidéos cinématiques par IA</strong> à partir d'un simple texte
-          ou d'une image de départ — propulsé par <strong>Wan AI</strong> d'Alibaba Cloud.
+          ou d'une image de départ — Génération de vidéo avec son illimitée propulsée par <strong>NyXia AI</strong>.
         </p>
       </div>
     </div>
@@ -746,8 +746,9 @@
         <div class="option-group">
           <span class="option-label">Modèle</span>
           <select class="option-select" id="opt-model">
+            <option value="wan2.7-t2v">Wan 2.7 (dernier)</option>
             <option value="wan2.6-t2v">Wan 2.6 (HD)</option>
-            <option value="wan2.6-t2v-turbo">Wan 2.6 Turbo (rapide)</option>
+            <option value="wan2.5-t2v-preview">Wan 2.5 (audio sync)</option>
           </select>
         </div>
         <div class="option-group">
@@ -798,7 +799,7 @@
 
         <div class="progress-steps">
           <div class="step-item active" id="step-1">
-            <span class="step-icon">📤</span> Envoi du prompt à Wan AI...
+            <span class="step-icon">📤</span> Envoi du prompt à NyXia AI...
           </div>
           <div class="step-item" id="step-2">
             <span class="step-icon">🧠</span> Analyse et préparation de la scène...
@@ -821,7 +822,7 @@
       <div class="result-card">
         <div class="result-toolbar">
           <div class="result-meta">
-            <span class="wan-badge">WAN AI</span>
+            <span class="nyxia-badge">NyXia AI</span>
             <span id="result-info">Vidéo IA générée</span>
           </div>
           <div class="toolbar-actions">
@@ -912,10 +913,12 @@
       // Adapter les modèles selon le mode
       var modelSel = document.getElementById('opt-model')
       if (tab === 't2v') {
-        modelSel.innerHTML = '<option value="wan2.6-t2v">Wan 2.6 (HD)</option>'
-                           + '<option value="wan2.6-t2v-turbo">Wan 2.6 Turbo (rapide)</option>'
+        modelSel.innerHTML = '<option value="wan2.7-t2v">Wan 2.7 (dernier)</option>'
+                           + '<option value="wan2.6-t2v">Wan 2.6 (HD)</option>'
+                           + '<option value="wan2.5-t2v-preview">Wan 2.5 (audio sync)</option>'
       } else {
-        modelSel.innerHTML = '<option value="wan2.6-i2v">Wan 2.6 I2V (HD)</option>'
+        modelSel.innerHTML = '<option value="wan2.7-i2v">Wan 2.7 I2V (dernier)</option>'
+                           + '<option value="wan2.6-i2v">Wan 2.6 I2V (HD)</option>'
                            + '<option value="wan2.6-i2v-flash">Wan 2.6 Flash (rapide)</option>'
       }
 
@@ -1119,7 +1122,7 @@
       // Texte
       var texts = {
         1: 'Envoi du prompt...',
-        2: 'Wan AI prépare la scène...',
+        2: 'NyXia AI prépare la scène...',
         3: 'Génération des frames — patience ✨',
         4: 'Finalisation en cours...'
       }
@@ -1195,7 +1198,7 @@
         grid.innerHTML = '<div class="empty-state">'
           + '<img src="/NyXia.png" alt="NyXia" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(123,92,255,0.4);box-shadow:0 0 30px rgba(123,92,255,0.3);margin:0 auto 16px;display:block;opacity:0.7">'
           + '<p style="color:var(--t2);font-family:\'Space Grotesk\',sans-serif;font-size:15px;font-weight:600;margin-bottom:6px">Aucune vidéo IA pour le moment</p>'
-          + '<p style="color:var(--t3);font-size:13px">Décris une scène et laisse Wan AI créer la magie ✨</p>'
+          + '<p style="color:var(--t3);font-size:13px">Décris une scène et laisse NyXia AI créer la magie ✨</p>'
           + '</div>'
         return
       }
