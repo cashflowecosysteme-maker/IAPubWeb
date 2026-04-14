@@ -1480,6 +1480,14 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
         // URL de base DashScope — région internationale (Singapour)
         const DASHSCOPE_BASE = "https://dashscope-intl.aliyuncs.com/api/v1"
 
+        // Conversion résolution → format DashScope (largeur*hauteur)
+        const SIZE_MAP = {
+          "480p":  "832*480",
+          "720p":  "1280*720",
+          "1080p": "1920*1080"
+        }
+        const size = SIZE_MAP[resolution] || "1280*720"
+
         let endpoint, payload
 
         if (mode === "i2v") {
@@ -1489,33 +1497,33 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
             model: model || "wan2.6-i2v",
             input: {
               prompt: prompt,
-              image_url: imageB64  // DashScope accepte les data URI base64
+              image_url: imageB64
             },
             parameters: {
-              resolution: resolution.toUpperCase(),
+              size: size,
               prompt_extend: true,
-              watermark: false
+              watermark: false,
+              duration: duration
             }
           }
-          if (duration) payload.parameters.duration = String(duration)
         } else {
           // ═══ TEXTE → VIDÉO ═══
-          endpoint = `${DASHSCOPE_BASE}/services/aigc/text2video/video-synthesis`
+          endpoint = `${DASHSCOPE_BASE}/services/aigc/video-generation/video-synthesis`
           payload = {
             model: model || "wan2.6-t2v",
             input: {
               prompt: prompt
             },
             parameters: {
-              resolution: resolution.toUpperCase(),
+              size: size,
               prompt_extend: true,
-              watermark: false
+              watermark: false,
+              duration: duration
             }
           }
-          if (duration) payload.parameters.duration = String(duration)
         }
 
-        console.log("[WAN] Soumission:", model, "|", prompt.substring(0, 60))
+        console.log("[WAN] Soumission:", model, "| size:", size, "|", prompt.substring(0, 60))
 
         const wanRes = await fetch(endpoint, {
           method: "POST",
