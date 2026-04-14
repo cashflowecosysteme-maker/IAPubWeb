@@ -746,9 +746,7 @@
         <div class="option-group">
           <span class="option-label">Modèle</span>
           <select class="option-select" id="opt-model">
-            <option value="wan2.7-t2v">Wan 2.7 (dernier)</option>
-            <option value="wan2.6-t2v">Wan 2.6 (HD)</option>
-            <option value="wan2.5-t2v-preview">Wan 2.5 (audio sync)</option>
+            <option value="wan2.6-t2v">NyXia Vidéo HD</option>
           </select>
         </div>
         <div class="option-group">
@@ -914,16 +912,13 @@
       var modelSel = document.getElementById('opt-model')
       var resSel   = document.getElementById('opt-resolution')
       if (tab === 't2v') {
-        modelSel.innerHTML = '<option value="wan2.7-t2v">Wan 2.7 (dernier)</option>'
-                           + '<option value="wan2.6-t2v">Wan 2.6 (HD)</option>'
-                           + '<option value="wan2.5-t2v-preview">Wan 2.5 (audio sync)</option>'
+        modelSel.innerHTML = '<option value="wan2.6-t2v">NyXia Vidéo HD</option>'
         resSel.innerHTML   = '<option value="720p">720p</option>'
                            + '<option value="1080p">1080p</option>'
                            + '<option value="480p">480p (rapide)</option>'
       } else {
-        modelSel.innerHTML = '<option value="wan2.6-i2v-flash">Wan 2.6 Flash (rapide)</option>'
-                           + '<option value="wan2.6-i2v">Wan 2.6 I2V (HD)</option>'
-                           + '<option value="wan2.5-i2v-preview">Wan 2.5 I2V (audio sync)</option>'
+        modelSel.innerHTML = '<option value="wan2.6-i2v-flash">NyXia I2V Rapide</option>'
+                           + '<option value="wan2.6-i2v">NyXia I2V HD</option>'
         resSel.innerHTML   = '<option value="720p">720p</option>'
                            + '<option value="1080p">1080p</option>'
       }
