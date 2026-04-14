@@ -1616,6 +1616,11 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
     /* ════════════════════════════════════════════════════
        ROUTE /api/vision — GLM-5V-Turbo → HTML premium
     ════════════════════════════════════════════════════ */
+    if (!url.pathname.startsWith("/api/") && !url.pathname.startsWith("/site/")) {
+      // Pas une route API ni /site/ → laisser Cloudflare Assets servir le fichier statique
+      return env.ASSETS.fetch(request)
+    }
+
     if (request.method !== "POST") return new Response("NyXia IA Active ✨", { status: 200 })
 
     try {
