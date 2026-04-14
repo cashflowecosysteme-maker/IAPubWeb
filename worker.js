@@ -1581,10 +1581,15 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
             { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
+        if (mode === "i2v" && !imageB64) {
+          return new Response(JSON.stringify({ success: false, error: "Image requise pour le mode Image → Vidéo." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
         // URL de base DashScope — région internationale (Singapour)
         const DASHSCOPE_BASE = "https://dashscope-intl.aliyuncs.com/api/v1"
 
-        // Conversion résolution → format DashScope (largeur*hauteur)
+        // Conversion résolution → format DashScope (largeur*hauteur) pour T2V
         const SIZE_MAP = {
           "480p":  "832*480",
           "720p":  "1280*720",
@@ -1596,24 +1601,34 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
         if (mode === "i2v") {
           // ═══ IMAGE → VIDÉO ═══
-          // I2V utilise img_url et resolution (pas size)
+          // I2V : img_url accepte data:image/...;base64,... OU une URL publique
+          // I2V : resolution en "720P" (pas de format largeur*hauteur)
           endpoint = `${DASHSCOPE_BASE}/services/aigc/video-generation/video-synthesis`
+
+          // Vérifier que le base64 est au bon format
+          let imgUrlValue = imageB64
+          if (imageB64 && !imageB64.startsWith("data:") && !imageB64.startsWith("http")) {
+            imgUrlValue = "data:image/jpeg;base64," + imageB64
+          }
+
+          console.log("[WAN-I2V] Image format:", imgUrlValue.substring(0, 30) + "...", "| Taille:", Math.round(imgUrlValue.length / 1024) + "KB")
+
           payload = {
-            model: model || "wan2.6-i2v",
+            model: model || "wan2.6-i2v-flash",
             input: {
               prompt: prompt,
-              img_url: imageB64
+              img_url: imgUrlValue
             },
             parameters: {
               resolution: resolution.toUpperCase(),
               prompt_extend: true,
               watermark: false,
-              duration: duration
+              duration: parseInt(duration)
             }
           }
         } else {
           // ═══ TEXTE → VIDÉO ═══
-          // T2V utilise size au format "1280*720"
+          // T2V : size au format "1280*720"
           endpoint = `${DASHSCOPE_BASE}/services/aigc/video-generation/video-synthesis`
           payload = {
             model: model || "wan2.6-t2v",
@@ -1624,7 +1639,7 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
               size: size,
               prompt_extend: true,
               watermark: false,
-              duration: duration
+              duration: parseInt(duration)
             }
           }
         }
