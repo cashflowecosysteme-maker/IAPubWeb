@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/FavIcon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NyXia IA — Générateur d'Images IA</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg1: #0F1C3F; --bg2: #1A2554; --bg3: #2A3A6E;
+      --p: #7B5CFF; --p2: #5A6CFF; --p3: #4FA3FF;
+      --glow: rgba(123,92,255,0.4);
+      --t: #FFFFFF; --t2: #D6D9F0; --t3: #8891B8;
+      --green: #00E676; --gold: #F4C842; --r: 14px;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg1); color: var(--t2); font-family: 'Outfit', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 45% at 15% 5%, rgba(123,92,255,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 55% 35% at 85% 85%, rgba(79,163,255,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 50% 50%, rgba(62,45,122,0.06) 0%, transparent 70%);
+    }
+
+    /* ── NAV ── */
+    nav { position: sticky; top: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; background: rgba(15,28,63,0.92); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(123,92,255,0.1); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(123,92,255,0.5); }
+    .nav-logo span { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; background: linear-gradient(135deg, #a78bfa, var(--p3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-link { color: var(--t3); text-decoration: none; font-size: 14px; font-weight: 500; padding: 7px 14px; border-radius: 50px; transition: all .2s; white-space: nowrap; }
+    .nav-link:hover { color: var(--t); background: rgba(123,92,255,0.1); }
+    .nav-link.active { color: var(--t); background: rgba(123,92,255,0.15); border: 1px solid rgba(123,92,255,0.3); }
+
+    /* ── MAIN ── */
+    main { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 48px 24px 100px; }
+
+    /* ── HERO ── */
+    .page-hero { display: flex; align-items: center; gap: 40px; margin-bottom: 52px; }
+    .nyxia-avatar { flex-shrink: 0; width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(123,92,255,0.5); box-shadow: 0 0 40px rgba(123,92,255,0.35), 0 0 80px rgba(123,92,255,0.12); animation: avatarFloat 4s ease-in-out infinite; }
+    @keyframes avatarFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); box-shadow: 0 0 60px rgba(123,92,255,0.55), 0 0 100px rgba(123,92,255,0.2); } }
+    .page-hero-text h1 { font-size: clamp(28px, 4vw, 46px); font-weight: 800; background: linear-gradient(135deg, #a78bfa, var(--p3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow(0 0 18px rgba(123,92,255,0.4)); margin-bottom: 10px; line-height: 1.15; }
+    .page-hero-text p { color: var(--t3); font-size: 16px; max-width: 560px; line-height: 1.6; }
+    .page-hero-text p strong { color: var(--p3); font-weight: 600; }
+
+    /* ── SEARCH CARD ── */
+    .search-card { background: rgba(26,37,84,0.45); border: 1px solid rgba(123,92,255,0.14); border-radius: 20px; padding: 28px; backdrop-filter: blur(12px); margin-bottom: 28px; }
+    .search-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .search-input-wrap { flex: 1; min-width: 240px; position: relative; }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--t3); font-size: 16px; pointer-events: none; }
+    #prompt-input { width: 100%; background: rgba(15,28,63,0.65); border: 1px solid rgba(123,92,255,0.2); border-radius: 50px; color: var(--t); font-family: 'Outfit', sans-serif; font-size: 15px; padding: 13px 20px 13px 44px; outline: none; transition: border-color .2s, box-shadow .2s; }
+    #prompt-input:focus { border-color: rgba(123,92,255,0.5); box-shadow: 0 0 0 3px rgba(123,92,255,0.1); }
+    #prompt-input::placeholder { color: var(--t3); }
+
+    .btn-generate { padding: 13px 32px; border-radius: 50px; border: none; background: linear-gradient(135deg, var(--p), var(--p2)); color: #fff; font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 0 24px rgba(123,92,255,0.4); transition: all .25s; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+    .btn-generate:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 40px rgba(123,92,255,0.65); }
+    .btn-generate:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* Options */
+    .options-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; align-items: center; }
+    .option-group { display: flex; align-items: center; gap: 6px; }
+    .option-label { font-size: 12px; font-weight: 600; color: var(--t3); font-family: 'Space Grotesk', sans-serif; }
+    .option-select { background: rgba(15,28,63,0.65); border: 1px solid rgba(123,92,255,0.2); border-radius: 50px; color: var(--t2); font-family: 'Outfit', sans-serif; font-size: 13px; padding: 7px 14px; outline: none; cursor: pointer; transition: border-color .2s; }
+    .option-select:focus { border-color: rgba(123,92,255,0.5); }
+
+    /* Suggestions */
+    .suggestions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+    .sugg-btn { padding: 5px 14px; border-radius: 50px; border: 1px solid rgba(123,92,255,0.18); background: rgba(123,92,255,0.06); color: var(--t3); font-family: 'Outfit', sans-serif; font-size: 12px; cursor: pointer; transition: all .18s; }
+    .sugg-btn:hover { border-color: var(--p); color: var(--t2); background: rgba(123,92,255,0.12); }
+
+    /* ── LOADING ── */
+    .loading-state { display: none; text-align: center; padding: 60px 0; }
+    .loading-state.visible { display: block; }
+    .loader-ring { width: 52px; height: 52px; border: 3px solid rgba(123,92,255,0.15); border-top-color: var(--p); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-state p { color: var(--t3); font-size: 14px; }
+
+    /* ── RÉSULTAT ── */
+    .result-section { display: none; margin-bottom: 36px; animation: fadeUp .4s ease; }
+    .result-section.visible { display: block; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+
+    .result-card { background: rgba(26,37,84,0.45); border: 1px solid rgba(123,92,255,0.18); border-radius: 20px; overflow: hidden; backdrop-filter: blur(12px); }
+    .result-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid rgba(123,92,255,0.1); background: rgba(15,28,63,0.4); flex-wrap: wrap; gap: 10px; }
+    .result-meta { font-size: 13px; color: var(--t3); display: flex; align-items: center; gap: 8px; }
+    .nyxia-badge { background: linear-gradient(135deg, rgba(123,92,255,0.2), rgba(79,163,255,0.2)); border: 1px solid rgba(123,92,255,0.3); padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; color: var(--p3); font-family: 'Space Grotesk', sans-serif; }
+    .toolbar-actions { display: flex; gap: 8px; }
+
+    .btn-sm { padding: 7px 16px; border-radius: 50px; border: 1px solid rgba(123,92,255,0.28); background: rgba(123,92,255,0.08); color: var(--t2); font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
+    .btn-sm:hover { border-color: var(--p); color: var(--t); background: rgba(123,92,255,0.18); }
+    .btn-sm.accent { background: linear-gradient(135deg, var(--p), var(--p2)); border-color: transparent; color: #fff; box-shadow: 0 0 16px rgba(123,92,255,0.35); }
+    .btn-sm.accent:hover { box-shadow: 0 0 28px rgba(123,92,255,0.6); transform: translateY(-1px); }
+
+    #result-img { width: 100%; max-height: 700px; object-fit: contain; display: block; background: rgba(10,16,36,0.5); }
+
+    /* ── GRILLE HISTORIQUE ── */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--t2); display: flex; align-items: center; gap: 10px; }
+    .badge { background: rgba(123,92,255,0.2); border: 1px solid rgba(123,92,255,0.3); border-radius: 50px; font-size: 12px; padding: 2px 10px; color: var(--p3); font-family: 'Outfit', sans-serif; }
+    #btn-clear { font-size: 12px; color: var(--t3); background: none; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; padding: 4px 8px; border-radius: 6px; transition: color .2s; }
+    #btn-clear:hover { color: #ff6b6b; }
+
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .media-item { background: rgba(26,37,84,0.4); border: 1px solid rgba(123,92,255,0.1); border-radius: var(--r); overflow: hidden; cursor: pointer; transition: all .25s; position: relative; }
+    .media-item:hover { border-color: rgba(123,92,255,0.38); transform: translateY(-4px); box-shadow: 0 10px 36px rgba(0,0,0,0.35); }
+    .media-item img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .media-item-info { padding: 10px 12px; }
+    .media-item-query { font-size: 12px; color: var(--t3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .media-item-type { font-size: 11px; color: var(--p3); margin-top: 3px; }
+    .media-item-overlay { position: absolute; inset: 0; background: rgba(15,28,63,0.75); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; gap: 10px; }
+    .media-item:hover .media-item-overlay { opacity: 1; }
+    .overlay-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(123,92,255,0.85); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; transition: transform .15s; text-decoration: none; color: #fff; }
+    .overlay-btn:hover { transform: scale(1.15); }
+
+    .empty-state { grid-column: 1/-1; text-align: center; padding: 56px 0; color: var(--t3); }
+
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; } main { padding: 28px 14px 80px; }
+      .page-hero { flex-direction: column; gap: 20px; text-align: center; }
+      .nyxia-avatar { width: 80px; height: 80px; }
+      .search-row { flex-direction: column; }
+      .btn-generate { width: 100%; justify-content: center; }
+      .search-input-wrap { width: 100%; }
+      .options-row { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+
+  <script>
+    ;(function() {
+      var token = sessionStorage.getItem('nyxia_token')
+      if (!token) { window.location.href = '/login.html'; return }
+      fetch('/api/check-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token }) })
+      .then(function(r) { return r.json() })
+      .then(function(data) { if (!data.valid) window.location.href = '/login.html' })
+      .catch(function() { window.location.href = '/login.html' })
+    })()
+  </script>
+</head>
+<body>
+
+  <canvas id="starry-canvas" style="position:fixed;inset:0;z-index:0;pointer-events:none;"></canvas>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="/NyXia.png" alt="NyXia">
+      <span>NyXia IA</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html"      class="nav-link">🏗 Générateur de sites</a>
+      <a href="medias.html"     class="nav-link">🎬 Médias</a>
+      <a href="wan-video.html"  class="nav-link">✨ Studio Vidéo IA</a>
+      <a href="wan-image.html"  class="nav-link active">🖼️ Images IA</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <div class="page-hero">
+      <img src="/NyXia.png" alt="NyXia IA" class="nyxia-avatar">
+      <div class="page-hero-text">
+        <h1>Générateur d'Images IA</h1>
+        <p>
+          Crée des <strong>images HD spectaculaires</strong> à partir d'un simple texte —
+          édition, sets d'images et résolutions jusqu'à <strong>4K</strong>, propulsé par <strong>NyXia AI</strong>.
+        </p>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-card">
+      <div class="search-row">
+        <div class="search-input-wrap">
+          <span class="search-icon">🖼️</span>
+          <input type="text" id="prompt-input" placeholder="Décris ton image : une boutique de fleurs avec une vitrine exquise, style cinématique...">
+        </div>
+        <button class="btn-generate" id="btn-generate" onclick="doGenerate()">
+          <div class="spinner" id="gen-spinner"></div>
+          <span id="gen-label">🖼️ Générer</span>
+        </button>
+      </div>
+
+      <div class="options-row">
+        <div class="option-group">
+          <span class="option-label">Modèle</span>
+          <select class="option-select" id="opt-model">
+            <option value="wan2.7-image-pro">NyXia Pro (4K)</option>
+            <option value="wan2.7-image">NyXia Rapide (2K)</option>
+          </select>
+        </div>
+        <div class="option-group">
+          <span class="option-label">Résolution</span>
+          <select class="option-select" id="opt-size">
+            <option value="2K">2K (recommandé)</option>
+            <option value="1K">1K (rapide)</option>
+            <option value="4K">4K (ultra HD)</option>
+          </select>
+        </div>
+        <div class="option-group">
+          <span class="option-label">Nombre</span>
+          <select class="option-select" id="opt-count">
+            <option value="1">1 image</option>
+            <option value="2">2 images</option>
+            <option value="4">4 images</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading-state" id="loading">
+      <div class="loader-ring"></div>
+      <p id="loading-text">NyXia AI génère ton image...</p>
+    </div>
+
+    <!-- RÉSULTAT -->
+    <div class="result-section" id="result-section">
+      <div class="result-card">
+        <div class="result-toolbar">
+          <div class="result-meta">
+            <span class="nyxia-badge">NyXia AI</span>
+            <span id="result-info">Image IA générée</span>
+          </div>
+          <div class="toolbar-actions">
+            <button class="btn-sm" onclick="doGenerate()">🔄 Nouvelle image</button>
+            <button class="btn-sm accent" onclick="downloadImage()">⬇️ Télécharger</button>
+          </div>
+        </div>
+        <div id="result-images" style="display:flex;flex-wrap:wrap;gap:4px;background:rgba(10,16,36,0.5);">
+          <!-- Images insérées dynamiquement -->
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORIQUE -->
+    <div>
+      <div class="section-header">
+        <div class="section-title">
+          Mes Images IA
+          <span class="badge" id="hist-count">0</span>
+        </div>
+        <button id="btn-clear" onclick="clearHistory()">🗑 Effacer</button>
+      </div>
+      <div class="media-grid" id="history-grid"></div>
+    </div>
+
+  </main>
+
+  <script>
+    var currentImages  = []
+    var imageHistory   = JSON.parse(localStorage.getItem('nyxia_img_history') || '[]')
+
+    var SUGGESTIONS = [
+      'Boutique de fleurs avec vitrine exquise et porte en bois',
+      'Astronaute sur une planète colorée, style rétro-futuriste',
+      'Portrait d\'une femme élégante, éclairage doré, style Vogue',
+      'Chat roux sous les cerisiers en fleurs, style cinématique',
+      'Paysage de montagne au lever du soleil, brume dorée',
+      'Intérieur luxueux d\'un penthouse avec vue sur la ville',
+      'Dragon majestueux survolant un château médiéval',
+      'Café parisien vintage sous la pluie, ambiance chaleureuse'
+    ]
+
+    function renderSuggestions() {
+      document.getElementById('suggestions').innerHTML = SUGGESTIONS.map(function(s) {
+        return '<button class="sugg-btn" onclick="useSuggestion(\'' + esc(s).replace(/'/g, "\\'") + '\')">' + esc(s) + '</button>'
+      }).join('')
+    }
+
+    function useSuggestion(s) {
+      document.getElementById('prompt-input').value = s
+      document.getElementById('prompt-input').focus()
+    }
+
+    /* ══════════════════════════════════════
+       GÉNÉRATION
+    ══════════════════════════════════════ */
+    function doGenerate() {
+      var prompt = document.getElementById('prompt-input').value.trim()
+      if (!prompt) { document.getElementById('prompt-input').focus(); return }
+
+      var model = document.getElementById('opt-model').value
+      var size  = document.getElementById('opt-size').value
+      var count = parseInt(document.getElementById('opt-count').value)
+
+      // 4K seulement dispo avec wan2.7-image-pro et en text-to-image
+      if (size === '4K' && model !== 'wan2.7-image-pro') {
+        showError('Le 4K est uniquement disponible avec le modèle NyXia Pro')
+        return
+      }
+
+      setLoading(true)
+
+      fetch('/api/wan-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, model: model, size: size, n: count })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        setLoading(false)
+        if (!data.success || !data.images || !data.images.length) {
+          throw new Error(data.error || 'Aucune image générée')
+        }
+
+        currentImages = data.images
+        showResult(data.images, prompt, model, size)
+        addHistory({ prompt: prompt, images: data.images, model: model, size: size, date: new Date().toISOString() })
+      })
+      .catch(function(err) {
+        setLoading(false)
+        showError(err.message || 'Erreur de connexion')
+      })
+    }
+
+    /* ══════════════════════════════════════
+       UI
+    ══════════════════════════════════════ */
+    function setLoading(on) {
+      document.getElementById('loading').classList.toggle('visible', on)
+      document.getElementById('btn-generate').disabled = on
+      document.getElementById('gen-spinner').style.display = on ? 'block' : 'none'
+      document.getElementById('gen-label').textContent = on ? '' : '🖼️ Générer'
+    }
+
+    function showResult(images, prompt, model, size) {
+      var container = document.getElementById('result-images')
+      var width = images.length === 1 ? '100%' : images.length === 2 ? '49.5%' : '49.5%'
+      container.innerHTML = images.map(function(url) {
+        return '<img src="' + esc(url) + '" alt="Image IA" style="width:' + width + ';max-height:700px;object-fit:contain;display:block;cursor:pointer" onclick="window.open(this.src,\'_blank\')">'
+      }).join('')
+
+      document.getElementById('result-info').textContent = esc(prompt).substring(0, 60) + (prompt.length > 60 ? '...' : '')
+      document.getElementById('result-section').classList.add('visible')
+      document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    function downloadImage() {
+      if (!currentImages.length) return
+      currentImages.forEach(function(url, i) {
+        var a = document.createElement('a')
+        a.href = url
+        a.download = 'nyxia-image-' + Date.now() + (i > 0 ? '-' + i : '') + '.png'
+        a.target = '_blank'
+        a.click()
+      })
+    }
+
+    function showError(msg) {
+      var existing = document.getElementById('nyxia-toast')
+      if (existing) existing.remove()
+      var toast = document.createElement('div')
+      toast.id = 'nyxia-toast'
+      toast.textContent = '⚠️ ' + msg
+      toast.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(26,37,84,0.95);border:1px solid rgba(123,92,255,0.3);color:var(--t2);font-family:Outfit,sans-serif;font-size:14px;padding:12px 24px;border-radius:50px;z-index:9999;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:fadeUp .3s ease;max-width:90vw;text-align:center'
+      document.body.appendChild(toast)
+      setTimeout(function() { if (toast.parentNode) toast.remove() }, 5000)
+    }
+
+    /* ══════════════════════════════════════
+       HISTORIQUE
+    ══════════════════════════════════════ */
+    function addHistory(item) {
+      imageHistory.unshift(item)
+      if (imageHistory.length > 30) imageHistory = imageHistory.slice(0, 30)
+      try { localStorage.setItem('nyxia_img_history', JSON.stringify(imageHistory)) } catch(e){}
+      renderHistory()
+    }
+
+    function renderHistory() {
+      var grid = document.getElementById('history-grid')
+      document.getElementById('hist-count').textContent = imageHistory.length
+
+      if (!imageHistory.length) {
+        grid.innerHTML = '<div class="empty-state">'
+          + '<img src="/NyXia.png" alt="NyXia" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(123,92,255,0.4);box-shadow:0 0 30px rgba(123,92,255,0.3);margin:0 auto 16px;display:block;opacity:0.7">'
+          + '<p style="color:var(--t2);font-family:\'Space Grotesk\',sans-serif;font-size:15px;font-weight:600;margin-bottom:6px">Aucune image IA pour le moment</p>'
+          + '<p style="color:var(--t3);font-size:13px">Décris ce que tu imagines et laisse NyXia AI créer ✨</p>'
+          + '</div>'
+        return
+      }
+
+      grid.innerHTML = imageHistory.map(function(item, i) {
+        var thumb = item.images[0]
+        return '<div class="media-item" onclick="loadHistoryItem(' + i + ')">'
+          + '<img src="' + esc(thumb) + '" alt="' + esc(item.prompt) + '" loading="lazy">'
+          + (item.images.length > 1 ? '<span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--p3)">' + item.images.length + ' images</span>' : '')
+          + '<div class="media-item-overlay">'
+          + '<button class="overlay-btn" title="Afficher">🔍</button>'
+          + '<button class="overlay-btn" onclick="event.stopPropagation();dlFromHistory(' + i + ')" title="Télécharger">⬇</button>'
+          + '</div>'
+          + '<div class="media-item-info">'
+          + '<div class="media-item-query">' + esc(item.prompt) + '</div>'
+          + '<div class="media-item-type">🖼️ ' + esc(item.size) + '</div>'
+          + '</div>'
+          + '</div>'
+      }).join('')
+    }
+
+    function loadHistoryItem(i) {
+      var item = imageHistory[i]
+      if (!item) return
+      document.getElementById('prompt-input').value = item.prompt
+      currentImages = item.images
+      showResult(item.images, item.prompt, item.model, item.size)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    function dlFromHistory(i) {
+      var item = imageHistory[i]
+      if (!item) return
+      item.images.forEach(function(url, j) {
+        var a = document.createElement('a')
+        a.href = url; a.download = 'nyxia-image-' + Date.now() + '-' + j + '.png'; a.target = '_blank'; a.click()
+      })
+    }
+
+    function clearHistory() {
+      if (!imageHistory.length) return
+      if (confirm('Effacer tout l\'historique des images IA ?')) {
+        imageHistory = []
+        localStorage.removeItem('nyxia_img_history')
+        renderHistory()
+      }
+    }
+
+    function esc(str) { return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+
+    /* INIT */
+    renderSuggestions()
+    renderHistory()
+    document.getElementById('prompt-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') doGenerate() })
+  </script>
+
+  <script src="/js/starry-bg.js" defer></script>
+</body>
+</html>
