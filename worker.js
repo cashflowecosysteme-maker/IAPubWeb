@@ -6,6 +6,7 @@
  *   POST /api/image   — Pexels Photos → base64
  *   POST /api/video   — Pexels Videos → URLs MP4
  *   POST /api/publish — Publication 1 clic (Cloudflare Pages)
+ *   POST /api/wan-image         — Génération d'Images IA (DashScope)
  *   POST /api/wan-video        — Génération Vidéo IA (Wan AI / DashScope)
  *   POST /api/wan-video/status — Polling statut vidéo Wan AI
  *
@@ -1448,6 +1449,109 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
       } catch(e) {
         return new Response(JSON.stringify({ error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/wan-image — Génération d'Images IA (DashScope)
+       Appel synchrone : retourne directement les URLs images
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/wan-image" && request.method === "POST") {
+      try {
+        const DASHSCOPE_KEY = env.DASHSCOPE_KEY || ""
+        if (!DASHSCOPE_KEY) {
+          return new Response(JSON.stringify({ success: false, error: "Clé API DashScope non configurée." }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const body   = await request.json()
+        const prompt = body.prompt || ""
+        const model  = body.model  || "wan2.7-image"
+        const size   = body.size   || "2K"
+        const n      = Math.min(body.n || 1, 4)
+
+        if (!prompt) {
+          return new Response(JSON.stringify({ success: false, error: "Prompt requis." }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        const DASHSCOPE_BASE = "https://dashscope-intl.aliyuncs.com/api/v1"
+        const endpoint = `${DASHSCOPE_BASE}/services/aigc/multimodal-generation/generation`
+
+        console.log("[WAN-IMG] Génération:", model, "| size:", size, "| n:", n, "|", prompt.substring(0, 60))
+
+        const payload = {
+          model: model,
+          input: {
+            messages: [
+              {
+                role: "user",
+                content: [
+                  { text: prompt }
+                ]
+              }
+            ]
+          },
+          parameters: {
+            size: size,
+            n: n,
+            watermark: false
+          }
+        }
+
+        // Thinking mode pour le modèle Pro
+        if (model === "wan2.7-image-pro") {
+          payload.parameters.thinking_mode = true
+        }
+
+        const imgRes = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${DASHSCOPE_KEY}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        })
+
+        const imgData = await imgRes.json()
+
+        if (!imgRes.ok) {
+          console.error("[WAN-IMG] Erreur:", JSON.stringify(imgData))
+          return new Response(JSON.stringify({
+            success: false,
+            error: imgData.message || "Erreur lors de la génération d'image"
+          }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        // Extraire les URLs des images depuis la réponse
+        const choices = imgData.output?.choices || []
+        const images = []
+        for (const choice of choices) {
+          const content = choice.message?.content || []
+          for (const item of content) {
+            if (item.image) images.push(item.image)
+          }
+        }
+
+        if (!images.length) {
+          console.error("[WAN-IMG] Pas d'images dans la réponse:", JSON.stringify(imgData))
+          return new Response(JSON.stringify({
+            success: false,
+            error: imgData.output?.choices?.[0]?.message?.content?.[0]?.text || "Aucune image générée — essaie un autre prompt"
+          }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+        }
+
+        console.log("[WAN-IMG] OK:", images.length, "image(s) générée(s)")
+
+        return new Response(JSON.stringify({
+          success: true,
+          images: images
+        }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+      } catch(e) {
+        console.error("[WAN-IMG] Erreur serveur:", e.message)
+        return new Response(JSON.stringify({ success: false, error: "Erreur serveur : " + e.message }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
       }
     }
