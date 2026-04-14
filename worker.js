@@ -1492,7 +1492,7 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
 
         if (mode === "i2v") {
           // ═══ IMAGE → VIDÉO ═══
-          endpoint = `${DASHSCOPE_BASE}/services/aigc/image2video/video-synthesis`
+          endpoint = `${DASHSCOPE_BASE}/services/aigc/video-generation/video-synthesis`
           payload = {
             model: model || "wan2.6-i2v",
             input: {
@@ -1541,7 +1541,7 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
           console.error("[WAN] Erreur:", JSON.stringify(wanData))
           return new Response(JSON.stringify({
             success: false,
-            error: wanData.message || wanData.output?.message || "Erreur lors de la soumission à Wan AI"
+            error: wanData.message || wanData.output?.message || "Erreur lors de la génération vidéo NyXia AI"
           }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
         }
 
