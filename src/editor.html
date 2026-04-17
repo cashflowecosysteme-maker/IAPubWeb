@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>NyXia IA — Éditeur de Pages</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=Raleway:wght@400;700&family=Poppins:wght@400;700&family=Roboto:wght@400;700&family=Nunito:wght@400;700&family=Merriweather:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Ubuntu:wght@400;700&family=Droid+Serif:wght@400;700&family=PT+Serif:wght@400;700&family=Lora:wght@400;700&family=Vollkorn:wght@400;700&family=Arvo:wght@400;700&family=Bitter:wght@400;700&family=Old+Standard+TT:wght@400;700&family=EB+Garamond:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Zilla+Slab:wght@400;700&family=Abril+Fatface&family=Dancing+Script:wght@400;700&family=Pacifico&family=Satisfy&family=Great+Vibes&family=Amatic+SC:wght@400;700&family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Permanent+Marker&family=Indie+Flower&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/FavIcon.png">
     <script>
-      ;(function() {
-        var token = sessionStorage.getItem('nyxia_token')
-        if (!token) { window.location.href = '/login.html'; return }
-        fetch('/api/check-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: token }) })
-        .then(function(r) { return r.json() })
-        .then(function(data) { if (!data.valid) window.location.href = '/login.html' })
-        .catch(function() { window.location.href = '/login.html' })
-      })()
+    ;(function(){var t=sessionStorage.getItem('nyxia_token');if(!t){window.location.href='/login.html';return}
+    fetch('/api/check-auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:t})})
+    .then(function(r){return r.json()}).then(function(d){if(!d.valid)window.location.href='/login.html'})
+    .catch(function(){window.location.href='/login.html'})})()
     </script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;700&family=Lato:wght@400;700&family=Open+Sans:wght@400;700&family=Raleway:wght@400;700&family=Poppins:wght@400;700&family=Roboto:wght@400;700&family=Nunito:wght@400;700&family=Merriweather:wght@400;700&family=Source+Sans+Pro:wght@400;700&family=Ubuntu:wght@400;700&family=Droid+Serif:wght@400;700&family=PT+Serif:wght@400;700&family=Lora:wght@400;700&family=Vollkorn:wght@400;700&family=Arvo:wght@400;700&family=Bitter:wght@400;700&family=Old+Standard+TT:wght@400;700&family=EB+Garamond:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Zilla+Slab:wght@400;700&family=Abril+Fatface&family=Dancing+Script:wght@400;700&family=Pacifico&family=Satisfy&family=Great+Vibes&family=Amatic+SC:wght@400;700&family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Permanent+Marker&family=Indie+Flower&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -60,39 +56,6 @@
         .color-row input[type="color"] { width: 40px; height: 35px; border: none; border-radius: 4px; cursor: pointer; background: none; }
         .settings-btn { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--nx-primary), #9B7BFF); border: none; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 4px 20px rgba(123,92,255,0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; transition: transform 0.3s; }
         .settings-btn:hover { transform: rotate(90deg) scale(1.1); }
-
-        /* Action bar */
-        .action-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; background: rgba(19,21,42,0.97); border-bottom: 1px solid var(--nx-border); backdrop-filter: blur(15px); flex-shrink: 0; gap: 10px; z-index: 200; }
-        .action-bar-left { display: flex; align-items: center; gap: 10px; }
-        .action-bar-left img { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid rgba(123,92,255,0.5); }
-        .action-bar-title { font-size: 15px; font-weight: 700; background: linear-gradient(135deg, #a78bfa, #4FA3FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .action-bar-center { flex: 1; display: flex; align-items: center; gap: 8px; justify-content: center; }
-        .action-bar-center input { background: rgba(26,29,53,0.6); border: 1px solid var(--nx-border); border-radius: 8px; color: var(--nx-text); padding: 6px 12px; font-family: 'Outfit', sans-serif; font-size: 13px; width: 240px; outline: none; }
-        .action-bar-center input:focus { border-color: var(--nx-primary); }
-        .action-bar-right { display: flex; gap: 8px; }
-        .ab-btn { padding: 7px 18px; border-radius: 50px; border: 1px solid var(--nx-border); background: rgba(123,92,255,0.08); color: var(--nx-text); font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 5px; }
-        .ab-btn:hover { border-color: var(--nx-primary); color: #fff; background: rgba(123,92,255,0.15); }
-        .ab-btn.primary { background: linear-gradient(135deg, var(--nx-primary), #9B7BFF); border-color: transparent; color: #fff; box-shadow: 0 0 16px rgba(123,92,255,0.35); }
-        .ab-btn.primary:hover { box-shadow: 0 0 28px rgba(123,92,255,0.6); }
-        .ab-btn.green { background: rgba(0,230,118,0.15); border-color: rgba(0,230,118,0.3); color: var(--nx-green); }
-        .ab-btn.green:hover { background: rgba(0,230,118,0.25); }
-
-        /* Drafts modal */
-        .drafts-list { max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .draft-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(26,29,53,0.6); border: 1px solid var(--nx-border); border-radius: 10px; cursor: pointer; transition: all .2s; }
-        .draft-item:hover { border-color: var(--nx-primary); background: rgba(123,92,255,0.08); }
-        .draft-info { flex: 1; }
-        .draft-name { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 3px; }
-        .draft-date { font-size: 11px; color: var(--nx-text-dim); }
-        .draft-actions { display: flex; gap: 6px; }
-        .draft-btn { padding: 5px 10px; border-radius: 6px; border: none; font-size: 11px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 600; }
-        .draft-btn.load { background: rgba(123,92,255,0.2); color: #a78bfa; }
-        .draft-btn.delete { background: rgba(255,75,110,0.1); color: #ff8fab; }
-        .draft-btn.publish { background: rgba(0,230,118,0.15); color: var(--nx-green); }
-
-        /* Toast */
-        .nx-toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%); background: rgba(26,37,84,0.95); border: 1px solid rgba(123,92,255,0.3); color: var(--nx-text); font-family: 'Outfit', sans-serif; font-size: 14px; padding: 12px 24px; border-radius: 50px; z-index: 9999; backdrop-filter: blur(12px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); animation: toastIn .3s ease; }
-        @keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(20px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; }
         .modal { background: var(--nx-surface); border: 1px solid var(--nx-border); border-radius: 20px; padding: 30px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
         .modal h2 { margin-bottom: 20px; color: #fff; font-family: 'Cormorant Garamond', serif; }
@@ -164,50 +127,48 @@
         .menu-element nav ul li ul { display: none; position: absolute; top: 100%; left: 0; background: var(--nx-surface); flex-direction: column; gap: 10px; padding: 10px; border-radius: var(--r); border: 1px solid var(--nx-border); min-width: 150px; }
         .menu-element nav ul li:hover ul { display: flex; }
         @media (max-width: 1024px) { .editor-container { flex-direction: column; } .sidebar, .properties-panel { width: 100%; height: auto; max-height: 300px; } .workspace { padding: 20px; } }
+
+        /* ── ACTION BAR (ajouté) ── */
+        .nx-action-bar { display:flex; align-items:center; justify-content:space-between; padding:8px 16px; background:rgba(19,21,42,0.97); border-bottom:1px solid var(--nx-border); backdrop-filter:blur(15px); gap:10px; z-index:200; }
+        .nx-action-bar .nx-ab-left { display:flex; align-items:center; gap:10px; }
+        .nx-action-bar .nx-ab-left img { width:28px; height:28px; border-radius:50%; border:1.5px solid rgba(123,92,255,0.5); }
+        .nx-action-bar .nx-ab-title { font-size:15px; font-weight:700; background:linear-gradient(135deg,#a78bfa,#4FA3FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .nx-action-bar .nx-ab-center { flex:1; display:flex; justify-content:center; }
+        .nx-action-bar .nx-ab-center input { background:rgba(26,29,53,0.6); border:1px solid var(--nx-border); border-radius:8px; color:var(--nx-text); padding:6px 12px; font-family:'Outfit',sans-serif; font-size:13px; width:240px; outline:none; }
+        .nx-action-bar .nx-ab-center input:focus { border-color:var(--nx-primary); }
+        .nx-action-bar .nx-ab-right { display:flex; gap:8px; }
+        .nx-ab-btn { padding:7px 18px; border-radius:50px; border:1px solid var(--nx-border); background:rgba(123,92,255,0.08); color:var(--nx-text); font-family:'Outfit',sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:5px; }
+        .nx-ab-btn:hover { border-color:var(--nx-primary); color:#fff; }
+        .nx-ab-btn.nx-primary { background:linear-gradient(135deg,var(--nx-primary),#9B7BFF); border-color:transparent; color:#fff; box-shadow:0 0 16px rgba(123,92,255,0.35); }
+        .nx-ab-btn.nx-green { background:rgba(0,230,118,0.15); border-color:rgba(0,230,118,0.3); color:var(--nx-green); }
+        .nx-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:3000; display:none; align-items:center; justify-content:center; }
+        .nx-modal-box { background:var(--nx-surface); border:1px solid var(--nx-border); border-radius:20px; padding:30px; width:90%; max-width:600px; max-height:90vh; overflow-y:auto; }
+        .nx-drafts-list { display:flex; flex-direction:column; gap:8px; max-height:400px; overflow-y:auto; }
+        .nx-draft-item { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:rgba(26,29,53,0.6); border:1px solid var(--nx-border); border-radius:10px; cursor:pointer; transition:all .2s; }
+        .nx-draft-item:hover { border-color:var(--nx-primary); }
+        .nx-draft-name { font-size:14px; font-weight:600; color:#fff; margin-bottom:3px; }
+        .nx-draft-date { font-size:11px; color:var(--nx-text-dim); }
+        .nx-draft-btn { padding:5px 10px; border-radius:6px; border:none; font-size:11px; cursor:pointer; font-family:'Outfit',sans-serif; font-weight:600; margin-left:4px; }
+        .nx-draft-btn.load { background:rgba(123,92,255,0.2); color:#a78bfa; }
+        .nx-draft-btn.del { background:rgba(255,75,110,0.1); color:#ff8fab; }
+        .nx-toast { position:fixed; bottom:32px; left:50%; transform:translateX(-50%); background:rgba(26,37,84,0.95); border:1px solid rgba(123,92,255,0.3); color:#C8CCF0; font-family:'Outfit',sans-serif; font-size:14px; padding:12px 24px; border-radius:50px; z-index:9999; backdrop-filter:blur(12px); box-shadow:0 8px 32px rgba(0,0,0,0.4); }
     </style>
 </head>
 <body>
+    <!-- ACTION BAR (ajouté) -->
+    <div class="nx-action-bar">
+      <div class="nx-ab-left"><img src="/NyXia.png" alt="NyXia"><span class="nx-ab-title">NyXia Editor</span></div>
+      <div class="nx-ab-center"><input type="text" id="nx-project-name" placeholder="Nom de la page..." value="Ma page"></div>
+      <div class="nx-ab-right">
+        <button class="nx-ab-btn" onclick="nxOpenDrafts()">📂 Mes pages</button>
+        <button class="nx-ab-btn" onclick="nxSaveDraft()">💾 Sauvegarder</button>
+        <button class="nx-ab-btn nx-green" onclick="nxPreview()">👁 Aperçu</button>
+        <button class="nx-ab-btn nx-primary" onclick="nxPublish()">🚀 Publier</button>
+      </div>
+    </div>
+    <div class="nx-modal-overlay" id="nx-drafts-modal"><div class="nx-modal-box"><h2 style="color:#fff;font-family:'Cormorant Garamond',serif;margin-bottom:20px">📂 Mes Pages</h2><div id="nx-drafts-list" class="nx-drafts-list"><p style="color:var(--nx-text-dim);text-align:center;padding:30px">Chargement...</p></div><button class="btn-primary" onclick="document.getElementById('nx-drafts-modal').style.display='none'" style="margin-top:15px">Fermer</button></div></div>
+    <div class="nx-modal-overlay" id="nx-publish-modal"><div class="nx-modal-box" style="text-align:center"><h2 style="color:var(--nx-green)">🚀 Page publiée !</h2><p style="margin:16px 0;color:var(--nx-text)">Ta page est en ligne :</p><a id="nx-publish-url" href="#" target="_blank" style="display:inline-block;padding:12px 24px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.3);border-radius:50px;color:#a78bfa;text-decoration:none;font-weight:600;font-size:14px;word-break:break-all">—</a><br><button class="btn-primary" onclick="document.getElementById('nx-publish-modal').style.display='none'" style="margin-top:15px">Fermer</button></div></div>
     <canvas id="starry-canvas"></canvas>
-
-    <!-- ACTION BAR -->
-    <div class="action-bar">
-      <div class="action-bar-left">
-        <img src="/NyXia.png" alt="NyXia">
-        <span class="action-bar-title">NyXia Editor</span>
-      </div>
-      <div class="action-bar-center">
-        <input type="text" id="project-name" placeholder="Nom de la page..." value="Ma page">
-      </div>
-      <div class="action-bar-right">
-        <button class="ab-btn" onclick="openDraftsModal()">📂 Mes pages</button>
-        <button class="ab-btn" onclick="saveDraft()">💾 Sauvegarder</button>
-        <button class="ab-btn green" onclick="previewPage()">👁 Aperçu</button>
-        <button class="ab-btn primary" onclick="publishPage()">🚀 Publier</button>
-      </div>
-    </div>
-
-    <!-- DRAFTS MODAL -->
-    <div class="modal-overlay" id="drafts-modal">
-      <div class="modal">
-        <h2>📂 Mes Pages</h2>
-        <div id="drafts-list" class="drafts-list">
-          <p style="color:var(--nx-text-dim);text-align:center;padding:30px 0">Chargement...</p>
-        </div>
-        <button class="btn-primary" onclick="document.getElementById('drafts-modal').style.display='none'" style="margin-top:15px">Fermer</button>
-      </div>
-    </div>
-
-    <!-- PUBLISH SUCCESS MODAL -->
-    <div class="modal-overlay" id="publish-modal">
-      <div class="modal" style="text-align:center">
-        <h2 style="color:var(--nx-green)">🚀 Page publiée !</h2>
-        <p style="margin:16px 0;color:var(--nx-text)">Ta page est en ligne :</p>
-        <a id="publish-url" href="#" target="_blank" style="display:inline-block;padding:12px 24px;background:rgba(123,92,255,0.15);border:1px solid rgba(123,92,255,0.3);border-radius:50px;color:#a78bfa;text-decoration:none;font-weight:600;font-size:14px;word-break:break-all;margin-bottom:16px">—</a>
-        <br>
-        <button class="btn-primary" onclick="document.getElementById('publish-modal').style.display='none'" style="margin-top:10px">Fermer</button>
-      </div>
-    </div>
-
     <div class="editor-container">
         <aside class="sidebar">
             <div class="logo-area">
@@ -487,299 +448,126 @@
         function initStarfield() { const canvas = document.getElementById('starry-canvas'); const ctx = canvas.getContext('2d'); let stars = []; const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initStars(); }; const initStars = () => { stars = []; for(let i=0; i<300; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, a: Math.random(), v: Math.random()*0.05+0.01}); }; const animate = () => { ctx.clearRect(0,0,canvas.width,canvas.height); stars.forEach(s => { s.a += s.v; if(s.a>1 || s.a<0.2) s.v = -s.v; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fillStyle = `rgba(255,255,255,${s.a})`; ctx.fill(); }); requestAnimationFrame(animate); }; window.onresize = resize; resize(); animate(); }
         function adjustCanvasHeight() { const canvas = document.getElementById('canvas'); if(canvas) canvas.style.minHeight = canvas.scrollHeight + 40 + 'px'; }
 
-        /* ══════════════════════════════════════
-           EXPORT — Extrait le HTML propre du canvas
-        ══════════════════════════════════════ */
-        function exportCleanHTML() {
-            const canvas = document.getElementById('canvas');
-            const clone = canvas.cloneNode(true);
-            // Retirer les controls d'édition
-            clone.querySelectorAll('.element-controls').forEach(c => c.remove());
-            // Retirer les classes d'édition
-            clone.querySelectorAll('.canvas-element').forEach(el => {
-                el.classList.remove('canvas-element', 'selected');
-                el.style.border = '';
-                el.style.cursor = '';
-                el.removeAttribute('draggable');
-                el.removeAttribute('contenteditable');
-            });
-            clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
-            // Retirer les bordures dashed
-            clone.querySelectorAll('.section-element, .row-element, .col-container, .col-element').forEach(el => {
-                el.style.borderStyle = 'none';
-            });
-            clone.classList.remove('canvas-area');
-            clone.removeAttribute('id');
+        /* ══════════════════════════════════════════════════════
+           FONCTIONS PROJET — Sauvegarde, Chargement, Publication
+           (ajoutées sans modifier le code existant ci-dessus)
+        ══════════════════════════════════════════════════════ */
+        var nxCurrentDraftId = null;
 
-            // Récupérer SEO
-            const title = document.getElementById('seo-title')?.value || document.getElementById('project-name')?.value || 'Ma Page NyXia';
-            const desc = document.getElementById('seo-desc')?.value || '';
-            const keywords = document.getElementById('seo-keywords')?.value || '';
-            const author = document.getElementById('seo-author')?.value || '';
-            const lang = document.getElementById('site-lang')?.value || 'fr';
-            const headerCode = document.getElementById('header-code')?.value || '';
-            const footerCode = document.getElementById('footer-code')?.value || '';
-            const bgColor = canvas.style.backgroundColor || '#0B0D17';
-            const bgImage = canvas.style.backgroundImage || '';
+        function nxToast(msg) { var old = document.querySelector('.nx-toast'); if(old) old.remove(); var t = document.createElement('div'); t.className='nx-toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(function(){if(t.parentNode)t.remove()},3500); }
 
-            // Collecter les styles inline des éléments
-            let html = `<!DOCTYPE html>
-<html lang="${lang}">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-${desc ? '<meta name="description" content="' + desc.replace(/"/g, '&quot;') + '">' : ''}
-${keywords ? '<meta name="keywords" content="' + keywords.replace(/"/g, '&quot;') + '">' : ''}
-${author ? '<meta name="author" content="' + author.replace(/"/g, '&quot;') + '">' : ''}
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&family=Lora:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Outfit',sans-serif;color:#C8CCF0;background:${bgColor};${bgImage && bgImage !== 'none' ? 'background-image:' + bgImage + ';background-size:cover;background-position:center;' : ''}}
-.section-element,.row-element,.col-container{padding:15px;margin-bottom:15px}
-.columns-wrapper{display:flex;gap:15px;width:100%}
-.col-element{flex:1;padding:10px}
-.button-element{display:block;padding:12px 24px;background:#7B5CFF;color:#fff;border-radius:50px;text-decoration:none;font-weight:600;border:none;cursor:pointer;text-align:center}
-.faq-item{margin-bottom:10px;border:1px solid rgba(123,92,255,0.15);border-radius:14px;overflow:hidden}
-.faq-question{padding:15px;background:rgba(26,29,53,0.6);cursor:pointer;font-weight:600}
-.faq-answer{padding:15px;background:rgba(11,13,23,0.6);display:none}
-.countdown-element{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
-.countdown-block{background:rgba(26,29,53,0.6);padding:15px;border-radius:14px;text-align:center;min-width:80px}
-.countdown-number{font-size:1.5rem;font-weight:700;color:#7B5CFF}
-.countdown-label{font-size:0.8rem;color:#6B7094}
-nav ul{list-style:none;display:flex;gap:20px;padding:0;margin:0}
-nav ul li a{text-decoration:none;color:#C8CCF0;font-weight:500;transition:color 0.2s}
-nav ul li a:hover{color:#7B5CFF}
-img,video,iframe{max-width:100%;border-radius:14px}
-audio{width:100%}
-.shadow-soft{box-shadow:0 4px 15px rgba(0,0,0,0.1)}
-.shadow-medium{box-shadow:0 8px 25px rgba(0,0,0,0.2)}
-.shadow-intense{box-shadow:0 15px 40px rgba(0,0,0,0.3)}
-.shadow-float{box-shadow:0 10px 30px rgba(123,92,255,0.3);animation:float 3s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@media(max-width:768px){.columns-wrapper{flex-direction:column}}
-</style>
-${headerCode}
-</head>
-<body>
-${clone.innerHTML}
-<script>
-document.querySelectorAll('.faq-question').forEach(function(q){q.addEventListener('click',function(){this.nextElementSibling.classList.toggle('open');var a=this.nextElementSibling;a.style.display=a.style.display==='block'?'none':'block'})});
-</script>
-${footerCode}
-</body>
-</html>`;
-            return html;
+        function nxExportHTML() {
+            var canvas = document.getElementById('canvas');
+            var clone = canvas.cloneNode(true);
+            clone.querySelectorAll('.element-controls').forEach(function(c){c.remove()});
+            clone.querySelectorAll('.canvas-element').forEach(function(el){el.classList.remove('canvas-element','selected');el.style.border='';el.style.cursor='';el.removeAttribute('draggable')});
+            clone.querySelectorAll('[contenteditable]').forEach(function(el){el.removeAttribute('contenteditable')});
+            clone.querySelectorAll('.section-element,.row-element,.col-container,.col-element').forEach(function(el){el.style.borderStyle='none'});
+            clone.classList.remove('canvas-area'); clone.removeAttribute('id');
+            var title = (document.getElementById('seo-title')||{}).value || (document.getElementById('nx-project-name')||{}).value || 'Ma Page';
+            var desc = (document.getElementById('seo-desc')||{}).value || '';
+            var keywords = (document.getElementById('seo-keywords')||{}).value || '';
+            var author = (document.getElementById('seo-author')||{}).value || '';
+            var lang = (document.getElementById('site-lang')||{}).value || 'fr';
+            var hCode = (document.getElementById('header-code')||{}).value || '';
+            var fCode = (document.getElementById('footer-code')||{}).value || '';
+            var bg = canvas.style.backgroundColor || '#0B0D17';
+            var bgImg = canvas.style.backgroundImage || '';
+            return '<!DOCTYPE html>\n<html lang="'+lang+'">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1.0">\n<title>'+title+'</title>\n'
+              +(desc?'<meta name="description" content="'+desc.replace(/"/g,'&quot;')+'">\n':'')
+              +(keywords?'<meta name="keywords" content="'+keywords.replace(/"/g,'&quot;')+'">\n':'')
+              +(author?'<meta name="author" content="'+author.replace(/"/g,'&quot;')+'">\n':'')
+              +'<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&family=Lora:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">\n'
+              +'<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\n'
+              +'<style>\n*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}\n'
+              +'body{font-family:"Outfit",sans-serif;color:#C8CCF0;background:'+bg+';'+(bgImg&&bgImg!=='none'?'background-image:'+bgImg+';background-size:cover;background-position:center;':'')+'}\n'
+              +'.section-element,.row-element,.col-container{padding:15px;margin-bottom:15px}\n.columns-wrapper{display:flex;gap:15px;width:100%}\n.col-element{flex:1;padding:10px}\n'
+              +'.button-element{display:block;padding:12px 24px;background:#7B5CFF;color:#fff;border-radius:50px;text-decoration:none;font-weight:600;border:none;cursor:pointer;text-align:center}\n'
+              +'.faq-item{margin-bottom:10px;border:1px solid rgba(123,92,255,0.15);border-radius:14px;overflow:hidden}\n.faq-question{padding:15px;background:rgba(26,29,53,0.6);cursor:pointer;font-weight:600}\n.faq-answer{padding:15px;background:rgba(11,13,23,0.6);display:none}\n'
+              +'.countdown-element{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}\n.countdown-block{background:rgba(26,29,53,0.6);padding:15px;border-radius:14px;text-align:center;min-width:80px}\n.countdown-number{font-size:1.5rem;font-weight:700;color:#7B5CFF}\n.countdown-label{font-size:0.8rem;color:#6B7094}\n'
+              +'nav ul{list-style:none;display:flex;gap:20px;padding:0;margin:0}\nnav ul li a{text-decoration:none;color:#C8CCF0;font-weight:500;transition:color 0.2s}\nnav ul li a:hover{color:#7B5CFF}\n'
+              +'img,video,iframe{max-width:100%;border-radius:14px}\naudio{width:100%}\n'
+              +'.shadow-soft{box-shadow:0 4px 15px rgba(0,0,0,0.1)}\n.shadow-medium{box-shadow:0 8px 25px rgba(0,0,0,0.2)}\n.shadow-intense{box-shadow:0 15px 40px rgba(0,0,0,0.3)}\n'
+              +'.shadow-float{box-shadow:0 10px 30px rgba(123,92,255,0.3);animation:float 3s ease-in-out infinite}\n@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}\n'
+              +'@media(max-width:768px){.columns-wrapper{flex-direction:column}}\n</style>\n'
+              +hCode+'\n</head>\n<body>\n'
+              +clone.innerHTML+'\n'
+              +'<scr'+'ipt>\ndocument.querySelectorAll(".faq-question").forEach(function(q){q.addEventListener("click",function(){var a=this.nextElementSibling;a.style.display=a.style.display==="block"?"none":"block"})});\n</scr'+'ipt>\n'
+              +fCode+'\n</body>\n</html>';
         }
 
-        /* ══════════════════════════════════════
-           SAUVEGARDE (brouillon dans KV)
-        ══════════════════════════════════════ */
-        var currentDraftId = null;
-
-        function saveDraft() {
-            var name = document.getElementById('project-name').value.trim() || 'Ma page';
-            var canvasHTML = document.getElementById('canvas').innerHTML;
-            var canvasBg = document.getElementById('canvas').style.cssText;
+        function nxSaveDraft() {
+            var name = document.getElementById('nx-project-name').value.trim() || 'Ma page';
             var token = sessionStorage.getItem('nyxia_token');
-
-            showToast('💾 Sauvegarde en cours...');
-
-            fetch('/api/editor/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    token: token,
-                    id: currentDraftId,
-                    name: name,
-                    canvasHTML: canvasHTML,
-                    canvasStyle: canvasBg,
-                    seo: {
-                        title: document.getElementById('seo-title')?.value || '',
-                        desc: document.getElementById('seo-desc')?.value || '',
-                        keywords: document.getElementById('seo-keywords')?.value || '',
-                        author: document.getElementById('seo-author')?.value || '',
-                        lang: document.getElementById('site-lang')?.value || 'fr',
-                        headerCode: document.getElementById('header-code')?.value || '',
-                        footerCode: document.getElementById('footer-code')?.value || ''
-                    }
-                })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    currentDraftId = data.id;
-                    showToast('✅ Page sauvegardée !');
-                } else {
-                    showToast('❌ ' + (data.error || 'Erreur de sauvegarde'));
-                }
-            })
-            .catch(() => showToast('❌ Erreur réseau'));
+            nxToast('💾 Sauvegarde...');
+            fetch('/api/editor/save', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({
+                token:token, id:nxCurrentDraftId, name:name,
+                canvasHTML: document.getElementById('canvas').innerHTML,
+                canvasStyle: document.getElementById('canvas').style.cssText,
+                seo: { title:(document.getElementById('seo-title')||{}).value||'', desc:(document.getElementById('seo-desc')||{}).value||'', keywords:(document.getElementById('seo-keywords')||{}).value||'', author:(document.getElementById('seo-author')||{}).value||'', lang:(document.getElementById('site-lang')||{}).value||'fr', headerCode:(document.getElementById('header-code')||{}).value||'', footerCode:(document.getElementById('footer-code')||{}).value||'' }
+            })}).then(function(r){return r.json()}).then(function(d){ if(d.success){nxCurrentDraftId=d.id;nxToast('✅ Sauvegardé !')}else{nxToast('❌ '+(d.error||'Erreur'))} }).catch(function(){nxToast('❌ Erreur réseau')});
         }
 
-        /* ══════════════════════════════════════
-           CHARGER LES BROUILLONS
-        ══════════════════════════════════════ */
-        function openDraftsModal() {
-            document.getElementById('drafts-modal').style.display = 'flex';
+        function nxOpenDrafts() {
+            document.getElementById('nx-drafts-modal').style.display='flex';
             var token = sessionStorage.getItem('nyxia_token');
-
-            fetch('/api/editor/list', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token })
-            })
-            .then(r => r.json())
-            .then(data => {
-                var list = document.getElementById('drafts-list');
-                if (!data.success || !data.drafts || !data.drafts.length) {
-                    list.innerHTML = '<p style="color:var(--nx-text-dim);text-align:center;padding:30px 0">Aucune page sauvegardée</p>';
-                    return;
-                }
-                list.innerHTML = data.drafts.map(function(d) {
-                    var date = new Date(d.date).toLocaleDateString('fr-CA') + ' ' + new Date(d.date).toLocaleTimeString('fr-CA', {hour:'2-digit',minute:'2-digit'});
-                    var pubBadge = d.slug ? ' · <span style="color:var(--nx-green)">✅ Publiée</span>' : '';
-                    return '<div class="draft-item">'
-                        + '<div class="draft-info"><div class="draft-name">' + escH(d.name) + '</div><div class="draft-date">' + date + pubBadge + '</div></div>'
-                        + '<div class="draft-actions">'
-                        + '<button class="draft-btn load" onclick="loadDraft(\'' + d.id + '\')">📂 Ouvrir</button>'
-                        + '<button class="draft-btn publish" onclick="publishDraft(\'' + d.id + '\')">🚀 Publier</button>'
-                        + '<button class="draft-btn delete" onclick="deleteDraft(\'' + d.id + '\')">🗑</button>'
-                        + '</div></div>';
+            fetch('/api/editor/list',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token})})
+            .then(function(r){return r.json()}).then(function(d){
+                var el = document.getElementById('nx-drafts-list');
+                if(!d.success||!d.drafts||!d.drafts.length){el.innerHTML='<p style="color:var(--nx-text-dim);text-align:center;padding:30px">Aucune page sauvegardée</p>';return}
+                el.innerHTML=d.drafts.map(function(dr){
+                    var dt=new Date(dr.date).toLocaleDateString('fr-CA')+' '+new Date(dr.date).toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'});
+                    return '<div class="nx-draft-item"><div style="flex:1"><div class="nx-draft-name">'+dr.name+'</div><div class="nx-draft-date">'+dt+'</div></div><div><button class="nx-draft-btn load" onclick="nxLoadDraft(\''+dr.id+'\')">📂</button><button class="nx-draft-btn del" onclick="nxDeleteDraft(\''+dr.id+'\')">🗑</button></div></div>'
                 }).join('');
-            })
-            .catch(() => {
-                document.getElementById('drafts-list').innerHTML = '<p style="color:#ff8fab;text-align:center;padding:20px">Erreur de chargement</p>';
-            });
+            }).catch(function(){document.getElementById('nx-drafts-list').innerHTML='<p style="color:#ff8fab;text-align:center">Erreur</p>'});
         }
 
-        function loadDraft(id) {
+        function nxLoadDraft(id) {
             var token = sessionStorage.getItem('nyxia_token');
-            fetch('/api/editor/load', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token, id: id })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (!data.success || !data.draft) { showToast('❌ Brouillon introuvable'); return; }
-                currentDraftId = data.draft.id;
-                document.getElementById('project-name').value = data.draft.name || 'Ma page';
-                document.getElementById('canvas').innerHTML = data.draft.canvasHTML || '';
-                if (data.draft.canvasStyle) document.getElementById('canvas').style.cssText = data.draft.canvasStyle;
-                if (data.draft.seo) {
-                    if (data.draft.seo.title) document.getElementById('seo-title').value = data.draft.seo.title;
-                    if (data.draft.seo.desc) document.getElementById('seo-desc').value = data.draft.seo.desc;
-                    if (data.draft.seo.keywords) document.getElementById('seo-keywords').value = data.draft.seo.keywords;
-                    if (data.draft.seo.author) document.getElementById('seo-author').value = data.draft.seo.author;
-                    if (data.draft.seo.lang) document.getElementById('site-lang').value = data.draft.seo.lang;
-                    if (data.draft.seo.headerCode) document.getElementById('header-code').value = data.draft.seo.headerCode;
-                    if (data.draft.seo.footerCode) document.getElementById('footer-code').value = data.draft.seo.footerCode;
+            fetch('/api/editor/load',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,id:id})})
+            .then(function(r){return r.json()}).then(function(d){
+                if(!d.success||!d.draft){nxToast('❌ Introuvable');return}
+                nxCurrentDraftId=d.draft.id;
+                document.getElementById('nx-project-name').value=d.draft.name||'Ma page';
+                document.getElementById('canvas').innerHTML=d.draft.canvasHTML||'';
+                if(d.draft.canvasStyle) document.getElementById('canvas').style.cssText=d.draft.canvasStyle;
+                if(d.draft.seo){
+                    var s=d.draft.seo;
+                    if(s.title&&document.getElementById('seo-title')) document.getElementById('seo-title').value=s.title;
+                    if(s.desc&&document.getElementById('seo-desc')) document.getElementById('seo-desc').value=s.desc;
+                    if(s.keywords&&document.getElementById('seo-keywords')) document.getElementById('seo-keywords').value=s.keywords;
+                    if(s.author&&document.getElementById('seo-author')) document.getElementById('seo-author').value=s.author;
+                    if(s.lang&&document.getElementById('site-lang')) document.getElementById('site-lang').value=s.lang;
+                    if(s.headerCode&&document.getElementById('header-code')) document.getElementById('header-code').value=s.headerCode;
+                    if(s.footerCode&&document.getElementById('footer-code')) document.getElementById('footer-code').value=s.footerCode;
                 }
-                // Réattacher les listeners sur les éléments rechargés
-                reattachListeners();
-                document.getElementById('drafts-modal').style.display = 'none';
-                showToast('✅ Page "' + data.draft.name + '" chargée');
-            })
-            .catch(() => showToast('❌ Erreur de chargement'));
+                // Réattacher les listeners
+                document.querySelectorAll('.canvas-element').forEach(function(el){el.addEventListener('click',function(e){e.stopPropagation();selectElement(el)})});
+                document.querySelectorAll('.faq-question').forEach(function(q){q.addEventListener('click',function(){this.nextElementSibling.classList.toggle('open')})});
+                adjustCanvasHeight();
+                document.getElementById('nx-drafts-modal').style.display='none';
+                nxToast('✅ "'+d.draft.name+'" chargé');
+            }).catch(function(){nxToast('❌ Erreur')});
         }
 
-        function deleteDraft(id) {
-            if (!confirm('Supprimer cette page ?')) return;
+        function nxDeleteDraft(id) {
+            if(!confirm('Supprimer cette page ?')) return;
             var token = sessionStorage.getItem('nyxia_token');
-            fetch('/api/editor/delete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token, id: id })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    if (currentDraftId === id) currentDraftId = null;
-                    openDraftsModal(); // Refresh
-                    showToast('🗑 Page supprimée');
-                }
-            });
+            fetch('/api/editor/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,id:id})})
+            .then(function(r){return r.json()}).then(function(d){if(d.success){if(nxCurrentDraftId===id)nxCurrentDraftId=null;nxOpenDrafts();nxToast('🗑 Supprimé')}});
         }
 
-        function reattachListeners() {
-            document.querySelectorAll('.canvas-element').forEach(el => {
-                el.addEventListener('click', function(e) { e.stopPropagation(); selectElement(el); });
-            });
-            document.querySelectorAll('.faq-question').forEach(q => {
-                q.addEventListener('click', function() { this.nextElementSibling.classList.toggle('open'); });
-            });
-            document.querySelectorAll('[contenteditable="true"]').forEach(el => {
-                el.addEventListener('focus', function() {
-                    const toolbar = document.getElementById('text-toolbar');
-                    const rect = this.getBoundingClientRect();
-                    toolbar.style.display = 'flex';
-                    toolbar.style.left = rect.left + 'px';
-                    toolbar.style.top = (rect.top + window.scrollY) + 'px';
-                });
-            });
-            adjustCanvasHeight();
+        function nxPublish() {
+            var name = document.getElementById('nx-project-name').value.trim()||'ma-page';
+            nxToast('🚀 Publication...');
+            fetch('/api/publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html:nxExportHTML(),projectName:name})})
+            .then(function(r){return r.json()}).then(function(d){
+                if(d.success&&d.url){document.getElementById('nx-publish-url').href=d.url;document.getElementById('nx-publish-url').textContent=d.url;document.getElementById('nx-publish-modal').style.display='flex';nxSaveDraft()}
+                else{nxToast('❌ '+(d.error||'Erreur'))}
+            }).catch(function(){nxToast('❌ Erreur réseau')});
         }
 
-        /* ══════════════════════════════════════
-           PUBLICATION (sous-domaine via /api/publish)
-        ══════════════════════════════════════ */
-        function publishPage() {
-            var name = document.getElementById('project-name').value.trim() || 'ma-page';
-            var html = exportCleanHTML();
-
-            showToast('🚀 Publication en cours...');
-
-            fetch('/api/publish', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ html: html, projectName: name })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success && data.url) {
-                    document.getElementById('publish-url').href = data.url;
-                    document.getElementById('publish-url').textContent = data.url;
-                    document.getElementById('publish-modal').style.display = 'flex';
-                    // Sauvegarder aussi le brouillon avec le slug
-                    saveDraft();
-                } else {
-                    showToast('❌ ' + (data.error || 'Erreur de publication'));
-                }
-            })
-            .catch(() => showToast('❌ Erreur réseau'));
-        }
-
-        function publishDraft(id) {
-            loadDraft(id);
-            setTimeout(function() { publishPage(); }, 1000);
-        }
-
-        /* ══════════════════════════════════════
-           APERÇU
-        ══════════════════════════════════════ */
-        function previewPage() {
-            var html = exportCleanHTML();
-            var win = window.open('', '_blank');
-            win.document.write(html);
-            win.document.close();
-        }
-
-        /* ══════════════════════════════════════
-           UTILS
-        ══════════════════════════════════════ */
-        function showToast(msg) {
-            var existing = document.querySelector('.nx-toast');
-            if (existing) existing.remove();
-            var toast = document.createElement('div');
-            toast.className = 'nx-toast';
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(function() { if (toast.parentNode) toast.remove(); }, 3500);
-        }
-
-        function escH(str) { var d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+        function nxPreview() { var w=window.open('','_blank'); w.document.write(nxExportHTML()); w.document.close(); }
     </script>
 </body>
 </html>
