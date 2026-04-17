@@ -124,6 +124,8 @@
     #panel-wan iframe { width: 100%; height: 100%; border: none; }
     #panel-wanimg { overflow: hidden; }
     #panel-wanimg iframe { width: 100%; height: 100%; border: none; }
+    #panel-editor { overflow: hidden; }
+    #panel-editor iframe { width: 100%; height: 100%; border: none; }
     #panel-messages { align-items: center; justify-content: center; flex-direction: column; }
     .coming-soon { text-align: center; padding: 60px 40px; }
     .coming-soon-icon { font-size: 64px; margin-bottom: 20px; }
@@ -188,6 +190,9 @@
         <div class="nav-item" id="nav-wanimg" onclick="showPanel('wanimg')">
           <span class="nav-icon">🖼️</span> Images IA <span class="nav-arrow">›</span>
         </div>
+        <div class="nav-item" id="nav-editor" onclick="showPanel('editor')">
+          <span class="nav-icon">✏️</span> Éditeur de pages <span class="nav-arrow">›</span>
+        </div>
       </div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-section">
@@ -247,6 +252,7 @@
       <div class="panel" id="panel-medias"><iframe src="/medias.html" class="tool-embed" id="medias-frame"></iframe></div>
       <div class="panel" id="panel-wan"><iframe src="/wan-video.html" class="tool-embed" id="wan-frame"></iframe></div>
       <div class="panel" id="panel-wanimg"><iframe src="/wan-image.html" class="tool-embed" id="wanimg-frame"></iframe></div>
+      <div class="panel" id="panel-editor"><iframe src="/editor.html" class="tool-embed" id="editor-frame"></iframe></div>
 
       <div class="panel" id="panel-projects">
         <div style="display:flex;flex-direction:column;height:100%;overflow:hidden">
