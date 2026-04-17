@@ -1454,6 +1454,111 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
     }
 
     /* ════════════════════════════════════════════════════
+       ROUTE /api/editor/save — Sauvegarder un brouillon éditeur
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/editor/save" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        const token = body.token || ""
+        const email = await env.USERS_KV.get("session:" + token)
+        if (!email) return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+        const id = body.id || ("draft_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6))
+        const draft = {
+          id: id,
+          name: body.name || "Ma page",
+          canvasHTML: body.canvasHTML || "",
+          canvasStyle: body.canvasStyle || "",
+          seo: body.seo || {},
+          date: new Date().toISOString()
+        }
+
+        await env.USERS_KV.put("editor:" + email + ":" + id, JSON.stringify(draft))
+
+        return new Response(JSON.stringify({ success: true, id: id }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/editor/list — Lister les brouillons
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/editor/list" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        const token = body.token || ""
+        const email = await env.USERS_KV.get("session:" + token)
+        if (!email) return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+        const list = await env.USERS_KV.list({ prefix: "editor:" + email + ":" })
+        const drafts = []
+        for (const key of list.keys) {
+          const val = await env.USERS_KV.get(key.name)
+          if (val) {
+            const d = JSON.parse(val)
+            drafts.push({ id: d.id, name: d.name, date: d.date, slug: d.slug || null })
+          }
+        }
+        drafts.sort((a, b) => new Date(b.date) - new Date(a.date))
+
+        return new Response(JSON.stringify({ success: true, drafts }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/editor/load — Charger un brouillon
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/editor/load" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        const token = body.token || ""
+        const email = await env.USERS_KV.get("session:" + token)
+        if (!email) return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+        const val = await env.USERS_KV.get("editor:" + email + ":" + body.id)
+        if (!val) return new Response(JSON.stringify({ success: false, error: "Brouillon introuvable." }),
+          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+        return new Response(JSON.stringify({ success: true, draft: JSON.parse(val) }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
+       ROUTE /api/editor/delete — Supprimer un brouillon
+    ════════════════════════════════════════════════════ */
+    if (url.pathname === "/api/editor/delete" && request.method === "POST") {
+      try {
+        const body = await request.json()
+        const token = body.token || ""
+        const email = await env.USERS_KV.get("session:" + token)
+        if (!email) return new Response(JSON.stringify({ success: false, error: "Session expirée." }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+
+        await env.USERS_KV.delete("editor:" + email + ":" + body.id)
+
+        return new Response(JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      } catch(e) {
+        return new Response(JSON.stringify({ success: false, error: e.message }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } })
+      }
+    }
+
+    /* ════════════════════════════════════════════════════
        ROUTE /api/wan-image — Génération d'Images IA (DashScope)
        Appel synchrone : retourne directement les URLs images
     ════════════════════════════════════════════════════ */
