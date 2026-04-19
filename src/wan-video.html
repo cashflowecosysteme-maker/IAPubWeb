@@ -752,6 +752,14 @@
           </select>
         </div>
         <div class="option-group">
+          <span class="option-label">Format</span>
+          <select class="option-select" id="opt-format">
+            <option value="16:9">16:9 (paysage)</option>
+            <option value="9:16">9:16 (portrait)</option>
+            <option value="1:1">1:1 (carré)</option>
+          </select>
+        </div>
+        <div class="option-group">
           <span class="option-label">Résolution</span>
           <select class="option-select" id="opt-resolution">
             <option value="720p">720p</option>
@@ -764,6 +772,8 @@
           <select class="option-select" id="opt-duration">
             <option value="5">5 secondes</option>
             <option value="10">10 secondes</option>
+            <option value="15">15 secondes</option>
+            <option value="20">20 secondes</option>
           </select>
         </div>
       </div>
@@ -913,6 +923,8 @@
       // Adapter les modèles selon le mode
       var modelSel = document.getElementById('opt-model')
       var resSel   = document.getElementById('opt-resolution')
+      var durSel   = document.getElementById('opt-duration')
+      var fmtSel   = document.getElementById('opt-format')
       if (tab === 't2v') {
         modelSel.innerHTML = '<option value="wan2.7-t2v">NyXia 2.7 (dernier)</option>'
                            + '<option value="wan2.6-t2v">NyXia 2.6 (HD)</option>'
@@ -920,11 +932,22 @@
         resSel.innerHTML   = '<option value="720p">720p</option>'
                            + '<option value="1080p">1080p</option>'
                            + '<option value="480p">480p (rapide)</option>'
+        durSel.innerHTML   = '<option value="5">5 secondes</option>'
+                           + '<option value="10">10 secondes</option>'
+                           + '<option value="15">15 secondes</option>'
+                           + '<option value="20">20 secondes</option>'
+        fmtSel.innerHTML   = '<option value="16:9">16:9 (paysage)</option>'
+                           + '<option value="9:16">9:16 (portrait)</option>'
+                           + '<option value="1:1">1:1 (carré)</option>'
       } else {
         modelSel.innerHTML = '<option value="wan2.6-i2v-flash">NyXia I2V Rapide</option>'
                            + '<option value="wan2.6-i2v">NyXia I2V HD</option>'
         resSel.innerHTML   = '<option value="720p">720p</option>'
                            + '<option value="1080p">1080p</option>'
+        durSel.innerHTML   = '<option value="5">5 secondes</option>'
+                           + '<option value="10">10 secondes</option>'
+        fmtSel.innerHTML   = '<option value="16:9">16:9 (paysage)</option>'
+                           + '<option value="9:16">9:16 (portrait)</option>'
       }
 
       document.getElementById('result-section').classList.remove('visible')
@@ -999,6 +1022,7 @@
       var model      = document.getElementById('opt-model').value
       var resolution = document.getElementById('opt-resolution').value
       var duration   = document.getElementById('opt-duration').value
+      var format     = document.getElementById('opt-format').value
 
       setLoading(true)
       updateProgress(0, 1)
@@ -1008,6 +1032,7 @@
         model: model,
         resolution: resolution,
         duration: parseInt(duration),
+        format: format,
         mode: currentTab
       }
 
