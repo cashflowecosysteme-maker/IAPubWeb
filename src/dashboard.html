@@ -334,15 +334,19 @@
   <script>
     /* ═══════ CONFIG VOIX ═══════ */
     var NYXIA_VOICE_PRIORITY = ['Microsoft Denise','Microsoft Hortense','Google français','Amélie','Audrey','Virginie','Sophie','Marie','Alice'];
+    var _cachedVoices = null;
     function pickBestFrenchVoice(voices) {
-      if (!voices || !voices.length) return null;
+      if (!voices || !voices.length) voices = window.speechSynthesis.getVoices();
+      if (!voices || !voices.length) return _cachedVoices;
       for (var i = 0; i < NYXIA_VOICE_PRIORITY.length; i++) {
         var found = voices.find(function(v) { return v.name.indexOf(NYXIA_VOICE_PRIORITY[i]) !== -1 && v.lang.indexOf('fr') === 0 })
-        if (found) return found;
+        if (found) { _cachedVoices = found; console.log('🔊 Voix NyXia:', found.name); return found; }
       }
       var feminine = voices.find(function(v) { return v.lang === 'fr-FR' && /female|femme|amelie|audrey|marie|virginie|sophie|alice|denise|helene|isabelle|celine|julie|leila/i.test(v.name) })
-      if (feminine) return feminine;
-      return voices.find(function(v) { return v.lang === 'fr-FR' }) || voices.find(function(v) { return v.lang && v.lang.indexOf('fr') === 0 }) || null;
+      if (feminine) { _cachedVoices = feminine; console.log('🔊 Voix fallback:', feminine.name); return feminine; }
+      var any = voices.find(function(v) { return v.lang === 'fr-FR' }) || voices.find(function(v) { return v.lang && v.lang.indexOf('fr') === 0 }) || null;
+      if (any) { _cachedVoices = any; console.log('🔊 Voix générique:', any.name); }
+      return any;
     }
 
     /* ═══════ AUTH ═══════ */
@@ -581,7 +585,18 @@
       setTimeout(trySpeak, 200)
     }
 
-    if (window.speechSynthesis) { window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices() } }
+    if (window.speechSynthesis) {
+      // Pré-charger la voix dès que les voix sont disponibles
+      window.speechSynthesis.onvoiceschanged = function() {
+        var voices = window.speechSynthesis.getVoices()
+        pickBestFrenchVoice(voices)
+        // Log toutes les voix FR pour debug
+        var frVoices = voices.filter(function(v) { return v.lang && v.lang.indexOf('fr') === 0 })
+        console.log('🔊 Voix FR disponibles:', frVoices.map(function(v) { return v.name }).join(', '))
+      }
+      // Essai immédiat (certains navigateurs les ont déjà)
+      pickBestFrenchVoice(window.speechSynthesis.getVoices())
+    }
 
     /* ═══════ MESSAGERIE ═══════ */
     var msgAttachments = []
