@@ -208,6 +208,16 @@
           </select>
         </div>
         <div class="option-group">
+          <span class="option-label">Format</span>
+          <select class="option-select" id="opt-format">
+            <option value="">Auto</option>
+            <option value="1:1">1:1 (carré)</option>
+            <option value="4:5">4:5 (portrait)</option>
+            <option value="9:16">9:16 (story)</option>
+            <option value="16:9">16:9 (paysage)</option>
+          </select>
+        </div>
+        <div class="option-group">
           <span class="option-label">Nombre</span>
           <select class="option-select" id="opt-count">
             <option value="1">1 image</option>
@@ -292,9 +302,10 @@
       var prompt = document.getElementById('prompt-input').value.trim()
       if (!prompt) { document.getElementById('prompt-input').focus(); return }
 
-      var model = document.getElementById('opt-model').value
-      var size  = document.getElementById('opt-size').value
-      var count = parseInt(document.getElementById('opt-count').value)
+      var model  = document.getElementById('opt-model').value
+      var size   = document.getElementById('opt-size').value
+      var format = document.getElementById('opt-format').value
+      var count  = parseInt(document.getElementById('opt-count').value)
 
       // 4K seulement dispo avec wan2.7-image-pro et en text-to-image
       if (size === '4K' && model !== 'wan2.7-image-pro') {
@@ -307,7 +318,7 @@
       fetch('/api/wan-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: prompt, model: model, size: size, n: count })
+        body: JSON.stringify({ prompt: prompt, model: model, size: size, format: format, n: count })
       })
       .then(function(r) { return r.json() })
       .then(function(data) {
