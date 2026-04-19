@@ -1573,7 +1573,8 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
         const body   = await request.json()
         const prompt = body.prompt || ""
         const model  = body.model  || "wan2.7-image"
-        const size   = body.size   || "2K"
+        const sizeSpec = body.size || "2K"
+        const format = body.format || ""
         const n      = Math.min(body.n || 1, 4)
 
         if (!prompt) {
@@ -1584,7 +1585,20 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
         const DASHSCOPE_BASE = "https://dashscope-intl.aliyuncs.com/api/v1"
         const endpoint = `${DASHSCOPE_BASE}/services/aigc/multimodal-generation/generation`
 
-        console.log("[WAN-IMG] Génération:", model, "| size:", size, "| n:", n, "|", prompt.substring(0, 60))
+        // Si un format est spécifié, convertir en dimensions exactes
+        // Sinon utiliser la résolution brute (1K, 2K, 4K)
+        let finalSize = sizeSpec
+        if (format) {
+          const IMG_SIZE_MAP = {
+            "1K": { "1:1": "1024*1024", "4:5": "896*1120", "9:16": "768*1344", "16:9": "1344*768" },
+            "2K": { "1:1": "2048*2048", "4:5": "1792*2240", "9:16": "1536*2688", "16:9": "2688*1536" },
+            "4K": { "1:1": "4096*4096", "4:5": "3584*4480", "9:16": "3072*5376", "16:9": "5376*3072" }
+          }
+          const group = IMG_SIZE_MAP[sizeSpec] || IMG_SIZE_MAP["2K"]
+          finalSize = group[format] || sizeSpec
+        }
+
+        console.log("[WAN-IMG] Génération:", model, "| size:", finalSize, "| format:", format || "auto", "| n:", n, "|", prompt.substring(0, 60))
 
         const payload = {
           model: model,
@@ -1599,7 +1613,7 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
             ]
           },
           parameters: {
-            size: size,
+            size: finalSize,
             n: n,
             watermark: false
           }
@@ -1694,13 +1708,15 @@ Demande d'abord : quel est ton site/business, ta niche, tes mots-clés actuels ?
         // URL de base DashScope — région internationale (Singapour)
         const DASHSCOPE_BASE = "https://dashscope-intl.aliyuncs.com/api/v1"
 
-        // Conversion résolution → format DashScope (largeur*hauteur) pour T2V
+        // Conversion résolution + format → taille DashScope pour T2V
+        const format = body.format || "16:9"
         const SIZE_MAP = {
-          "480p":  "832*480",
-          "720p":  "1280*720",
-          "1080p": "1920*1080"
+          "480p":  { "16:9": "832*480",   "9:16": "480*832",   "1:1": "624*624" },
+          "720p":  { "16:9": "1280*720",  "9:16": "720*1280",  "1:1": "960*960" },
+          "1080p": { "16:9": "1920*1080", "9:16": "1080*1920", "1:1": "1440*1440" }
         }
-        const size = SIZE_MAP[resolution] || "1280*720"
+        const sizeGroup = SIZE_MAP[resolution] || SIZE_MAP["720p"]
+        const size = sizeGroup[format] || sizeGroup["16:9"]
 
         let endpoint, payload
 
